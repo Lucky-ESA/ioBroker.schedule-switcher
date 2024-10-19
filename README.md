@@ -32,7 +32,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 ## Questions
 
-🇩🇪 [Fragen](https://forum.iobroker.net/topic/63400/test-adapter-iobroker-imap-latest-stable)
+🇩🇪 [Fragen](https://forum.iobroker.net/topic/77552/test-adapter-schedule-switcher)
 
 ## Changelog
 
