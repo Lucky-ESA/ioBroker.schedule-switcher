@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/triggers/DailyTrigger.ts"],
+  "sourcesContent": ["import { Trigger } from \"./Trigger\";\nimport { Weekday } from \"./Weekday\";\n\nexport interface DailyTrigger extends Trigger {\n    getWeekdays(): Weekday[];\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/Coordinate.ts"],
+  "sourcesContent": ["export class Coordinate {\n    private readonly latitude: number;\n    private readonly longitude: number;\n\n    constructor(latitude: number, longitude: number, that: ioBroker.Adapter) {\n        if (Math.abs(latitude) > 90) {\n            that.log.error(\"Latitude must be < 90 and > -90 - use 90\");\n            this.latitude = 90;\n        } else {\n            this.latitude = latitude;\n        }\n        if (Math.abs(longitude) > 180) {\n            that.log.error(\"Longitude must be < 180 and > -180 - use 180\");\n            this.longitude = 180;\n        } else {\n            this.longitude = longitude;\n        }\n    }\n\n    public getLatitude(): number {\n        return this.latitude;\n    }\n\n    public getLongitude(): number {\n        return this.longitude;\n    }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,MAAM,WAAW;AAAA,EACH;AAAA,EACA;AAAA,EAEjB,YAAY,UAAkB,WAAmB,MAAwB;AACrE,QAAI,KAAK,IAAI,QAAQ,IAAI,IAAI;AACzB,WAAK,IAAI,MAAM,0CAA0C;AACzD,WAAK,WAAW;AAAA,IACpB,OAAO;AACH,WAAK,WAAW;AAAA,IACpB;AACA,QAAI,KAAK,IAAI,SAAS,IAAI,KAAK;AAC3B,WAAK,IAAI,MAAM,8CAA8C;AAC7D,WAAK,YAAY;AAAA,IACrB,OAAO;AACH,WAAK,YAAY;AAAA,IACrB;AAAA,EACJ;AAAA,EAEO,cAAsB;AACzB,WAAO,KAAK;AAAA,EAChB;AAAA,EAEO,eAAuB;AAC1B,WAAO,KAAK;AAAA,EAChB;AACJ;",
+  "names": []
+}

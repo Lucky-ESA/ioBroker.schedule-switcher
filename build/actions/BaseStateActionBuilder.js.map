@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/actions/BaseStateActionBuilder.ts"],
+  "sourcesContent": ["import { Builder } from \"../Builder\";\nimport { StateService } from \"../services/StateService\";\nimport { BaseStateAction } from \"./BaseStateAction\";\n\nexport abstract class BaseStateActionBuilder implements Builder<BaseStateAction> {\n    protected stateService: StateService | null = null;\n\n    public setStateService(stateService: StateService): BaseStateActionBuilder {\n        this.stateService = stateService;\n        return this;\n    }\n\n    public abstract build(): BaseStateAction;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAIO,MAAe,uBAA2D;AAAA,EACnE,eAAoC;AAAA,EAEvC,gBAAgB,cAAoD;AACvE,SAAK,eAAe;AACpB,WAAO;AAAA,EACX;AAGJ;",
+  "names": []
+}

@@ -1,0 +1,15 @@
+.time {
+    text-align: left;
+    color: var(--ts-widget-switched-time-fg-color, --ts-widget-fg-color);
+    font-size: var(--ts-widget-switched-time-font-size, 2em);
+    font-weight: bold;
+}
+
+input:invalid {
+    color: red;
+}
+
+input {
+    font-size: 1.2rem;
+    width: 150px;
+}

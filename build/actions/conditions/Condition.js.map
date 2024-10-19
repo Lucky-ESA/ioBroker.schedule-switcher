@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/actions/conditions/Condition.ts"],
+  "sourcesContent": ["export interface Condition {\n    evaluate(): Promise<boolean>;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

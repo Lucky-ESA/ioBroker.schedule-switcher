@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/scheduler/TriggerScheduler.ts"],
+  "sourcesContent": ["import { Destroyable } from \"../Destroyable\";\nimport { Trigger } from \"../triggers/Trigger\";\n\nexport abstract class TriggerScheduler implements Destroyable {\n    abstract register(trigger: Trigger): void;\n\n    abstract unregister(trigger: Trigger): void;\n\n    abstract forType(): string;\n\n    abstract destroy(): void;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAGO,MAAe,iBAAwC;AAQ9D;",
+  "names": []
+}

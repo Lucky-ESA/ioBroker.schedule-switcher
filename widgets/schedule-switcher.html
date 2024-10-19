@@ -1,0 +1,175 @@
+<!--
+	ioBroker.vis schedule-switcher Widget-Set
+
+	Copyright 2019-2021 walli545 walli5446@gmail.com
+-->
+<!-- here you can include so many css as you want -->
+<link rel="stylesheet" href="widgets/schedule-switcher/css/style.css" />
+<link rel="stylesheet" href="widgets/schedule-switcher/css/material-button.css" />
+<link rel="stylesheet" href="widgets/schedule-switcher/css/material-checkbox.css" />
+<link rel="stylesheet" href="widgets/schedule-switcher/css/material-radio-button.css" />
+<link rel="stylesheet" href="widgets/schedule-switcher/css/material-toggle-switch.css" />
+<!-- here you can include so many js-files as you want -->
+<script src="widgets/schedule-switcher/js/OnOffScheduleWidget.js"></script>
+<script src="widgets/schedule-switcher/js/TriggerWithAction.js"></script>
+<script src="widgets/schedule-switcher/js/TimeTrigger.js"></script>
+<script src="widgets/schedule-switcher/js/AstroTrigger.js"></script>
+<script src="widgets/schedule-switcher/js/OneTimeTrigger.js"></script>
+<script src="widgets/schedule-switcher/js/Weekdays.js"></script>
+<script src="widgets/schedule-switcher/js/OnOffStateAction.js"></script>
+<script src="widgets/schedule-switcher/js/ConditionAction.js"></script>
+<script type="module" src="widgets/schedule-switcher/js/schedule-switcher.js"></script>
+<!-- the full description of format in data-vis-attrs can be found here:
+	https://github.com/ioBroker/ioBroker.vis/blob/master/www/js/visEditInspect.js#L39
+
+	----------------------------------------------------------
+	Mandatory XML attributes:
+		id="tplSchedule-switcherWIDGETNAME"
+		type="text/ejs"
+		class="vis-tpl"
+
+		"type" and "class" are always the same. "id" is unique and must start with "tplSETNAME" and ends with widget name. Use camel-case for it.
+
+	----------------------------------------------------------
+	data-vis-attrs - divided with semicolon the list of attributes, like attr1/id;attr2/color
+		Full format of one attribute is: attr_name(start-end)[default_value]/type,idFilter/onChangeFunc
+			attr_name - the name of the attribute, e.g. "myID"
+			start-end - creates automatically attributes from attr_namestart to attr_nameend, like "myID(1-3)" creates myID1, myID2, myID3
+			default_value - by creation of widget this attribute will be filled with this value, e.g. "myID[#001122]/color"
+			type - some predefined types have edit helpers, else it will be shown as text field
+
+				Type format:
+					  id - Object ID Dialog
+					  checkbox
+					  image - image
+					  number,min,max,step - non-float number. min,max,step are optional
+					  color - color picker
+					  views - Name of the view
+					  effect - jquery UI show/hide effects
+					  eff_opt - additional option to effect slide (up, down, left, right)
+					  fontName - Font name
+					  slider,min,max,step - Default step is ((max - min) / 100)
+					  select,value1,value2,... - dropdown select
+					  nselect,value1,value2,... - same as select, but without translation of items
+					  style,fileFilter,nameFilter,attrFilter
+					  custom,functionName,options,... - custom editor - functionName is starting from vis.binds.[widgetset.funct]. E.g. custom/timeAndWeather.editWeather,short
+					  group.name - define new or old group. All following attributes belongs to new group till new group.xyz
+					  group.name/byindex - like group, but all following attributes will be grouped by ID. Like group.windows/byindex;slide(1-4)/id;slide_type(1-4)/select,open,closed  Following groups will be created Windows1(slide1,slide_type1), Windows2(slide2,slide_type2), Windows3(slide3,slide_type3), Windows4(slide4,slide_type4)
+					  text - dialog box with html editor
+					  html - dialog box with html editor
+
+				If type is "id", you can define filer for "Select ID Dialog", like "myID/id,level.temperature".
+				Additionally you can define callback(onChangeFunc), which will be called if this attribute was changed by user for different purposes: validate entry, fill other attributes, ...
+
+		You can define additional data-vis-attrs line: data-vis-attrs0, data-vis-attrs1. Anyway data-vis-attrs must be there. You may not skip numbers.
+		E.g. in "data-vis-attrs="A;" data-vis-attrs1="B" attribute B will be not parsed.
+
+	--------------------------------------------------------
+	data-vis-type
+		Help information for user. Used for search.
+		You can define more than one type divided by comma.
+		There are following common types, but you can use your own specific types:
+			ctrl   - widget that can write some Object IDs
+			val    - widget that shows some information from Object IDs
+			static - widget do not read information from Object IDs or URL
+			button - button widget
+			dimmer - dimmer widget
+			weather - weather widget
+			...
+
+	--------------------------------------------------------
+	data-vis-set
+		Name of the widget set. Must be equal to the name of this HTML file
+
+	--------------------------------------------------------
+	data-vis-prev
+		Html code used as preview of this widget. If widget is complex you can just use image as preview:
+		data-vis-prev='<img src="widgets/hqwidgets/img/prev/Prev_tplSchedule-switcherShowInstance.png"></img>'
+		Of course the image must exist.
+
+	--------------------------------------------------------
+	data-vis-name
+		Readable name of widget shown in vis editor.
+
+	--------------------------------------------------------
+	data-vis-beta="true"
+		Shows "BETA" symbol in vis editor by preview
+
+	--------------------------------------------------------
+	data-vis-update-style="true"
+		Call redraw of widget if some of the CSS styles in editor for this widget was changed
+
+	You can read about Magic tags here: http://canjs.com/guides/EJS.html
+	Following magic tags are exist:
+		<% %> - execute javascript
+		<%= %> - place escaped result to HTML document
+		<%== %> - place unescaped result to HTML document
+
+	You can do "if" conditions and "for" cycles.
+
+-->
+<script
+    id="tplSchedule-switcherDevicePlan"
+    type="text/ejs"
+    class="vis-tpl"
+    data-vis-prev='<img src="widgets/schedule-switcher/img/prev/prev-device-schedule.jpg" width="110px"></img>'
+    data-vis-attrs="
+			oid-dataId/id/onDataIdChange;
+			oid-enabled/id/onEnabledChange;
+			showId[true]/checkbox;
+			showManualSwitch[true]/checkbox;
+			useAstroIcons[false]/checkbox;
+			valueType[boolean]/select,boolean,string,number;
+			offValue/text;
+			onValue/text;
+			statesCount[1]/number,1,10,1;
+			oid-stateId(1-statesCount)/id/onStateIdChange;
+			showConditionIds[true]/checkbox;
+			conditionStatesCount[1]/number,1,5,1;
+			oid-conditionStateId(1-conditionStatesCount)/id/onConditionStateIdChange;
+			conditionStateAlias(1-conditionStatesCount)/text;
+			widthActionValue[65px]/text;
+			newOn/text;
+			newOff/text;
+			newAllOn/text;
+			newAllOff/text;
+			useCSS/checkbox;
+			fFamily['Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system]/text;
+			bgwidget[rgba(66,66,66,1)]/color;
+			bgwidgetFont[rgba(255,255,255,1)]/color;
+			bgOn[rgba(51,122,183,1)]/color;
+			bgOnCo[rgba(47,47,47,1)]/color;
+			bgOff[rgba(192,192,192,1)]/color;
+			bgOffCo[rgba(128,128,128,1)]/color;
+			bgTriggerView[rgba(39,39,39,1)]/color;
+			bgTrigger[rgba(241,241,241,1)]/color;
+			bgTriggerHover[rgba(221,221,221,1)]/color;
+			bgTriggerFont[rgba(0,0,0,1)]/color;
+			fcSwitched[rgba(165,165,165,1)]/color;
+			fcbutton[rgba(255,255,255,1)]/color;
+			fcDisWeekday[rgba(93,93,93,1)]/color;
+			fcAcWeekday[rgba(255,255,255,1)]/color;
+			fcName[rgba(255,255,255,1)]/color;
+			fcTime[rgba(255,255,255,1)]/color;
+			fcSwitch[rgba(255,255,255,1)]/color;
+			fcAstro[rgba(0,0,0,1)]/color;
+			fcAstroShift[rgba(93,93,93,1)]/color;
+			fcCondition[rgba(255,255,255,1)]/color;
+			fsName[2em]/text;
+			fsSwitched[15px]/text;
+			fsWeekdays[23px]/text;
+			fsSwitchedValue[2em]/text;
+			fsSwitchedTime[2em]/text;
+			fsSwitchedAstro[1.5em]/text;
+			fsSwitchedAstroShift[1em]/text;
+			fsCondition[1em]/text;
+			fDisplayEdit[block]/select,block,none;
+			fDisplayCondition[block]/select,block,none;
+			fIconFilter[1]/select,1,0"
+    data-vis-set="schedule-switcher"
+    data-vis-type="ctrl"
+    data-vis-name="Schedule-Switcher (On/Off)"
+>
+    <% vis.binds['schedule-switcher'].createOnOffWidget(this.data.wid, this.view, this.data, this.style); %>
+    	<div style="width:300px; height: auto;" id="<%= this.data.attr('wid')%>" class="schedule-switcher-widget vis-widget"></div>
+</script>

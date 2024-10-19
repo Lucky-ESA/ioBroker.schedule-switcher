@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/triggers/AstroTime.ts"],
+  "sourcesContent": ["export enum AstroTime {\n    Sunrise = \"sunrise\",\n    SolarNoon = \"solarNoon\",\n    Sunset = \"sunset\",\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,IAAK,YAAL,kBAAKA,eAAL;AACH,EAAAA,WAAA,aAAU;AACV,EAAAA,WAAA,eAAY;AACZ,EAAAA,WAAA,YAAS;AAHD,SAAAA;AAAA,GAAA;",
+  "names": ["AstroTime"]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/Destroyable.ts"],
+  "sourcesContent": ["export interface Destroyable {\n    destroy(): void;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

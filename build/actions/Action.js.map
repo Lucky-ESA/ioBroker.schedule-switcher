@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/actions/Action.ts"],
+  "sourcesContent": ["export interface Action {\n    execute(): void;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

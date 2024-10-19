@@ -1,0 +1,113 @@
+.widget {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 5px;
+    height: calc(100% - 20px);
+    font-family: var(--ts-widget-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+    background-color: var(--ts-widget-bg-color, #424242);
+    color: var(--ts-widget-fg-color, white);
+}
+
+.button {
+    cursor: pointer;
+    filter: var(--ts-widget-img-btn-filter, invert(1));
+    align-self: center;
+}
+
+.button.edit {
+    display: var(--ts-widget-edit-name-button-display, block);
+}
+
+.md-switch-container {
+    margin: 10px;
+}
+
+#switched-oid {
+    color: var(--ts-widget-oid-fg-color, #a5a5a5);
+    margin-bottom: 10px;
+    font-size: var(--ts-widget-oid-font-size, --ts-widget-font-size);
+}
+
+.heading div {
+    display: flex;
+}
+
+.heading .view h1 {
+    font-size: var(--ts-widget-name-font-size, 2em);
+    color: var(--ts-widget-name-fg-color, --ts-widget-oid-fg-color);
+    margin-bottom: 5px;
+    margin-top: 0px;
+    width: calc(100% - 30px);
+}
+
+.heading .edit input {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
+    width: calc(100% - 30px);
+}
+
+.triggers {
+    overflow-y: scroll;
+    padding-right: 5px;
+}
+.triggers::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+.triggers::-webkit-scrollbar {
+    width: 4px;
+    background-color: var(--ts-widget-bg-color, #424242);
+}
+
+.triggers::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: var(--ts-widget-fg-color, white);
+}
+
+button.material-button {
+    margin: 10px;
+    width: 110px;
+}
+
+.manual-container.multiple p {
+    margin-bottom: 5px;
+}
+
+#add div {
+    float: right;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    background-color: var(--ts-widget-add-trigger-dropdown-bg-color, #f1f1f1);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content .dropdown-btn {
+    color: var(--ts-widget-add-trigger-dropdown-fg-color, black);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    width: calc(100% - 32px);
+}
+
+.dropdown-content .dropdown-btn:hover {
+    cursor: pointer;
+    background-color: var(--ts-widget-add-trigger-dropdown-hover-bg-color, #ddd);
+}
+
+.show {
+    display: block;
+}
