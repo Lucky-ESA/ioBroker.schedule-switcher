@@ -41,6 +41,10 @@ It is possible to configure at which time and on which weekdays the trigger shou
     ### **WORK IN PROGRESS**
 -->
 
+### **WORK IN PROGRESS**
+
+-   (Lucky_ESA) Fix translate
+
 ### 0.0.1 (2024-10-19)
 
 -   (Lucky_ESA) initial release

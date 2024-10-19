@@ -1429,7 +1429,7 @@ systemDictionary = {
     },
     "newOn": {
         "en": "Replace (on)",
-        "de": "Ersatze (an)",
+        "de": "Ersetze (an)",
         "ru": "Заменить (on)",
         "pt": "Substituir (em)",
         "nl": "Vervangen (op)",
@@ -1442,7 +1442,7 @@ systemDictionary = {
     },
     "newOff": {
         "en": "Replace (off)",
-        "de": "Ersatz (aus)",
+        "de": "Ersetze (aus)",
         "ru": "Заменить (с)",
         "pt": "Substituir (desligar)",
         "nl": "Vervangen (uit)",

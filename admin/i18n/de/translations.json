@@ -107,8 +107,8 @@
     "widthActionValue": "Breite des Aktionswerts",
     "newAllOff": "Ersetzen (Alles aus)",
     "newAllOn": "Ersetzen (Alles aktiviert)",
-    "newOn": "Ersetzen (ein)",
-    "newOff": "Ersetzen (aus)",
+    "newOn": "Ersetze (ein)",
+    "newOff": "Ersetze (aus)",
     "needToSelectValidEnabled": "Wählen Sie einen gültigen Zeitplan aktivierer id (mit dem Muster „schedule-switcher.0.onoff.*.enabled“)!",
     "delete": "löschen"
 }
