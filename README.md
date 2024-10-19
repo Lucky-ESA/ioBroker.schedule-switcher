@@ -9,7 +9,7 @@
 
 [![NPM](https://nodei.co/npm/iobroker.schedule-switcher.png?downloads=true)](https://nodei.co/npm/iobroker.schedule-switcher/)
 
-**Tests:** ![Test and Release](https://github.com/Lucky_ESA/ioBroker.schedule-switcher/workflows/Test%20and%20Release/badge.svg)
+**Tests:** [![Test and Release](https://github.com/Lucky-ESA/ioBroker.schedule-switcher/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/Lucky-ESA/ioBroker.schedule-switcher/actions/workflows/test-and-release.yml)
 
 ## schedule-switcher adapter for ioBroker
 
