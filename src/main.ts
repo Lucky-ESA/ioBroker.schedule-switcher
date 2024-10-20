@@ -160,6 +160,10 @@ export class ScheduleSwitcher extends utils.Adapter {
             try {
                 this.log.debug("obj: " + JSON.stringify(obj));
                 if (this.messageService) {
+                    if (obj.message && obj.message.parameter && obj.command === "add-trigger" && obj.callback) {
+                        this.addNewTrigger(obj);
+                        return;
+                    }
                     if (obj.message && obj.message.parameter) obj.message = obj.message.parameter;
                     await this.messageService.handleMessage(obj);
                 } else {
@@ -168,6 +172,18 @@ export class ScheduleSwitcher extends utils.Adapter {
             } catch (e) {
                 this.log.error(`Could not handle message:`);
             }
+        }
+    }
+
+    private async addNewTrigger(obj: ioBroker.Message): Promise<void> {
+        obj.message = obj.message.parameter;
+        const data = await this.getStateAsync(obj.message.dataId);
+        const data_json = data && typeof data.val === "string" ? JSON.parse(data.val) : null;
+        if (data_json && this.messageService) {
+            this.sendTo(obj.from, obj.command, data_json.triggers.length, obj.callback);
+            await this.messageService.handleMessage(obj);
+        } else {
+            this.sendTo(obj.from, obj.command, null, obj.callback);
         }
     }
 
