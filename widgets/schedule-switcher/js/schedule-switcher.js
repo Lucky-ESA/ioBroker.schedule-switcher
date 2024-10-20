@@ -117,7 +117,7 @@ function createOnOffWidget(widgetId, view, data, style) {
         element.style.setProperty("--ts-widget-btn-fg-color", data.fcbutton ? data.fcbutton : "white");
         element.style.setProperty(
             "--ts-widget-weekdays-disabled-fg-color",
-            data.fcdisweekday ? data.fcdisweekday : "#5D5D5D",
+            data.fcDisWeekday ? data.fcDisWeekday : "#5D5D5D",
         );
         element.style.setProperty(
             "--ts-widget-weekdays-enabled-fg-color",
