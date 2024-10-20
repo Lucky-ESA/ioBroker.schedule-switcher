@@ -165,6 +165,27 @@ sendTo("schedule-switcher.0", "update-trigger", { // Set the action for the new 
     }
 });
 
+sendTo("schedule-switcher.0", "add-trigger", { // Create new Astrotrigger
+    "dataId":"schedule-switcher.0.onoff.6.data",
+    "triggerType":"AstroTrigger",
+    "actionType":"OnOffStateAction"
+});
+
+sendTo("schedule-switcher.0", "update-trigger", { // Set the action for the new trigger
+    "dataId":"schedule-switcher.0.onoff.6.data",
+    "trigger":{
+        "type":"AstroTrigger",
+        "astroTime":"sunrise", // sunrise, sunset or noon
+        "shiftInMinutes":0,
+        "weekdays":[1,2,3,4,5],
+        "id":"0", // ID abgleichen
+        "action":{
+            "type":"OnOffStateAction",
+            "name":"On"
+        }
+    }
+});
+
 sendTo("schedule-switcher.0", "disable-schedule", { // deactivate trigger
     "dataId":"schedule-switcher.0.onoff.6.data"
 });
