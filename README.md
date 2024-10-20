@@ -44,6 +44,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
 ### **WORK IN PROGRESS**
 
 -   (Lucky_ESA) Fix translate
+-   (Lucky_ESA) Fix background color disable Weekdays
+-   (Lucky_ESA) Fix sendTo
 
 ### 0.0.1 (2024-10-19)
 

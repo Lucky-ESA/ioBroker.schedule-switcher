@@ -165,7 +165,11 @@ sendTo("schedule-switcher.0", "update-trigger", { // Set the action for the new 
     }
 });
 
-sendTo("schedule-switcher.0", "disable-schedule", { // Activate/deactivate trigger
+sendTo("schedule-switcher.0", "disable-schedule", { // deactivate trigger
+    "dataId":"schedule-switcher.0.onoff.6.data"
+});
+
+sendTo("schedule-switcher.0", "enable-schedule", { // activate trigger
     "dataId":"schedule-switcher.0.onoff.6.data"
 });
 

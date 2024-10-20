@@ -176,6 +176,8 @@ class ScheduleSwitcher extends utils.Adapter {
       try {
         this.log.debug("obj: " + JSON.stringify(obj));
         if (this.messageService) {
+          if (obj.message && obj.message.parameter)
+            obj.message = obj.message.parameter;
           await this.messageService.handleMessage(obj);
         } else {
           this.log.error("Message service not initialized");

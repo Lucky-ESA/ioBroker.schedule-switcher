@@ -165,7 +165,11 @@ sendTo("schedule-switcher.0", "update-trigger", { // Aktion für den neuen Ausl�
     }
 });
 
-sendTo("schedule-switcher.0", "disable-schedule", { // Auslöser aktivieren/deaktivieren
+sendTo("schedule-switcher.0", "disable-schedule", { // Auslöser deaktivieren
+    "dataId":"schedule-switcher.0.onoff.6.data"
+});
+
+sendTo("schedule-switcher.0", "enable-schedule", { // Auslöser aktivieren
     "dataId":"schedule-switcher.0.onoff.6.data"
 });
 
