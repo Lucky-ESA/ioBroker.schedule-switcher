@@ -9,6 +9,7 @@
   "homepage": "https://github.com/Lucky_ESA/ioBroker.schedule-switcher",
   "license": "MIT",
   "keywords": [
+    "ioBroker",
     "schedule",
     "time-switch",
     "control",
