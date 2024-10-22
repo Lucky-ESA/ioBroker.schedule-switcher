@@ -1,141 +1,169 @@
 {
-    "common": {
-        "name": "schedule-switcher",
-        "version": "0.0.1",
-        "news": {
-            "0.0.1": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Начальная версия",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "uk": "Початкова версія",
-                "zh-cn": "首次出版"
-            }
-        },
-        "titleLang": {
-            "en": "schedule-switcher",
-            "de": "Zeitplan-Umschalter",
-            "ru": "переключатель расписания",
-            "pt": "alternador de horário",
-            "nl": "schema-switcher",
-            "fr": "sélecteur d'horaire",
-            "it": "commutatore di pianificazione",
-            "es": "cambiador de horario",
-            "pl": "przełącznik harmonogramu",
-            "uk": "перемикач розкладу",
-            "zh-cn": "日程切换器"
-        },
-        "desc": {
-            "en": "Switch states over scheduler",
-            "de": "Schalten Sie den Status über den Planer um",
-            "ru": "Переключение состояний через планировщик",
-            "pt": "Alternar estados pelo agendador",
-            "nl": "Schakel statussen in via de planner",
-            "fr": "Changer d'état via le planificateur",
-            "it": "Cambia gli stati tramite lo scheduler",
-            "es": "Cambiar estados sobre el programador",
-            "pl": "Przełącz stany przez harmonogram",
-            "uk": "Перемикання станів через планувальник",
-            "zh-cn": "通过调度程序切换状态"
-        },
-        "authors": ["Lucky-ESA <github@luckyskills.de>"],
-        "keywords": ["schedule", "time-switch", "control", "roller shutter", "Power outlet"],
-        "licenseInformation": {
-            "type": "free",
-            "license": "MIT"
-        },
-        "platform": "Javascript/Node.js",
-        "icon": "schedule-switcher.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/Lucky-ESA/ioBroker.schedule-switcher/main/admin/schedule-switcher.png",
-        "readme": "https://github.com/Lucky-ESA/ioBroker.schedule-switcher/blob/main/README.md",
-        "loglevel": "info",
-        "tier": 3,
-        "mode": "daemon",
-        "type": "date-and-time",
-        "compact": true,
-        "connectionType": "local",
-        "messagebox": true,
-        "dataSource": "push",
-        "docs": {
-            "en": ["docs/en/README.md"],
-            "de": ["docs/de/README.md"]
-        },
-        "restartAdapters": ["vis-2", "vis"],
-        "adminUI": {
-            "config": "json"
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=6.0.11"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=7.0.23"
-            }
-        ]
+  "common": {
+    "name": "schedule-switcher",
+    "version": "0.0.2",
+    "news": {
+      "0.0.2": {
+        "en": "Fix translate\nFix background color disable Weekdays\nFix sendTo\nAdded jsonConfig\nAdded history",
+        "de": "Fehler übersetzen\nHintergrundfarbe deaktivieren Wochentage\nFehler senden Zu\nHinzugefügt jsonConfig\nGeschichte hinzufügen",
+        "ru": "Перевод\nЦвет фона недоступен\nFix send В\nДобавить jsonConfig\nДобавленная история",
+        "pt": "Corrigir tradução\nCorrigir a cor de fundo desativar os dias de semana\nEnviar Para\nAdicionado jsonConfig\nHistória adicionada",
+        "nl": "Vertalen herstellen\nFix achtergrond kleur uitschakelen Weekdagen\nFix send Aan\nToegevoegd jsonConfig\nGeschiedenis toegevoegd",
+        "fr": "Corriger traduire\nCorrection de la couleur de l'arrière-plan désactiver Weekdays\nCorrection de l'envoi Aux\nAjout de jsonConfig\nHistorique ajouté",
+        "it": "Risolvere il traduttore\nFissare il colore di sfondo disabilitare i giorni feriali\nRiparare l'invio A\nAggiunto jsonConfig\nAggiunto storia",
+        "es": "Corrección\nFijar el color de fondo deshabilitado\nEnviar fijo A\nJsonConfig\nHistoria agregada",
+        "pl": "Napraw tłumaczenie\nPopraw kolor tła wyłączyć Weekdays\nNapraw wysyłanie Do\nDodano jsonConfig\nDodano historię",
+        "uk": "Виправлення перекладу\nВиправлення фонового кольору відключити робочі дні\nПеревірити відправлення до\nДодано jsonConfig\nІсторія",
+        "zh-cn": "修正翻译\n修正背景颜色禁用周日\n修正发送 改为\n添加的 json 图形\n添加历史"
+      },
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "uk": "Початкова версія",
+        "zh-cn": "首次出版"
+      }
     },
-    "native": {
-        "switch_delay": 500,
-        "history": 10,
-        "schedules": {
-            "onOff": []
-        },
-        "schedulesData": [
-            {
-                "stateId": null,
-                "active": "false",
-                "count": "0",
-                "objectid": "schedule-switcher.0.onoff.<set after restart>.data",
-                "objectname": "New Schedule"
-            }
-        ]
+    "titleLang": {
+      "en": "schedule-switcher",
+      "de": "Zeitplan-Umschalter",
+      "ru": "переключатель расписания",
+      "pt": "alternador de horário",
+      "nl": "schema-switcher",
+      "fr": "sélecteur d'horaire",
+      "it": "commutatore di pianificazione",
+      "es": "cambiador de horario",
+      "pl": "przełącznik harmonogramu",
+      "uk": "перемикач розкладу",
+      "zh-cn": "日程切换器"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "sendto",
-            "type": "state",
-            "common": {
-                "role": "json",
-                "name": "SendTo Workaround",
-                "type": "string",
-                "read": true,
-                "write": true
-            },
-            "native": {}
-        },
-        {
-            "_id": "history",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "History",
-                    "de": "Historie",
-                    "ru": "История",
-                    "pt": "História",
-                    "nl": "Voorgeschiedenis",
-                    "fr": "Historique",
-                    "it": "Storia",
-                    "es": "Historia",
-                    "pl": "Historia",
-                    "uk": "Історія",
-                    "zh-cn": "历史"
-                },
-                "read": true,
-                "write": false,
-                "type": "string",
-                "role": "json",
-                "def": "[]",
-                "desc": "History all switching"
-            },
-            "native": {}
-        }
+    "desc": {
+      "en": "Switch states over scheduler",
+      "de": "Schalten Sie den Status über den Planer um",
+      "ru": "Переключение состояний через планировщик",
+      "pt": "Alternar estados pelo agendador",
+      "nl": "Schakel statussen in via de planner",
+      "fr": "Changer d'état via le planificateur",
+      "it": "Cambia gli stati tramite lo scheduler",
+      "es": "Cambiar estados sobre el programador",
+      "pl": "Przełącz stany przez harmonogram",
+      "uk": "Перемикання станів через планувальник",
+      "zh-cn": "通过调度程序切换状态"
+    },
+    "authors": [
+      "Lucky-ESA <github@luckyskills.de>"
+    ],
+    "keywords": [
+      "schedule",
+      "time-switch",
+      "control",
+      "roller shutter",
+      "Power outlet"
+    ],
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
+    "platform": "Javascript/Node.js",
+    "icon": "schedule-switcher.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/Lucky-ESA/ioBroker.schedule-switcher/main/admin/schedule-switcher.png",
+    "readme": "https://github.com/Lucky-ESA/ioBroker.schedule-switcher/blob/main/README.md",
+    "loglevel": "info",
+    "tier": 3,
+    "mode": "daemon",
+    "type": "date-and-time",
+    "compact": true,
+    "connectionType": "local",
+    "messagebox": true,
+    "dataSource": "push",
+    "docs": {
+      "en": [
+        "docs/en/README.md"
+      ],
+      "de": [
+        "docs/de/README.md"
+      ]
+    },
+    "restartAdapters": [
+      "vis-2",
+      "vis"
+    ],
+    "adminUI": {
+      "config": "json"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=6.0.11"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=7.0.23"
+      }
     ]
+  },
+  "native": {
+    "switch_delay": 500,
+    "history": 10,
+    "schedules": {
+      "onOff": []
+    },
+    "schedulesData": [
+      {
+        "stateId": null,
+        "active": "false",
+        "count": "0",
+        "objectid": "schedule-switcher.0.onoff.<set after restart>.data",
+        "objectname": "New Schedule"
+      }
+    ]
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "sendto",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "SendTo Workaround",
+        "type": "string",
+        "read": true,
+        "write": true
+      },
+      "native": {}
+    },
+    {
+      "_id": "history",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "History",
+          "de": "Historie",
+          "ru": "История",
+          "pt": "História",
+          "nl": "Voorgeschiedenis",
+          "fr": "Historique",
+          "it": "Storia",
+          "es": "Historia",
+          "pl": "Historia",
+          "uk": "Історія",
+          "zh-cn": "历史"
+        },
+        "read": true,
+        "write": false,
+        "type": "string",
+        "role": "json",
+        "def": "[]",
+        "desc": "History all switching"
+      },
+      "native": {}
+    }
+  ]
 }

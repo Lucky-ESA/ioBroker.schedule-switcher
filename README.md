@@ -40,8 +40,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.0.2 (2024-10-22)
 
 -   (Lucky_ESA) Fix translate
 -   (Lucky_ESA) Fix background color disable Weekdays
