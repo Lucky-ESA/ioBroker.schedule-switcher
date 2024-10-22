@@ -23,10 +23,11 @@ __export(OneTimeTrigger_exports, {
 module.exports = __toCommonJS(OneTimeTrigger_exports);
 class OneTimeTrigger {
   id;
+  objectId;
   action;
   date;
   onDestroy;
-  constructor(id, action, date, onDestroy) {
+  constructor(id, objectId, action, date, onDestroy) {
     if (id == null) {
       throw new Error("Id may not be null or undefined.");
     }
@@ -37,14 +38,15 @@ class OneTimeTrigger {
       throw new Error("Date may not be null or undefined.");
     }
     this.id = id;
+    this.objectId = objectId;
     this.action = action;
     this.date = new Date(date);
     this.onDestroy = onDestroy;
   }
   getAction() {
     return {
-      execute: () => {
-        this.action.execute();
+      execute: (trigger) => {
+        this.action.execute(trigger);
         this.destroy();
       }
     };
@@ -60,6 +62,17 @@ class OneTimeTrigger {
   }
   getDate() {
     return new Date(this.date);
+  }
+  getObjectId() {
+    return this.objectId;
+  }
+  getData() {
+    return {
+      id: this.getId(),
+      objectId: this.getObjectId(),
+      date: this.getDate().toISOString(),
+      trigger: "TimeTrigger"
+    };
   }
   toString() {
     return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}}`;

@@ -80,6 +80,7 @@ class ScheduleSwitcher extends utils.Adapter {
    * Is called when databases are connected and adapter received configuration.
    */
   async onReady() {
+    this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData);
     await this.initMessageService();
     await this.fixStateStructure(this.config.schedules);
     await this.fixViewStructure();
@@ -125,6 +126,61 @@ class ScheduleSwitcher extends utils.Adapter {
     } finally {
       callback();
     }
+  }
+  async checkConfig(config) {
+    if (config && config.length > 0) {
+      const allIds = [];
+      for (const state of config) {
+        if (state && state.stateId != null) {
+          if (!allIds.includes(state.stateId)) {
+            allIds.push(state.stateId);
+          } else {
+            state.stateId = null;
+            this.log.error(`Double stateId is not allowed!!!`);
+          }
+        }
+      }
+      let isChange = false;
+      for (const state of config) {
+        let count = 0;
+        if (state.stateId == null) {
+          const nextid = await this.nextId(allIds, 0);
+          state.stateId = nextid;
+          allIds.push(nextid);
+          count = nextid;
+          isChange = true;
+        } else {
+          count = state.stateId;
+        }
+        const check = await this.getStateAsync(`schedule-switcher.0.onoff.${count}.data`);
+        const enabled = await this.getStateAsync(`schedule-switcher.0.onoff.${count}.enabled`);
+        if (check && check.val != null && typeof check.val === "string") {
+          const json = JSON.parse(check.val);
+          state.count = json.triggers.length;
+          state.objectid = `schedule-switcher.0.onoff.${count}.data`;
+          state.objectname = json.name;
+        }
+        if (enabled && enabled.val != null) {
+          state.active = enabled.val.toString();
+        }
+      }
+      if (isChange) {
+        this.log.info("Cleanup native...restart adapter now..." + JSON.stringify(config));
+        await this.extendForeignObjectAsync(`system.adapter.${this.namespace}`, {
+          native: { schedulesData: config, schedules: { onOff: allIds } }
+        });
+      }
+      return allIds;
+    }
+  }
+  async nextId(ids, start) {
+    ids.every((a) => {
+      if (start === a) {
+        start = a + 1;
+        return true;
+      }
+    });
+    return start;
   }
   // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
   // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
@@ -175,19 +231,90 @@ class ScheduleSwitcher extends utils.Adapter {
     if (typeof obj === "object" && obj.message) {
       try {
         this.log.debug("obj: " + JSON.stringify(obj));
-        if (this.messageService) {
-          if (obj.message && obj.message.parameter && obj.command === "add-trigger" && obj.callback) {
-            this.addNewTrigger(obj);
-            return;
-          }
-          if (obj.message && obj.message.parameter)
-            obj.message = obj.message.parameter;
-          await this.messageService.handleMessage(obj);
-        } else {
-          this.log.error("Message service not initialized");
+        switch (obj.command) {
+          case "getActiv":
+            if (obj && obj.message && obj.message.schedule != null) {
+              this.loadData(obj, 1);
+            } else {
+              this.sendTo(obj.from, obj.command, `false`, obj.callback);
+            }
+            break;
+          case "getNameSchedule":
+            if (obj && obj.message && obj.message.schedule != null) {
+              this.loadData(obj, 4);
+            } else {
+              this.sendTo(obj.from, obj.command, `New Schedule`, obj.callback);
+            }
+            break;
+          case "getCountSchedule":
+            if (obj && obj.message && obj.message.schedule != null) {
+              this.loadData(obj, 3);
+            } else {
+              this.sendTo(obj.from, obj.command, `0`, obj.callback);
+            }
+            break;
+          case "getIdNameSchedule":
+            if (obj && obj.message && obj.message.schedule != null) {
+              this.loadData(obj, 2);
+            } else {
+              this.sendTo(
+                obj.from,
+                obj.command,
+                `schedule-switcher.0.onoff.<set after restart>.data`,
+                obj.callback
+              );
+            }
+            break;
+          case "add-trigger":
+          case "add-one-time-trigger":
+          case "update-trigger":
+          case "delete-trigger":
+          case "change-name":
+          case "enable-schedule":
+          case "disable-schedule":
+          case "change-switched-values":
+          case "change-switched-ids":
+            if (this.messageService) {
+              if (obj.message && obj.message.parameter && obj.command === "add-trigger" && obj.callback) {
+                this.addNewTrigger(obj);
+                return;
+              }
+              if (obj.message && obj.message.parameter)
+                obj.message = obj.message.parameter;
+              await this.messageService.handleMessage(obj);
+            } else {
+              this.log.error("Message service not initialized");
+            }
+            break;
+          default:
+            this.log.error(`Message service ${obj.command} not initialized`);
         }
       } catch (e) {
         this.log.error(`Could not handle message:`);
+      }
+    }
+  }
+  async loadData(obj, answer) {
+    const id = obj.message.schedule;
+    const check = await this.getStateAsync(`schedule-switcher.0.onoff.${id}.data`);
+    if (check && check.val) {
+      if (answer === 1) {
+        const enabled = await this.getStateAsync(`schedule-switcher.0.onoff.${id}.enabled`);
+        if (enabled && enabled.val != null) {
+          this.sendTo(obj.from, obj.command, enabled.val.toString(), obj.callback);
+        }
+      } else if (answer === 2) {
+        this.sendTo(obj.from, obj.command, `schedule-switcher.0.onoff.${id}.data`, obj.callback);
+      } else if (answer === 3) {
+        if (typeof check.val === "string") {
+          const json = JSON.parse(check.val);
+          this.sendTo(obj.from, obj.command, `${json.triggers.length}`, obj.callback);
+        }
+      } else if (answer === 4) {
+        if (typeof check.val === "string") {
+          const json = JSON.parse(check.val);
+          this.sendTo(obj.from, obj.command, `${json.name}`, obj.callback);
+        }
       }
     }
   }
@@ -374,7 +501,19 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.setObjectNotExistsAsync(`onoff.${id.toString()}.views`, {
       type: "state",
       common: {
-        name: "data",
+        name: {
+          en: "Views",
+          de: "Ansichten",
+          ru: "\u041F\u0440\u043E\u0441\u043C\u043E\u0442\u0440\u043E\u0432",
+          pt: "Vistas",
+          nl: "Weergaven",
+          fr: "Vues",
+          it: "Visite",
+          es: "Vistas",
+          pl: "Widok",
+          uk: "\u041F\u043E\u0433\u043B\u044F\u0434",
+          "zh-cn": "\u89C6\u56FE"
+        },
         read: true,
         write: false,
         type: "string",
@@ -421,6 +560,7 @@ class ScheduleSwitcher extends utils.Adapter {
         def: `{
                     "type": "OnOffSchedule",
                     "name": "New Schedule",
+                    "objectID": ${id},
                     "onAction": {
                         "type":"OnOffStateAction",
                         "valueType":"boolean",

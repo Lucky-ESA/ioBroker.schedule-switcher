@@ -110,5 +110,19 @@
     "newOn": "Vervangen (aan)",
     "newOff": "Vervangen (uit)",
     "needToSelectValidEnabled": "Selecteer een geldig schema-geactiveerd ID (met patroon 'schedule-switcher.0.onoff.*.enabled')!",
-    "delete": "verwijderen"
+    "delete": "verwijderen",
+    "Tab Schedule": "Tijdschakelaar maken",
+    "Activ": "Status",
+    "ACTIV": "Status",
+    "state_id": "Identiteitskaart",
+    "state_ID": "Identiteitskaart",
+    "stateid_name": "Object-ID",
+    "stateid_Name": "Object-ID",
+    "state_name": "Objectnaam",
+    "state_Name": "Objectnaam",
+    "count_schedule": "Triggertelling",
+    "count_Schedule": "Triggertelling",
+    "stopAdapter": "U moet de adapter starten voordat u kunt configureren!",
+    "startAdapter": "Adapter is actief!",
+    "history_text": "Schakelgeschiedenis als JSON (max. 100/0 voor uit)"
 }

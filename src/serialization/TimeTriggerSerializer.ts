@@ -17,6 +17,7 @@ export class TimeTriggerSerializer implements Serializer<Trigger> {
             .setAction(this.actionSerializer.deserialize(JSON.stringify(json.action)))
             .setHour(json.hour)
             .setMinute(json.minute)
+            .setObjectId(json.objectId)
             .setWeekdays(json.weekdays)
             .setId(json.id)
             .build();
@@ -31,6 +32,7 @@ export class TimeTriggerSerializer implements Serializer<Trigger> {
                 type: this.getType(),
                 hour: objectToSerialize.getHour(),
                 minute: objectToSerialize.getMinute(),
+                objectId: objectToSerialize.getObjectId(),
                 weekdays: objectToSerialize.getWeekdays(),
                 id: objectToSerialize.getId(),
                 action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),

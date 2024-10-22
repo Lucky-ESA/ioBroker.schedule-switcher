@@ -110,5 +110,19 @@
     "newOn": "Substituir (ativado)",
     "newOff": "Substituir (desligado)",
     "needToSelectValidEnabled": "Selecione um ID válido de agendamento habilitado (com o padrão 'schedule-switcher.0.onoff.*.enabled')!",
-    "delete": "excluir"
+    "delete": "excluir",
+    "Tab Schedule": "Criar interruptor horário",
+    "Activ": "Status",
+    "ACTIV": "Status",
+    "state_id": "EU IA",
+    "state_ID": "EU IA",
+    "stateid_name": "ID do objeto",
+    "stateid_Name": "ID do objeto",
+    "state_name": "Nome do objeto",
+    "state_Name": "Nome do objeto",
+    "count_schedule": "Contagem de gatilhos",
+    "count_Schedule": "Contagem de gatilhos",
+    "stopAdapter": "Você precisa iniciar o adaptador antes de poder configurar!",
+    "startAdapter": "O adaptador está ativo!",
+    "history_text": "Troca de histórico como JSON (máximo 100/0 para desativado)"
 }

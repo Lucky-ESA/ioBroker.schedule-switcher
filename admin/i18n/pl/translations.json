@@ -110,5 +110,19 @@
     "newOn": "Zamień (wł.)",
     "newOff": "Zamień (wyłączone)",
     "needToSelectValidEnabled": "Wybierz prawidłowy identyfikator włączonego harmonogramu (ze wzorcem „schedule-switcher.0.onoff.*.enabled”)!",
-    "delete": "usuwać"
+    "delete": "usuwać",
+    "Tab Schedule": "Utwórz wyłącznik czasowy",
+    "Activ": "Status",
+    "ACTIV": "Status",
+    "state_id": "ID",
+    "state_ID": "ID",
+    "stateid_name": "Identyfikator obiektu",
+    "stateid_Name": "Identyfikator obiektu",
+    "state_name": "Nazwa obiektu",
+    "state_Name": "Nazwa obiektu",
+    "count_schedule": "Liczba wyzwalaczy",
+    "count_Schedule": "Liczba wyzwalaczy",
+    "stopAdapter": "Zanim będziesz mógł dokonać konfiguracji, musisz uruchomić Adapter!",
+    "startAdapter": "Adapter jest aktywny!",
+    "history_text": "Przełączanie historii jako JSON (maks. 100/0 dla wyłączenia)"
 }

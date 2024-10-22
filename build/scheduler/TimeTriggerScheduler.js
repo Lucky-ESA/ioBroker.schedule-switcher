@@ -39,7 +39,7 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     }
     const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
       this.logger.logDebug(`Executing trigger ${trigger}`);
-      trigger.getAction().execute();
+      trigger.getAction().execute(trigger.getData());
     });
     this.registered.push([trigger, newJob]);
   }

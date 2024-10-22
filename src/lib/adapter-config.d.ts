@@ -5,9 +5,19 @@ declare global {
     namespace ioBroker {
         interface AdapterConfig {
             switch_delay: number;
+            history: number;
             schedules: {
                 onOff: [];
             };
+            schedulesData: [
+                {
+                    stateId: number | null;
+                    active: string | null;
+                    count: string | null;
+                    objectid: string | null;
+                    objectname: string | null;
+                },
+            ];
         }
     }
 }

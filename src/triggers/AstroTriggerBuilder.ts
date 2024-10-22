@@ -8,6 +8,7 @@ import { Weekday } from "./Weekday";
 export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<AstroTrigger> {
     private astroTime: AstroTime | null = null;
     private shift = 0;
+    private objectId = 0;
 
     public setAstroTime(astroTime: AstroTime): AstroTriggerBuilder {
         this.astroTime = astroTime;
@@ -16,6 +17,11 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
 
     public setShift(shift: number): AstroTriggerBuilder {
         this.shift = shift;
+        return this;
+    }
+
+    public setObjectId(objectId: number): AstroTriggerBuilder {
+        this.objectId = objectId;
         return this;
     }
 
@@ -41,6 +47,7 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
             this.shift,
             this.getWeekdays(),
             this.getAction() as any as Action,
+            this.objectId,
         );
     }
 }

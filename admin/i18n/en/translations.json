@@ -110,5 +110,19 @@
     "newOn": "Replace (on)",
     "newOff": "Replace (off)",
     "needToSelectValidEnabled": "Select a valid schedule enabled id (with pattern 'schedule-switcher.0.onoff.*.enabled')!",
-    "delete": "delete"
+    "delete": "delete",
+    "Tab Schedule": "Create time-switch",
+    "Activ": "Status",
+    "ACTIV": "Status",
+    "state_id": "ID",
+    "state_ID": "ID",
+    "stateid_name": "Object id",
+    "stateid_Name": "Object id",
+    "state_name": "Object name",
+    "state_Name": "Object name",
+    "count_schedule": "Trigger count",
+    "count_Schedule": "Trigger count",
+    "stopAdapter": "You have to start the Adapter before you can configure!",
+    "startAdapter": "Adapter is active!",
+    "history_text": "History switching as JSON (max 100/0 for off)"
 }

@@ -105,14 +105,18 @@ export class MessageService {
     }
 
     private addTrigger(schedule: Schedule, data: any): void {
+        const state = data?.dataId.split(".");
         let triggerBuilder: DailyTriggerBuilder;
 
         if (data.triggerType === "TimeTrigger") {
             this.adapter.log.debug("Wants TimeTrigger");
-            triggerBuilder = new TimeTriggerBuilder().setHour(0).setMinute(0);
+            triggerBuilder = new TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(state[3]);
         } else if (data.triggerType === "AstroTrigger") {
             this.adapter.log.debug("Wants AstroTrigger");
-            triggerBuilder = new AstroTriggerBuilder().setAstroTime(AstroTime.Sunrise).setShift(0);
+            triggerBuilder = new AstroTriggerBuilder()
+                .setAstroTime(AstroTime.Sunrise)
+                .setShift(0)
+                .setObjectId(state[3]);
         } else {
             this.adapter.log.error(`Cannot add trigger of type ${data.triggerType}`);
             return;
@@ -133,6 +137,7 @@ export class MessageService {
     private async addOneTimeTrigger(schedule: Schedule, data: any): Promise<void> {
         const t = JSON.parse(data.trigger);
         t.id = this.getNextTriggerId(schedule.getTriggers());
+        t.objectId = data.dataId;
         const trigger = (await this.createOnOffScheduleSerializer(data.dataId))
             .getTriggerSerializer(schedule as OnOffSchedule)
             .deserialize(JSON.stringify(t));
@@ -177,17 +182,6 @@ export class MessageService {
                     oldView[data.namespace][data.prefix] &&
                     oldView[data.namespace][data.prefix][data.widgetId]
                 ) {
-                    this.adapter.log.debug(
-                        "WObject.keys(oldView[data.namespace]).length: " + Object.keys(oldView[data.namespace]).length,
-                    );
-                    this.adapter.log.debug(
-                        "WObject.keys(oldView[data.namespace][data.prefix]).length: " +
-                            Object.keys(oldView[data.namespace][data.prefix]).length,
-                    );
-                    this.adapter.log.debug(
-                        "WObject.keys(oldView[data.namespace][data.prefix][data.widgetId]).length: " +
-                            Object.keys(oldView[data.namespace][data.prefix][data.widgetId]).length,
-                    );
                     if (Object.keys(oldView[data.namespace]).length === 1) {
                         delete oldView[data.namespace];
                     } else if (Object.keys(oldView[data.namespace][data.prefix]).length === 1) {

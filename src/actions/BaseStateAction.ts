@@ -11,7 +11,7 @@ export abstract class BaseStateAction implements Action {
         this.stateService = stateService;
     }
 
-    abstract execute(): void;
+    abstract execute(trigger: any): void;
 
     protected getStateService(): StateService {
         return this.stateService;

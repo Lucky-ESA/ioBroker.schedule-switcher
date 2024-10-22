@@ -54,10 +54,10 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
         return this.booleanValue;
     }
 
-    public execute(): void {
+    public execute(trigger: any): void {
         const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
         this.getIdsOfStatesToSet().forEach((id) => {
-            this.getStateService().setForeignState(id, valueToUse);
+            this.getStateService().setForeignState(id, valueToUse, trigger);
         });
     }
 

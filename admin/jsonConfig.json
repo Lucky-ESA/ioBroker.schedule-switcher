@@ -1,0 +1,117 @@
+{
+    "i18n": true,
+    "type": "panel",
+    "items": {
+        "status": {
+            "type": "alive",
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6,
+            "xl": 2,
+            "textNotAlive": "stopAdapter",
+            "textAlive": "startAdapter"
+        },
+        "tab1": {
+            "type": "panel",
+            "label": "Tab Schedule",
+            "newLine": true,
+            "items": {
+                "_headerAdapter": {
+                    "type": "header",
+                    "text": "schedule-switcher adapter settings",
+                    "size": 2
+                },
+                "schedulesData": {
+                    "newLine": true,
+                    "sm": 12,
+                    "noDelete": false,
+                    "type": "table",
+                    "disabled": "!_alive",
+                    "hidden": "!_alive",
+                    "items": [
+                        {
+                            "type": "number",
+                            "attr": "stateId",
+                            "width": "10% ",
+                            "title": "state_id",
+                            "tooltip": "state_ID",
+                            "disabled": "true"
+                        },
+                        {
+                            "type": "textSendTo",
+                            "container": "div",
+                            "attr": "active",
+                            "width": "10% ",
+                            "title": "Activ",
+                            "tooltip": "ACTIV",
+                            "jsonData": "{\"schedule\":${JSON.stringify(data.stateId)}}",
+                            "command": "getActiv",
+                            "disabled": "true"
+                        },
+                        {
+                            "type": "textSendTo",
+                            "container": "div",
+                            "attr": "count",
+                            "width": "10% ",
+                            "title": "count_schedule",
+                            "tooltip": "count_Schedule",
+                            "jsonData": "{\"schedule\":${JSON.stringify(data.stateId)}}",
+                            "command": "getCountSchedule",
+                            "disabled": "true"
+                        },
+                        {
+                            "type": "textSendTo",
+                            "container": "div",
+                            "attr": "objectid",
+                            "width": "40% ",
+                            "title": "state_name",
+                            "tooltip": "state_Name",
+                            "jsonData": "{\"schedule\":${JSON.stringify(data.stateId)}}",
+                            "command": "getNameSchedule",
+                            "disabled": "true"
+                        },
+                        {
+                            "type": "textSendTo",
+                            "container": "div",
+                            "attr": "objectname",
+                            "width": "40% ",
+                            "title": "stateid_name",
+                            "tooltip": "stateid_Name",
+                            "jsonData": "{\"schedule\":${JSON.stringify(data.stateId)}}",
+                            "command": "getIdNameSchedule",
+                            "disabled": "true"
+                        }
+                    ]
+                }
+            }
+        },
+        "switch_delay": {
+            "type": "number",
+            "label": "switch_delay",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "min": 10,
+            "max": 100000,
+            "step": 50,
+            "newLine": true
+        },
+        "history": {
+            "type": "number",
+            "label": "history_text",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "newLine": true
+        }
+    }
+}

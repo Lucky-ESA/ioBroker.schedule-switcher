@@ -68,7 +68,7 @@
         },
         "restartAdapters": ["vis-2", "vis"],
         "adminUI": {
-            "config": "materialize"
+            "config": "json"
         },
         "dependencies": [
             {
@@ -83,9 +83,19 @@
     },
     "native": {
         "switch_delay": 500,
+        "history": 10,
         "schedules": {
             "onOff": []
-        }
+        },
+        "schedulesData": [
+            {
+                "stateId": null,
+                "active": "false",
+                "count": "0",
+                "objectid": "schedule-switcher.0.onoff.<set after restart>.data",
+                "objectname": "New Schedule"
+            }
+        ]
     },
     "objects": [],
     "instanceObjects": [
@@ -98,6 +108,32 @@
                 "type": "string",
                 "read": true,
                 "write": true
+            },
+            "native": {}
+        },
+        {
+            "_id": "history",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "History",
+                    "de": "Historie",
+                    "ru": "История",
+                    "pt": "História",
+                    "nl": "Voorgeschiedenis",
+                    "fr": "Historique",
+                    "it": "Storia",
+                    "es": "Historia",
+                    "pl": "Historia",
+                    "uk": "Історія",
+                    "zh-cn": "历史"
+                },
+                "read": true,
+                "write": false,
+                "type": "string",
+                "role": "json",
+                "def": "[]",
+                "desc": "History all switching"
             },
             "native": {}
         }

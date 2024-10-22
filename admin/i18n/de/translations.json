@@ -110,5 +110,19 @@
     "newOn": "Ersetze (ein)",
     "newOff": "Ersetze (aus)",
     "needToSelectValidEnabled": "Wählen Sie einen gültigen Zeitplan aktivierer id (mit dem Muster „schedule-switcher.0.onoff.*.enabled“)!",
-    "delete": "löschen"
+    "delete": "löschen",
+    "Tab Schedule": "Zeitschaltuhr erstellen",
+    "Activ": "Status",
+    "ACTIV": "Status",
+    "state_id": "ID",
+    "state_ID": "ID",
+    "stateid_name": "Objekt-ID",
+    "stateid_Name": "Objekt-ID",
+    "state_name": "Objektname",
+    "state_Name": "Objektname",
+    "count_schedule": "Triggeranzahl",
+    "count_Schedule": "Triggeranzahl",
+    "stopAdapter": "Sie müssen den Adapter starten, bevor Sie ihn konfigurieren können!",
+    "startAdapter": "Adapter ist aktiv!",
+    "history_text": "Historie Umschaltung als JSON (max. 100/0 für Aus)"
 }

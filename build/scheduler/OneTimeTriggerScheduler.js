@@ -52,7 +52,7 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     } else {
       const newJob = this.scheduleJob(trigger.getDate(), () => {
         this.logger.logDebug(`Executing trigger ${trigger}`);
-        trigger.getAction().execute();
+        trigger.getAction().execute(trigger.getData());
       });
       this.registered.push([trigger, newJob]);
     }

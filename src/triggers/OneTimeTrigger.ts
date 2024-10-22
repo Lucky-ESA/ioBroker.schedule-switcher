@@ -4,11 +4,12 @@ import { Trigger } from "./Trigger";
 
 export class OneTimeTrigger implements Trigger, Destroyable {
     private readonly id: string;
+    private readonly objectId: number;
     private action: Action;
     private readonly date: Date;
     private readonly onDestroy: (() => void) | null;
 
-    constructor(id: string, action: Action, date: Date, onDestroy: (() => void) | null) {
+    constructor(id: string, objectId: number, action: Action, date: Date, onDestroy: (() => void) | null) {
         if (id == null) {
             throw new Error("Id may not be null or undefined.");
         }
@@ -19,6 +20,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
             throw new Error("Date may not be null or undefined.");
         }
         this.id = id;
+        this.objectId = objectId;
         this.action = action;
         this.date = new Date(date);
         this.onDestroy = onDestroy;
@@ -26,8 +28,8 @@ export class OneTimeTrigger implements Trigger, Destroyable {
 
     public getAction(): Action {
         return {
-            execute: () => {
-                this.action.execute();
+            execute: (trigger: any) => {
+                this.action.execute(trigger as any);
                 this.destroy();
             },
         } as Action;
@@ -46,6 +48,19 @@ export class OneTimeTrigger implements Trigger, Destroyable {
 
     public getDate(): Date {
         return new Date(this.date);
+    }
+
+    public getObjectId(): number {
+        return this.objectId;
+    }
+
+    public getData(): any {
+        return {
+            id: this.getId(),
+            objectId: this.getObjectId(),
+            date: this.getDate().toISOString(),
+            trigger: "TimeTrigger",
+        };
     }
 
     public toString(): string {

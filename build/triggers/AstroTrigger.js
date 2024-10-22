@@ -26,7 +26,8 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   static MAX_SHIFT = 120;
   astroTime;
   shiftInMinutes;
-  constructor(id, astroTime, shiftInMinutes, weekdays, action) {
+  objectId;
+  constructor(id, astroTime, shiftInMinutes, weekdays, action, objectId) {
     super(id, action, weekdays);
     if (astroTime == null) {
       throw new Error("Astro time may not be null.");
@@ -36,9 +37,23 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
     }
     this.astroTime = astroTime;
     this.shiftInMinutes = shiftInMinutes;
+    this.objectId = objectId;
   }
   getAstroTime() {
     return this.astroTime;
+  }
+  getData() {
+    return {
+      id: this.getId(),
+      astroTime: this.getAstroTime(),
+      shift: this.getShiftInMinutes(),
+      objectId: this.getObjectId(),
+      weekdays: [this.getWeekdays()],
+      trigger: "AstroTrigger"
+    };
+  }
+  getObjectId() {
+    return this.objectId;
   }
   getShiftInMinutes() {
     return this.shiftInMinutes;

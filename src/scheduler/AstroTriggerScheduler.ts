@@ -85,7 +85,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 .setAction({
                     execute: () => {
                         this.logger.logDebug(`Executing trigger ${trigger}`);
-                        trigger.getAction().execute();
+                        trigger.getAction().execute(trigger.getData() as any);
                     },
                 })
                 .build();

@@ -25,6 +25,7 @@ var import_OneTimeTrigger = require("./OneTimeTrigger");
 class OneTimeTriggerBuilder {
   action = null;
   id = "0";
+  objectId = 0;
   date = null;
   onDestroy = null;
   setAction(action) {
@@ -39,12 +40,22 @@ class OneTimeTriggerBuilder {
     this.date = date;
     return this;
   }
+  setObjectId(objectId) {
+    this.objectId = objectId;
+    return this;
+  }
   setOnDestroy(onDestroy) {
     this.onDestroy = onDestroy;
     return this;
   }
   build() {
-    return new import_OneTimeTrigger.OneTimeTrigger(this.id, this.action, this.date, this.onDestroy);
+    return new import_OneTimeTrigger.OneTimeTrigger(
+      this.id,
+      this.objectId,
+      this.action,
+      this.date,
+      this.onDestroy
+    );
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

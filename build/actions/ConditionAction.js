@@ -52,7 +52,7 @@ class ConditionAction {
     this.condition.evaluate().then((result) => {
       if (result) {
         this.adapter.log.debug(`Executing action because condition ${this.condition} evaluated to true`);
-        this.action.execute();
+        this.action.execute(false);
       } else {
         this.adapter.log.debug(
           `Not executing action because condition ${this.condition} evaluated to false`

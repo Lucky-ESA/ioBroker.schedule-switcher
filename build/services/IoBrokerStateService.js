@@ -41,11 +41,12 @@ class IoBrokerStateService {
     }
     await this.adapter.extendObject(id, value);
   }
-  setState(id, value, ack = true) {
+  async setState(id, value, ack = true) {
     this.checkId(id);
-    this.adapter.setState(id, value, ack);
+    await this.adapter.setState(id, { val: value, ack });
   }
-  async setForeignState(id, value) {
+  async setForeignState(id, value, trigger) {
+    this.adapter.log.debug(`TRIGGER SET: ${JSON.stringify(trigger)}`);
     const diffTime = Date.now() - this.checkTime;
     this.checkTime = Date.now();
     this.adapter.log.debug(`DIFF: ${diffTime}`);
@@ -56,9 +57,51 @@ class IoBrokerStateService {
     } else {
       this.mergeTime = 0;
     }
+    if (this.adapter.config.history > 0) {
+      this.setHistory(id, value, trigger);
+    }
     this.checkId(id);
     this.adapter.log.debug(`Setting state ${id} with value ${value == null ? void 0 : value.toString()}`);
     this.adapter.setForeignState(id, value, false);
+  }
+  async setHistory(id, value, trigger) {
+    if (!trigger || trigger.id == null)
+      return;
+    let history_value;
+    history_value = await this.getState(`history`);
+    try {
+      if (history_value != null && typeof history_value == "string") {
+        history_value = JSON.parse(history_value);
+      } else {
+        history_value = [];
+      }
+    } catch (e) {
+      history_value = [];
+    }
+    if (Object.keys(history_value).length > this.adapter.config.history) {
+      history_value.pop();
+    }
+    const new_data = {
+      setObjectId: id,
+      objectId: trigger.objectId ? trigger.objectId : "unknown",
+      value: value.toString(),
+      object: id,
+      trigger: trigger.trigger ? trigger.trigger : "unknown",
+      astroTime: trigger.astroTime ? trigger.astroTime : "unknown",
+      shift: trigger.shift ? trigger.shift : 0,
+      date: trigger.date ? trigger.date : 0,
+      hour: trigger.hour ? trigger.hour : 0,
+      minute: trigger.minute ? trigger.minute : 0,
+      weekdays: trigger.weekdays ? trigger.weekdays : [],
+      time: Date.now()
+    };
+    history_value.push(new_data);
+    history_value = history_value.sort((a, b) => {
+      if (a.time > b.time) {
+        return -1;
+      }
+    });
+    await this.setState(`history`, JSON.stringify(history_value), true);
   }
   async getForeignState(id) {
     return new Promise((resolve, _) => {
@@ -74,7 +117,7 @@ class IoBrokerStateService {
   async getState(id) {
     return new Promise((resolve, _) => {
       this.checkId(id);
-      this.adapter.getForeignState(id, (err, state) => {
+      this.adapter.getState(id, (err, state) => {
         if (err || state == null) {
           this.adapter.log.error(`Requested getState ${id} returned null/undefined!`);
         }

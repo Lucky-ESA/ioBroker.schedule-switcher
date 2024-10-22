@@ -5,8 +5,9 @@ import { Weekday } from "./Weekday";
 export class TimeTrigger extends BaseDailyTrigger {
     private readonly hours: number;
     private readonly minutes: number;
+    private readonly objectId: number;
 
-    constructor(id: string, hour: number, minute: number, weekdays: Weekday[], action: Action) {
+    constructor(id: string, hour: number, minute: number, objectId: number, weekdays: Weekday[], action: Action) {
         super(id, action, weekdays);
         if (hour == undefined || hour < 0 || hour > 23) {
             throw new Error("Hour must be in range 0-23.");
@@ -16,6 +17,7 @@ export class TimeTrigger extends BaseDailyTrigger {
         }
         this.hours = hour;
         this.minutes = minute;
+        this.objectId = objectId;
     }
 
     public getHour(): number {
@@ -24,6 +26,21 @@ export class TimeTrigger extends BaseDailyTrigger {
 
     public getMinute(): number {
         return this.minutes;
+    }
+
+    public getObjectId(): number {
+        return this.objectId;
+    }
+
+    public getData(): any {
+        return {
+            id: this.getId(),
+            hour: this.getHour(),
+            minute: this.getMinute(),
+            objectId: this.getObjectId(),
+            weekdays: [this.getWeekdays()],
+            trigger: "TimeTrigger",
+        };
     }
 
     public toString(): string {

@@ -26,12 +26,17 @@ var import_TimeTrigger = require("./TimeTrigger");
 class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder {
   hour = 0;
   minute = 0;
+  objectId = 0;
   setHour(hour) {
     this.hour = hour;
     return this;
   }
   setMinute(minute) {
     this.minute = minute;
+    return this;
+  }
+  setObjectId(objectId) {
+    this.objectId = objectId;
     return this;
   }
   setAction(action) {
@@ -51,6 +56,7 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
       this.getId(),
       this.hour,
       this.minute,
+      this.objectId,
       this.getWeekdays(),
       this.getAction()
     );

@@ -1,3 +1,3 @@
 export interface Action {
-    execute(): void;
+    execute(trigger: any): void;
 }

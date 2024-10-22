@@ -18,6 +18,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   [Example trigger as JSON](#example-trigger-json)
 -   [SendTo Trigger (Experts only)](#example-of-creating-or-editing-triggers-with-sendto-experts)
 -   [Example widget as JSON](#example-widgets-json)
+-   [Example history as JSON](#example-history-json)
 -   [Create widget](#create-widget)
 -   [Change name](#change-name)
 -   [Create condition](#create-condition)
@@ -32,13 +33,14 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 [Summary](#summary)
 
--   `Delay between 2 switching operations in ms`: Prevents states from being set at the same time
--   `ADD ON/OFF SCHEDULE`: Add new schedule
--   `Schedule data id`: Created objects
--   `Name`: Name of the widget
+-   `+ icon`: Add new schedule
+-   `ID`: object channel id
+-   `Object id`: object
+-   `Object name`: Name of the widget
 -   `Trigger count`: Number of triggers
--   `Enabled`: Status enabled/disabled
--   `delete`: Delete schedule
+-   `Status`: Status enabled/disabled
+-   `Delay between 2 switching operations in ms`: Prevents states from being set at the same time
+-   `History switching as JSON (max 100/0 for off)` Max. history json
 
     ![instance_settings.png](img/instance_settings.png)
 
@@ -50,6 +52,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   `schedule-switcher.0.onoff.6.data` All triggers as JSON
 -   `schedule-switcher.0.onoff.6.enabled` Active or Inactive
 -   `schedule-switcher.0.onoff.6.views` Where widgets were created for the objects
+-   Historie
+-   `schedule-switcher.0.sendto` History from schedules switching
 -   sendTo
 -   `schedule-switcher.0.sendto` With VIS-2, changes are passed to the adapter via this object
 
@@ -203,6 +207,60 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Delete trigger with known I
     "dataId":"schedule-switcher.0.onoff.6.data",
     "triggerId":"0"
 });
+```
+
+# Example history JSON
+
+```JSON
+[
+  {
+    "setObjectId": "0_userdata.0.test4",
+    "objectId": 0,
+    "value": "true",
+    "object": "0_userdata.0.test4",
+    "trigger": "TimeTrigger",
+    "astroTime": "unknown",
+    "shift": 0,
+    "date": 0,
+    "hour": 20,
+    "minute": 48,
+    "weekdays": [
+      [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0
+      ]
+    ],
+    "time": 1729622880040
+  },
+  {
+    "setObjectId": "0_userdata.0.test4",
+    "objectId": 0,
+    "value": "true",
+    "object": "0_userdata.0.test4",
+    "astroTime": "unknown",
+    "shift": 0,
+    "date": 0,
+    "hour": 20,
+    "minute": 47,
+    "weekdays": [
+      [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0
+      ]
+    ],
+    "time": 1729622820071
+  }
+]
 ```
 
 ### Create widget

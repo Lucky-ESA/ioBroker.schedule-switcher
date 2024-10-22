@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/services/StateService.ts"],
-  "sourcesContent": ["export interface StateService {\n    setState(id: string, value: string | number | boolean): void;\n    getState(id: string): Promise<any>;\n    setForeignState(id: string, value: string | number | boolean): void;\n    getForeignState(id: string): Promise<any>;\n    extendObject(id: string, value: any): Promise<any>;\n}\n"],
+  "sourcesContent": ["export interface StateService {\n    setState(id: string, value: string | number | boolean): Promise<any>;\n    getState(id: string): Promise<any>;\n    setForeignState(id: string, value: string | number | boolean, trigger: any): void;\n    getForeignState(id: string): Promise<any>;\n    extendObject(id: string, value: any): Promise<any>;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

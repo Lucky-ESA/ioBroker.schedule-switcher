@@ -25,7 +25,8 @@ var import_BaseDailyTrigger = require("./BaseDailyTrigger");
 class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   hours;
   minutes;
-  constructor(id, hour, minute, weekdays, action) {
+  objectId;
+  constructor(id, hour, minute, objectId, weekdays, action) {
     super(id, action, weekdays);
     if (hour == void 0 || hour < 0 || hour > 23) {
       throw new Error("Hour must be in range 0-23.");
@@ -35,12 +36,26 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
     }
     this.hours = hour;
     this.minutes = minute;
+    this.objectId = objectId;
   }
   getHour() {
     return this.hours;
   }
   getMinute() {
     return this.minutes;
+  }
+  getObjectId() {
+    return this.objectId;
+  }
+  getData() {
+    return {
+      id: this.getId(),
+      hour: this.getHour(),
+      minute: this.getMinute(),
+      objectId: this.getObjectId(),
+      weekdays: [this.getWeekdays()],
+      trigger: "TimeTrigger"
+    };
   }
   toString() {
     return `TimeTrigger {id=${this.getId()}, hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`;

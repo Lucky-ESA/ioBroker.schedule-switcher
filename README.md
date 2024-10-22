@@ -46,6 +46,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   (Lucky_ESA) Fix translate
 -   (Lucky_ESA) Fix background color disable Weekdays
 -   (Lucky_ESA) Fix sendTo
+-   (Lucky_ESA) Added jsonConfig
+-   (Lucky_ESA) Added history
 
 ### 0.0.1 (2024-10-19)
 

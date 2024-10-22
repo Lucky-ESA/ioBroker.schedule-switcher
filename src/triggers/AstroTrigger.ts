@@ -9,8 +9,16 @@ export class AstroTrigger extends BaseDailyTrigger {
     private readonly astroTime: AstroTime;
 
     private readonly shiftInMinutes: number;
+    private readonly objectId: number;
 
-    constructor(id: string, astroTime: AstroTime, shiftInMinutes: number, weekdays: Weekday[], action: Action) {
+    constructor(
+        id: string,
+        astroTime: AstroTime,
+        shiftInMinutes: number,
+        weekdays: Weekday[],
+        action: Action,
+        objectId: number,
+    ) {
         super(id, action, weekdays);
         if (astroTime == null) {
             throw new Error("Astro time may not be null.");
@@ -24,10 +32,26 @@ export class AstroTrigger extends BaseDailyTrigger {
         }
         this.astroTime = astroTime;
         this.shiftInMinutes = shiftInMinutes;
+        this.objectId = objectId;
     }
 
     public getAstroTime(): AstroTime {
         return this.astroTime;
+    }
+
+    public getData(): any {
+        return {
+            id: this.getId(),
+            astroTime: this.getAstroTime(),
+            shift: this.getShiftInMinutes(),
+            objectId: this.getObjectId(),
+            weekdays: [this.getWeekdays()],
+            trigger: "AstroTrigger",
+        };
+    }
+
+    public getObjectId(): number {
+        return this.objectId;
     }
 
     public getShiftInMinutes(): number {

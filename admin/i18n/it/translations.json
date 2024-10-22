@@ -110,5 +110,19 @@
     "newOn": "Sostituisci (attivato)",
     "newOff": "Sostituisci (disattivato)",
     "needToSelectValidEnabled": "Seleziona un ID abilitato per la pianificazione valido (con il pattern 'schedule-switcher.0.onoff.*.enabled')!",
-    "delete": "eliminare"
+    "delete": "eliminare",
+    "Tab Schedule": "Creare un interruttore orario",
+    "Activ": "Stato",
+    "ACTIV": "Stato",
+    "state_id": "ID",
+    "state_ID": "ID",
+    "stateid_name": "Identificativo oggetto",
+    "stateid_Name": "Identificativo oggetto",
+    "state_name": "Nome dell'oggetto",
+    "state_Name": "Nome dell'oggetto",
+    "count_schedule": "Conteggio trigger",
+    "count_Schedule": "Conteggio trigger",
+    "stopAdapter": "È necessario avviare l'adattatore prima di poterlo configurare!",
+    "startAdapter": "L'adattatore è attivo!",
+    "history_text": "Cambio della cronologia come JSON (max 100/0 per disattivato)"
 }

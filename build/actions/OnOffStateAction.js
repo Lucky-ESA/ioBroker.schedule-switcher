@@ -60,10 +60,10 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
   getBooleanValue() {
     return this.booleanValue;
   }
-  execute() {
+  execute(trigger) {
     const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
     this.getIdsOfStatesToSet().forEach((id) => {
-      this.getStateService().setForeignState(id, valueToUse);
+      this.getStateService().setForeignState(id, valueToUse, trigger);
     });
   }
   toBooleanValueType() {

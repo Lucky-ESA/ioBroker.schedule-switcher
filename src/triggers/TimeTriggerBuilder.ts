@@ -7,6 +7,7 @@ import { Weekday } from "./Weekday";
 export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<TimeTrigger> {
     private hour = 0;
     private minute = 0;
+    private objectId = 0;
 
     public setHour(hour: number): TimeTriggerBuilder {
         this.hour = hour;
@@ -15,6 +16,11 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
 
     public setMinute(minute: number): TimeTriggerBuilder {
         this.minute = minute;
+        return this;
+    }
+
+    public setObjectId(objectId: number): TimeTriggerBuilder {
+        this.objectId = objectId;
         return this;
     }
 
@@ -38,6 +44,7 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
             this.getId(),
             this.hour,
             this.minute,
+            this.objectId,
             this.getWeekdays(),
             this.getAction() as any as Action,
         );

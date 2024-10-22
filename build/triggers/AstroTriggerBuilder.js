@@ -26,12 +26,17 @@ var import_DailyTriggerBuilder = require("./DailyTriggerBuilder");
 class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder {
   astroTime = null;
   shift = 0;
+  objectId = 0;
   setAstroTime(astroTime) {
     this.astroTime = astroTime;
     return this;
   }
   setShift(shift) {
     this.shift = shift;
+    return this;
+  }
+  setObjectId(objectId) {
+    this.objectId = objectId;
     return this;
   }
   setAction(action) {
@@ -52,7 +57,8 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
       this.astroTime,
       this.shift,
       this.getWeekdays(),
-      this.getAction()
+      this.getAction(),
+      this.objectId
     );
   }
 }

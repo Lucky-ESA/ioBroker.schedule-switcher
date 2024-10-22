@@ -110,5 +110,19 @@
     "newOn": "Reemplazar (activado)",
     "newOff": "Reemplazar (apagado)",
     "needToSelectValidEnabled": "¡Seleccione una identificación válida de programación habilitada (con el patrón 'schedule-switcher.0.onoff.*.enabled')!",
-    "delete": "borrar"
+    "delete": "borrar",
+    "Tab Schedule": "Crear interruptor horario",
+    "Activ": "Estado",
+    "ACTIV": "Estado",
+    "state_id": "IDENTIFICACIÓN",
+    "state_ID": "IDENTIFICACIÓN",
+    "stateid_name": "Identificación del objeto",
+    "stateid_Name": "Identificación del objeto",
+    "state_name": "Nombre del objeto",
+    "state_Name": "Nombre del objeto",
+    "count_schedule": "Recuento de disparadores",
+    "count_Schedule": "Recuento de disparadores",
+    "stopAdapter": "¡Tienes que iniciar el Adaptador antes de poder configurarlo!",
+    "startAdapter": "¡El adaptador está activo!",
+    "history_text": "Cambio de historial como JSON (máximo 100/0 para desactivado)"
 }

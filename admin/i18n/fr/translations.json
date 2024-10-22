@@ -110,5 +110,19 @@
     "newOn": "Remplacer (activé)",
     "newOff": "Remplacer (désactivé)",
     "needToSelectValidEnabled": "Sélectionnez un identifiant d'activation de planification valide (avec le modèle 'schedule-switcher.0.onoff.*.enabled') !",
-    "delete": "supprimer"
+    "delete": "supprimer",
+    "Tab Schedule": "Créer une minuterie",
+    "Activ": "Statut",
+    "ACTIV": "Statut",
+    "state_id": "IDENTIFIANT",
+    "state_ID": "IDENTIFIANT",
+    "stateid_name": "Identifiant de l'objet",
+    "stateid_Name": "Identifiant de l'objet",
+    "state_name": "Nom de l'objet",
+    "state_Name": "Nom de l'objet",
+    "count_schedule": "Nombre de déclencheurs",
+    "count_Schedule": "Nombre de déclencheurs",
+    "stopAdapter": "Vous devez démarrer l'adaptateur avant de pouvoir configurer !",
+    "startAdapter": "L'adaptateur est actif !",
+    "history_text": "Changement d'historique en JSON (max 100/0 pour désactiver)"
 }

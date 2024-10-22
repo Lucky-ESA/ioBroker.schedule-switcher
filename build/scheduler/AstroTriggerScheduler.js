@@ -84,7 +84,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       const timeTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`).setHour(next.getHours()).setMinute(next.getMinutes()).setWeekdays([next.getDay()]).setAction({
         execute: () => {
           this.logger.logDebug(`Executing trigger ${trigger}`);
-          trigger.getAction().execute();
+          trigger.getAction().execute(trigger.getData());
         }
       }).build();
       this.logger.logDebug(`Scheduled with ${timeTrigger}`);

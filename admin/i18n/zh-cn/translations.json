@@ -110,5 +110,19 @@
     "newOn": "更换（上）",
     "newOff": "更换（关闭）",
     "needToSelectValidEnabled": "选择有效的计划启用 ID（使用模式“schedule-switcher.0.onoff.*.enabled”）！",
-    "delete": "删除"
+    "delete": "删除",
+    "Tab Schedule": "创建时间开关",
+    "Activ": "地位",
+    "ACTIV": "地位",
+    "state_id": "ID",
+    "state_ID": "ID",
+    "stateid_name": "对象编号",
+    "stateid_Name": "对象编号",
+    "state_name": "对象名称",
+    "state_Name": "对象名称",
+    "count_schedule": "触发次数",
+    "count_Schedule": "触发次数",
+    "stopAdapter": "您必须先启动适配器才能配置！",
+    "startAdapter": "适配器已激活！",
+    "history_text": "JSON 格式的历史记录切换（最大 100/0 表示关闭）"
 }

@@ -18,6 +18,7 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 -   [Beispiel Trigger als JSON](#beispiel-auslöser-json)
 -   [SendTo Trigger nur Experten](#beispiel-auslöser-mit-sendto-anlegen-oder-editieren-experten)
 -   [Beispiel Widget als JSON](#beispiel-widgets-json)
+-   [Beispiel Historie als JSON](#beispiel-historie-json)
 -   [Widget anlegen](#widget-anlegen)
 -   [Namen ändern](#namen-ändern)
 -   [Bedingungen hinzufügen](#bedingung-hinzufügen)
@@ -32,13 +33,14 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 
 [Zusammenfassung](#zusammenfassung)
 
--   `Verzögerung zwischen 2 Schaltvorgängen in ms`: Verhindert zeitgleiches setzen von States
--   `An/Aus Schaltplan hinzufügen`: Neuen Zeitplan hinzufügen
+-   `+ Zeichen`: Neuen Zeitplan hinzufügen
 -   `Schaltplandaten Id`: Erstellte Objekte
 -   `Name`: Name vom Widget
 -   `Anzahl Auslöser`: Anzahl der Auslöser
 -   `Aktiv`: Aktiv
 -   `Löschen`: Zeitplan löschen
+-   `Verzögerung zwischen 2 Schaltvorgängen in ms`: Verhindert zeitgleiches setzen von States
+-   `Historie Umschaltung als JSON (max. 100/0 für Aus)` Max. Speicherung der Historie
 
     ![instance_settings.png](img/instance_settings.png)
 
@@ -50,6 +52,8 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 -   `schedule-switcher.0.onoff.6.data` Alle Auslöser als JSON
 -   `schedule-switcher.0.onoff.6.enabled` Aktiv oder Inaktiv
 -   `schedule-switcher.0.onoff.6.views` Wo wurden Widgets für die Objekte angelegt
+-   Historie
+-   `schedule-switcher.0.sendto` Histerie der Schaltungen
 -   sendTo
 -   `schedule-switcher.0.sendto` Bei VIS-2 werden Änderungen über dieses Objekt an den Adapter übergeben
 
@@ -203,6 +207,60 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Auslöser mit bekannter ID 
     "dataId":"schedule-switcher.0.onoff.6.data",
     "triggerId":"0"
 });
+```
+
+# Beispiel Historie JSON
+
+```JSON
+[
+  {
+    "setObjectId": "0_userdata.0.test4",
+    "objectId": 0,
+    "value": "true",
+    "object": "0_userdata.0.test4",
+    "trigger": "TimeTrigger",
+    "astroTime": "unknown",
+    "shift": 0,
+    "date": 0,
+    "hour": 20,
+    "minute": 48,
+    "weekdays": [
+      [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0
+      ]
+    ],
+    "time": 1729622880040
+  },
+  {
+    "setObjectId": "0_userdata.0.test4",
+    "objectId": 0,
+    "value": "true",
+    "object": "0_userdata.0.test4",
+    "astroTime": "unknown",
+    "shift": 0,
+    "date": 0,
+    "hour": 20,
+    "minute": 47,
+    "weekdays": [
+      [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0
+      ]
+    ],
+    "time": 1729622820071
+  }
+]
 ```
 
 ### Widget anlegen
