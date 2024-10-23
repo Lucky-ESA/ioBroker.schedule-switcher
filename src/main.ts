@@ -744,9 +744,9 @@ export class ScheduleSwitcher extends utils.Adapter {
         ]);
         return new OnOffScheduleSerializer(
             new UniversalTriggerScheduler([
-                new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
+                new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),
                 new AstroTriggerScheduler(
-                    new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
+                    new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),
                     getTimes,
                     await this.getCoordinate(),
                     this.loggingService,

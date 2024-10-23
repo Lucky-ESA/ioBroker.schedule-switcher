@@ -699,9 +699,9 @@ class ScheduleSwitcher extends utils.Adapter {
     ]);
     return new import_OnOffScheduleSerializer.OnOffScheduleSerializer(
       new import_UniversalTriggerScheduler.UniversalTriggerScheduler([
-        new import_TimeTriggerScheduler.TimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
+        new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
         new import_AstroTriggerScheduler.AstroTriggerScheduler(
-          new import_TimeTriggerScheduler.TimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
+          new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
           import_suncalc.getTimes,
           await this.getCoordinate(),
           this.loggingService

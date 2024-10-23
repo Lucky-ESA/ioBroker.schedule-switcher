@@ -62,6 +62,12 @@
         }
 
         onDataChanged() {
+            if (this.data.nextTrigger && this.data.nextTrigger.hour != null) {
+                this.sr.querySelector(".container.nextevent").style.display = null;
+                const nextFormatted = `${("0" + this.data.nextTrigger.hour).slice(-2)}:${("0" + this.data.nextTrigger.minute).slice(-2)}`;
+                this.sr.querySelector(".nextevent .next").textContent = nextFormatted;
+            }
+            console.log("ASTRO: " + JSON.stringify(this.data.nextTrigger));
             if (this.data.astroTime !== this.astroTime || this.data.shiftInMinutes !== this.shiftInMinutes) {
                 this.astroTime = this.data.astroTime;
                 this.shiftInMinutes = this.data.shiftInMinutes;
@@ -125,6 +131,9 @@
 						<div class="time text"></div>
 						<img class="time icon"/>
 						<div class="shift"></div>
+				</div>
+                <div class="container nextevent" style="display: none">
+                        <div class="next"></div>
 				</div>
 				<div class="container edit" style="display: none">
 					<label for="time">${vis.binds["schedule-switcher"].translate("inputAstroTime")}</label>

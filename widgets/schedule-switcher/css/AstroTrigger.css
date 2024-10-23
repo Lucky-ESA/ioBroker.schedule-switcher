@@ -3,12 +3,20 @@
     color: var(--ts-widget-astro-time-fg-color, --ts-widget-fg-color);
     font-size: var(--ts-widget-astro-time-font-size, 1.5em);
     font-weight: bold;
-    display: var(--ts-widget-astro-text-display, 'inline');
+    display: var(--ts-widget-astro-text-display, "inline");
+}
+
+.nextevent .next {
+    color: var(--ts-widget-switched-value-fg-color, --ts-widget-fg-color);
+    font-size: var(--ts-widget-switched-value-font-size, 2em);
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .view .time.icon {
-    display: var(--ts-widget-astro-icon-display, 'none');
-    filter:  var(--ts-widget-img-btn-filter, invert(1));
+    display: var(--ts-widget-astro-icon-display, "none");
+    filter: var(--ts-widget-img-btn-filter, invert(1));
     width: 42px;
     height: 42px;
 }
@@ -23,7 +31,8 @@
     flex-direction: column;
 }
 
-#shift,#time {
+#shift,
+#time {
     font-size: 1.2rem;
     margin-top: 10px;
     margin-bottom: 10px;

@@ -8,6 +8,7 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
     private hour = 0;
     private minute = 0;
     private objectId = 0;
+    private nextTrigger = {};
 
     public setHour(hour: number): TimeTriggerBuilder {
         this.hour = hour;
@@ -21,6 +22,11 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
 
     public setObjectId(objectId: number): TimeTriggerBuilder {
         this.objectId = objectId;
+        return this;
+    }
+
+    public setNextTrigger(nextTrigger: any): TimeTriggerBuilder {
+        this.nextTrigger = nextTrigger;
         return this;
     }
 
@@ -47,6 +53,7 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
             this.objectId,
             this.getWeekdays(),
             this.getAction() as any as Action,
+            this.nextTrigger,
         );
     }
 }

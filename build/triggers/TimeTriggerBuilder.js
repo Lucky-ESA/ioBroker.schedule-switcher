@@ -27,6 +27,7 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
   hour = 0;
   minute = 0;
   objectId = 0;
+  nextTrigger = {};
   setHour(hour) {
     this.hour = hour;
     return this;
@@ -37,6 +38,10 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
   }
   setObjectId(objectId) {
     this.objectId = objectId;
+    return this;
+  }
+  setNextTrigger(nextTrigger) {
+    this.nextTrigger = nextTrigger;
     return this;
   }
   setAction(action) {
@@ -58,7 +63,8 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
       this.minute,
       this.objectId,
       this.getWeekdays(),
-      this.getAction()
+      this.getAction(),
+      this.nextTrigger
     );
   }
 }

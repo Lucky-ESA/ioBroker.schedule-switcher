@@ -25,11 +25,16 @@ var import_node_schedule = require("node-schedule");
 var import_TimeTrigger = require("../triggers/TimeTrigger");
 var import_TriggerScheduler = require("./TriggerScheduler");
 class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
-  constructor(scheduleJob, cancelJob, logger) {
+  constructor(stateService, scheduleJob, cancelJob, logger) {
     super();
+    this.stateService = stateService;
     this.scheduleJob = scheduleJob;
     this.cancelJob = cancelJob;
     this.logger = logger;
+    if (stateService == null) {
+      throw new Error("StateService may not be null or undefined.");
+    }
+    this.stateService = stateService;
   }
   registered = [];
   register(trigger) {
@@ -51,6 +56,17 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.removeTrigger(trigger);
     } else {
       throw new Error(`Trigger ${trigger} is not registered.`);
+    }
+  }
+  async setNextEvent(trigger, astrotrigger) {
+    const id = astrotrigger.getObjectId();
+    if (id != void 0) {
+      const data = await this.stateService.getState(`onoff.${id}.data`);
+      if (data && typeof data === "string") {
+        const json = JSON.parse(data);
+        json.triggers[trigger.getId().split(":")[1]].nextTrigger = trigger.getNextTrigger();
+        this.stateService.setState(`onoff.${id}.data`, JSON.stringify(json));
+      }
     }
   }
   destroy() {

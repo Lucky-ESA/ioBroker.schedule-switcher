@@ -1,5 +1,7 @@
 import { Job, JobCallback, RecurrenceRule } from "node-schedule";
 import { LoggingService } from "../services/LoggingService";
+import { StateService } from "../services/StateService";
+import { AstroTrigger } from "../triggers/AstroTrigger";
 import { TimeTrigger } from "../triggers/TimeTrigger";
 import { Trigger } from "../triggers/Trigger";
 import { TriggerScheduler } from "./TriggerScheduler";
@@ -8,11 +10,16 @@ export class TimeTriggerScheduler extends TriggerScheduler {
     private registered: [TimeTrigger, Job][] = [];
 
     constructor(
+        private stateService: StateService,
         private scheduleJob: (rule: RecurrenceRule, callback: JobCallback) => Job,
         private cancelJob: (job: Job) => boolean,
         private logger: LoggingService,
     ) {
         super();
+        if (stateService == null) {
+            throw new Error("StateService may not be null or undefined.");
+        }
+        this.stateService = stateService;
     }
 
     public register(trigger: TimeTrigger): void {
@@ -35,6 +42,18 @@ export class TimeTriggerScheduler extends TriggerScheduler {
             this.removeTrigger(trigger);
         } else {
             throw new Error(`Trigger ${trigger} is not registered.`);
+        }
+    }
+
+    public async setNextEvent(trigger: TimeTrigger, astrotrigger: AstroTrigger): Promise<void> {
+        const id = astrotrigger.getObjectId();
+        if (id != undefined) {
+            const data = await this.stateService.getState(`onoff.${id}.data`);
+            if (data && typeof data === "string") {
+                const json = JSON.parse(data);
+                json.triggers[trigger.getId().split(":")[1]].nextTrigger = trigger.getNextTrigger();
+                this.stateService.setState(`onoff.${id}.data`, JSON.stringify(json));
+            }
         }
     }
 

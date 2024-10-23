@@ -179,7 +179,7 @@ sendTo("schedule-switcher.0", "update-trigger", { // Aktion f√ºr den neuen Ausl√
     "dataId":"schedule-switcher.0.onoff.6.data",
     "trigger":{
         "type":"AstroTrigger",
-        "astroTime":"sunrise", // sunrise, sunset or noon
+        "astroTime":"sunrise", // sunrise, sunset or solarNoon
         "shiftInMinutes":0,
         "weekdays":[1,2,3,4,5],
         "id":"0", // ID abgleichen

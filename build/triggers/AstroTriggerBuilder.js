@@ -27,6 +27,7 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
   astroTime = null;
   shift = 0;
   objectId = 0;
+  nextTrigger = {};
   setAstroTime(astroTime) {
     this.astroTime = astroTime;
     return this;
@@ -37,6 +38,10 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
   }
   setObjectId(objectId) {
     this.objectId = objectId;
+    return this;
+  }
+  setNextTrigger(nextTrigger) {
+    this.nextTrigger = nextTrigger;
     return this;
   }
   setAction(action) {
@@ -58,7 +63,8 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
       this.shift,
       this.getWeekdays(),
       this.getAction(),
-      this.objectId
+      this.objectId,
+      this.nextTrigger
     );
   }
 }

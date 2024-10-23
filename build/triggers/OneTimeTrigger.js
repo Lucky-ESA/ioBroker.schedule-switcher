@@ -71,7 +71,7 @@ class OneTimeTrigger {
       id: this.getId(),
       objectId: this.getObjectId(),
       date: this.getDate().toISOString(),
-      trigger: "TimeTrigger"
+      trigger: "OneTimeTrigger"
     };
   }
   toString() {

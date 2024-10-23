@@ -16,6 +16,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         .setWeekdays(AllWeekdays)
         .setHour(2)
         .setMinute(0)
+        .setNextTrigger({})
         .setAction({
             execute: () => {
                 this.logger.logDebug(`Rescheduling astro triggers`);
@@ -36,7 +37,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     }
 
     public register(trigger: AstroTrigger): void {
-        this.logger.logDebug(`Register trigger ${trigger}`);
+        this.logger.logDebug(`Register astro trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
             throw new Error(`Trigger ${trigger} is already registered.`);
         }
@@ -45,7 +46,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     }
 
     public unregister(trigger: AstroTrigger): void {
-        this.logger.logDebug(`Unregister trigger ${trigger}`);
+        this.logger.logDebug(`Unregister astro trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
             this.registered = this.registered.filter((t) => t.getId() !== trigger.getId());
             if (this.isScheduledToday(trigger)) {
@@ -75,12 +76,12 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     private tryScheduleTriggerToday(trigger: AstroTrigger): void {
         const now = new Date();
         const next = this.nextDate(trigger);
-        this.logger.logDebug(`Trying to schedule ${trigger} at ${next} (now is ${now}, day ${now.getDay()})`);
         if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
             const timeTrigger = new TimeTriggerBuilder()
                 .setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`)
                 .setHour(next.getHours())
                 .setMinute(next.getMinutes())
+                .setNextTrigger({ hour: next.getHours(), minute: next.getMinutes(), weekday: next.getDay() })
                 .setWeekdays([next.getDay()])
                 .setAction({
                     execute: () => {
@@ -92,6 +93,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
             this.logger.logDebug(`Scheduled with ${timeTrigger}`);
             this.timeTriggerScheduler.register(timeTrigger);
             this.scheduled.push([trigger.getId(), timeTrigger]);
+            this.timeTriggerScheduler.setNextEvent(timeTrigger, trigger);
         } else {
             this.logger.logDebug(`Didn't schedule`);
         }

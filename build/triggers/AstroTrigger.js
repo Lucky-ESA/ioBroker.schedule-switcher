@@ -27,7 +27,8 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   astroTime;
   shiftInMinutes;
   objectId;
-  constructor(id, astroTime, shiftInMinutes, weekdays, action, objectId) {
+  nextTrigger;
+  constructor(id, astroTime, shiftInMinutes, weekdays, action, objectId, nextTrigger) {
     super(id, action, weekdays);
     if (astroTime == null) {
       throw new Error("Astro time may not be null.");
@@ -38,6 +39,7 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
     this.astroTime = astroTime;
     this.shiftInMinutes = shiftInMinutes;
     this.objectId = objectId;
+    this.nextTrigger = nextTrigger;
   }
   getAstroTime() {
     return this.astroTime;
@@ -47,6 +49,7 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
       id: this.getId(),
       astroTime: this.getAstroTime(),
       shift: this.getShiftInMinutes(),
+      nextTriger: this.getNextTrigger(),
       objectId: this.getObjectId(),
       weekdays: [this.getWeekdays()],
       trigger: "AstroTrigger"
@@ -55,11 +58,14 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   getObjectId() {
     return this.objectId;
   }
+  getNextTrigger() {
+    return this.nextTrigger;
+  }
   getShiftInMinutes() {
     return this.shiftInMinutes;
   }
   toString() {
-    return `AstroTrigger {id=${this.getId()}, astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;
+    return `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

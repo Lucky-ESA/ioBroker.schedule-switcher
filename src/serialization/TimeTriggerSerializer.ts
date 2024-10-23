@@ -19,6 +19,7 @@ export class TimeTriggerSerializer implements Serializer<Trigger> {
             .setMinute(json.minute)
             .setObjectId(json.objectId)
             .setWeekdays(json.weekdays)
+            .setNextTrigger(json.nextTrigger)
             .setId(json.id)
             .build();
     }
@@ -36,6 +37,7 @@ export class TimeTriggerSerializer implements Serializer<Trigger> {
                 weekdays: objectToSerialize.getWeekdays(),
                 id: objectToSerialize.getId(),
                 action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
+                nextTrigger: objectToSerialize.getNextTrigger(),
             });
         } else {
             throw new Error("objectToSerialize must be of type TimeTrigger.");

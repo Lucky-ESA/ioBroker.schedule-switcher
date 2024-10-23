@@ -8,24 +8,17 @@
 // add translations for edit mode
 const iobSystemDic = systemDictionary;
 let timeSwitchDic;
-fetch(`../schedule-switcher.admin/i18n/${systemLang}/translations.json`)
-    .then((response) => response.text())
-    .then((script) => {
-        const translation = script.substring(0, script.length);
-        try {
-            timeSwitchDic = JSON.parse(translation);
-            const visSetting = {};
-            for (const name in timeSwitchDic) {
-                visSetting[name] = {};
-                visSetting[name][systemLang] = timeSwitchDic[name];
-            }
-            $.extend(systemDictionary, visSetting);
-            $.extend(systemDictionary, iobSystemDic);
-        } catch (e) {
-            console.log(`Translate error: ${e}`);
-        }
-    })
-    .catch((e) => console.error("Cannot load translations for schedule-switcher: " + e));
+$.get("../schedule-switcher.admin/words.js", function (script) {
+    let translation = script.substring(script.indexOf("{"), script.length);
+    translation = translation.substring(0, translation.lastIndexOf(";"));
+    try {
+        timeSwitchDic = JSON.parse(translation);
+        $.extend(systemDictionary, iobSystemDic);
+        $.extend(systemDictionary, timeSwitchDic);
+    } catch (e) {
+        console.log(`Translate error: ${e}`);
+    }
+});
 
 // export vis binds for widget
 vis.binds["schedule-switcher"] = {
@@ -48,6 +41,7 @@ vis.binds["schedule-switcher"] = {
 vis.binds["schedule-switcher"].showVersion();
 
 function showVersion() {
+    console.log(`systemLang: ${systemLang}`);
     if (vis.binds["schedule-switcher"].version) {
         console.log("Version schedule-switcher: " + vis.binds["schedule-switcher"].version);
     }
@@ -73,7 +67,7 @@ function translate(word, widgetid, func) {
             : null;
         if (newValue != null && newValue != "") return newValue;
     }
-    return timeSwitchDic != null && timeSwitchDic[word] != null ? timeSwitchDic[word] : word;
+    return translateWord(word, systemLang, timeSwitchDic);
 }
 
 function createOnOffWidget(widgetId, view, data, style) {
