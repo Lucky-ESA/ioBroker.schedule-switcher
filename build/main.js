@@ -274,6 +274,7 @@ class ScheduleSwitcher extends utils.Adapter {
           case "disable-schedule":
           case "change-switched-values":
           case "change-switched-ids":
+          case "change-view-dataId":
             if (this.messageService) {
               if (obj.message && obj.message.parameter && obj.command === "add-trigger" && obj.callback) {
                 this.addNewTrigger(obj);
