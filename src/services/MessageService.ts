@@ -110,13 +110,13 @@ export class MessageService {
 
         if (data.triggerType === "TimeTrigger") {
             this.adapter.log.debug("Wants TimeTrigger");
-            triggerBuilder = new TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(state[3]);
+            triggerBuilder = new TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(parseInt(state[3]));
         } else if (data.triggerType === "AstroTrigger") {
             this.adapter.log.debug("Wants AstroTrigger");
             triggerBuilder = new AstroTriggerBuilder()
                 .setAstroTime(AstroTime.Sunrise)
                 .setShift(0)
-                .setObjectId(state[3]);
+                .setObjectId(parseInt(state[3]));
         } else {
             this.adapter.log.error(`Cannot add trigger of type ${data.triggerType}`);
             return;
@@ -136,8 +136,9 @@ export class MessageService {
 
     private async addOneTimeTrigger(schedule: Schedule, data: any): Promise<void> {
         const t = JSON.parse(data.trigger);
+        const id = data.dataId.split(".");
         t.id = this.getNextTriggerId(schedule.getTriggers());
-        t.objectId = data.dataId;
+        t.objectId = parseInt(id[3]);
         const trigger = (await this.createOnOffScheduleSerializer(data.dataId))
             .getTriggerSerializer(schedule as OnOffSchedule)
             .deserialize(JSON.stringify(t));
