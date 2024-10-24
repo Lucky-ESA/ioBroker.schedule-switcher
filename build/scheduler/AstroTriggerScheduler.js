@@ -79,6 +79,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   tryScheduleTriggerToday(trigger) {
     const now = /* @__PURE__ */ new Date();
     const next = this.nextDate(trigger);
+    this.logger.logDebug(`Time ${next} - Date ${now}`);
     if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
       const timeTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`).setHour(next.getHours()).setMinute(next.getMinutes()).setNextTrigger({ hour: next.getHours(), minute: next.getMinutes(), weekday: next.getDay() }).setWeekdays([next.getDay()]).setAction({
         execute: () => {
@@ -89,10 +90,10 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.logger.logDebug(`Scheduled with ${timeTrigger}`);
       this.timeTriggerScheduler.register(timeTrigger);
       this.scheduled.push([trigger.getId(), timeTrigger]);
-      this.timeTriggerScheduler.setNextEvent(timeTrigger, trigger);
     } else {
       this.logger.logDebug(`Didn't schedule`);
     }
+    this.timeTriggerScheduler.setNextEvent(next, trigger);
   }
   isRegistered(trigger) {
     return this.registered.find((r) => r.getId() === trigger.getId()) != void 0;

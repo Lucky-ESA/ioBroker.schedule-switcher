@@ -45,13 +45,17 @@ export class TimeTriggerScheduler extends TriggerScheduler {
         }
     }
 
-    public async setNextEvent(trigger: TimeTrigger, astrotrigger: AstroTrigger): Promise<void> {
+    public async setNextEvent(next: any, astrotrigger: AstroTrigger): Promise<void> {
         const id = astrotrigger.getObjectId();
         if (id != undefined) {
             const data = await this.stateService.getState(`onoff.${id}.data`);
             if (data && typeof data === "string") {
                 const json = JSON.parse(data);
-                json.triggers[trigger.getId().split(":")[1]].nextTrigger = trigger.getNextTrigger();
+                json.triggers[astrotrigger.getId()].nextTrigger = {
+                    hour: next.getHours(),
+                    minute: next.getMinutes(),
+                    weekday: next.getDay(),
+                };
                 this.stateService.setState(`onoff.${id}.data`, JSON.stringify(json));
             }
         }
