@@ -18,7 +18,7 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
             .setAstroTime(json.astroTime)
             .setShift(json.shiftInMinutes)
             .setObjectId(json.objectId)
-            .setNextTrigger(json.nextTrigger)
+            .setTodayTrigger(json.todayTrigger)
             .setWeekdays(json.weekdays)
             .setId(json.id)
             .build();
@@ -37,7 +37,7 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
                 objectId: objectToSerialize.getObjectId(),
                 id: objectToSerialize.getId(),
                 action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
-                nextTrigger: objectToSerialize.getNextTrigger(),
+                todayTrigger: objectToSerialize.getTodayTrigger(),
             });
         } else {
             throw new Error("objectToSerialize must be of type AstroTrigger.");

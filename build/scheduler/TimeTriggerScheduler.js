@@ -58,21 +58,6 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       throw new Error(`Trigger ${trigger} is not registered.`);
     }
   }
-  async setNextEvent(next, astrotrigger) {
-    const id = astrotrigger.getObjectId();
-    if (id != void 0) {
-      const data = await this.stateService.getState(`onoff.${id}.data`);
-      if (data && typeof data === "string") {
-        const json = JSON.parse(data);
-        json.triggers[astrotrigger.getId()].nextTrigger = {
-          hour: next.getHours(),
-          minute: next.getMinutes(),
-          weekday: next.getDay()
-        };
-        this.stateService.setState(`onoff.${id}.data`, JSON.stringify(json));
-      }
-    }
-  }
   destroy() {
     this.registered.forEach((r) => this.unregister(r[0]));
   }

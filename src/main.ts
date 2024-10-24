@@ -328,6 +328,7 @@ export class ScheduleSwitcher extends utils.Adapter {
             this.scheduleIdToSchedule,
             this.createNewOnOffScheduleSerializer.bind(this),
             this,
+            await this.getCoordinate(),
         );
     }
 
@@ -672,7 +673,6 @@ export class ScheduleSwitcher extends utils.Adapter {
         if (this.scheduleIdToSchedule.get(id)) {
             this.log.debug("schedule found: " + this.scheduleIdToSchedule.get(id));
         }
-
         try {
             const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
             const enabledState = await this.getStateAsync(ScheduleSwitcher.getEnabledIdFromScheduleId(id));

@@ -7,8 +7,8 @@
 }
 
 .nextevent .next {
-    color: var(--ts-widget-switched-value-fg-color, --ts-widget-fg-color);
-    font-size: var(--ts-widget-switched-value-font-size, 2em);
+    color: var(--ts-widget-astro-next-fg-color, "white");
+    font-size: var(--ts-widget-astro-next-font-size, 2em);
     font-weight: bold;
     text-align: center;
     vertical-align: middle;

@@ -36,7 +36,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   registered = [];
   scheduled = [];
-  rescheduleTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`AstroTriggerScheduler-Rescheduler`).setWeekdays(import_Weekday.AllWeekdays).setHour(2).setMinute(0).setNextTrigger({}).setAction({
+  rescheduleTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`AstroTriggerScheduler-Rescheduler`).setWeekdays(import_Weekday.AllWeekdays).setHour(2).setMinute(0).setTodayTrigger({}).setAction({
     execute: () => {
       this.logger.logDebug(`Rescheduling astro triggers`);
       this.scheduled.forEach((s) => this.timeTriggerScheduler.unregister(s[1]));
@@ -81,7 +81,12 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     const next = this.nextDate(trigger);
     this.logger.logDebug(`Time ${next} - Date ${now}`);
     if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
-      const timeTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`).setHour(next.getHours()).setMinute(next.getMinutes()).setNextTrigger({ hour: next.getHours(), minute: next.getMinutes(), weekday: next.getDay() }).setWeekdays([next.getDay()]).setAction({
+      const timeTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`).setHour(next.getHours()).setMinute(next.getMinutes()).setTodayTrigger({
+        hour: next.getHours(),
+        minute: next.getMinutes(),
+        weekday: next.getDay(),
+        date: next
+      }).setWeekdays([next.getDay()]).setAction({
         execute: () => {
           this.logger.logDebug(`Executing trigger ${trigger}`);
           trigger.getAction().execute(trigger.getData());
@@ -93,7 +98,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     } else {
       this.logger.logDebug(`Didn't schedule`);
     }
-    this.timeTriggerScheduler.setNextEvent(next, trigger);
   }
   isRegistered(trigger) {
     return this.registered.find((r) => r.getId() === trigger.getId()) != void 0;

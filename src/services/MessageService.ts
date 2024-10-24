@@ -1,3 +1,5 @@
+import { getTimes } from "suncalc";
+import { Coordinate } from "../Coordinate";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
 import { ScheduleSwitcher } from "../main";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
@@ -20,6 +22,7 @@ export class MessageService {
         private scheduleIdToSchedule: Map<string, Schedule>,
         private createOnOffScheduleSerializer: (dataId: string) => Promise<OnOffScheduleSerializer>,
         private adapter: ioBroker.Adapter,
+        private readonly coordinate: Coordinate,
     ) {
         this.adapter = adapter;
         this.triggerTimeout = undefined;
@@ -57,6 +60,9 @@ export class MessageService {
                 await this.addOneTimeTrigger(schedule, data);
                 break;
             case "update-trigger":
+                if (data.trigger && data.trigger.type === "AstroTrigger") {
+                    data.trigger.todayTrigger = await this.nextDate(data.trigger);
+                }
                 await this.updateTrigger(schedule, JSON.stringify(data.trigger), data.dataId);
                 break;
             case "delete-trigger":
@@ -104,24 +110,34 @@ export class MessageService {
         await this.stateService.extendObject(`onoff.${state[3]}.data`, { common: { name: data?.name } });
     }
 
-    private addTrigger(schedule: Schedule, data: any): void {
+    private async nextDate(data: any): Promise<any> {
+        const next = getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
+        let astro: Date;
+        if (data.astroTime === "sunset") {
+            astro = next.sunset;
+        } else if (data.astroTime === "sunrise") {
+            astro = next.sunrise;
+        } else {
+            astro = next.solarNoon;
+        }
+        new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+        return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
+    }
+
+    private async addTrigger(schedule: Schedule, data: any): Promise<void> {
         const state = data?.dataId.split(".");
         let triggerBuilder: DailyTriggerBuilder;
 
         if (data.triggerType === "TimeTrigger") {
             this.adapter.log.debug("Wants TimeTrigger");
-            triggerBuilder = new TimeTriggerBuilder()
-                .setHour(0)
-                .setMinute(0)
-                .setObjectId(parseInt(state[3]))
-                .setNextTrigger({});
+            triggerBuilder = new TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(parseInt(state[3]));
         } else if (data.triggerType === "AstroTrigger") {
             this.adapter.log.debug("Wants AstroTrigger");
             triggerBuilder = new AstroTriggerBuilder()
                 .setAstroTime(AstroTime.Sunrise)
                 .setShift(0)
                 .setObjectId(parseInt(state[3]))
-                .setNextTrigger({});
+                .setTodayTrigger(await this.nextDate({ astroTime: "sunrise", shiftInMinutes: 0 }));
         } else {
             this.adapter.log.error(`Cannot add trigger of type ${data.triggerType}`);
             return;

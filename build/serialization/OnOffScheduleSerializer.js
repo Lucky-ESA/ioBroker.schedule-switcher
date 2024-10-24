@@ -42,7 +42,7 @@ class OnOffScheduleSerializer {
       const schedule = new import_OnOffSchedule.OnOffSchedule(onAction, offAction, this.triggerScheduler);
       schedule.setName(json.name);
       this.useActionReferenceSerializer(schedule);
-      json.triggers.forEach((t) => {
+      json.triggers.forEach(async (t) => {
         schedule.addTrigger(this.triggerSerializer.deserialize(JSON.stringify(t)));
       });
       return schedule;

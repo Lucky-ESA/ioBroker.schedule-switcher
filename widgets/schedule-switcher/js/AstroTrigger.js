@@ -62,9 +62,9 @@
         }
 
         onDataChanged() {
-            if (this.data.nextTrigger && this.data.nextTrigger.hour != null) {
+            if (this.data.todayTrigger && this.data.todayTrigger.hour != null && !this.edit) {
                 this.sr.querySelector(".container.nextevent").style.display = null;
-                const nextFormatted = `${("0" + this.data.nextTrigger.hour).slice(-2)}:${("0" + this.data.nextTrigger.minute).slice(-2)}`;
+                const nextFormatted = `${("0" + this.data.todayTrigger.hour).slice(-2)}:${("0" + this.data.todayTrigger.minute).slice(-2)}`;
                 this.sr.querySelector(".nextevent .next").textContent = nextFormatted;
             }
             console.log("ASTRO: " + JSON.stringify(this.data.nextTrigger));
@@ -96,6 +96,7 @@
             if (this.edit) {
                 this.sr.querySelector(".container.edit").style.display = null;
                 this.sr.querySelector(".container.view").style.display = "none";
+                this.sr.querySelector(".container.nextevent").style.display = "none";
             } else {
                 this.sr.querySelector(".container.edit").style.display = "none";
                 this.sr.querySelector(".container.view").style.display = null;

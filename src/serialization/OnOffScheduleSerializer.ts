@@ -28,7 +28,7 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
             schedule.setName(json.name);
 
             this.useActionReferenceSerializer(schedule);
-            json.triggers.forEach((t: any) => {
+            json.triggers.forEach(async (t: any) => {
                 schedule.addTrigger(this.triggerSerializer.deserialize(JSON.stringify(t)));
             });
 

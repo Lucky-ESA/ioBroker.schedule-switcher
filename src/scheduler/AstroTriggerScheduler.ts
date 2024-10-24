@@ -16,7 +16,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         .setWeekdays(AllWeekdays)
         .setHour(2)
         .setMinute(0)
-        .setNextTrigger({})
+        .setTodayTrigger({})
         .setAction({
             execute: () => {
                 this.logger.logDebug(`Rescheduling astro triggers`);
@@ -82,7 +82,12 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 .setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`)
                 .setHour(next.getHours())
                 .setMinute(next.getMinutes())
-                .setNextTrigger({ hour: next.getHours(), minute: next.getMinutes(), weekday: next.getDay() })
+                .setTodayTrigger({
+                    hour: next.getHours(),
+                    minute: next.getMinutes(),
+                    weekday: next.getDay(),
+                    date: next,
+                })
                 .setWeekdays([next.getDay()])
                 .setAction({
                     execute: () => {
@@ -97,7 +102,6 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         } else {
             this.logger.logDebug(`Didn't schedule`);
         }
-        this.timeTriggerScheduler.setNextEvent(next, trigger);
     }
 
     private isRegistered(trigger: AstroTrigger): boolean {

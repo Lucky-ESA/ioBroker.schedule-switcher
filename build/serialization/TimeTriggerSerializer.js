@@ -32,7 +32,7 @@ class TimeTriggerSerializer {
     if (json.type !== this.getType()) {
       throw new Error(`Can not deserialize object of type ${json.type}`);
     }
-    return new import_TimeTriggerBuilder.TimeTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setHour(json.hour).setMinute(json.minute).setObjectId(json.objectId).setWeekdays(json.weekdays).setNextTrigger(json.nextTrigger).setId(json.id).build();
+    return new import_TimeTriggerBuilder.TimeTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setHour(json.hour).setMinute(json.minute).setObjectId(json.objectId).setWeekdays(json.weekdays).setTodayTrigger(json.todayTrigger).setId(json.id).build();
   }
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
@@ -47,7 +47,7 @@ class TimeTriggerSerializer {
         weekdays: objectToSerialize.getWeekdays(),
         id: objectToSerialize.getId(),
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
-        nextTrigger: objectToSerialize.getNextTrigger()
+        todayTrigger: objectToSerialize.getTodayTrigger()
       });
     } else {
       throw new Error("objectToSerialize must be of type TimeTrigger.");

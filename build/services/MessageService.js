@@ -21,6 +21,7 @@ __export(MessageService_exports, {
   MessageService: () => MessageService
 });
 module.exports = __toCommonJS(MessageService_exports);
+var import_suncalc = require("suncalc");
 var import_main = require("../main");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
 var import_AstroTime = require("../triggers/AstroTime");
@@ -28,11 +29,12 @@ var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_Weekday = require("../triggers/Weekday");
 class MessageService {
-  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter) {
+  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate) {
     this.stateService = stateService;
     this.scheduleIdToSchedule = scheduleIdToSchedule;
     this.createOnOffScheduleSerializer = createOnOffScheduleSerializer;
     this.adapter = adapter;
+    this.coordinate = coordinate;
     this.adapter = adapter;
     this.triggerTimeout = void 0;
   }
@@ -70,6 +72,9 @@ class MessageService {
         await this.addOneTimeTrigger(schedule, data);
         break;
       case "update-trigger":
+        if (data.trigger && data.trigger.type === "AstroTrigger") {
+          data.trigger.todayTrigger = await this.nextDate(data.trigger);
+        }
         await this.updateTrigger(schedule, JSON.stringify(data.trigger), data.dataId);
         break;
       case "delete-trigger":
@@ -115,15 +120,28 @@ class MessageService {
     await this.stateService.extendObject(`onoff.${state[3]}`, { common: { name: data == null ? void 0 : data.name } });
     await this.stateService.extendObject(`onoff.${state[3]}.data`, { common: { name: data == null ? void 0 : data.name } });
   }
-  addTrigger(schedule, data) {
+  async nextDate(data) {
+    const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
+    let astro;
+    if (data.astroTime === "sunset") {
+      astro = next.sunset;
+    } else if (data.astroTime === "sunrise") {
+      astro = next.sunrise;
+    } else {
+      astro = next.solarNoon;
+    }
+    new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+    return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
+  }
+  async addTrigger(schedule, data) {
     const state = data == null ? void 0 : data.dataId.split(".");
     let triggerBuilder;
     if (data.triggerType === "TimeTrigger") {
       this.adapter.log.debug("Wants TimeTrigger");
-      triggerBuilder = new import_TimeTriggerBuilder.TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(parseInt(state[3])).setNextTrigger({});
+      triggerBuilder = new import_TimeTriggerBuilder.TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(parseInt(state[3]));
     } else if (data.triggerType === "AstroTrigger") {
       this.adapter.log.debug("Wants AstroTrigger");
-      triggerBuilder = new import_AstroTriggerBuilder.AstroTriggerBuilder().setAstroTime(import_AstroTime.AstroTime.Sunrise).setShift(0).setObjectId(parseInt(state[3])).setNextTrigger({});
+      triggerBuilder = new import_AstroTriggerBuilder.AstroTriggerBuilder().setAstroTime(import_AstroTime.AstroTime.Sunrise).setShift(0).setObjectId(parseInt(state[3])).setTodayTrigger(await this.nextDate({ astroTime: "sunrise", shiftInMinutes: 0 }));
     } else {
       this.adapter.log.error(`Cannot add trigger of type ${data.triggerType}`);
       return;

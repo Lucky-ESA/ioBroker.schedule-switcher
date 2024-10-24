@@ -338,7 +338,8 @@ class ScheduleSwitcher extends utils.Adapter {
       this.stateService,
       this.scheduleIdToSchedule,
       this.createNewOnOffScheduleSerializer.bind(this),
-      this
+      this,
+      await this.getCoordinate()
     );
   }
   async fixViewStructure() {

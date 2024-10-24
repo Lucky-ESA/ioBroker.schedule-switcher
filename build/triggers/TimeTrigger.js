@@ -26,8 +26,8 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   hours;
   minutes;
   objectId;
-  nextTrigger;
-  constructor(id, hour, minute, objectId, weekdays, action, nextTrigger) {
+  todayTrigger;
+  constructor(id, hour, minute, objectId, weekdays, action, todayTrigger) {
     super(id, action, weekdays);
     if (hour == void 0 || hour < 0 || hour > 23) {
       throw new Error("Hour must be in range 0-23.");
@@ -38,7 +38,7 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
     this.hours = hour;
     this.minutes = minute;
     this.objectId = objectId;
-    this.nextTrigger = nextTrigger;
+    this.todayTrigger = todayTrigger;
   }
   getHour() {
     return this.hours;
@@ -49,8 +49,8 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   getObjectId() {
     return this.objectId;
   }
-  getNextTrigger() {
-    return this.nextTrigger;
+  getTodayTrigger() {
+    return this.todayTrigger;
   }
   getData() {
     return {
@@ -60,11 +60,11 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
       objectId: this.getObjectId(),
       weekdays: [this.getWeekdays()],
       trigger: "TimeTrigger",
-      nextTrigger: this.getNextTrigger()
+      todayTrigger: this.getTodayTrigger()
     };
   }
   toString() {
-    return `TimeTrigger {id=${this.getId()}, nextEvent=${this.getNextTrigger()}, hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`;
+    return `TimeTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`;
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
