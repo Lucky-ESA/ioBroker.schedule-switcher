@@ -67,7 +67,6 @@
                 const nextFormatted = `${("0" + this.data.todayTrigger.hour).slice(-2)}:${("0" + this.data.todayTrigger.minute).slice(-2)}`;
                 this.sr.querySelector(".nextevent .next").textContent = nextFormatted;
             }
-            console.log("ASTRO: " + JSON.stringify(this.data.nextTrigger));
             if (this.data.astroTime !== this.astroTime || this.data.shiftInMinutes !== this.shiftInMinutes) {
                 this.astroTime = this.data.astroTime;
                 this.shiftInMinutes = this.data.shiftInMinutes;
