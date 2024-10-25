@@ -7,6 +7,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
     private onValue: T | null = null;
     private offValue: T | null = null;
     private booleanValue = true;
+    private valueType: string = "";
 
     public setIdsOfStatesToSet(idsOfStatesToSet: string[]): OnOffStateActionBuilder<T> {
         this.idsOfStatesToSet = idsOfStatesToSet;
@@ -28,6 +29,11 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
         return this;
     }
 
+    public setValueType(valueType: string): OnOffStateActionBuilder<T> {
+        this.valueType = valueType;
+        return this;
+    }
+
     public setStateService(stateService: StateService): OnOffStateActionBuilder<T> {
         super.setStateService(stateService);
         return this;
@@ -40,6 +46,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
             this.offValue as any,
             this.booleanValue,
             this.stateService as any,
+            this.valueType,
         );
     }
 }

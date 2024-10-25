@@ -27,7 +27,8 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
   onValue;
   offValue;
   booleanValue;
-  constructor(idsOfStatesToSet, onValue, offValue, booleanValue, stateService) {
+  valueType;
+  constructor(idsOfStatesToSet, onValue, offValue, booleanValue, stateService, valueType) {
     super(stateService);
     this.checkIdsOfStates(idsOfStatesToSet);
     if (onValue == void 0) {
@@ -43,6 +44,7 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
     this.onValue = onValue;
     this.offValue = offValue;
     this.booleanValue = booleanValue;
+    this.valueType = valueType;
   }
   getIdsOfStatesToSet() {
     return this.idsOfStatesToSet;
@@ -60,6 +62,9 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
   getBooleanValue() {
     return this.booleanValue;
   }
+  getValueType() {
+    return this.valueType;
+  }
   execute(trigger) {
     const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
     this.getIdsOfStatesToSet().forEach((id) => {
@@ -72,7 +77,8 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
       true,
       false,
       this.getBooleanValue(),
-      this.getStateService()
+      this.getStateService(),
+      this.getValueType()
     );
   }
   toStringValueType(onValue, offValue) {
@@ -81,7 +87,8 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
       onValue,
       offValue,
       this.getBooleanValue(),
-      this.getStateService()
+      this.getStateService(),
+      this.getValueType()
     );
   }
   toNumberValueType(onValue, offValue) {
@@ -90,7 +97,8 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
       onValue,
       offValue,
       this.getBooleanValue(),
-      this.getStateService()
+      this.getStateService(),
+      this.getValueType()
     );
   }
   checkIdsOfStates(ids) {

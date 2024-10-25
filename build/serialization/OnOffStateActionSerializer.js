@@ -37,7 +37,7 @@ class OnOffStateActionSerializer {
     if (!this.hasCorrectValueType(json)) {
       throw new Error(`Can not deserialize OnOffStateAction with value type ${json.valueType}`);
     }
-    return this.builder.setOffValue(json.offValue).setOnValue(json.onValue).setBooleanValue(json.booleanValue).setIdsOfStatesToSet(json.idsOfStatesToSet).build();
+    return this.builder.setOffValue(json.offValue).setOnValue(json.onValue).setBooleanValue(json.booleanValue).setIdsOfStatesToSet(json.idsOfStatesToSet).setValueType(json.valueType).build();
   }
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {

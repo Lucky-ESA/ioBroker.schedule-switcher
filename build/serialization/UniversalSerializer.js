@@ -22,8 +22,10 @@ __export(UniversalSerializer_exports, {
 });
 module.exports = __toCommonJS(UniversalSerializer_exports);
 class UniversalSerializer {
-  constructor(serializers) {
+  constructor(serializers, logger) {
     this.serializers = serializers;
+    this.logger = logger;
+    this.logger = logger;
   }
   useSerializer(serializer) {
     if (serializer == null) {
@@ -33,6 +35,7 @@ class UniversalSerializer {
     this.serializers.push(serializer);
   }
   serialize(object) {
+    this.logger.logDebug(`object.constructor.name: ${object.constructor.name}`);
     const serializer = this.serializers.find((s) => s.getType() === object.constructor.name);
     if (serializer) {
       return serializer.serialize(object);

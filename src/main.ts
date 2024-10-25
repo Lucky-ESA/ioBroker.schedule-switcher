@@ -717,31 +717,40 @@ export class ScheduleSwitcher extends utils.Adapter {
     }
 
     private async createNewOnOffScheduleSerializer(dataId: string): Promise<OnOffScheduleSerializer> {
-        const actionSerializer = new UniversalSerializer<Action>([new OnOffStateActionSerializer(this.stateService)]);
+        const actionSerializer = new UniversalSerializer<Action>(
+            [new OnOffStateActionSerializer(this.stateService)],
+            this.loggingService,
+        );
         actionSerializer.useSerializer(
             new ConditionActionSerializer(
-                new UniversalSerializer<Condition>([
-                    new StringStateAndConstantConditionSerializer(this.stateService),
-                    new StringStateAndStateConditionSerializer(this.stateService),
-                ]),
+                new UniversalSerializer<Condition>(
+                    [
+                        new StringStateAndConstantConditionSerializer(this.stateService),
+                        new StringStateAndStateConditionSerializer(this.stateService),
+                    ],
+                    this.loggingService,
+                ),
                 actionSerializer,
                 this,
             ),
         );
-        const triggerSerializer = new UniversalSerializer<Trigger>([
-            new TimeTriggerSerializer(actionSerializer),
-            new AstroTriggerSerializer(actionSerializer),
-            new OneTimeTriggerSerializer(actionSerializer, (triggerId: string) => {
-                this.messageService?.handleMessage({
-                    message: {
-                        dataId: dataId,
-                        triggerId: triggerId,
-                    },
-                    command: "delete-trigger",
-                    from: "schedule-switcher.0",
-                } as any as ioBroker.Message);
-            }),
-        ]);
+        const triggerSerializer = new UniversalSerializer<Trigger>(
+            [
+                new TimeTriggerSerializer(actionSerializer),
+                new AstroTriggerSerializer(actionSerializer),
+                new OneTimeTriggerSerializer(actionSerializer, (triggerId: string) => {
+                    this.messageService?.handleMessage({
+                        message: {
+                            dataId: dataId,
+                            triggerId: triggerId,
+                        },
+                        command: "delete-trigger",
+                        from: "schedule-switcher.0",
+                    } as any as ioBroker.Message);
+                }),
+            ],
+            this.loggingService,
+        );
         return new OnOffScheduleSerializer(
             new UniversalTriggerScheduler([
                 new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),

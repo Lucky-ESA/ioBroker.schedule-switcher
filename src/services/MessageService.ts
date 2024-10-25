@@ -222,6 +222,10 @@ export class MessageService {
             this.adapter.log.error(`Cannot change switched values when schedule type is not OnOffSchedule`);
             return;
         }
+        if (schedule.getOnAction().getValueType() === data.valueType && schedule.getOnAction().getBooleanValue()) {
+            this.adapter.log.debug("Catch no boolean change!!");
+            return;
+        }
         schedule.setOnAction(this.changeSwitchedValueOfOnOffScheduleAction(schedule.getOnAction(), data));
         schedule.setOffAction(this.changeSwitchedValueOfOnOffScheduleAction(schedule.getOffAction(), data));
     }

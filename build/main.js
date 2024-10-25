@@ -672,32 +672,41 @@ class ScheduleSwitcher extends utils.Adapter {
     this.log.error(error.stack || `${error.name}: ${error.message}`);
   }
   async createNewOnOffScheduleSerializer(dataId) {
-    const actionSerializer = new import_UniversalSerializer.UniversalSerializer([new import_OnOffStateActionSerializer.OnOffStateActionSerializer(this.stateService)]);
+    const actionSerializer = new import_UniversalSerializer.UniversalSerializer(
+      [new import_OnOffStateActionSerializer.OnOffStateActionSerializer(this.stateService)],
+      this.loggingService
+    );
     actionSerializer.useSerializer(
       new import_ConditionActionSerializer.ConditionActionSerializer(
-        new import_UniversalSerializer.UniversalSerializer([
-          new import_StringStateAndConstantConditionSerializer.StringStateAndConstantConditionSerializer(this.stateService),
-          new import_StringStateAndStateConditionSerializer.StringStateAndStateConditionSerializer(this.stateService)
-        ]),
+        new import_UniversalSerializer.UniversalSerializer(
+          [
+            new import_StringStateAndConstantConditionSerializer.StringStateAndConstantConditionSerializer(this.stateService),
+            new import_StringStateAndStateConditionSerializer.StringStateAndStateConditionSerializer(this.stateService)
+          ],
+          this.loggingService
+        ),
         actionSerializer,
         this
       )
     );
-    const triggerSerializer = new import_UniversalSerializer.UniversalSerializer([
-      new import_TimeTriggerSerializer.TimeTriggerSerializer(actionSerializer),
-      new import_AstroTriggerSerializer.AstroTriggerSerializer(actionSerializer),
-      new import_OneTimeTriggerSerializer.OneTimeTriggerSerializer(actionSerializer, (triggerId) => {
-        var _a;
-        (_a = this.messageService) == null ? void 0 : _a.handleMessage({
-          message: {
-            dataId,
-            triggerId
-          },
-          command: "delete-trigger",
-          from: "schedule-switcher.0"
-        });
-      })
-    ]);
+    const triggerSerializer = new import_UniversalSerializer.UniversalSerializer(
+      [
+        new import_TimeTriggerSerializer.TimeTriggerSerializer(actionSerializer),
+        new import_AstroTriggerSerializer.AstroTriggerSerializer(actionSerializer),
+        new import_OneTimeTriggerSerializer.OneTimeTriggerSerializer(actionSerializer, (triggerId) => {
+          var _a;
+          (_a = this.messageService) == null ? void 0 : _a.handleMessage({
+            message: {
+              dataId,
+              triggerId
+            },
+            command: "delete-trigger",
+            from: "schedule-switcher.0"
+          });
+        })
+      ],
+      this.loggingService
+    );
     return new import_OnOffScheduleSerializer.OnOffScheduleSerializer(
       new import_UniversalTriggerScheduler.UniversalTriggerScheduler([
         new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),

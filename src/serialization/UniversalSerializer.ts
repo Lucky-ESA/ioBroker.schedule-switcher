@@ -1,7 +1,13 @@
+import { LoggingService } from "../services/LoggingService";
 import { Serializer } from "./Serializer";
 
 export class UniversalSerializer<T extends Record<string, any>> implements Serializer<T> {
-    constructor(private serializers: Serializer<T>[]) {}
+    constructor(
+        private serializers: Serializer<T>[],
+        private logger: LoggingService,
+    ) {
+        this.logger = logger;
+    }
 
     public useSerializer(serializer: Serializer<T>): void {
         if (serializer == null) {
@@ -12,6 +18,7 @@ export class UniversalSerializer<T extends Record<string, any>> implements Seria
     }
 
     public serialize(object: T): string {
+        this.logger.logDebug(`object.constructor.name: ${object.constructor.name}`);
         const serializer = this.serializers.find((s) => s.getType() === object.constructor.name);
         if (serializer) {
             return serializer.serialize(object);

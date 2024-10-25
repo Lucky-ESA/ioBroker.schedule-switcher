@@ -25,6 +25,7 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
             .setOnValue(json.onValue)
             .setBooleanValue(json.booleanValue)
             .setIdsOfStatesToSet(json.idsOfStatesToSet)
+            .setValueType(json.valueType)
             .build();
     }
 

@@ -28,6 +28,7 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   onValue = null;
   offValue = null;
   booleanValue = true;
+  valueType = "";
   setIdsOfStatesToSet(idsOfStatesToSet) {
     this.idsOfStatesToSet = idsOfStatesToSet;
     return this;
@@ -44,6 +45,10 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
     this.booleanValue = booleanValue;
     return this;
   }
+  setValueType(valueType) {
+    this.valueType = valueType;
+    return this;
+  }
   setStateService(stateService) {
     super.setStateService(stateService);
     return this;
@@ -54,7 +59,8 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
       this.onValue,
       this.offValue,
       this.booleanValue,
-      this.stateService
+      this.stateService,
+      this.valueType
     );
   }
 }

@@ -35,6 +35,7 @@ export class ActionReferenceSerializer implements Serializer<Action> {
                 break;
             }
         }
+        this.adapter.log.debug(`Name: ${name}`);
         if (name) {
             return JSON.stringify({
                 type: this.getType(),

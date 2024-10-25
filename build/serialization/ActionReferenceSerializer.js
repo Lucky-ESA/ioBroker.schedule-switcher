@@ -53,6 +53,7 @@ class ActionReferenceSerializer {
         break;
       }
     }
+    this.adapter.log.debug(`Name: ${name}`);
     if (name) {
       return JSON.stringify({
         type: this.getType(),

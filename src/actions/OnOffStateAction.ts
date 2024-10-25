@@ -6,6 +6,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
     private readonly onValue: T;
     private readonly offValue: T;
     private readonly booleanValue: boolean;
+    private readonly valueType: string;
 
     constructor(
         idsOfStatesToSet: string[],
@@ -13,6 +14,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
         offValue: T,
         booleanValue: boolean,
         stateService: StateService,
+        valueType: string,
     ) {
         super(stateService);
 
@@ -31,6 +33,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
         this.onValue = onValue;
         this.offValue = offValue;
         this.booleanValue = booleanValue;
+        this.valueType = valueType;
     }
 
     public getIdsOfStatesToSet(): string[] {
@@ -54,6 +57,10 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
         return this.booleanValue;
     }
 
+    public getValueType(): string {
+        return this.valueType;
+    }
+
     public execute(trigger: any): void {
         const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
         this.getIdsOfStatesToSet().forEach((id) => {
@@ -68,6 +75,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
             false,
             this.getBooleanValue(),
             this.getStateService(),
+            this.getValueType(),
         );
     }
 
@@ -78,6 +86,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
             offValue,
             this.getBooleanValue(),
             this.getStateService(),
+            this.getValueType(),
         );
     }
 
@@ -88,6 +97,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
             offValue,
             this.getBooleanValue(),
             this.getStateService(),
+            this.getValueType(),
         );
     }
 
