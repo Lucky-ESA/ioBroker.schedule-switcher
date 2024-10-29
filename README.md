@@ -43,8 +43,11 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 ### **WORK IN PROGRESS**
 
--   (Lucky_ESA) Fix VIS translate
+-   (Lucky_ESA) Fixed VIS translate
 -   (Lucky_ESA) Added astro time in trigger
+-   (Lucky_ESA) Fixed OneTimeTrigger
+-   (Lucky_ESA) Added date for OneTimeTrigger
+-   (Lucky_ESA) Fixed some bugs
 
 ### 0.0.2 (2024-10-22)
 

@@ -22,7 +22,7 @@
             this.sr.querySelector(".button.add").addEventListener("click", this.onAddConditionClick.bind(this));
         }
 
-        attributeChangedCallback(attr, oldValue, newValue) {
+        attributeChangedCallback(attr) {
             if (attr === "action") {
                 this.onActionChange();
             } else if (attr === "trigger") {

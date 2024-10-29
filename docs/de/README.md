@@ -200,7 +200,7 @@ sendTo("schedule-switcher.0", "enable-schedule", { // Auslöser aktivieren
 
 sendTo("schedule-switcher.0", "add-one-time-trigger", { // Einmalauslöser anlegen
     "dataId":"schedule-switcher.0.onoff.6.data",
-    "trigger":"{\"type\":\"OneTimeTrigger\",\"date\":\"2024-10-17T06:14:22.660Z\",\"action\":{\"type\":\"OnOffStateAction\",\"name\":\"On\"}}"
+    "trigger":"{\"type\":\"OneTimeTrigger\",\"date\":\"2024-10-17T06:14:22.660Z\",\"timedate\":false,\"action\":{\"type\":\"OnOffStateAction\",\"name\":\"On\"}}"
 });
 
 sendTo("schedule-switcher.0", "delete-trigger", { // Auslöser mit bekannter ID löschen
@@ -317,7 +317,8 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Auslöser mit bekannter ID 
 -   Verwende CSS aktivieren um den Style anzupassen</br>
     ![create_widget_css.png](img/create_widget_css.png)</br>
     ![create_widget_css_1.png](img/create_widget_css_1.png)</br>
-    ![create_widget_css_2.png](img/create_widget_css_2.png)
+    ![create_widget_css_2.png](img/create_widget_css_2.png)</br>
+    ![create_widget_css_3.png](img/create_widget_css_3.png)
 
 ### Trigger
 
@@ -330,6 +331,10 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Auslöser mit bekannter ID 
 -   Schaltzustand auswählen
 -   Eine Bedingung auswählen (optional)
 -   Zeit eintragen (hh:mm)
+
+```:warning:
+ ⚠ Zeigt in Firefox kein Uhrzeit-Feld an!
+```
 
 ![create_widget_select_time_add_1.png](img/create_widget_select_time_add_1.png)
 
@@ -381,6 +386,22 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Auslöser mit bekannter ID 
 
 ![create_widget_select_onetime_done.png](img/create_widget_select_onetime_done.png)
 
+-   Schaltzustand auswählen
+-   Eine Bedingung auswählen (optional)
+-   Zeit eintragen/auswählen (dd.mm.yyyy hh:mm:ss)
+-   Oben rechts speichern anklicken
+
+```:warning:
+ ⚠ Zeigt in Firefox kein Uhrzeit-Feld an!
+```
+
+![create_widget_select_onetime_date.png](img/create_widget_select_onetime_date.png)</br>
+![create_widget_select_onetime_date_calendar.png](img/create_widget_select_onetime_date_calendar.png)
+
+-   Fertig
+
+![create_widget_select_onetime_date_done.png](img/create_widget_select_onetime_date_done.png)
+
 ### CSS
 
 [Zusammenfassung](#zusammenfassung)
@@ -418,9 +439,11 @@ app-on-off-schedules-widget {
     /* Font color of condition (defaults to --ts-widget-fg-color) */
     --ts-widget-condition-fg-color: white;
     /* Font color of toogle button off */
-    --ts-widget-off-color
+    --ts-widget-off-color: #c0c0c0;
     /* Color background toogle button off */
-    --ts-widget-off-color-container
+    --ts-widget-off-color-container: #808080;
+    /* Color of next astro switching time */
+    --ts-widget-astro-next-fg-color: white;
 
     /* Font family used in the whole widget */
     --ts-widget-font-family: 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system;
@@ -429,12 +452,18 @@ app-on-off-schedules-widget {
     /* Font size of the switched oid */
     --ts-widget-oid-font-size: 30px;
     /* Font size of switch text */
-    --ts-widget-state-action-width
+    --ts-widget-state-action-width: 65px;
+    /* Font size of next astro switching time */
+    --ts-widget-astro-next-font-size: 2em;
+    /* Width of date time input */
+    --ts-widget-datetime-width: 230px;
 
     /* Display of edit name button. Use 'none' to hide the button and 'block' to show it
     --ts-widget-edit-name-button-display: block;
     /* Display of condition. Use 'none' to hide the condition and 'block' to show it
     -ts-widget-condition-display: block;
+    /* Display of time icon. Use 'none' to hide the button and 'block' to show it
+    --ts-widget-time-icon-display: none;
 
     /* Applies a filter to icons used in buttons (safe, edit, remove, cancel), for
        white use invert(1) and for black invert(0) */

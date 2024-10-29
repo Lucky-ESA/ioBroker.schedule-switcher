@@ -115,7 +115,7 @@
     data-vis-prev='<img src="widgets/schedule-switcher/img/prev/prev-device-schedule.jpg" width="110px"></img>'
     data-vis-attrs="
 			oid-dataId/id/onDataIdChange;
-			oid-enabled/id/onEnabledChange;
+			oid-enabled/id;
 			showId[true]/checkbox;
 			showManualSwitch[true]/checkbox;
 			useAstroIcons[false]/checkbox;
@@ -123,10 +123,10 @@
 			offValue/text;
 			onValue/text;
 			statesCount[1]/number,1,10,1;
-			oid-stateId(1-statesCount)/id/onStateIdChange;
+			oid-stateId(1-statesCount)/id;
 			showConditionIds[true]/checkbox;
 			conditionStatesCount[1]/number,1,5,1;
-			oid-conditionStateId(1-conditionStatesCount)/id/onConditionStateIdChange;
+			oid-conditionStateId(1-conditionStatesCount)/id;
 			conditionStateAlias(1-conditionStatesCount)/text;
 			widthActionValue[65px]/text;
 			newOn/text;
@@ -145,6 +145,7 @@
 			bgTrigger[rgba(241,241,241,1)]/color;
 			bgTriggerHover[rgba(221,221,221,1)]/color;
 			bgTriggerFont[rgba(0,0,0,1)]/color;
+			bgNextTime[rgba(255,255,255,1)]/color;
 			fcSwitched[rgba(165,165,165,1)]/color;
 			fcbutton[rgba(255,255,255,1)]/color;
 			fcDisWeekday[rgba(93,93,93,1)]/color;
@@ -156,13 +157,16 @@
 			fcAstroShift[rgba(93,93,93,1)]/color;
 			fcCondition[rgba(255,255,255,1)]/color;
 			fsName[2em]/text;
+			fsDateTime[230px]/text;
 			fsSwitched[15px]/text;
+			fsNextTime[23px]/text;
 			fsWeekdays[23px]/text;
 			fsSwitchedValue[2em]/text;
 			fsSwitchedTime[2em]/text;
 			fsSwitchedAstro[1.5em]/text;
 			fsSwitchedAstroShift[1em]/text;
 			fsCondition[1em]/text;
+			fTimeIcon[none]/select,block,none;
 			fDisplayEdit[block]/select,block,none;
 			fDisplayCondition[block]/select,block,none;
 			fIconFilter[1]/select,1,0"

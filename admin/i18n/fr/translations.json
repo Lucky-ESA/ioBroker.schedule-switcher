@@ -124,5 +124,21 @@
     "count_Schedule": "Nombre de déclencheurs",
     "stopAdapter": "Vous devez démarrer l'adaptateur avant de pouvoir configurer !",
     "startAdapter": "L'adaptateur est actif !",
-    "history_text": "Changement d'historique en JSON (max 100/0 pour désactiver)"
+    "history_text": "Changement d'historique en JSON (max 100/0 pour désactiver)",
+    "errorHour": "Les heures doivent être comprises entre 0 et 59",
+    "errorMinutes": "Les minutes doivent être comprises entre 0 et 59",
+    "errorSekundes": "Les secondes doivent être comprises entre 0 et 59",
+    "errorTime": "Veuillez entrer une heure",
+    "withTime": "Temps",
+    "withDate": "Date/Heure",
+    "shiftInteger": "Shift est obligatoire et doit être un entier",
+    "shiftValue": "Le décalage doit être supérieur à -120 et inférieur à 120",
+    "noTimeSelect": "Aucune heure sélectionnée",
+    "selectTimeDate": "Sélectionnez la date et l'heure",
+    "actualTime": "Temps",
+    "targetTime": "Cible",
+    "fTimeIcon": "Icône à l'avance",
+    "bgNextTime": "Couleur de la prochaine heure de commutation astro",
+    "fsNextTime": "Taille de la police de la prochaine heure de commutation astro",
+    "fsDateTime": "Largeur de saisie de la date et de l'heure"
 }

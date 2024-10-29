@@ -59,6 +59,9 @@ export class MessageService {
             case "add-one-time-trigger":
                 await this.addOneTimeTrigger(schedule, data);
                 break;
+            case "update-one-time-trigger":
+                await this.updateOneTimeTrigger(schedule, JSON.stringify(data.trigger), data.dataId);
+                break;
             case "update-trigger":
                 if (data.trigger && data.trigger.type === "AstroTrigger") {
                     data.trigger.todayTrigger = await this.nextDate(data.trigger);
@@ -153,6 +156,19 @@ export class MessageService {
             return;
         }
         schedule.addTrigger(triggerBuilder.build());
+    }
+
+    private async updateOneTimeTrigger(schedule: Schedule, triggerString: string, dataId: string): Promise<void> {
+        let updated;
+        if (schedule instanceof OnOffSchedule) {
+            updated = (await this.createOnOffScheduleSerializer(dataId))
+                .getTriggerSerializer(schedule)
+                .deserialize(triggerString);
+        } else {
+            this.adapter.log.error(`Can not deserialize trigger for schedule of type ${typeof schedule}`);
+            return;
+        }
+        schedule.updateTrigger(updated);
     }
 
     private async addOneTimeTrigger(schedule: Schedule, data: any): Promise<void> {

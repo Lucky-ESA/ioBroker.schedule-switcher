@@ -124,5 +124,21 @@
     "count_Schedule": "Triggeranzahl",
     "stopAdapter": "Sie müssen den Adapter starten, bevor Sie ihn konfigurieren können!",
     "startAdapter": "Adapter ist aktiv!",
-    "history_text": "Historie Umschaltung als JSON (max. 100/0 für Aus)"
+    "history_text": "Historie Umschaltung als JSON (max. 100/0 für Aus)",
+    "errorHour": "Die Stunden müssen zwischen 0 und 59 liegen",
+    "errorMinutes": "Die Minuten müssen zwischen 0 und 59 liegen",
+    "errorSekundes": "Die Sekunden müssen zwischen 0 und 59 liegen",
+    "errorTime": "Bitte geben Sie eine Uhrzeit ein",
+    "withTime": "Zeit",
+    "withDate": "Datum/Uhrzeit",
+    "shiftInteger": "Shift ist erforderlich und muss eine Ganzzahl sein",
+    "shiftValue": "Die Verschiebung muss größer als -120 und kleiner als 120 sein",
+    "noTimeSelect": "Keine Zeit ausgewählt",
+    "selectTimeDate": "Wählen Sie Datum und Uhrzeit aus",
+    "actualTime": "Zeit",
+    "targetTime": "Ziel",
+    "fTimeIcon": "Icon vor der Zeitangabe",
+    "bgNextTime": "Farbe des nächsten Astro-Schaltzeit",
+    "fsNextTime": "Schriftgröße der nächsten Astro-Schaltzeit",
+    "fsDateTime": "Breite der Datums-/Uhrzeiteingabe"
 }

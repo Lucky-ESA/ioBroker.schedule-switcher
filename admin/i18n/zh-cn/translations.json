@@ -124,5 +124,21 @@
     "count_Schedule": "触发次数",
     "stopAdapter": "您必须先启动适配器才能配置！",
     "startAdapter": "适配器已激活！",
-    "history_text": "JSON 格式的历史记录切换（最大 100/0 表示关闭）"
+    "history_text": "JSON 格式的历史记录切换（最大 100/0 表示关闭）",
+    "errorHour": "小时数必须介于 0 到 59 之间",
+    "errorMinutes": "分钟必须介于 0 到 59 之间",
+    "errorSekundes": "秒必须介于 0 到 59 之间",
+    "errorTime": "请输入时间",
+    "withTime": "时间",
+    "withDate": "日期/时间",
+    "shiftInteger": "Shift 是必需的并且必须是整数",
+    "shiftValue": "移位必须大于 -120 且小于 120",
+    "noTimeSelect": "未选择时间",
+    "selectTimeDate": "选择日期和时间",
+    "actualTime": "时间",
+    "targetTime": "目标",
+    "fTimeIcon": "图标提前",
+    "bgNextTime": "下次 astro 切换时间的颜色",
+    "fsNextTime": "下次astro切换时间的字体大小",
+    "fsDateTime": "日期时间输入的宽度"
 }

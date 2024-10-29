@@ -32,12 +32,26 @@
     width: 100%;
 }
 
-.view .header .trigger {
+.view .header .trigger .trigger-date {
     flex-grow: 3;
     margin-left: 20px;
 }
 
+.view .date.icon {
+    display: var(--ts-widget-time-icon-display, "none");
+    filter: var(--ts-widget-img-btn-filter, invert(1));
+    width: 42px;
+    height: 42px;
+}
+
 .time {
+    text-align: left;
+    color: var(--ts-widget-switched-time-fg-color, --ts-widget-fg-color);
+    font-size: var(--ts-widget-switched-time-font-size, 2em);
+    font-weight: bold;
+}
+
+.targettime {
     text-align: left;
     color: var(--ts-widget-switched-time-fg-color, --ts-widget-fg-color);
     font-size: var(--ts-widget-switched-time-font-size, 2em);
@@ -55,6 +69,11 @@
 
 .container.edit .trigger {
     margin: 10px;
+}
+
+.container.edit .trigger-date {
+    margin: auto;
+    width: auto;
 }
 
 .condition {
@@ -81,6 +100,10 @@
     animation: ripple 0.2s linear forwards;
 }
 
+.button.edit {
+    margin-left: auto;
+}
+
 .button.delete {
     margin-left: 10px;
 }
@@ -98,4 +121,15 @@ input:invalid {
 input {
     font-size: 1.2rem;
     width: 40px;
+}
+
+input:valid {
+    color: #24ca21;
+    border-color: #24ca21;
+    border-width: 3px;
+}
+
+.datetime {
+    font-size: 1.2rem;
+    width: var(--ts-widget-datetime-width, 230px);
 }

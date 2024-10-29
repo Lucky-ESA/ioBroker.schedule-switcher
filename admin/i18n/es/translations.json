@@ -124,5 +124,21 @@
     "count_Schedule": "Recuento de disparadores",
     "stopAdapter": "¡Tienes que iniciar el Adaptador antes de poder configurarlo!",
     "startAdapter": "¡El adaptador está activo!",
-    "history_text": "Cambio de historial como JSON (máximo 100/0 para desactivado)"
+    "history_text": "Cambio de historial como JSON (máximo 100/0 para desactivado)",
+    "errorHour": "Las horas deben estar entre 0 y 59.",
+    "errorMinutes": "Los minutos deben estar entre 0 y 59.",
+    "errorSekundes": "Los segundos deben estar entre 0 y 59.",
+    "errorTime": "Por favor ingresa una hora",
+    "withTime": "Tiempo",
+    "withDate": "Fecha/Hora",
+    "shiftInteger": "El cambio es obligatorio y debe ser un número entero.",
+    "shiftValue": "El cambio debe ser mayor que -120 y menor que 120",
+    "noTimeSelect": "No hay hora seleccionada",
+    "selectTimeDate": "Selecciona fecha y hora",
+    "actualTime": "Tiempo",
+    "targetTime": "Objetivo",
+    "fTimeIcon": "Icono antes de tiempo",
+    "bgNextTime": "Color del próximo cambio de astro",
+    "fsNextTime": "Tamaño de fuente del próximo cambio de astro",
+    "fsDateTime": "Ancho de entrada de fecha y hora"
 }

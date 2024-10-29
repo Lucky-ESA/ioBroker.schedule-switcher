@@ -80,7 +80,7 @@
         onTimeInput() {
             const value = this.sr.querySelector("input#time").value;
             if (value === "") {
-                this.errors = ["No time selected"];
+                this.errors = [vis.binds["schedule-switcher"].translate("noTimeSelect")];
             } else {
                 this.errors = [];
                 const split = value.split(":");
@@ -98,7 +98,7 @@
             shadowRoot.innerHTML = `
 				<link rel="stylesheet" href="widgets/schedule-switcher/css/TimeTrigger.css"/>
 				<div class="container view">
-						<div class="time"></div>
+					<div class="time"></div>
 				</div>
 				<div class="container edit" style="display: none">
                     <input type="time" id="time" required/>

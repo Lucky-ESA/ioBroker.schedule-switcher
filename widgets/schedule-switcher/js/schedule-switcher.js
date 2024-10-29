@@ -22,7 +22,7 @@ $.get("../schedule-switcher.admin/words.js", function (script) {
 
 // export vis binds for widget
 vis.binds["schedule-switcher"] = {
-    version: "0.0.2",
+    version: "0.0.3",
     showVersion: showVersion,
     createOnOffWidget: createOnOffWidget,
     onOffScheduleWidgets: {},
@@ -30,9 +30,6 @@ vis.binds["schedule-switcher"] = {
     getElementNameForTriggerType: getElementNameForTriggerType,
     getElementNameForActionType: getElementNameForActionType,
     onDataIdChange: onDataIdChange,
-    onEnabledChange: onEnabledChange,
-    onStateIdChange: onStateIdChange,
-    onConditionStateIdChange: onConditionStateIdChange,
     sendMessage: sendMessage,
     translate: translate,
     addConditionToAction: addConditionToAction,
@@ -41,7 +38,6 @@ vis.binds["schedule-switcher"] = {
 vis.binds["schedule-switcher"].showVersion();
 
 function showVersion() {
-    console.log(`systemLang: ${systemLang}`);
     if (vis.binds["schedule-switcher"].version) {
         console.log("Version schedule-switcher: " + vis.binds["schedule-switcher"].version);
     }
@@ -58,6 +54,16 @@ function sendMessage(cmd, data) {
     } catch (e) {
         vis.conn.setState("schedule-switcher.0.sendto", { val: JSON.stringify(sendto), ack: false });
     }
+}
+
+function translates(word, widgetid, func) {
+    if (widgetid) {
+        const newValue = vis.binds["schedule-switcher"].onOffScheduleWidgets[widgetid]
+            ? vis.binds["schedule-switcher"].onOffScheduleWidgets[widgetid][word]
+            : null;
+        if (newValue != null && newValue != "") return newValue;
+    }
+    return translateWord(word, systemLang, timeSwitchDic);
 }
 
 function translate(word, widgetid, func) {
@@ -80,7 +86,6 @@ function createOnOffWidget(widgetId, view, data, style) {
             vis.binds["schedule-switcher"].createOnOffWidget(widgetId, view, data, style);
         }, 100);
     }
-
     if (!validateOnOffWidgetSettings(widgetElement, data)) {
         return;
     }
@@ -92,116 +97,86 @@ function createOnOffWidget(widgetId, view, data, style) {
         element.style.setProperty("--ts-widget-state-action-width", data.widthActionValue);
     }
     if (data.useCSS) {
-        element.style.setProperty("--ts-widget-bg-color", data.bgwidget ? data.bgwidget : "#424242");
-        element.style.setProperty("--ts-widget-fg-color", data.bgwidgetFont ? data.bgwidgetFont : "white");
-        element.style.setProperty("--ts-widget-trigger-bg-color", data.bgTriggerView ? data.bgTriggerView : "#272727");
-        element.style.setProperty(
-            "--ts-widget-add-trigger-dropdown-bg-color",
-            data.bgTrigger ? data.bgTrigger : "#f1f1f1",
-        );
-        element.style.setProperty("--ts-widget-primary-color", data.bgOn ? data.bgOn : "#337ab7");
-        element.style.setProperty("--ts-widget-primary-color-container", data.bgOnCo ? data.bgOnCo : "#2f2f2f");
-        element.style.setProperty("--ts-widget-off-color", data.bgOff ? data.bgOff : "#c0c0c0");
-        element.style.setProperty("--ts-widget-off-color-container", data.bgOffCo ? data.bgOffCo : "#808080");
-        element.style.setProperty(
-            "--ts-widget-add-trigger-dropdown-fg-color",
-            data.bgTriggerFont ? data.bgTriggerFont : "black",
-        );
-        element.style.setProperty(
-            "--ts-widget-add-trigger-dropdown-hover-bg-color",
-            data.bgTriggerHover ? data.bgTriggerHover : "#ddd)",
-        );
-        element.style.setProperty("--ts-widget-oid-fg-color", data.fcSwitched ? data.fcSwitched : "#a5a5a5");
-        element.style.setProperty("--ts-widget-btn-fg-color", data.fcbutton ? data.fcbutton : "white");
-        element.style.setProperty(
-            "--ts-widget-weekdays-disabled-fg-color",
-            data.fcDisWeekday ? data.fcDisWeekday : "#5D5D5D",
-        );
-        element.style.setProperty(
-            "--ts-widget-weekdays-enabled-fg-color",
-            data.fcAcWeekday ? data.fcAcWeekday : "white",
-        );
-        element.style.setProperty("--ts-widget-name-fg-color", data.fcName ? data.fcName : "");
-        element.style.setProperty("--ts-widget-switched-time-fg-color", data.fcTime ? data.fcTime : "white");
-        element.style.setProperty("--ts-widget-switched-value-fg-color", data.fcSwitch ? data.fcSwitch : "");
-        element.style.setProperty("--ts-widget-astro-time-fg-color", data.fcAstro ? data.fcAstro : "black");
-        element.style.setProperty(
-            "--ts-widget-astro-shift-fg-color",
-            data.fcAstroShift ? data.fcAstroShift : "#5d5d5d",
-        );
-        element.style.setProperty("--ts-widget-condition-fg-color", data.fcCondition ? data.fcCondition : "white");
-        element.style.setProperty(
-            "--ts-widget-font-family",
-            data.fFamily ? data.fFamily : "'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system",
-        );
-        element.style.setProperty("--ts-widget-name-font-size", data.fsName ? data.fsName : "2em");
-        element.style.setProperty("--ts-widget-oid-font-size", data.fsSwitched ? data.fsSwitched : "15px");
-        element.style.setProperty(
-            "--ts-widget-edit-name-button-display",
-            data.fDisplayEdit ? data.fDisplayEdit : "block",
-        );
-        element.style.setProperty(
-            "-ts-widget-condition-display",
-            data.fDisplayCondition ? data.fDisplayCondition : "block",
-        );
-        element.style.setProperty(
-            "--ts-widget-img-btn-filter",
-            data.fIconFilter != null ? `invert(${data.fIconFilter})` : "invert(1)",
-        );
-        element.style.setProperty("--ts-widget-weekdays-font-size", data.fsWeekdays ? data.fsWeekdays : "23px");
-        element.style.setProperty(
-            "--ts-widget-switched-value-font-size",
-            data.fsSwitchedValue ? data.fsSwitchedValue : "2em",
-        );
-        element.style.setProperty(
-            "--ts-widget-switched-time-font-size",
-            data.fsSwitchedTime ? data.fsSwitchedTime : "2em",
-        );
-        element.style.setProperty(
-            "--ts-widget-astro-time-font-size",
-            data.fsSwitchedAstro ? data.fsSwitchedAstro : "1.5em",
-        );
-        element.style.setProperty(
-            "--ts-widget-astro-shift-font-size",
-            data.fsSwitchedAstroShift ? data.fsSwitchedAstroShift : "1em",
-        );
-        element.style.setProperty("--ts-widget-condition-font-size", data.fsCondition ? data.fsCondition : "1em");
+        if (data.fTimeIcon && data.fTimeIcon != "none")
+            element.style.setProperty("--ts-widget-time-icon-display", data.fTimeIcon);
+        if (data.bgNextTime && data.bgNextTime != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-astro-next-fg-color", data.bgNextTime);
+        if (data.fsNextTime && data.fsNextTime != "2em")
+            element.style.setProperty("--ts-widget-astro-next-font-size", data.fsNextTime);
+        if (data.fsDateTime && data.fsDateTime != "230px")
+            element.style.setProperty("--ts-widget-datetime-width", data.fsDateTime);
+        if (data.bgwidget && data.bgwidget != "rgba(66,66,66,1)")
+            element.style.setProperty("--ts-widget-bg-color", data.bgwidget);
+        if (data.bgwidgetFont && data.bgwidgetFont != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-fg-color", data.bgwidgetFont);
+        if (data.bgTriggerView && data.bgTriggerView != "rgba(39,39,39,1)")
+            element.style.setProperty("--ts-widget-trigger-bg-color", data.bgTriggerView);
+        if (data.bgTrigger && data.bgTrigger != "rgba(241,241,241,1)")
+            element.style.setProperty("--ts-widget-add-trigger-dropdown-bg-color", data.bgTrigger);
+        if (data.bgOn && data.bgOn != "rgba(51,122,183,1)")
+            element.style.setProperty("--ts-widget-primary-color", data.bgOn);
+        if (data.bgOnCo && data.bgOnCo != "rgba(47,47,47,1)")
+            element.style.setProperty("--ts-widget-primary-color-container", data.bgOnCo);
+        if (data.bgOff && data.bgOff != "rgba(192,192,192,1)")
+            element.style.setProperty("--ts-widget-off-color", data.bgOff);
+        if (data.bgOffCo && data.bgOffCo != "rgba(128,128,128,1)")
+            element.style.setProperty("--ts-widget-off-color-container", data.bgOffCo);
+        if (data.bgTriggerFont && data.bgTriggerFont != "rgba(0,0,0,1)")
+            element.style.setProperty("--ts-widget-add-trigger-dropdown-fg-color", data.bgTriggerFont);
+        if (data.bgTriggerHover && data.bgTriggerHover != "rgba(221,221,221,1)")
+            element.style.setProperty("--ts-widget-add-trigger-dropdown-hover-bg-color", data.bgTriggerHover);
+        if (data.fcSwitched && data.fcSwitched != "rgba(165,165,165,1)")
+            element.style.setProperty("--ts-widget-oid-fg-color", data.fcSwitched);
+        if (data.fcbutton && data.fcbutton != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-btn-fg-color", data.fcbutton);
+        if (data.fcDisWeekday && data.fcDisWeekday != "rgba(93,93,93,1)")
+            element.style.setProperty("--ts-widget-weekdays-disabled-fg-color", data.fcDisWeekday);
+        if (data.fcAcWeekday && data.fcAcWeekday != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-weekdays-enabled-fg-color", data.fcAcWeekday);
+        if (data.fcName && data.fcName != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-name-fg-color", data.fcName);
+        if (data.fcTime && data.fcTime != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-switched-time-fg-color", data.fcTime);
+        if (data.fcSwitch && data.fcSwitch != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-switched-value-fg-color", data.fcSwitch);
+        if (data.fcAstro && data.fcAstro != "rgba(0,0,0,1)")
+            element.style.setProperty("--ts-widget-astro-time-fg-color", data.fcAstro);
+        if (data.fcAstroShift && data.fcAstroShift != "rgba(93,93,93,1)")
+            element.style.setProperty("--ts-widget-astro-shift-fg-color", data.fcAstroShift);
+        if (data.fcCondition && data.fcCondition != "rgba(255,255,255,1)")
+            element.style.setProperty("--ts-widget-condition-fg-color", data.fcCondition);
+        if (data.fFamily && data.fFamily != "'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system")
+            element.style.setProperty("--ts-widget-font-family", data.fFamily);
+        if (data.fsName && data.fsName != "2em") element.style.setProperty("--ts-widget-name-font-size", data.fsName);
+        if (data.fsWeekdays && data.fsWeekdays != "15px")
+            element.style.setProperty("--ts-widget-oid-font-size", data.fsSwitched);
+        if (data.fDisplayEdit && data.fDisplayEdit != "block")
+            element.style.setProperty("--ts-widget-edit-name-button-display", data.fDisplayEdit);
+        if (data.fDisplayCondition && data.fDisplayCondition != "block")
+            element.style.setProperty("-ts-widget-condition-display", data.fDisplayCondition);
+        if (data.fIconFilter && data.fIconFilter != "1")
+            element.style.setProperty("--ts-widget-img-btn-filter", `invert(${data.fIconFilter})`);
+        if (data.fsWeekdays && data.fsWeekdays != "23px")
+            element.style.setProperty("--ts-widget-weekdays-font-size", data.fsWeekdays);
+        if (data.fsSwitchedValue && data.fsSwitchedValue != "2em")
+            element.style.setProperty("--ts-widget-switched-value-font-size", data.fsSwitchedValue);
+        if (data.fsSwitchedTime && data.fsSwitchedTime != "2em")
+            element.style.setProperty("--ts-widget-switched-time-font-size", data.fsSwitchedTime);
+        if (data.fsSwitchedAstro && data.fsSwitchedAstro != "1.5em")
+            element.style.setProperty("--ts-widget-astro-time-font-size", data.fsSwitchedAstro);
+        if (data.fsSwitchedAstroShift && data.fsSwitchedAstroShift != "1em")
+            element.style.setProperty("--ts-widget-astro-shift-font-size", data.fsSwitchedAstroShift);
+        if (data.fsCondition && data.fsCondition != "1em")
+            element.style.setProperty("--ts-widget-condition-font-size", data.fsCondition);
     }
     widgetElement.appendChild(element);
-}
-
-/**
- * Gets triggered by vis editor when enabled id value changes.
- */
-function onEnabledChange(widgetId, view, newId, attr, isCss, oldId) {
-    console.log(
-        `onEnabledChange: widgetId: ${widgetId} view: ${view} newId: ${newId} attr: ${attr} isCss: ${isCss} oldId: ${oldId}`,
-    );
-}
-
-/**
- * Gets triggered by vis editor when stateId value changes.
- */
-function onStateIdChange(widgetId, view, newId, attr, isCss, oldId) {
-    console.log(
-        `onStateIdChange: widgetId: ${widgetId} view: ${view} newId: ${newId} attr: ${attr} isCss: ${isCss} oldId: ${oldId}`,
-    );
-}
-
-/**
- * Gets triggered by vis editor when ConditionStateId value changes.
- */
-function onConditionStateIdChange(widgetId, view, newId, attr, isCss, oldId) {
-    console.log(
-        `onConditionStateIdChange: widgetId: ${widgetId} view: ${view} newId: ${newId} attr: ${attr} isCss: ${isCss} oldId: ${oldId}`,
-    );
 }
 
 /**
  * Gets triggered by vis editor when dataId value changes.
  */
 function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
-    console.log(
+    console.debug(
         `onDataIdChange: widgetId: ${widgetId} view: ${view} newId: ${newId} attr: ${attr} isCss: ${isCss} oldId: ${oldId}`,
     );
     // vis.conn.namespace == vis.0 / vis-2.0

@@ -7,4 +7,5 @@
     padding: 20px;
     background-color: #403a3d;
     border-radius: 5px;
+    overflow: auto;
 }

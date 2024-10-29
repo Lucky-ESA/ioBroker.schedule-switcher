@@ -124,5 +124,21 @@
     "count_Schedule": "Conteggio trigger",
     "stopAdapter": "È necessario avviare l'adattatore prima di poterlo configurare!",
     "startAdapter": "L'adattatore è attivo!",
-    "history_text": "Cambio della cronologia come JSON (max 100/0 per disattivato)"
+    "history_text": "Cambio della cronologia come JSON (max 100/0 per disattivato)",
+    "errorHour": "Le ore devono essere comprese tra 0 e 59",
+    "errorMinutes": "I minuti devono essere compresi tra 0 e 59",
+    "errorSekundes": "I secondi devono essere compresi tra 0 e 59",
+    "errorTime": "Inserisci un orario",
+    "withTime": "Tempo",
+    "withDate": "Data/Ora",
+    "shiftInteger": "Shift è obbligatorio e deve essere un numero intero",
+    "shiftValue": "Lo spostamento deve essere maggiore di -120 e minore di 120",
+    "noTimeSelect": "Nessun orario selezionato",
+    "selectTimeDate": "Seleziona data e ora",
+    "actualTime": "Tempo",
+    "targetTime": "Bersaglio",
+    "fTimeIcon": "Icona in anticipo",
+    "bgNextTime": "Colore del prossimo orario di commutazione astronomica",
+    "fsNextTime": "Dimensione del carattere del prossimo orario di cambio astro",
+    "fsDateTime": "Larghezza dell'input della data e dell'ora"
 }

@@ -267,6 +267,7 @@ class ScheduleSwitcher extends utils.Adapter {
             break;
           case "add-trigger":
           case "add-one-time-trigger":
+          case "update-one-time-trigger":
           case "update-trigger":
           case "delete-trigger":
           case "change-name":

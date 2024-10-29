@@ -26,6 +26,7 @@ class OneTimeTriggerBuilder {
   action = null;
   id = "0";
   objectId = 0;
+  timedate = false;
   date = null;
   onDestroy = null;
   setAction(action) {
@@ -44,6 +45,10 @@ class OneTimeTriggerBuilder {
     this.objectId = objectId;
     return this;
   }
+  setTimeDate(timedate) {
+    this.timedate = timedate;
+    return this;
+  }
   setOnDestroy(onDestroy) {
     this.onDestroy = onDestroy;
     return this;
@@ -52,6 +57,7 @@ class OneTimeTriggerBuilder {
     return new import_OneTimeTrigger.OneTimeTrigger(
       this.id,
       this.objectId,
+      this.timedate,
       this.action,
       this.date,
       this.onDestroy

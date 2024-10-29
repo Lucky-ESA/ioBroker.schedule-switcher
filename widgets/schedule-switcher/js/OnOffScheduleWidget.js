@@ -17,12 +17,20 @@
                 return;
             }
             this.sr.querySelector("#btn-add-trigger-dropdown").addEventListener("click", (e) => {
+                this.setAttribute("height", 0);
+                if (this.sr.querySelector(".widget").clientHeight < 300) {
+                    this.setAttribute("height", 1);
+                    this.sr.querySelector(".widget").style.height = "299px";
+                }
                 const dropdown = this.sr.querySelector("#add-trigger-dropdown");
                 dropdown.classList.add("show");
                 e.stopImmediatePropagation();
                 window.addEventListener(
                     "click",
                     () => {
+                        if (this.getAttribute("height") > 0) {
+                            this.sr.querySelector(".widget").style.height = "";
+                        }
                         dropdown.classList.remove("show");
                     },
                     { once: true },
@@ -117,6 +125,12 @@
                 element.setAttribute("id", t.id);
                 element.addEventListener("delete", (e) => this.onTriggerDelete(e.detail.id));
                 element.addEventListener("update", (e) => this.onTriggerUpdate(e.detail.trigger));
+                element.addEventListener("delete-one-time-trigger", (e) => {
+                    const trigger = this.sr.querySelector(`.triggers`);
+                    if (Array.from(trigger.children).find((element) => element === e.target)) {
+                        trigger.removeChild(e.target);
+                    }
+                });
                 this.sr.querySelector(`.triggers`).appendChild(element);
             });
         }
@@ -218,10 +232,14 @@
         }
 
         onTriggerUpdate(trigger) {
-            vis.binds["schedule-switcher"].sendMessage("update-trigger", {
-                dataId: this.settings["oid-dataId"],
-                trigger: trigger,
-            });
+            if (trigger.type === "OneTimeTrigger") {
+                this.updateOneTimeTrigger(trigger);
+            } else {
+                vis.binds["schedule-switcher"].sendMessage("update-trigger", {
+                    dataId: this.settings["oid-dataId"],
+                    trigger: trigger,
+                });
+            }
         }
 
         addTrigger(type) {
@@ -250,13 +268,14 @@
         }
 
         detectSettingsChanges(oldSettings, newSettings) {
+            if (newSettings.onValue === undefined || newSettings.offValue === undefined) return;
             const newStateIds = this.getStateIdsFromSettings(newSettings);
             if (
                 !oldSettings ||
                 newStateIds.length !== oldSettings.stateIds.length ||
                 newStateIds.some((value, index) => value !== oldSettings.stateIds[index])
             ) {
-                console.log("sending change switched oids");
+                console.debug("sending change switched oids: " + JSON.stringify(newStateIds));
                 vis.binds["schedule-switcher"].sendMessage("change-switched-ids", {
                     dataId: newSettings["oid-dataId"],
                     stateIds: newStateIds,
@@ -268,7 +287,8 @@
                 oldSettings.offValue !== newSettings.offValue ||
                 oldSettings.valueType !== newSettings.valueType
             ) {
-                console.log("sending change switched values");
+                console.debug("sending change switched values on: " + newSettings.onValue);
+                console.debug("sending change switched values off: " + newSettings.offValue);
                 vis.binds["schedule-switcher"].sendMessage("change-switched-values", {
                     dataId: newSettings["oid-dataId"],
                     valueType: newSettings.valueType,
@@ -301,6 +321,13 @@
                 val = val.toString() === this.settings.onValue.toString();
             }
             return val;
+        }
+
+        updateOneTimeTrigger(trigger) {
+            vis.binds["schedule-switcher"].sendMessage("update-one-time-trigger", {
+                dataId: this.settings["oid-dataId"],
+                trigger: trigger,
+            });
         }
 
         createOneTimeTrigger() {
@@ -359,8 +386,8 @@
 					</div>
 					<div class="manual-container multiple" style="display: none;">
 						<p>${vis.binds["schedule-switcher"].translate("manualSwitching")}</p>
-						<button class="material-button" id="manual-on">${vis.binds["schedule-switcher"].translate("allOn")}</button>
-						<button class="material-button" id="manual-off">${vis.binds["schedule-switcher"].translate("allOff")}</button>
+						<button type="button" class="material-button" id="manual-on" title="${vis.binds["schedule-switcher"].translate("allOn")}">${vis.binds["schedule-switcher"].translate("allOn")}</button>
+						<button type="button" class="material-button" id="manual-off" title="${vis.binds["schedule-switcher"].translate("allOff")}">${vis.binds["schedule-switcher"].translate("allOff", "w000005")}</button>
 					</div>
 					<div class="manual-container single" style="display: none;">
 						<div id="manual" class="md-switch-container">

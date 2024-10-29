@@ -7,8 +7,11 @@
             this.triggerErrors = [];
             this.triedSaving = false;
             this.milliseconds = -1;
+            this.setDate = null;
+            this.interval = null;
             this.noInput = true;
-            this.updateTimeUntilTrigger();
+            this.intervalTime = 500;
+            this.checktime = new Date();
         }
 
         static get observedAttributes() {
@@ -21,10 +24,15 @@
             this.sr.querySelector(".button.cancel").addEventListener("click", this.onCancelClick.bind(this));
             this.sr.querySelector(".button.save").addEventListener("click", this.onSaveClick.bind(this));
             this.sr.querySelector(".button.add").addEventListener("click", this.onAddConditionClick.bind(this));
+            this.sr.querySelector(".button.edit").addEventListener("click", this.onEditClick.bind(this));
 
             this.sr.querySelector("input.hours").addEventListener("input", this.onTimeInput.bind(this));
             this.sr.querySelector("input.minutes").addEventListener("input", this.onTimeInput.bind(this));
             this.sr.querySelector("input.seconds").addEventListener("input", this.onTimeInput.bind(this));
+            this.sr.querySelector("input.datetime").addEventListener("input", this.onDateTimeInput.bind(this));
+
+            this.sr.querySelector("#radio-date").addEventListener("input", this.onDateInput.bind(this));
+            this.sr.querySelector("#radio-time").addEventListener("input", this.onDateInput.bind(this));
         }
 
         updateTimeUntilTrigger() {
@@ -32,8 +40,32 @@
                 this.sr.querySelector(".time").textContent = this.millisecondsToHuman(
                     new Date(this.trigger.date) - new Date(),
                 );
+                this.interval = setTimeout(() => this.updateTimeUntilTrigger(), this.intervalTime);
             }
-            setTimeout(() => this.updateTimeUntilTrigger(), 500);
+        }
+
+        targetTimeTrigger() {
+            if (this.trigger && !this.trigger.timedate) {
+                this.sr.querySelector(".targettime").textContent = this.targetTime();
+            }
+        }
+
+        onEditClick() {
+            this.timedate = this.trigger.timedate;
+            this.sr.querySelector(".container.edit").style.display = null;
+            this.sr.querySelector(".container.view").style.display = "none";
+            this.setViews();
+            if (this.trigger.timedate) {
+                const ms = new Date(this.trigger.date) - new Date();
+                this.sr.querySelector("input.seconds").value = Math.floor((ms / 1000) % 60);
+                this.sr.querySelector("input.minutes").value = Math.floor((ms / 1000 / 60) % 60);
+                this.sr.querySelector("input.hours").value = Math.floor((ms / 1000 / 3600) % 24);
+                this.sr.querySelector(`#radio-time`).checked = true;
+                this.onTimeInput();
+            } else {
+                this.sr.querySelector(`#radio-date`).checked = true;
+                this.setDateTime();
+            }
         }
 
         attributeChangedCallback(attr) {
@@ -42,6 +74,15 @@
             } else if (attr === "trigger") {
                 this.onTriggerChange();
             }
+        }
+
+        get timedate() {
+            const attrValue = this.getAttribute("timedate");
+            return attrValue === "true";
+        }
+
+        set timedate(val) {
+            this.setAttribute("timedate", val);
         }
 
         get trigger() {
@@ -56,6 +97,12 @@
         }
 
         onCancelClick() {
+            if (this.trigger && this.trigger.id != null) {
+                this.sr.querySelector(".container.edit").style.display = "none";
+                this.sr.querySelector(".container.view").style.display = null;
+                return;
+            }
+            this.setAttribute("trigger", null);
             this.sr.dispatchEvent(
                 new CustomEvent("cancel-one-time-trigger-creation", {
                     detail: {},
@@ -66,11 +113,18 @@
 
         onDeleteClick() {
             this.sr.dispatchEvent(
+                new CustomEvent("delete-one-time-trigger", {
+                    detail: {},
+                    composed: true,
+                }),
+            );
+            this.sr.dispatchEvent(
                 new CustomEvent("delete", {
                     detail: { id: this.trigger.id },
                     composed: true,
                 }),
             );
+            this.setAttribute("trigger", null);
         }
 
         onDeleteConditionClick() {
@@ -89,15 +143,92 @@
             }
         }
 
+        onDateInput() {
+            this.timedate = this.sr.querySelector("#radio-time").checked;
+            this.setViews();
+            if (this.timedate) {
+                this.setDate = null;
+            } else {
+                this.setDateTime();
+            }
+        }
+
+        setViews() {
+            if (this.timedate) {
+                this.sr.querySelector(".container.edit .trigger").style.display = null;
+                this.sr.querySelector("#trigger-header").style.display = null;
+                this.sr.querySelector(".container.edit .trigger-date").style.display = "none";
+                this.sr.querySelector("#trigger-date-header").style.display = "none";
+            } else {
+                this.sr.querySelector(".container.edit .trigger").style.display = "none";
+                this.sr.querySelector("#trigger-header").style.display = "none";
+                this.sr.querySelector(".container.edit .trigger-date").style.display = null;
+                this.sr.querySelector("#trigger-date-header").style.display = null;
+            }
+        }
+
+        setDateTime() {
+            const newToday = new Date();
+            let triggerDate;
+            if (this.trigger && this.trigger.date) {
+                triggerDate = new Date(this.trigger.date);
+            }
+            const today = this.trigger && !this.trigger.timedate ? triggerDate : newToday;
+            this.sr.querySelector("#datetime").value = this.formatDate(today, 0);
+            this.sr.querySelector("#datetime").min = this.formatDate(newToday, 0);
+            this.sr.querySelector("#datetime").max = this.formatDate(newToday, 1);
+        }
+
+        formatDate(date, endYear) {
+            return (
+                date.getFullYear() +
+                endYear +
+                "-" +
+                (date.getMonth() + 1).toString().padStart(2, "0") +
+                "-" +
+                date.getDate() +
+                "T" +
+                date.getHours().toString().padStart(2, "0") +
+                ":" +
+                date.getMinutes().toString().padStart(2, "0")
+            );
+        }
+
         onSaveClick() {
             this.updateValidationErrors();
             if (this.errors.length === 0) {
+                let saveDate;
+                if (!this.timedate && this.setDate) {
+                    saveDate = new Date(this.setDate).toISOString();
+                } else {
+                    saveDate = new Date(new Date().getTime() + this.milliseconds).toISOString();
+                }
+                if (this.trigger && this.trigger.id != null) {
+                    this.sr.querySelector(".container.edit").style.display = "none";
+                    this.sr.querySelector(".container.view").style.display = null;
+                    this.sr.dispatchEvent(
+                        new CustomEvent("update", {
+                            detail: {
+                                trigger: {
+                                    id: this.trigger.id,
+                                    type: "OneTimeTrigger",
+                                    timedate: this.timedate,
+                                    date: saveDate,
+                                    action: JSON.parse(this.getActionElement(true).getAttribute("data")),
+                                },
+                            },
+                            composed: true,
+                        }),
+                    );
+                    return;
+                }
                 this.sr.dispatchEvent(
                     new CustomEvent("create", {
                         detail: {
                             trigger: {
                                 type: "OneTimeTrigger",
-                                date: new Date(new Date().getTime() + this.milliseconds).toISOString(),
+                                timedate: this.timedate,
+                                date: saveDate,
                                 action: JSON.parse(this.getActionElement(true).getAttribute("data")),
                             },
                         },
@@ -121,8 +252,9 @@
         updateValidationErrors() {
             const errorsAction = JSON.parse(this.getActionElement(true).getAttribute("errors"));
             let errors = [];
+            if (!this.timedate) return (this.errors = []);
             if (this.noInput) {
-                errors.push("Enter time when to trigger");
+                errors.push(vis.binds["schedule-switcher"].translate("errorTime"));
             }
             if (this.triggerErrors) {
                 errors = errors.concat(this.triggerErrors);
@@ -144,6 +276,11 @@
             });
         }
 
+        onDateTimeInput() {
+            const datetime = this.sr.querySelector("input.datetime").value;
+            this.setDate = datetime;
+        }
+
         onTimeInput() {
             this.noInput = false;
             const hours = Number.parseInt(this.sr.querySelector("input.hours").value, 10);
@@ -151,13 +288,13 @@
             const seconds = Number.parseInt(this.sr.querySelector("input.seconds").value, 10);
             const errors = [];
             if (Number.isNaN(hours) || hours < 0) {
-                errors.push("Hours must be >= 0");
+                errors.push(vis.binds["schedule-switcher"].translate("errorHour"));
             }
             if (Number.isNaN(minutes) || minutes < 0 || minutes > 59) {
-                errors.push("Minutes must be >= 0 and <= 59");
+                errors.push(vis.binds["schedule-switcher"].translate("errorMinutes"));
             }
             if (Number.isNaN(seconds) || seconds < 0 || seconds > 59) {
-                errors.push("Seconds must be >= 0 and <= 59");
+                errors.push(vis.binds["schedule-switcher"].translate("errorSekundes"));
             }
             if (errors.length === 0) {
                 this.milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
@@ -172,15 +309,20 @@
             const shadowRoot = this.attachShadow({ mode: "open" });
             shadowRoot.innerHTML = `
 				<link rel="stylesheet" href="widgets/schedule-switcher/css/OneTimeTrigger.css"/>
+                <link rel="stylesheet" href="widgets/schedule-switcher/css/material-radio-button.css"/>
 				<div class="container view" style="display: none">
 					<div class="header">
 						<div class="action"></div>
+                        <img class="date icon"/>
+                        <img class="button edit" src="widgets/schedule-switcher/img/edit-24px.svg" width="28px"
+								height="28px" title="${vis.binds["schedule-switcher"].translate("editTrigger")}"/>
                         <img class="button delete" src="widgets/schedule-switcher/img/delete-24px.svg" width="28px"
 							height="28px" title="${vis.binds["schedule-switcher"].translate("removeTrigger")}"/>
 					</div>
                     <div class="header">
 						<div class="trigger">
 							<div class="time"></div>
+                            <div class="targettime"></div>
 						</div>
 					</div>
 				</div>
@@ -200,15 +342,27 @@
 						<div>${vis.binds["schedule-switcher"].translate("condition")}</div>
 						<img class="button add" src="widgets/schedule-switcher/img/add-24px.svg" width="28px"
 							height="28px" title="${vis.binds["schedule-switcher"].translate("addCondition")}"/>
+				    </div>
+                    <div class="md-radio md-radio-inline">
+						<input id="radio-time" type="radio" name="switched-value-date"/>
+						<label for="radio-time">${vis.binds["schedule-switcher"].translate("withTime")}</label>
 					</div>
-					<div>${vis.binds["schedule-switcher"].translate("oneTimeTriggerInfo")}</div>
+                    <div class="md-radio md-radio-inline">
+						<input id="radio-date" type="radio" name="switched-value-date"/>
+						<label for="radio-date">${vis.binds["schedule-switcher"].translate("withDate")}</label>
+					</div>
+                    <div id="trigger-header">${vis.binds["schedule-switcher"].translate("oneTimeTriggerInfo")}</div>
 					<div class="trigger">
 						<input type="number" class="hours" min="0" max="23" step="1" placeholder="h" required value="0">
                     	<span>:</span>
                     	<input type="number" class="minutes" min="0" max="59" step="1" placeholder="mm" required value="0">
                     	<span>:</span>
                     	<input type="number" class="seconds" min="0" max="59" step="1" placeholder="ss" required value="0">
-					</div>					
+					</div>
+                    <div id="trigger-date-header">${vis.binds["schedule-switcher"].translate("selectTimeDate")}</div>
+                    <div class="trigger-date">
+                        <input class="datetime" type="datetime-local" name="datetime" id="datetime" required />
+					</div>				
 				</div>
 			`;
             return shadowRoot;
@@ -223,6 +377,12 @@
         onTriggerChange() {
             const newTrigger = this.trigger;
             if (newTrigger) {
+                if (!this.trigger.timedate) {
+                    this.intervalTime = 59500;
+                }
+                this.checktime = new Date(Date.parse(this.trigger.date));
+                this.updateTimeUntilTrigger();
+                this.targetTimeTrigger();
                 this.sr.querySelector(".container.edit").style.display = "none";
                 this.sr.querySelector(".container.view").style.display = null;
             }
@@ -243,6 +403,10 @@
             if (editAction.firstChild) {
                 editAction.removeChild(editAction.firstChild);
             }
+            const iconElement = this.sr.querySelector(".view .date.icon");
+            iconElement.src = `widgets/schedule-switcher/img/onetime-24px.svg`;
+            iconElement.alt = vis.binds["schedule-switcher"].translate("oneTimeTriggerInfo");
+            iconElement.title = vis.binds["schedule-switcher"].translate("oneTimeTriggerInfo");
             const actionEdit = document.createElement(elementName);
             actionEdit.setAttribute("widgetid", this.getAttribute("widgetid"));
             actionEdit.setAttribute("edit", "true");
@@ -251,9 +415,28 @@
             actionView.setAttribute("data", JSON.stringify(newAction));
             actionEdit.setAttribute("data", JSON.stringify(newAction));
             this.sr.querySelector(".condition").style.display = newAction.type === "ConditionAction" ? "none" : null;
+            this.timedate = "true";
+            this.sr.querySelector(`#radio-time`).checked = true;
+            this.sr.querySelector(".container.edit .trigger-date").style.display = "none";
+            this.sr.querySelector("#trigger-date-header").style.display = "none";
+        }
+
+        targetTime() {
+            if (!this.trigger.timedate) {
+                const n = new Date(this.trigger.date);
+                return `${vis.binds["schedule-switcher"].translate("targetTime")} - ${this.dateView(n)}`;
+            }
         }
 
         millisecondsToHuman(ms) {
+            if (this.checktime < new Date()) {
+                this.interval && clearInterval(this.interval);
+                this.setAttribute("trigger", null);
+            }
+            if (this.trigger && !this.trigger.timedate) {
+                const d = new Date();
+                return `${vis.binds["schedule-switcher"].translate("actualTime")} - ${this.dateView(d)}`;
+            }
             const seconds = Math.floor((ms / 1000) % 60);
             const minutes = Math.floor((ms / 1000 / 60) % 60);
             const hours = Math.floor((ms / 1000 / 3600) % 24);
@@ -264,6 +447,20 @@
                 .join(":");
 
             return `T - ${humanized}`;
+        }
+
+        dateView(d) {
+            return (
+                d.getFullYear() +
+                "-" +
+                ("0" + (d.getMonth() + 1)).slice(-2) +
+                "-" +
+                ("0" + d.getDate()).slice(-2) +
+                " " +
+                ("0" + d.getHours()).slice(-2) +
+                ":" +
+                ("0" + d.getMinutes()).slice(-2)
+            );
         }
     }
 

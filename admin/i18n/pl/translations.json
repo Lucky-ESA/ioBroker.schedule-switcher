@@ -124,5 +124,21 @@
     "count_Schedule": "Liczba wyzwalaczy",
     "stopAdapter": "Zanim będziesz mógł dokonać konfiguracji, musisz uruchomić Adapter!",
     "startAdapter": "Adapter jest aktywny!",
-    "history_text": "Przełączanie historii jako JSON (maks. 100/0 dla wyłączenia)"
+    "history_text": "Przełączanie historii jako JSON (maks. 100/0 dla wyłączenia)",
+    "errorHour": "Godziny muszą mieścić się w zakresie od 0 do 59",
+    "errorMinutes": "Minuty muszą mieścić się w przedziale od 0 do 59",
+    "errorSekundes": "Sekundy muszą mieścić się w przedziale od 0 do 59",
+    "errorTime": "Proszę podać godzinę",
+    "withTime": "Czas",
+    "withDate": "Data/godzina",
+    "shiftInteger": "Shift jest wymagany i musi być liczbą całkowitą",
+    "shiftValue": "Shift musi być większy niż -120 i mniejszy niż 120",
+    "noTimeSelect": "Nie wybrano czasu",
+    "selectTimeDate": "Wybierz datę i godzinę",
+    "actualTime": "Czas",
+    "targetTime": "Cel",
+    "fTimeIcon": "Ikona z wyprzedzeniem",
+    "bgNextTime": "Kolor następnego czasu przełączenia astro",
+    "fsNextTime": "Rozmiar czcionki następnego czasu przełączenia astro",
+    "fsDateTime": "Szerokość wprowadzonej daty i godziny"
 }

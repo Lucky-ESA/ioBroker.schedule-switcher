@@ -5,11 +5,19 @@ import { Trigger } from "./Trigger";
 export class OneTimeTrigger implements Trigger, Destroyable {
     private readonly id: string;
     private readonly objectId: number;
+    private readonly timedate: boolean;
     private action: Action;
     private readonly date: Date;
     private readonly onDestroy: (() => void) | null;
 
-    constructor(id: string, objectId: number, action: Action, date: Date, onDestroy: (() => void) | null) {
+    constructor(
+        id: string,
+        objectId: number,
+        timedate: boolean,
+        action: Action,
+        date: Date,
+        onDestroy: (() => void) | null,
+    ) {
         if (id == null) {
             throw new Error("Id may not be null or undefined.");
         }
@@ -21,6 +29,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
         }
         this.id = id;
         this.objectId = objectId;
+        this.timedate = timedate;
         this.action = action;
         this.date = new Date(date);
         this.onDestroy = onDestroy;
@@ -54,17 +63,22 @@ export class OneTimeTrigger implements Trigger, Destroyable {
         return this.objectId;
     }
 
+    public getTimeDate(): boolean {
+        return this.timedate;
+    }
+
     public getData(): any {
         return {
             id: this.getId(),
             objectId: this.getObjectId(),
+            timedate: this.getTimeDate(),
             date: this.getDate().toISOString(),
             trigger: "OneTimeTrigger",
         };
     }
 
     public toString(): string {
-        return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}}`;
+        return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}, timedate=${this.getTimeDate()}}`;
     }
 
     public getInternalAction(): Action {

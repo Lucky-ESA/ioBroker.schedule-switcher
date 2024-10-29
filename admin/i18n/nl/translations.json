@@ -124,5 +124,21 @@
     "count_Schedule": "Triggertelling",
     "stopAdapter": "U moet de adapter starten voordat u kunt configureren!",
     "startAdapter": "Adapter is actief!",
-    "history_text": "Schakelgeschiedenis als JSON (max. 100/0 voor uit)"
+    "history_text": "Schakelgeschiedenis als JSON (max. 100/0 voor uit)",
+    "errorHour": "Uren moeten tussen 0 en 59 liggen",
+    "errorMinutes": "Minuten moeten tussen 0 en 59 liggen",
+    "errorSekundes": "Seconden moeten tussen 0 en 59 liggen",
+    "errorTime": "Voer een tijd in",
+    "withTime": "Tijd",
+    "withDate": "Datum/tijd",
+    "shiftInteger": "Shift is vereist en moet een geheel getal zijn",
+    "shiftValue": "De verschuiving moet groter zijn dan -120 en kleiner dan 120",
+    "noTimeSelect": "Geen tijd geselecteerd",
+    "selectTimeDate": "Selecteer datum en tijd",
+    "actualTime": "Tijd",
+    "targetTime": "Doel",
+    "fTimeIcon": "Icoon van tevoren",
+    "bgNextTime": "Kleur van de volgende astro-schakeltijd",
+    "fsNextTime": "Lettergrootte van de volgende astro-schakeltijd",
+    "fsDateTime": "Breedte van datum-tijdinvoer"
 }

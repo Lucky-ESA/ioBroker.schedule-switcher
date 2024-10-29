@@ -1,4 +1,5 @@
 .widget {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -82,6 +83,7 @@ button.material-button {
 .dropdown {
     position: relative;
     display: inline-block;
+    overflow: visible;
 }
 
 .dropdown-content {

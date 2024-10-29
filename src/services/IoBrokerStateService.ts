@@ -21,6 +21,7 @@ export class IoBrokerStateService implements StateService {
         if (!id || !value) {
             throw new Error("State or Object is empty! - extendObject");
         }
+        this.checkId(id);
         await this.adapter.extendObject(id, value);
     }
 
@@ -42,7 +43,7 @@ export class IoBrokerStateService implements StateService {
             this.mergeTime = 0;
         }
         if (this.adapter.config.history > 0) {
-            this.setHistory(id as string, value as string, trigger as any);
+            await this.setHistory(id as string, value as string, trigger as any);
         }
         this.checkId(id);
         this.adapter.log.debug(`Setting state ${id} with value ${value?.toString()}`);
@@ -51,25 +52,24 @@ export class IoBrokerStateService implements StateService {
 
     async setHistory(id: string, value: string | number | boolean, trigger: any): Promise<any> {
         if (!trigger || trigger.id == null) return;
-        let history_value;
-        history_value = await this.getState(`history`);
+        let history_newvalue = [];
+        const history_value = await this.getState(`history`);
         try {
             if (history_value != null && typeof history_value == "string") {
-                history_value = JSON.parse(history_value);
+                history_newvalue = JSON.parse(history_value);
             } else {
-                history_value = [];
+                history_newvalue = [];
             }
         } catch (e) {
-            history_value = [];
+            history_newvalue = [];
         }
-        if (Object.keys(history_value).length > this.adapter.config.history) {
-            history_value.pop();
+        if (Object.keys(history_newvalue).length > this.adapter.config.history) {
+            history_newvalue.pop();
         }
         const new_data = {
             setObjectId: id,
             objectId: trigger.objectId ? trigger.objectId : "unknown",
             value: value.toString(),
-            object: id,
             trigger: trigger.trigger ? trigger.trigger : "unknown",
             astroTime: trigger.astroTime ? trigger.astroTime : "unknown",
             shift: trigger.shift ? trigger.shift : 0,
@@ -79,13 +79,13 @@ export class IoBrokerStateService implements StateService {
             weekdays: trigger.weekdays ? trigger.weekdays : [],
             time: Date.now(),
         };
-        history_value.push(new_data);
-        history_value = history_value.sort((a: any, b: any) => {
+        history_newvalue.push(new_data);
+        history_newvalue.sort((a: any, b: any) => {
             if (a.time > b.time) {
                 return -1;
             }
         });
-        await this.setState(`history`, JSON.stringify(history_value), true);
+        await this.setState(`history`, JSON.stringify(history_newvalue), true);
     }
 
     async getForeignState(id: string): Promise<any> {

@@ -124,5 +124,21 @@
     "count_Schedule": "Trigger count",
     "stopAdapter": "You have to start the Adapter before you can configure!",
     "startAdapter": "Adapter is active!",
-    "history_text": "History switching as JSON (max 100/0 for off)"
+    "history_text": "History switching as JSON (max 100/0 for off)",
+    "errorHour": "Hours must be between 0 and 59",
+    "errorMinutes": "Minutes must be between 0 and 59",
+    "errorSekundes": "Seconds must be between 0 and 59",
+    "errorTime": "Please enter a time",
+    "withTime": "Time",
+    "withDate": "Date/Time",
+    "shiftInteger": "Shift is required and must be an integer",
+    "shiftValue": "Shift must be greater than -120 and smaller than 120",
+    "noTimeSelect": "No time selected",
+    "selectTimeDate": "Select date and time",
+    "actualTime": "Time",
+    "targetTime": "Target",
+    "fTimeIcon": "Icon ahead of time",
+    "bgNextTime": "Color of next astro switching time",
+    "fsNextTime": "Font size of next astro switching time",
+    "fsDateTime": "Width of date time input"
 }

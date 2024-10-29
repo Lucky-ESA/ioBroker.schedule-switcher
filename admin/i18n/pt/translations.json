@@ -124,5 +124,21 @@
     "count_Schedule": "Contagem de gatilhos",
     "stopAdapter": "Você precisa iniciar o adaptador antes de poder configurar!",
     "startAdapter": "O adaptador está ativo!",
-    "history_text": "Troca de histórico como JSON (máximo 100/0 para desativado)"
+    "history_text": "Troca de histórico como JSON (máximo 100/0 para desativado)",
+    "errorHour": "O horário deve estar entre 0 e 59",
+    "errorMinutes": "Os minutos devem estar entre 0 e 59",
+    "errorSekundes": "Os segundos devem estar entre 0 e 59",
+    "errorTime": "Por favor insira um horário",
+    "withTime": "Tempo",
+    "withDate": "Data/Hora",
+    "shiftInteger": "Shift é obrigatório e deve ser um número inteiro",
+    "shiftValue": "O deslocamento deve ser maior que -120 e menor que 120",
+    "noTimeSelect": "Nenhum horário selecionado",
+    "selectTimeDate": "Selecione data e hora",
+    "actualTime": "Tempo",
+    "targetTime": "Alvo",
+    "fTimeIcon": "Ícone antes do tempo",
+    "bgNextTime": "Cor do próximo horário de troca do astro",
+    "fsNextTime": "Tamanho da fonte do próximo horário de troca do astro",
+    "fsDateTime": "Largura da entrada de data e hora"
 }

@@ -14,8 +14,7 @@
         }
 
         connectedCallback() {
-            console.log("connectedCallback AstroTrigger");
-            // Nothing
+            console.debug("connectedCallback AstroTrigger");
         }
 
         attributeChangedCallback(attr) {
@@ -107,11 +106,11 @@
             const shift = Number.parseInt(this.sr.querySelector(".edit input#shift").value, 10);
             console.log(`on input, time is ${time} and shift is ${shift}`);
             if (Number.isNaN(shift) || !Number.isInteger(shift)) {
-                this.errors = ["Shift is required and must be an integer"];
+                this.errors = [vis.binds["schedule-switcher"].translate("shiftInteger")];
                 return;
             }
             if (shift < -120 || shift > 120) {
-                this.errors = ["Shift must be greater than -120 and smaller than 120"];
+                this.errors = [vis.binds["schedule-switcher"].translate("shiftValue")];
                 return;
             }
             this.errors = [];
