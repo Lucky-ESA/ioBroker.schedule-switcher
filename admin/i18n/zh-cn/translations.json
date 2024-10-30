@@ -140,5 +140,8 @@
     "fTimeIcon": "图标提前",
     "bgNextTime": "下次 astro 切换时间的颜色",
     "fsNextTime": "下次astro切换时间的字体大小",
-    "fsDateTime": "日期时间输入的宽度"
+    "fsDateTime": "日期时间输入的宽度",
+    "errorInvalid": "无效日期",
+    "errorLess": "日期小于当前时间",
+    "errorGreater": "日期大于 1 年"
 }

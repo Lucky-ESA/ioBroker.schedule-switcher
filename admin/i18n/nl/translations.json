@@ -140,5 +140,8 @@
     "fTimeIcon": "Icoon van tevoren",
     "bgNextTime": "Kleur van de volgende astro-schakeltijd",
     "fsNextTime": "Lettergrootte van de volgende astro-schakeltijd",
-    "fsDateTime": "Breedte van datum-tijdinvoer"
+    "fsDateTime": "Breedte van datum-tijdinvoer",
+    "errorInvalid": "Ongeldige datum",
+    "errorLess": "Datum is kleiner dan de huidige tijd",
+    "errorGreater": "Datum is groter dan 1 jaar"
 }

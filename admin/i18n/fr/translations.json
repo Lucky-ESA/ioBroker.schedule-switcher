@@ -140,5 +140,8 @@
     "fTimeIcon": "Icône à l'avance",
     "bgNextTime": "Couleur de la prochaine heure de commutation astro",
     "fsNextTime": "Taille de la police de la prochaine heure de commutation astro",
-    "fsDateTime": "Largeur de saisie de la date et de l'heure"
+    "fsDateTime": "Largeur de saisie de la date et de l'heure",
+    "errorInvalid": "Date invalide",
+    "errorLess": "La date est inférieure à l'heure actuelle",
+    "errorGreater": "La date est supérieure à 1 an"
 }

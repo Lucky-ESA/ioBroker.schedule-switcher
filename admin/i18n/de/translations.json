@@ -140,5 +140,8 @@
     "fTimeIcon": "Icon vor der Zeitangabe",
     "bgNextTime": "Farbe des nächsten Astro-Schaltzeit",
     "fsNextTime": "Schriftgröße der nächsten Astro-Schaltzeit",
-    "fsDateTime": "Breite der Datums-/Uhrzeiteingabe"
+    "fsDateTime": "Breite der Datums-/Uhrzeiteingabe",
+    "errorInvalid": "Ungültiges Datum",
+    "errorLess": "Das Datum liegt vor der aktuellen Uhrzeit",
+    "errorGreater": "Das Datum ist größer als 1 Jahr"
 }

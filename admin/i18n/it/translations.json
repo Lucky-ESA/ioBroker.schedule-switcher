@@ -140,5 +140,8 @@
     "fTimeIcon": "Icona in anticipo",
     "bgNextTime": "Colore del prossimo orario di commutazione astronomica",
     "fsNextTime": "Dimensione del carattere del prossimo orario di cambio astro",
-    "fsDateTime": "Larghezza dell'input della data e dell'ora"
+    "fsDateTime": "Larghezza dell'input della data e dell'ora",
+    "errorInvalid": "Data non valida",
+    "errorLess": "La data è inferiore all'ora corrente",
+    "errorGreater": "La data è maggiore di 1 anno"
 }

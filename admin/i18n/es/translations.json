@@ -140,5 +140,8 @@
     "fTimeIcon": "Icono antes de tiempo",
     "bgNextTime": "Color del próximo cambio de astro",
     "fsNextTime": "Tamaño de fuente del próximo cambio de astro",
-    "fsDateTime": "Ancho de entrada de fecha y hora"
+    "fsDateTime": "Ancho de entrada de fecha y hora",
+    "errorInvalid": "Fecha no válida",
+    "errorLess": "La fecha es menor que la hora actual.",
+    "errorGreater": "La fecha es mayor a 1 año."
 }

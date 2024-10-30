@@ -33,13 +33,25 @@
 
             this.sr.querySelector("#radio-date").addEventListener("input", this.onDateInput.bind(this));
             this.sr.querySelector("#radio-time").addEventListener("input", this.onDateInput.bind(this));
+            if (this.trigger) {
+                const checktime = new Date(Date.parse(this.trigger.date));
+                if (this.checktime < new Date()) {
+                    console.log("Expired - Delete trigger!");
+                    this.interval && clearTimeout(this.interval);
+                    this.onDeleteClick();
+                }
+            }
         }
 
         updateTimeUntilTrigger() {
             if (this.trigger) {
+                this.interval = null;
                 this.sr.querySelector(".time").textContent = this.millisecondsToHuman(
                     new Date(this.trigger.date) - new Date(),
                 );
+                if (this.checktime < new Date()) {
+                    return;
+                }
                 this.interval = setTimeout(() => this.updateTimeUntilTrigger(), this.intervalTime);
             }
         }
@@ -124,7 +136,6 @@
                     composed: true,
                 }),
             );
-            this.setAttribute("trigger", null);
         }
 
         onDeleteConditionClick() {
@@ -146,6 +157,9 @@
         onDateInput() {
             this.timedate = this.sr.querySelector("#radio-time").checked;
             this.setViews();
+            this.errors = [];
+            this.triggerErrors = [];
+            this.noInput = true;
             if (this.timedate) {
                 this.setDate = null;
             } else {
@@ -252,7 +266,6 @@
         updateValidationErrors() {
             const errorsAction = JSON.parse(this.getActionElement(true).getAttribute("errors"));
             let errors = [];
-            if (!this.timedate) return (this.errors = []);
             if (this.noInput) {
                 errors.push(vis.binds["schedule-switcher"].translate("errorTime"));
             }
@@ -279,6 +292,24 @@
         onDateTimeInput() {
             const datetime = this.sr.querySelector("input.datetime").value;
             this.setDate = datetime;
+            const check_date = new Date(this.setDate);
+            const min_date = new Date(this.sr.querySelector("input.datetime").min);
+            const max_date = new Date(this.sr.querySelector("input.datetime").max);
+            this.noInput = false;
+            const errors = [];
+            if (isNaN(check_date.getTime())) {
+                errors.push(vis.binds["schedule-switcher"].translate("errorInvalid"));
+            }
+            if (check_date <= min_date) {
+                errors.push(vis.binds["schedule-switcher"].translate("errorLess"));
+            }
+            if (check_date >= max_date) {
+                errors.push(vis.binds["schedule-switcher"].translate("errorGreater"));
+            }
+            this.triggerErrors = errors;
+            if (this.triedSaving) {
+                this.updateValidationErrors();
+            }
         }
 
         onTimeInput() {
@@ -295,6 +326,9 @@
             }
             if (Number.isNaN(seconds) || seconds < 0 || seconds > 59) {
                 errors.push(vis.binds["schedule-switcher"].translate("errorSekundes"));
+            }
+            if (seconds === 0 && minutes === 0 && hours === 0) {
+                this.noInput = true;
             }
             if (errors.length === 0) {
                 this.milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
@@ -429,10 +463,6 @@
         }
 
         millisecondsToHuman(ms) {
-            if (this.checktime < new Date()) {
-                this.interval && clearInterval(this.interval);
-                this.setAttribute("trigger", null);
-            }
             if (this.trigger && !this.trigger.timedate) {
                 const d = new Date();
                 return `${vis.binds["schedule-switcher"].translate("actualTime")} - ${this.dateView(d)}`;

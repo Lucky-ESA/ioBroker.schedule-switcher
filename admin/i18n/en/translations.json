@@ -140,5 +140,8 @@
     "fTimeIcon": "Icon ahead of time",
     "bgNextTime": "Color of next astro switching time",
     "fsNextTime": "Font size of next astro switching time",
-    "fsDateTime": "Width of date time input"
+    "fsDateTime": "Width of date time input",
+    "errorInvalid": "Invalid Date",
+    "errorLess": "Date is less than the current time",
+    "errorGreater": "Date is greater than 1 year"
 }

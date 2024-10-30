@@ -140,5 +140,8 @@
     "fTimeIcon": "Ikona z wyprzedzeniem",
     "bgNextTime": "Kolor następnego czasu przełączenia astro",
     "fsNextTime": "Rozmiar czcionki następnego czasu przełączenia astro",
-    "fsDateTime": "Szerokość wprowadzonej daty i godziny"
+    "fsDateTime": "Szerokość wprowadzonej daty i godziny",
+    "errorInvalid": "Nieprawidłowa data",
+    "errorLess": "Data jest krótsza niż bieżąca godzina",
+    "errorGreater": "Data jest dłuższa niż 1 rok"
 }

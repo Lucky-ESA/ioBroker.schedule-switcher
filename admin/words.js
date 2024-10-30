@@ -1673,5 +1673,44 @@ systemDictionary = {
         "pl": "Szerokość wprowadzania daty",
         "uk": "Ширина вхідного часу",
         "zh-cn": "日期时间输入的宽度"
+    },
+    "errorInvalid": {
+        "en": "Invalid Date",
+        "de": "Invalides Datum",
+        "ru": "Дата",
+        "pt": "Data inválida",
+        "nl": "Ongeldige datum",
+        "fr": "Date non valable",
+        "it": "Data non valida",
+        "es": "Fecha inválida",
+        "pl": "Nieprawidłowa data",
+        "uk": "Дати відповідальності",
+        "zh-cn": "无效的日期"
+    },
+    "errorLess": {
+        "en": "Date is less than the current time",
+        "de": "Datum ist kleiner als die aktuelle Zeit",
+        "ru": "Дата меньше текущего времени",
+        "pt": "A data é menor do que a hora atual",
+        "nl": "Datum is minder dan de huidige tijd",
+        "fr": "Date est inférieure à l'heure actuelle",
+        "it": "La data è inferiore all'ora corrente",
+        "es": "La fecha es menos que el tiempo actual",
+        "pl": "Data jest mniejsza niż bieżący czas",
+        "uk": "Дата менше поточного часу",
+        "zh-cn": "日期小于当前时间"
+    },
+    "errorGreater": {
+        "en": "Date is greater than 1 year",
+        "de": "Datum ist größer als 1 Jahr",
+        "ru": "Дата больше 1 года",
+        "pt": "Data é maior que 1 ano",
+        "nl": "Datum is langer dan 1 jaar",
+        "fr": "Date supérieure à 1 an",
+        "it": "La data è maggiore di 1 anno",
+        "es": "La fecha es mayor de 1 año",
+        "pl": "Data jest większa niż 1 rok",
+        "uk": "Дата більше 1 року",
+        "zh-cn": "日期超过1年"
     }
 };
