@@ -268,7 +268,6 @@
         }
 
         detectSettingsChanges(oldSettings, newSettings) {
-            if (newSettings.onValue === undefined || newSettings.offValue === undefined) return;
             const newStateIds = this.getStateIdsFromSettings(newSettings);
             if (
                 !oldSettings ||
@@ -281,6 +280,7 @@
                     stateIds: newStateIds,
                 });
             }
+            if (newSettings.onValue === undefined || newSettings.offValue === undefined) return;
             if (
                 !oldSettings ||
                 oldSettings.onValue !== newSettings.onValue ||
