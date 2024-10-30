@@ -631,20 +631,19 @@ export class ScheduleSwitcher extends utils.Adapter {
         await this.setObjectNotExistsAsync(`onoff.${id.toString()}.views`, {
             type: "state",
             common: {
-                name: "data",
-                read: true,
-                write: false,
-                type: "string",
-                role: "json",
-                def: `{}`,
-                desc: "Contains all widgets",
-            },
-            native: {},
-        });
-        await this.setObjectNotExistsAsync(`onoff.${id.toString()}.views`, {
-            type: "state",
-            common: {
-                name: "data",
+                name: {
+                    en: "Created widgets",
+                    de: "Erstellte Widgets",
+                    ru: "Созданные виджеты",
+                    pt: "Widgets criados",
+                    nl: "Aangemaakte widgets",
+                    fr: "Création de widgets",
+                    it: "Widget creati",
+                    es: "Widgets creados",
+                    pl: "Tworzone widżety",
+                    uk: "Створені віджети",
+                    "zh-cn": "创建部件",
+                },
                 read: true,
                 write: false,
                 type: "string",
@@ -657,7 +656,19 @@ export class ScheduleSwitcher extends utils.Adapter {
         await this.setObjectNotExistsAsync(`onoff.${id.toString()}.enabled`, {
             type: "state",
             common: {
-                name: "enabled",
+                name: {
+                    en: "enable/disable",
+                    de: "aktivieren/deaktivieren",
+                    ru: "включить/отключить",
+                    pt: "ativar/desativar",
+                    nl: "inschakelen/uitschakelen",
+                    fr: "activer/désactiver",
+                    it: "abilitare/disabilitare",
+                    es: "habilitar/deshabilitar",
+                    pl: "włączyć/wyłączyć",
+                    uk: "увімкнути/вимкнути",
+                    "zh-cn": "启用/禁用",
+                },
                 read: true,
                 write: true,
                 type: "boolean",

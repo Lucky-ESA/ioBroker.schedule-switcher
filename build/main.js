@@ -589,20 +589,19 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.setObjectNotExistsAsync(`onoff.${id.toString()}.views`, {
       type: "state",
       common: {
-        name: "data",
-        read: true,
-        write: false,
-        type: "string",
-        role: "json",
-        def: `{}`,
-        desc: "Contains all widgets"
-      },
-      native: {}
-    });
-    await this.setObjectNotExistsAsync(`onoff.${id.toString()}.views`, {
-      type: "state",
-      common: {
-        name: "data",
+        name: {
+          en: "Created widgets",
+          de: "Erstellte Widgets",
+          ru: "\u0421\u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0435 \u0432\u0438\u0434\u0436\u0435\u0442\u044B",
+          pt: "Widgets criados",
+          nl: "Aangemaakte widgets",
+          fr: "Cr\xE9ation de widgets",
+          it: "Widget creati",
+          es: "Widgets creados",
+          pl: "Tworzone wid\u017Cety",
+          uk: "\u0421\u0442\u0432\u043E\u0440\u0435\u043D\u0456 \u0432\u0456\u0434\u0436\u0435\u0442\u0438",
+          "zh-cn": "\u521B\u5EFA\u90E8\u4EF6"
+        },
         read: true,
         write: false,
         type: "string",
@@ -615,7 +614,19 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.setObjectNotExistsAsync(`onoff.${id.toString()}.enabled`, {
       type: "state",
       common: {
-        name: "enabled",
+        name: {
+          en: "enable/disable",
+          de: "aktivieren/deaktivieren",
+          ru: "\u0432\u043A\u043B\u044E\u0447\u0438\u0442\u044C/\u043E\u0442\u043A\u043B\u044E\u0447\u0438\u0442\u044C",
+          pt: "ativar/desativar",
+          nl: "inschakelen/uitschakelen",
+          fr: "activer/d\xE9sactiver",
+          it: "abilitare/disabilitare",
+          es: "habilitar/deshabilitar",
+          pl: "w\u0142\u0105czy\u0107/wy\u0142\u0105czy\u0107",
+          uk: "\u0443\u0432\u0456\u043C\u043A\u043D\u0443\u0442\u0438/\u0432\u0438\u043C\u043A\u043D\u0443\u0442\u0438",
+          "zh-cn": "\u542F\u7528/\u7981\u7528"
+        },
         read: true,
         write: true,
         type: "boolean",
