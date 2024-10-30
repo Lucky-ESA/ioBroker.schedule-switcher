@@ -289,6 +289,8 @@
             ) {
                 console.debug("sending change switched values on: " + newSettings.onValue);
                 console.debug("sending change switched values off: " + newSettings.offValue);
+                if (newSettings.onValue == "") delete newSettings.onValue;
+                if (newSettings.offValue == "") delete newSettings.offValue;
                 vis.binds["schedule-switcher"].sendMessage("change-switched-values", {
                     dataId: newSettings["oid-dataId"],
                     valueType: newSettings.valueType,
