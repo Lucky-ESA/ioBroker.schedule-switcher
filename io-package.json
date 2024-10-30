@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "news": {
+      "0.0.3": {
+        "en": "Fixed VIS translate\nAdded astro time in trigger\nFixed OneTimeTrigger\nAdded date for OneTimeTrigger\nFixed some bugs",
+        "de": "Feste VIS übersetzen\nAstro-Zeit in Trigger hinzugefügt\nEin TimeTrigger wurde behoben\nDatum für OneTimeTrigger hinzugefügt\nEinige Fehler behoben",
+        "ru": "Фиксированный перевод VIS\nДобавлено время астро в триггер\nFixed OneTimeTrigger\nДобавленная дата для OneTimeTrigger\nИсправлены некоторые ошибки",
+        "pt": "VIS corrigido traduzir\nAdicionado tempo astro em gatilho\nFixo OneTimeTrigger\nAdicionado data para OneTimeTrigger\nCorrigido alguns bugs",
+        "nl": "Vaste VIS-vertaling\nToegevoegd astro tijd in trigger\nVaste OneTimeTrigger\nDatum toegevoegd voor OneTimeTrigger\nEnkele bugs hersteld",
+        "fr": "Traduction VIS fixe\nAjout du temps astro dans le déclencheur\nCorrection de OneTimeTrigger\nDate d'ajout pour OneTimeTrigger\nCorrection de certains bugs",
+        "it": "Traduttore VIS fisso\nAggiunto il tempo di astro in trigger\nOneTimeTrigger fisso\nData aggiunta per OneTimeTrigger\nRisolto alcuni bug",
+        "es": "Traducir VIS fijo\nTiempo de astro añadido en el gatillo\nFixed OneTimeTrigger\nFecha agregada para OneTimeTrigger\nArreglado algunos errores",
+        "pl": "Stałe tłumaczenie VIS\nDodano czas astro w wyzwalaczu\nNaprawiono OneTimeTrigger\nDodano datę dla OneTimeTrigger\nNaprawiono kilka błędów",
+        "uk": "Виправлено VIS переклад\nДодано час астро в тригер\nФіксований OneTimeTrigger\nДодано дату для OneTimeTrigger\nВиправлено деякі помилки",
+        "zh-cn": "固定VIS翻译\n触发时添加天体时间\n固定一次性调试器\n添加的一次性调试器日期\n修补一些错误"
+      },
       "0.0.2": {
         "en": "Fix translate\nFix background color disable Weekdays\nFix sendTo\nAdded jsonConfig\nAdded history",
         "de": "Fehler übersetzen\nHintergrundfarbe deaktivieren Wochentage\nFehler senden Zu\nHinzugefügt jsonConfig\nGeschichte hinzufügen",

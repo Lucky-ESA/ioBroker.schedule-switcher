@@ -40,8 +40,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.0.3 (2024-10-30)
 
 -   (Lucky_ESA) Fixed VIS translate
 -   (Lucky_ESA) Added astro time in trigger
