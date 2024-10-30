@@ -23,7 +23,7 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 -   [Namen ändern](#namen-ändern)
 -   [Bedingungen hinzufügen](#bedingung-hinzufügen)
 -   [Text ersetzen](#text-ersetzen)
--   [CSS Einstellungen](#css-anwenden)
+-   [CSS Einstellungen](#css-anwenden-beschreibung-siehe-css)
 -   [Trigger anlegen](#trigger)
 -   [Astrotrigger anlegen](#astro-trigger)
 -   [Einmaltrigger anlegen](#one-time-trigger)

@@ -24,7 +24,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   [Change name](#change-name)
 -   [Create condition](#create-condition)
 -   [Change text](#change-text)
--   [Use css](#use-css)
+-   [Use css](#use-css-description-see-css)
 -   [Create trigger](#trigger)
 -   [create astro trigger](#astro-trigger)
 -   [Create one time trigger](#one-time-trigger)
