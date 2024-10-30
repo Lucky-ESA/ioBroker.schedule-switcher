@@ -16,9 +16,10 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   [Instance Settings](#instance-settings-schedule-switcher)
 -   [Objecte](#states)
 -   [Example trigger as JSON](#example-trigger-json)
--   [SendTo Trigger (Experts only)](#example-of-creating-or-editing-triggers-with-sendto-experts)
+-   [Example sendTo Trigger (Experts only)](#example-of-creating-or-editing-triggers-with-sendto-experts)
 -   [Example widget as JSON](#example-widgets-json)
 -   [Example history as JSON](#example-history-json)
+-   [Example widget view as JSON](#example-widget-view-json)
 -   [Create widget](#create-widget)
 -   [Change name](#change-name)
 -   [Create condition](#create-condition)
@@ -211,6 +212,8 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Delete trigger with known I
 
 # Example history JSON
 
+[Summary](#summary)
+
 ```JSON
 [
   {
@@ -261,6 +264,37 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Delete trigger with known I
     "time": 1729622820071
   }
 ]
+```
+
+# Example Widget View JSON
+
+[Summary](#summary)
+
+```json
+{
+    "vis-2.0": {
+        "main": {
+            "w000004": {
+                "prefix": "main", // Project
+                "namespace": "vis-2.0", // VIS
+                "view": "default", // View
+                "widgetId": "w000004", // Widget ID
+                "newId": "schedule-switcher.0.onoff.3.data" // Object ID
+            }
+        }
+    },
+    "vis.0": {
+        "main": {
+            "w00001": {
+                "prefix": "main",
+                "namespace": "vis.0",
+                "view": "Rollo",
+                "widgetId": "w00001",
+                "newId": "schedule-switcher.0.onoff.3.data"
+            }
+        }
+    }
+}
 ```
 
 ### Create widget
@@ -319,6 +353,11 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Delete trigger with known I
     ![create_widget_css_1.png](img/create_widget_css_1.png)</br>
     ![create_widget_css_2.png](img/create_widget_css_2.png)</br>
     ![create_widget_css_3.png](img/create_widget_css_3.png)
+    ![widget_switched.png](img/widget_switched.png)</br>
+    ![widget_manual.png](img/widget_manual.png)</br>
+    ![widget_astro_icon.png](img/widget_astro_icon.pngg)</br>
+    ![widget_condition_1.png](img/widget_condition_1.png)</br>
+    ![widget_condition_2.png](img/widget_condition_2.png)
 
 ### Trigger
 
