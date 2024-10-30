@@ -56,16 +56,6 @@ function sendMessage(cmd, data) {
     }
 }
 
-function translates(word, widgetid, func) {
-    if (widgetid) {
-        const newValue = vis.binds["schedule-switcher"].onOffScheduleWidgets[widgetid]
-            ? vis.binds["schedule-switcher"].onOffScheduleWidgets[widgetid][word]
-            : null;
-        if (newValue != null && newValue != "") return newValue;
-    }
-    return translateWord(word, systemLang, timeSwitchDic);
-}
-
 function translate(word, widgetid, func) {
     if (widgetid) {
         const newValue = vis.binds["schedule-switcher"].onOffScheduleWidgets[widgetid]
@@ -188,6 +178,16 @@ function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
         newId: newId,
         oldId: oldId,
     };
+    if (newId) {
+        const newIdSplit = newId.split(".");
+        const id = parseInt(newIdSplit[3]);
+        if (isNaN(id)) addDataId.newId = id;
+    }
+    if (oldId) {
+        const newIdSplit = oldId.split(".");
+        const id = parseInt(newIdSplit[3]);
+        if (isNaN(id)) addDataId.oldId = id;
+    }
     this.sendMessage("change-view-dataId", addDataId);
     if (vis.conn.namespace.startsWith("vis.")) {
         if (newId) {

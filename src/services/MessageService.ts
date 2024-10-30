@@ -198,36 +198,48 @@ export class MessageService {
     private async updateViews(data: any): Promise<void> {
         if (data) {
             if (data.newId && data.newId.endsWith(".data")) {
-                const path = `${data.newId.replace(".data", "")}.views`;
-                const valView = await this.stateService.getState(path);
-                const newView = typeof valView === "string" ? JSON.parse(valView) : valView;
-                if (newView && newView[data.namespace] && newView[data.namespace][data.prefix]) {
-                    newView[data.namespace][data.prefix][data.widgetId] = data;
-                } else {
-                    newView[data.namespace] = {};
-                    newView[data.namespace][data.prefix] = {};
-                    newView[data.namespace][data.prefix][data.widgetId] = data;
+                const path = `${data.newId.replace(".data", ".views")}`;
+                const pathSplit = path.split(".");
+                const id = parseInt(pathSplit[3]);
+                if (!isNaN(id)) {
+                    const valView = await this.stateService.getState(path);
+                    if (valView != null) {
+                        const newView = typeof valView === "string" ? JSON.parse(valView) : valView;
+                        if (newView && newView[data.namespace] && newView[data.namespace][data.prefix]) {
+                            newView[data.namespace][data.prefix][data.widgetId] = data;
+                        } else {
+                            newView[data.namespace] = {};
+                            newView[data.namespace][data.prefix] = {};
+                            newView[data.namespace][data.prefix][data.widgetId] = data;
+                        }
+                        this.stateService.setState(path, JSON.stringify(newView));
+                    }
                 }
-                this.stateService.setState(path, JSON.stringify(newView));
             }
             if (data.oldId && data.oldId.endsWith(".data")) {
-                const oldPath = `${data.oldId.replace(".data", "")}.views`;
-                const valOldView = await this.stateService.getState(oldPath);
-                const oldView = typeof valOldView === "string" ? JSON.parse(valOldView) : valOldView;
-                if (
-                    oldView &&
-                    oldView[data.namespace] &&
-                    oldView[data.namespace][data.prefix] &&
-                    oldView[data.namespace][data.prefix][data.widgetId]
-                ) {
-                    if (Object.keys(oldView[data.namespace]).length === 1) {
-                        delete oldView[data.namespace];
-                    } else if (Object.keys(oldView[data.namespace][data.prefix]).length === 1) {
-                        oldView[data.namespace][data.prefix];
-                    } else {
-                        delete oldView[data.namespace][data.prefix][data.widgetId];
+                const oldPath = `${data.oldId.replace(".data", ".views")}`;
+                const oldPathSplit = oldPath.split(".");
+                const id = parseInt(oldPathSplit[3]);
+                if (!isNaN(id)) {
+                    const valOldView = await this.stateService.getState(oldPath);
+                    if (valOldView != null) {
+                        const oldView = typeof valOldView === "string" ? JSON.parse(valOldView) : valOldView;
+                        if (
+                            oldView &&
+                            oldView[data.namespace] &&
+                            oldView[data.namespace][data.prefix] &&
+                            oldView[data.namespace][data.prefix][data.widgetId]
+                        ) {
+                            if (Object.keys(oldView[data.namespace]).length === 1) {
+                                delete oldView[data.namespace];
+                            } else if (Object.keys(oldView[data.namespace][data.prefix]).length === 1) {
+                                oldView[data.namespace][data.prefix];
+                            } else {
+                                delete oldView[data.namespace][data.prefix][data.widgetId];
+                            }
+                            this.stateService.setState(oldPath, JSON.stringify(oldView));
+                        }
                     }
-                    this.stateService.setState(oldPath, JSON.stringify(oldView));
                 }
             }
         }
