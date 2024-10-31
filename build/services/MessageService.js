@@ -22,7 +22,6 @@ __export(MessageService_exports, {
 });
 module.exports = __toCommonJS(MessageService_exports);
 var import_suncalc = require("suncalc");
-var import_main = require("../main");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
 var import_AstroTime = require("../triggers/AstroTime");
 var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
@@ -89,11 +88,11 @@ class MessageService {
         break;
       case "enable-schedule":
         schedule.setEnabled(true);
-        await this.stateService.setState(import_main.ScheduleSwitcher.getEnabledIdFromScheduleId(data.dataId), true);
+        await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
         break;
       case "disable-schedule":
         schedule.setEnabled(false);
-        await this.stateService.setState(import_main.ScheduleSwitcher.getEnabledIdFromScheduleId(data.dataId), false);
+        await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
         break;
       case "change-switched-values":
         this.changeOnOffSchedulesSwitchedValues(schedule, data);
@@ -122,6 +121,9 @@ class MessageService {
     const state = data == null ? void 0 : data.dataId.split(".");
     await this.stateService.extendObject(`onoff.${state[3]}`, { common: { name: data == null ? void 0 : data.name } });
     await this.stateService.extendObject(`onoff.${state[3]}.data`, { common: { name: data == null ? void 0 : data.name } });
+  }
+  getEnabledIdFromScheduleId(scheduleId) {
+    return scheduleId.replace("data", "enabled");
   }
   async nextDate(data) {
     const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());

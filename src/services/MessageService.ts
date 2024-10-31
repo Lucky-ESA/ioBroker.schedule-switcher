@@ -1,7 +1,6 @@
 import { getTimes } from "suncalc";
 import { Coordinate } from "../Coordinate";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
-import { ScheduleSwitcher } from "../main";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
 import { Schedule } from "../schedules/Schedule";
 import { OnOffScheduleSerializer } from "../serialization/OnOffScheduleSerializer";
@@ -77,11 +76,11 @@ export class MessageService {
                 break;
             case "enable-schedule":
                 schedule.setEnabled(true);
-                await this.stateService.setState(ScheduleSwitcher.getEnabledIdFromScheduleId(data.dataId), true);
+                await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
                 break;
             case "disable-schedule":
                 schedule.setEnabled(false);
-                await this.stateService.setState(ScheduleSwitcher.getEnabledIdFromScheduleId(data.dataId), false);
+                await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
                 break;
             case "change-switched-values":
                 this.changeOnOffSchedulesSwitchedValues(schedule, data);
@@ -111,6 +110,10 @@ export class MessageService {
         const state = data?.dataId.split(".");
         await this.stateService.extendObject(`onoff.${state[3]}`, { common: { name: data?.name } });
         await this.stateService.extendObject(`onoff.${state[3]}.data`, { common: { name: data?.name } });
+    }
+
+    private getEnabledIdFromScheduleId(scheduleId: string): string {
+        return scheduleId.replace("data", "enabled");
     }
 
     private async nextDate(data: any): Promise<any> {

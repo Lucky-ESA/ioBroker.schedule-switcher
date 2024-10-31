@@ -5,10 +5,6 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -25,12 +21,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var main_exports = {};
-__export(main_exports, {
-  ScheduleSwitcher: () => ScheduleSwitcher
-});
-module.exports = __toCommonJS(main_exports);
 var utils = __toESM(require("@iobroker/adapter-core"));
 var fs = __toESM(require("fs"));
 var import_node_schedule = require("node-schedule");
@@ -70,10 +60,10 @@ class ScheduleSwitcher extends utils.Adapter {
     this.on("unload", this.onUnload.bind(this));
     this.widgetControl = null;
   }
-  static getEnabledIdFromScheduleId(scheduleId) {
+  getEnabledIdFromScheduleId(scheduleId) {
     return scheduleId.replace("data", "enabled");
   }
-  static getScheduleIdFromEnabledId(scheduleId) {
+  getScheduleIdFromEnabledId(scheduleId) {
     return scheduleId.replace("enabled", "data");
   }
   /**
@@ -210,7 +200,7 @@ class ScheduleSwitcher extends utils.Adapter {
           this.log.debug("is schedule id end");
         } else if (command === "enabled") {
           this.log.debug("is enabled id start");
-          const dataId = ScheduleSwitcher.getScheduleIdFromEnabledId(id);
+          const dataId = this.getScheduleIdFromEnabledId(id);
           const scheduleData = (_a = await this.getStateAsync(dataId)) == null ? void 0 : _a.val;
           await this.onScheduleChange(dataId, scheduleData);
           this.log.debug("is enabled id end");
@@ -485,7 +475,6 @@ class ScheduleSwitcher extends utils.Adapter {
         if (statesInSettings.onOff.includes(id)) {
           statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
           this.log.debug("Found state " + fullId);
-          this.tempCreateView(id);
         } else {
           this.log.debug("Deleting state " + fullId);
           await this.deleteOnOffSchedule(id);
@@ -499,41 +488,6 @@ class ScheduleSwitcher extends utils.Adapter {
   }
   async deleteOnOffSchedule(id) {
     await this.delObjectAsync(`onoff.${id.toString()}`, { recursive: true });
-  }
-  async tempCreateView(id) {
-    await this.setObjectNotExistsAsync(`onoff.${id.toString()}.views`, {
-      type: "state",
-      common: {
-        name: {
-          en: "Views",
-          de: "Ansichten",
-          ru: "\u041F\u0440\u043E\u0441\u043C\u043E\u0442\u0440\u043E\u0432",
-          pt: "Vistas",
-          nl: "Weergaven",
-          fr: "Vues",
-          it: "Visite",
-          es: "Vistas",
-          pl: "Widok",
-          uk: "\u041F\u043E\u0433\u043B\u044F\u0434",
-          "zh-cn": "\u89C6\u56FE"
-        },
-        read: true,
-        write: false,
-        type: "string",
-        role: "json",
-        def: `{}`,
-        desc: "Contains all widgets"
-      },
-      native: {}
-    });
-    await this.setState(`onoff.${id.toString()}.views`, { val: JSON.stringify({}), ack: true });
-    const objState = await this.getObjectAsync(`onoff.${id.toString()}.data`);
-    const state = await this.getStateAsync(`onoff.${id.toString()}.data`);
-    const valState = state && state.val && typeof state.val === "string" ? JSON.parse(state.val) : {};
-    if (objState && objState.common && valState && valState.name && valState.name != (objState == null ? void 0 : objState.common.name)) {
-      await this.extendObject(`onoff.${id.toString()}`, { common: { name: valState.name } });
-      await this.extendObject(`onoff.${id.toString()}.data`, { common: { name: valState.name } });
-    }
   }
   async createOnOffSchedule(id) {
     await this.setObjectNotExistsAsync("onoff", {
@@ -645,7 +599,7 @@ class ScheduleSwitcher extends utils.Adapter {
     }
     try {
       const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
-      const enabledState = await this.getStateAsync(ScheduleSwitcher.getEnabledIdFromScheduleId(id));
+      const enabledState = await this.getStateAsync(this.getEnabledIdFromScheduleId(id));
       if (enabledState) {
         (_a = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _a.destroy();
         schedule.setEnabled(enabledState.val);
@@ -758,8 +712,4 @@ if (require.main !== module) {
 } else {
   (() => new ScheduleSwitcher())();
 }
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  ScheduleSwitcher
-});
 //# sourceMappingURL=main.js.map

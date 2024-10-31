@@ -30,7 +30,7 @@ import { IoBrokerStateService } from "./services/IoBrokerStateService";
 import { MessageService } from "./services/MessageService";
 import { Trigger } from "./triggers/Trigger";
 
-export class ScheduleSwitcher extends utils.Adapter {
+class ScheduleSwitcher extends utils.Adapter {
     private scheduleIdToSchedule: Map<string, Schedule> = new Map<string, Schedule>();
     private loggingService = new IoBrokerLoggingService(this);
     private stateService = new IoBrokerStateService(this);
@@ -50,11 +50,11 @@ export class ScheduleSwitcher extends utils.Adapter {
         this.widgetControl = null;
     }
 
-    public static getEnabledIdFromScheduleId(scheduleId: string): string {
+    private getEnabledIdFromScheduleId(scheduleId: string): string {
         return scheduleId.replace("data", "enabled");
     }
 
-    public static getScheduleIdFromEnabledId(scheduleId: string): string {
+    private getScheduleIdFromEnabledId(scheduleId: string): string {
         return scheduleId.replace("enabled", "data");
     }
 
@@ -195,7 +195,7 @@ export class ScheduleSwitcher extends utils.Adapter {
                     this.log.debug("is schedule id end");
                 } else if (command === "enabled") {
                     this.log.debug("is enabled id start");
-                    const dataId = ScheduleSwitcher.getScheduleIdFromEnabledId(id);
+                    const dataId = this.getScheduleIdFromEnabledId(id);
                     const scheduleData = (await this.getStateAsync(dataId))?.val;
                     await this.onScheduleChange(dataId, scheduleData as string);
                     this.log.debug("is enabled id end");
@@ -650,7 +650,7 @@ export class ScheduleSwitcher extends utils.Adapter {
         }
         try {
             const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
-            const enabledState = await this.getStateAsync(ScheduleSwitcher.getEnabledIdFromScheduleId(id));
+            const enabledState = await this.getStateAsync(this.getEnabledIdFromScheduleId(id));
             if (enabledState) {
                 this.scheduleIdToSchedule.get(id)?.destroy();
                 schedule.setEnabled(enabledState.val as boolean);
