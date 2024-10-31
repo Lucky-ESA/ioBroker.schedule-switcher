@@ -83,7 +83,7 @@ function createOnOffWidget(widgetId, view, data, style) {
     element.setAttribute("widgetid", widgetId);
     element.style.setProperty("--ts-widget-astro-icon-display", data.useAstroIcons ? "inline" : "none");
     element.style.setProperty("--ts-widget-astro-text-display", data.useAstroIcons ? "none" : "inline");
-    if (data.widthActionValue != "") {
+    if (data.widthActionValue != null && data.widthActionValue != "") {
         element.style.setProperty("--ts-widget-state-action-width", data.widthActionValue);
     }
     if (data.useCSS) {
