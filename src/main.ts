@@ -524,7 +524,6 @@ export class ScheduleSwitcher extends utils.Adapter {
                 if (statesInSettings.onOff.includes(id)) {
                     statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
                     this.log.debug("Found state " + fullId);
-                    this.tempCreateView(id);
                 } else {
                     this.log.debug("Deleting state " + fullId);
                     await this.deleteOnOffSchedule(id);
@@ -539,42 +538,6 @@ export class ScheduleSwitcher extends utils.Adapter {
 
     private async deleteOnOffSchedule(id: number): Promise<void> {
         await this.delObjectAsync(`onoff.${id.toString()}`, { recursive: true });
-    }
-
-    private async tempCreateView(id: number): Promise<void> {
-        await this.setObjectNotExistsAsync(`onoff.${id.toString()}.views`, {
-            type: "state",
-            common: {
-                name: {
-                    en: "Views",
-                    de: "Ansichten",
-                    ru: "Просмотров",
-                    pt: "Vistas",
-                    nl: "Weergaven",
-                    fr: "Vues",
-                    it: "Visite",
-                    es: "Vistas",
-                    pl: "Widok",
-                    uk: "Погляд",
-                    "zh-cn": "视图",
-                },
-                read: true,
-                write: false,
-                type: "string",
-                role: "json",
-                def: `{}`,
-                desc: "Contains all widgets",
-            },
-            native: {},
-        });
-        await this.setState(`onoff.${id.toString()}.views`, { val: JSON.stringify({}), ack: true });
-        const objState = await this.getObjectAsync(`onoff.${id.toString()}.data`);
-        const state = await this.getStateAsync(`onoff.${id.toString()}.data`);
-        const valState = state && state.val && typeof state.val === "string" ? JSON.parse(state.val) : {};
-        if (objState && objState.common && valState && valState.name && valState.name != objState?.common.name) {
-            await this.extendObject(`onoff.${id.toString()}`, { common: { name: valState.name } });
-            await this.extendObject(`onoff.${id.toString()}.data`, { common: { name: valState.name } });
-        }
     }
 
     private async createOnOffSchedule(id: number): Promise<void> {
