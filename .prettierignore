@@ -2,4 +2,3 @@ package.json
 package-lock.json
 build/
 admin/words.js
-widgets/schedule-switcher/js/words.js
