@@ -23,19 +23,12 @@ __export(AstroTrigger_exports, {
 module.exports = __toCommonJS(AstroTrigger_exports);
 var import_BaseDailyTrigger = require("./BaseDailyTrigger");
 class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
-  static MAX_SHIFT = 120;
   astroTime;
   shiftInMinutes;
   objectId;
   todayTrigger;
   constructor(id, astroTime, shiftInMinutes, weekdays, action, objectId, todayTrigger) {
     super(id, action, weekdays);
-    if (astroTime == null) {
-      throw new Error("Astro time may not be null.");
-    }
-    if (shiftInMinutes == null || shiftInMinutes > AstroTrigger.MAX_SHIFT || shiftInMinutes < -AstroTrigger.MAX_SHIFT) {
-      throw new Error("Shift in minutes must be in range -120 to 120.");
-    }
     this.astroTime = astroTime;
     this.shiftInMinutes = shiftInMinutes;
     this.objectId = objectId;

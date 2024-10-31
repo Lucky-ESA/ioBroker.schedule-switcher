@@ -4,7 +4,6 @@ import { BaseDailyTrigger } from "./BaseDailyTrigger";
 import { Weekday } from "./Weekday";
 
 export class AstroTrigger extends BaseDailyTrigger {
-    public static readonly MAX_SHIFT = 120;
     private readonly astroTime: AstroTime;
     private readonly shiftInMinutes: number;
     private readonly objectId: number;
@@ -20,16 +19,6 @@ export class AstroTrigger extends BaseDailyTrigger {
         todayTrigger: any,
     ) {
         super(id, action, weekdays);
-        if (astroTime == null) {
-            throw new Error("Astro time may not be null.");
-        }
-        if (
-            shiftInMinutes == null ||
-            shiftInMinutes > AstroTrigger.MAX_SHIFT ||
-            shiftInMinutes < -AstroTrigger.MAX_SHIFT
-        ) {
-            throw new Error("Shift in minutes must be in range -120 to 120.");
-        }
         this.astroTime = astroTime;
         this.shiftInMinutes = shiftInMinutes;
         this.objectId = objectId;

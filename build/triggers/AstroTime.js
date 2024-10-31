@@ -25,6 +25,17 @@ var AstroTime = /* @__PURE__ */ ((AstroTime2) => {
   AstroTime2["Sunrise"] = "sunrise";
   AstroTime2["SolarNoon"] = "solarNoon";
   AstroTime2["Sunset"] = "sunset";
+  AstroTime2["SunriseEnd"] = "sunriseEnd";
+  AstroTime2["GoldenHourEnd"] = "goldenHourEnd";
+  AstroTime2["GoldenHour"] = "goldenHour";
+  AstroTime2["SunsetStart"] = "sunsetStart";
+  AstroTime2["Dusk"] = "dusk";
+  AstroTime2["NauticalDusk"] = "nauticalDusk";
+  AstroTime2["Night"] = "night";
+  AstroTime2["Nadir"] = "nadir";
+  AstroTime2["NightEnd"] = "nightEnd";
+  AstroTime2["NauticalDawn"] = "nauticalDawn";
+  AstroTime2["Sawn"] = "dawn";
   return AstroTime2;
 })(AstroTime || {});
 // Annotate the CommonJS export names for ESM import in node:

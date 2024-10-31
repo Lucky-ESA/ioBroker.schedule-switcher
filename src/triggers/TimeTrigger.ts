@@ -18,12 +18,6 @@ export class TimeTrigger extends BaseDailyTrigger {
         todayTrigger: any,
     ) {
         super(id, action, weekdays);
-        if (hour == undefined || hour < 0 || hour > 23) {
-            throw new Error("Hour must be in range 0-23.");
-        }
-        if (minute == undefined || minute < 0 || minute > 59) {
-            throw new Error("Minute must be in range 0-59.");
-        }
         this.hours = hour;
         this.minutes = minute;
         this.objectId = objectId;

@@ -29,12 +29,6 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   todayTrigger;
   constructor(id, hour, minute, objectId, weekdays, action, todayTrigger) {
     super(id, action, weekdays);
-    if (hour == void 0 || hour < 0 || hour > 23) {
-      throw new Error("Hour must be in range 0-23.");
-    }
-    if (minute == void 0 || minute < 0 || minute > 59) {
-      throw new Error("Minute must be in range 0-59.");
-    }
     this.hours = hour;
     this.minutes = minute;
     this.objectId = objectId;

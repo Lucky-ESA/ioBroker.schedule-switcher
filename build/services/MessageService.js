@@ -71,13 +71,13 @@ class MessageService {
         await this.addOneTimeTrigger(schedule, data);
         break;
       case "update-one-time-trigger":
-        await this.updateOneTimeTrigger(schedule, JSON.stringify(data.trigger), data.dataId);
+        await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
         break;
       case "update-trigger":
         if (data.trigger && data.trigger.type === "AstroTrigger") {
           data.trigger.todayTrigger = await this.nextDate(data.trigger);
         }
-        await this.updateTrigger(schedule, JSON.stringify(data.trigger), data.dataId);
+        await this.updateTrigger(schedule, data.trigger, data.dataId);
         break;
       case "delete-trigger":
         schedule.removeTrigger(data.triggerId);
@@ -163,8 +163,16 @@ class MessageService {
   }
   async updateOneTimeTrigger(schedule, triggerString, dataId) {
     let updated;
+    if (isNaN(new Date(triggerString.date).getTime())) {
+      this.adapter.log.warn(`Wrong OneTimeDate ${triggerString.date} in ${dataId}`);
+      triggerString.date = (/* @__PURE__ */ new Date()).toISOString();
+    }
+    if (triggerString.timedate == null || typeof triggerString.timedate !== "boolean") {
+      this.adapter.log.warn(`Wrong timedate ${triggerString.timedate} in ${dataId}`);
+      triggerString.timedate = true;
+    }
     if (schedule instanceof import_OnOffSchedule.OnOffSchedule) {
-      updated = (await this.createOnOffScheduleSerializer(dataId)).getTriggerSerializer(schedule).deserialize(triggerString);
+      updated = (await this.createOnOffScheduleSerializer(dataId)).getTriggerSerializer(schedule).deserialize(JSON.stringify(triggerString));
     } else {
       this.adapter.log.error(`Can not deserialize trigger for schedule of type ${typeof schedule}`);
       return;
@@ -176,13 +184,40 @@ class MessageService {
     const id = data.dataId.split(".");
     t.id = this.getNextTriggerId(schedule.getTriggers());
     t.objectId = parseInt(id[3]);
+    if (isNaN(new Date(t.date).getTime())) {
+      this.adapter.log.warn(`Wrong OneTimeDate ${t.date} in ${id}`);
+      t.date = (/* @__PURE__ */ new Date()).toISOString();
+    }
+    if (t.timedate == null || typeof t.timedate !== "boolean") {
+      this.adapter.log.warn(`Wrong timedate ${t.timedate} in ${id}`);
+      t.timedate = true;
+    }
     const trigger = (await this.createOnOffScheduleSerializer(data.dataId)).getTriggerSerializer(schedule).deserialize(JSON.stringify(t));
     schedule.addTrigger(trigger);
   }
   async updateTrigger(schedule, triggerString, dataId) {
     let updated;
+    if (triggerString.type === "TimeTrigger") {
+      if (triggerString.hour == void 0 || triggerString.hour < 0 || triggerString.hour > 23) {
+        this.adapter.log.warn("Hour must be in range 0-23.");
+        triggerString.hour = 0;
+      }
+      if (triggerString.minute == void 0 || triggerString.minute < 0 || triggerString.minute > 59) {
+        this.adapter.log.warn("Minute must be in range 0-59.");
+        triggerString.minute = 0;
+      }
+    } else if (triggerString.type === "AstroTrigger") {
+      if (triggerString.astroTime == null) {
+        this.adapter.log.warn("Astro time may not be null.");
+        triggerString.trigger.astroTime = "sunrise";
+      }
+      if (triggerString.shiftInMinutes == null || triggerString.shiftInMinutes > 120 || triggerString.shiftInMinutes < -120) {
+        this.adapter.log.warn("Shift in minutes must be in range -120 to 120.");
+        triggerString.shiftInMinutes = 0;
+      }
+    }
     if (schedule instanceof import_OnOffSchedule.OnOffSchedule) {
-      updated = (await this.createOnOffScheduleSerializer(dataId)).getTriggerSerializer(schedule).deserialize(triggerString);
+      updated = (await this.createOnOffScheduleSerializer(dataId)).getTriggerSerializer(schedule).deserialize(JSON.stringify(triggerString));
     } else {
       this.adapter.log.error(`Can not deserialize trigger for schedule of type ${typeof schedule}`);
       return;
