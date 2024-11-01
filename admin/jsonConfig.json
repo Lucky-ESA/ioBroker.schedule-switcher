@@ -5,10 +5,10 @@
         "status": {
             "type": "alive",
             "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 6,
+            "xs": 4,
+            "sm": 4,
+            "md": 2,
+            "lg": 2,
             "xl": 2,
             "textNotAlive": "stopAdapter",
             "textAlive": "startAdapter"
@@ -25,7 +25,11 @@
                 },
                 "schedulesData": {
                     "newLine": true,
+                    "xs": 12,
                     "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12,
                     "noDelete": false,
                     "type": "table",
                     "disabled": "!_alive",
