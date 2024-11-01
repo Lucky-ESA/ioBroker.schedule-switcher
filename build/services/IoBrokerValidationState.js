@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,12 +17,21 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var IoBrokerValidationState_exports = {};
 __export(IoBrokerValidationState_exports, {
   IoBrokerValidationState: () => IoBrokerValidationState
 });
 module.exports = __toCommonJS(IoBrokerValidationState_exports);
+var fs = __toESM(require("fs"));
 class IoBrokerValidationState {
   adapter;
   delayTimeout;
@@ -315,6 +326,131 @@ class IoBrokerValidationState {
       this.adapter.log.error(`Cannot found OnOffSchedule in ${id}`);
       val = {};
       return;
+    }
+  }
+  async validationView(utils) {
+    this.adapter.log.info("Start Widget control!");
+    const visFolder = [];
+    const allVisViews = {};
+    const newViews = {};
+    const allVIS = await this.adapter.getObjectViewAsync("system", "instance", {
+      startkey: "system.adapter.vis.",
+      endkey: "system.adapter.vis.\u9999"
+    });
+    const allVIS2 = await this.adapter.getObjectViewAsync("system", "instance", {
+      startkey: "system.adapter.vis-2.",
+      endkey: "system.adapter.vis-2.\u9999"
+    });
+    if (allVIS2 && allVIS2.rows) {
+      for (const id of allVIS2.rows) {
+        visFolder.push(id.id.replace("system.adapter.", ""));
+      }
+    }
+    if (allVIS && allVIS.rows) {
+      for (const id of allVIS.rows) {
+        visFolder.push(id.id.replace("system.adapter.", ""));
+      }
+    }
+    if (visFolder.length > 0) {
+      const path = `${utils}files/`;
+      for (const vis of visFolder) {
+        allVisViews[vis] = {};
+        const folders = fs.readdirSync(`${path}${vis}/`);
+        for (const folder of folders) {
+          if (fs.statSync(`${path}${vis}/${folder}`).isDirectory()) {
+            if (fs.existsSync(`${path}${vis}/${folder}/vis-views.json`)) {
+              const valViews = fs.readFileSync(`${path}${vis}/${folder}/vis-views.json`, "utf-8");
+              if (valViews.indexOf("tplSchedule-switcherDevicePlan") !== -1) {
+                const templates = JSON.parse(valViews);
+                allVisViews[vis][folder] = {};
+                for (const template in templates) {
+                  if (templates[template].widgets && JSON.stringify(templates[template].widgets).indexOf(
+                    "tplSchedule-switcherDevicePlan"
+                  ) !== -1) {
+                    allVisViews[vis][folder][template] = [];
+                    for (const widget in templates[template].widgets) {
+                      if (templates[template].widgets[widget].tpl === "tplSchedule-switcherDevicePlan") {
+                        if (templates[template].widgets[widget].data["oid-dataId"] != "" && !newViews[templates[template].widgets[widget].data["oid-dataId"]]) {
+                          newViews[templates[template].widgets[widget].data["oid-dataId"]] = {};
+                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis] = {};
+                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder] = {};
+                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
+                            prefix: folder,
+                            namespace: vis,
+                            view: template,
+                            widgetId: widget,
+                            newId: templates[template].widgets[widget].data["oid-dataId"]
+                          };
+                        } else if (templates[template].widgets[widget].data["oid-dataId"] != "") {
+                          if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis])
+                            newViews[templates[template].widgets[widget].data["oid-dataId"]][vis] = {};
+                          if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder])
+                            newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder] = {};
+                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
+                            prefix: folder,
+                            namespace: vis,
+                            view: template,
+                            widgetId: widget,
+                            newId: templates[template].widgets[widget].data["oid-dataId"]
+                          };
+                        }
+                        if (!templates[template].widgets[widget].data["oid-dataId"] || templates[template].widgets[widget].data["oid-dataId"] == "") {
+                          this.adapter.log.warn(
+                            `Missing dataId for ${widget} - ${template} - ${folder} - ${vis}`
+                          );
+                        }
+                        if (!templates[template].widgets[widget].data["oid-stateId1"] || templates[template].widgets[widget].data["oid-stateId1"] == "") {
+                          this.adapter.log.warn(
+                            `Missing stateId for ${widget} - ${template} - ${folder} - ${vis}`
+                          );
+                        }
+                        if (!templates[template].widgets[widget].data["oid-enabled"] || templates[template].widgets[widget].data["oid-enabled"] == "") {
+                          this.adapter.log.warn(
+                            `Missing oid-enabledId for ${widget} - ${template} - ${folder} - ${vis}`
+                          );
+                        }
+                        if (templates[template].widgets[widget].data["oid-dataId"] && templates[template].widgets[widget].data["oid-enabled"] && templates[template].widgets[widget].data["oid-dataId"] != "" && templates[template].widgets[widget].data["oid-enabled"] != "") {
+                          const splitDataId = templates[template].widgets[widget].data["oid-dataId"].split(
+                            "."
+                          );
+                          const splitEnabledId = templates[template].widgets[widget].data["oid-enabled"].split(
+                            "."
+                          );
+                          if (splitDataId.length != 5 || splitDataId[4] != "data") {
+                            this.adapter.log.warn(
+                              `Wrong dataId ${templates[template].widgets[widget].data["oid-dataId"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                            );
+                          }
+                          if (splitEnabledId.length != 5 || splitEnabledId[4] != "enabled") {
+                            this.adapter.log.warn(
+                              `Wrong dataId ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                            );
+                          }
+                          if (splitEnabledId[3] != splitDataId[3]) {
+                            this.adapter.log.warn(
+                              `Wrong dataId and enabledID ${templates[template].widgets[widget].data["oid-dataId"]} - ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                            );
+                          }
+                        }
+                        const wid = {};
+                        wid[widget] = templates[template].widgets[widget];
+                        allVisViews[vis][folder][template].push(wid);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    this.adapter.log.debug("newViews: " + JSON.stringify(newViews));
+    if (Object.keys(newViews).length > 0) {
+      for (const stateId in newViews) {
+        const id = stateId.replace("data", "views");
+        await this.adapter.setState(id, { val: JSON.stringify(newViews[stateId]), ack: true });
+      }
     }
   }
 }
