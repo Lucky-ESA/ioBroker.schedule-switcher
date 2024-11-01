@@ -5,10 +5,10 @@
         "status": {
             "type": "alive",
             "newLine": true,
-            "xs": 4,
-            "sm": 4,
-            "md": 2,
-            "lg": 2,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6,
             "xl": 2,
             "textNotAlive": "stopAdapter",
             "textAlive": "startAdapter"
