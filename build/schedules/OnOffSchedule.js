@@ -27,8 +27,8 @@ var import_Schedule = require("./Schedule");
 class OnOffSchedule extends import_Schedule.Schedule {
   onAction;
   offAction;
-  constructor(onAction, offAction, triggerScheduler) {
-    super(triggerScheduler);
+  constructor(onAction, offAction, triggerScheduler, loggingService) {
+    super(triggerScheduler, loggingService);
     if (onAction == null) {
       throw new Error(`onAction may not be null or undefined`);
     }

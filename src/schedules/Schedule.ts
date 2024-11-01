@@ -1,5 +1,6 @@
 import { Destroyable } from "../Destroyable";
 import { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
+import { LoggingService } from "../services/LoggingService";
 import { Trigger } from "../triggers/Trigger";
 
 export abstract class Schedule implements Destroyable {
@@ -7,12 +8,14 @@ export abstract class Schedule implements Destroyable {
     private name = "New Schedule";
     private triggers: Trigger[] = [];
     private readonly triggerScheduler: UniversalTriggerScheduler;
+    private logger: LoggingService;
 
-    protected constructor(triggerScheduler: UniversalTriggerScheduler) {
+    protected constructor(triggerScheduler: UniversalTriggerScheduler, logger: LoggingService) {
         if (triggerScheduler == null) {
             throw new Error(`triggerScheduler may not be null or undefined`);
         }
         this.triggerScheduler = triggerScheduler;
+        this.logger = logger;
     }
 
     public setEnabled(enabled: boolean): void {
@@ -28,7 +31,8 @@ export abstract class Schedule implements Destroyable {
 
     public setName(name: string): void {
         if (name == null) {
-            throw new Error(`name may not be null or undefined`);
+            this.logger.logWarn(`name may not be null or undefined`);
+            name = "Unknown";
         }
         this.name = name;
     }
@@ -47,7 +51,7 @@ export abstract class Schedule implements Destroyable {
 
     public addTrigger(trigger: Trigger): void {
         if (this.findTriggerById(trigger.getId())) {
-            throw new Error(`Cannot add trigger, trigger id ${trigger.getId()} exists already`);
+            this.logger.logWarn(`Cannot add trigger, trigger id ${trigger.getId()} exists already`);
         } else {
             this.triggers.push(trigger);
             if (this.isEnabled()) {
@@ -59,7 +63,7 @@ export abstract class Schedule implements Destroyable {
     public updateTrigger(trigger: Trigger): void {
         const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
         if (index == -1) {
-            throw new Error(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
+            this.logger.logWarn(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
         } else {
             if (this.isEnabled()) {
                 this.triggerScheduler.unregister(this.getTriggers()[index]);
@@ -74,7 +78,7 @@ export abstract class Schedule implements Destroyable {
         if (trigger) {
             this.removeTriggerAndUnregister(trigger);
         } else {
-            throw new Error(`Cannot delete trigger, trigger id ${triggerId} not found`);
+            this.logger.logInfo(`Cannot delete trigger, trigger id ${triggerId} not found`);
         }
     }
 

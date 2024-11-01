@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/services/ValidationState.ts"],
+  "sourcesContent": ["export interface validationState {\n    validation(id: string, val: any, check: boolean): Promise<any>;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

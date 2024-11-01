@@ -1,6 +1,7 @@
 import { ConditionAction } from "../actions/ConditionAction";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
 import { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
+import { LoggingService } from "../services/LoggingService";
 import { Schedule } from "./Schedule";
 
 export class OnOffSchedule extends Schedule {
@@ -11,8 +12,9 @@ export class OnOffSchedule extends Schedule {
         onAction: OnOffStateAction<string | boolean | number>,
         offAction: OnOffStateAction<string | boolean | number>,
         triggerScheduler: UniversalTriggerScheduler,
+        loggingService: LoggingService,
     ) {
-        super(triggerScheduler);
+        super(triggerScheduler, loggingService);
         if (onAction == null) {
             throw new Error(`onAction may not be null or undefined`);
         }

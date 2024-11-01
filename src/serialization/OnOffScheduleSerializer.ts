@@ -2,6 +2,7 @@ import { Action } from "../actions/Action";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
 import { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
+import { LoggingService } from "../services/LoggingService";
 import { Trigger } from "../triggers/Trigger";
 import { ActionReferenceSerializer } from "./ActionReferenceSerializer";
 import { Serializer } from "./Serializer";
@@ -13,6 +14,7 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
         private actionSerializer: UniversalSerializer<Action>,
         private triggerSerializer: UniversalSerializer<Trigger>,
         private adapter: ioBroker.Adapter,
+        private loggingService: LoggingService,
     ) {}
 
     deserialize(stringToDeserialize: string): OnOffSchedule {
@@ -24,7 +26,7 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
         const offAction = this.actionSerializer.deserialize(JSON.stringify(json.offAction));
 
         if (onAction instanceof OnOffStateAction && offAction instanceof OnOffStateAction) {
-            const schedule = new OnOffSchedule(onAction, offAction, this.triggerScheduler);
+            const schedule = new OnOffSchedule(onAction, offAction, this.triggerScheduler, this.loggingService);
             schedule.setName(json.name);
 
             this.useActionReferenceSerializer(schedule);

@@ -25,11 +25,12 @@ var import_OnOffStateAction = require("../actions/OnOffStateAction");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
 var import_ActionReferenceSerializer = require("./ActionReferenceSerializer");
 class OnOffScheduleSerializer {
-  constructor(triggerScheduler, actionSerializer, triggerSerializer, adapter) {
+  constructor(triggerScheduler, actionSerializer, triggerSerializer, adapter, loggingService) {
     this.triggerScheduler = triggerScheduler;
     this.actionSerializer = actionSerializer;
     this.triggerSerializer = triggerSerializer;
     this.adapter = adapter;
+    this.loggingService = loggingService;
   }
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -39,7 +40,7 @@ class OnOffScheduleSerializer {
     const onAction = this.actionSerializer.deserialize(JSON.stringify(json.onAction));
     const offAction = this.actionSerializer.deserialize(JSON.stringify(json.offAction));
     if (onAction instanceof import_OnOffStateAction.OnOffStateAction && offAction instanceof import_OnOffStateAction.OnOffStateAction) {
-      const schedule = new import_OnOffSchedule.OnOffSchedule(onAction, offAction, this.triggerScheduler);
+      const schedule = new import_OnOffSchedule.OnOffSchedule(onAction, offAction, this.triggerScheduler, this.loggingService);
       schedule.setName(json.name);
       this.useActionReferenceSerializer(schedule);
       json.triggers.forEach(async (t) => {

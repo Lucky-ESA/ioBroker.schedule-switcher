@@ -26,11 +26,13 @@ class Schedule {
   name = "New Schedule";
   triggers = [];
   triggerScheduler;
-  constructor(triggerScheduler) {
+  logger;
+  constructor(triggerScheduler, logger) {
     if (triggerScheduler == null) {
       throw new Error(`triggerScheduler may not be null or undefined`);
     }
     this.triggerScheduler = triggerScheduler;
+    this.logger = logger;
   }
   setEnabled(enabled) {
     if (enabled !== this.enabled) {
@@ -44,7 +46,8 @@ class Schedule {
   }
   setName(name) {
     if (name == null) {
-      throw new Error(`name may not be null or undefined`);
+      this.logger.logWarn(`name may not be null or undefined`);
+      name = "Unknown";
     }
     this.name = name;
   }
@@ -59,7 +62,7 @@ class Schedule {
   }
   addTrigger(trigger) {
     if (this.findTriggerById(trigger.getId())) {
-      throw new Error(`Cannot add trigger, trigger id ${trigger.getId()} exists already`);
+      this.logger.logWarn(`Cannot add trigger, trigger id ${trigger.getId()} exists already`);
     } else {
       this.triggers.push(trigger);
       if (this.isEnabled()) {
@@ -70,7 +73,7 @@ class Schedule {
   updateTrigger(trigger) {
     const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
     if (index == -1) {
-      throw new Error(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
+      this.logger.logWarn(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
     } else {
       if (this.isEnabled()) {
         this.triggerScheduler.unregister(this.getTriggers()[index]);
@@ -84,7 +87,7 @@ class Schedule {
     if (trigger) {
       this.removeTriggerAndUnregister(trigger);
     } else {
-      throw new Error(`Cannot delete trigger, trigger id ${triggerId} not found`);
+      this.logger.logInfo(`Cannot delete trigger, trigger id ${triggerId} not found`);
     }
   }
   destroy() {

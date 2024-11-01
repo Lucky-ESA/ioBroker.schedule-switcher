@@ -10,6 +10,7 @@ import { DailyTriggerBuilder } from "../triggers/DailyTriggerBuilder";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
 import { Trigger } from "../triggers/Trigger";
 import { AllWeekdays } from "../triggers/Weekday";
+import { IoBrokerValidationState } from "./IoBrokerValidationState";
 import { StateService } from "./StateService";
 
 export class MessageService {
@@ -22,9 +23,11 @@ export class MessageService {
         private createOnOffScheduleSerializer: (dataId: string) => Promise<OnOffScheduleSerializer>,
         private adapter: ioBroker.Adapter,
         private readonly coordinate: Coordinate,
+        private readonly validation: IoBrokerValidationState,
     ) {
         this.adapter = adapter;
         this.triggerTimeout = undefined;
+        this.validation = new IoBrokerValidationState(adapter);
     }
 
     public async handleMessage(message: ioBroker.Message): Promise<void> {
@@ -71,6 +74,10 @@ export class MessageService {
                 schedule.removeTrigger(data.triggerId);
                 break;
             case "change-name":
+                if (data.name == null) {
+                    this.adapter.log.error(`The name cannot be null`);
+                    return;
+                }
                 schedule.setName(data.name);
                 this.changeName(data);
                 break;
@@ -203,30 +210,12 @@ export class MessageService {
 
     private async updateTrigger(schedule: Schedule, triggerString: any, dataId: string): Promise<void> {
         let updated;
-        if (triggerString.type === "TimeTrigger") {
-            if (triggerString.hour == undefined || triggerString.hour < 0 || triggerString.hour > 23) {
-                this.adapter.log.warn("Hour must be in range 0-23.");
-                triggerString.hour = 0;
-            }
-            if (triggerString.minute == undefined || triggerString.minute < 0 || triggerString.minute > 59) {
-                this.adapter.log.warn("Minute must be in range 0-59.");
-                triggerString.minute = 0;
-            }
-        } else if (triggerString.type === "AstroTrigger") {
-            if (triggerString.astroTime == null) {
-                this.adapter.log.warn("Astro time may not be null.");
-                triggerString.trigger.astroTime = "sunrise";
-            }
-            if (
-                triggerString.shiftInMinutes == null ||
-                triggerString.shiftInMinutes > 120 ||
-                triggerString.shiftInMinutes < -120
-            ) {
-                this.adapter.log.warn("Shift in minutes must be in range -120 to 120.");
-                triggerString.shiftInMinutes = 0;
-            }
-        }
-        if (schedule instanceof OnOffSchedule) {
+        await this.validation.validation(dataId, triggerString, true);
+        if (
+            schedule instanceof OnOffSchedule &&
+            typeof triggerString === "object" &&
+            Object.keys(triggerString).length > 0
+        ) {
             updated = (await this.createOnOffScheduleSerializer(dataId))
                 .getTriggerSerializer(schedule)
                 .deserialize(JSON.stringify(triggerString));
@@ -292,17 +281,67 @@ export class MessageService {
             this.adapter.log.error(`Cannot change switched values when schedule type is not OnOffSchedule`);
             return;
         }
-        if (schedule.getOnAction().getValueType() === data.valueType && schedule.getOnAction().getBooleanValue()) {
+        // schedule.getOnAction().getBooleanValue()
+        if (schedule.getOnAction().getValueType() === data.valueType && data.valueType === "boolean") {
             this.adapter.log.debug("Catch no boolean change!!");
             return;
+        }
+        if (data.valueType === "boolean") {
+            if (data.onValue != null) {
+                delete data.onValue;
+            }
+            if (data.offValue != null) {
+                delete data.offValue;
+            }
+        }
+        if (data.valueType === "number") {
+            if (!data.onValue || (typeof data.onValue !== "number" && isNaN(Number.parseFloat(data.onValue)))) {
+                data.onValue = 0;
+            }
+            if (!data.offValue || (typeof data.offValue !== "number" && isNaN(Number.parseFloat(data.offValue)))) {
+                data.offValue = 0;
+            }
+        }
+        if (data.valueType === "string") {
+            if (!data.onValue || typeof data.onValue !== "string") {
+                data.onValue = data.onValue.toString();
+            }
+            if (!data.offValue || typeof data.offValue !== "string") {
+                data.offValue = data.offValue.toString();
+            }
         }
         schedule.setOnAction(this.changeSwitchedValueOfOnOffScheduleAction(schedule.getOnAction(), data));
         schedule.setOffAction(this.changeSwitchedValueOfOnOffScheduleAction(schedule.getOffAction(), data));
     }
 
-    private changeOnOffSchedulesSwitchedIds(schedule: Schedule, stateIds: string[]): void {
+    private async changeOnOffSchedulesSwitchedIds(schedule: Schedule, stateIds: string[]): Promise<void> {
         if (!(schedule instanceof OnOffSchedule)) {
             this.adapter.log.error(`Cannot change switched ids when schedule type is not OnOffSchedule`);
+            return;
+        }
+        if (typeof stateIds === "object") {
+            const type = schedule.getOnAction().getValueType();
+            for (const stateId of stateIds) {
+                const check = await this.adapter.getForeignObjectAsync(stateId);
+                if (!check) {
+                    this.adapter.log.error(`StateId ${stateId} is null/undefined`);
+                    return;
+                }
+                if (!check.common || !check.common.type) {
+                    this.adapter.log.error(`Missing type ${check.common.type} of ${stateId} !!!}`);
+                    return;
+                }
+                if (check.common && check.common.type === "mixed") {
+                    continue;
+                }
+                if (check.common && check.common.type !== type) {
+                    this.adapter.log.warn(
+                        `The type ${check.common.type} of ${stateId} is incorrect!!! Type in VIS settings - ${type}`,
+                    );
+                }
+            }
+        } else {
+            this.adapter.log.warn(`StateIds is not an object`);
             return;
         }
         schedule.getOnAction().setIdsOfStatesToSet(stateIds);
