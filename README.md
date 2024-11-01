@@ -45,6 +45,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 -   (Lucky_ESA) Temporary function removed
 -   (Lucky_ESA) Creation of objects adjusted
+-   (Lucky_ESA) Validation check of the states
+-   (Lucky_ESA) Validation check for 2 widgets with one object
 
 ### 0.0.3 (2024-10-30)
 

@@ -159,9 +159,46 @@
             );
         }
 
+        showWarningInWidget(widgetElement, warning) {
+            const p = document.createElement("p");
+            p.textContent = vis.binds["schedule-switcher"].translate(warning);
+            while (widgetElement.firstChild) {
+                widgetElement.removeChild(widgetElement.firstChild);
+            }
+            widgetElement.appendChild(p);
+        }
+
+        validateOnOffStatesWithWidgetSettings(widgetElement, newSettings) {
+            const state = JSON.parse(vis.states.attr(`${newSettings["oid-dataId"]}.val`));
+            console.log("validateOnOffStatesWithWidgetSettings: " + JSON.stringify(state));
+            if (
+                !state.onAction ||
+                typeof state.onAction.idsOfStatesToSet !== "object" ||
+                state.onAction.idsOfStatesToSet.length != newSettings.statesCount
+            ) {
+                this.showWarningInWidget(widgetElement, "errorMoreState");
+                return false;
+            }
+            if (state.triggers.length > 0) {
+                for (const trigger of state.triggers) {
+                    if (trigger.action && trigger.action.type === "ConditionAction") {
+                        if (!newSettings["oid-conditionStateId1"]) {
+                            this.showWarningInWidget(widgetElement, "errorConditions");
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
         onWidgetIdChange() {
             console.log("widget id change");
             const newSettings = vis.widgets[this.widgetId].data;
+            const widgetElement = document.querySelector(`#${this.widgetId}`);
+            if (!this.validateOnOffStatesWithWidgetSettings(widgetElement, newSettings)) {
+                return;
+            }
             this.settings = newSettings;
             if (newSettings.showId && newSettings.statesCount === "1") {
                 this.sr.querySelector("#switched-oid").textContent = newSettings["oid-stateId1"];

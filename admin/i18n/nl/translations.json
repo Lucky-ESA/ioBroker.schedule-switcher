@@ -143,5 +143,7 @@
     "fsDateTime": "Breedte van datum-tijdinvoer",
     "errorInvalid": "Ongeldige datum",
     "errorLess": "Datum is kleiner dan de huidige tijd",
-    "errorGreater": "Datum is groter dan 1 jaar"
+    "errorGreater": "Datum is groter dan 1 jaar",
+    "errorMoreState": "Een andere widget heeft meer statussen",
+    "errorConditions": "Een andere widget gebruikt voorwaarden"
 }

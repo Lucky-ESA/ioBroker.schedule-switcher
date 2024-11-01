@@ -143,5 +143,7 @@
     "fsDateTime": "Width of date time input",
     "errorInvalid": "Invalid Date",
     "errorLess": "Date is less than the current time",
-    "errorGreater": "Date is greater than 1 year"
+    "errorGreater": "Date is greater than 1 year",
+    "errorMoreState": "Another widget has more states",
+    "errorConditions": "Another widget uses conditions"
 }

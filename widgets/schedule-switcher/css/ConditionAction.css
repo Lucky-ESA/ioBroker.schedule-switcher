@@ -1,5 +1,5 @@
 .button {
-    filter:  var(--ts-widget-img-btn-filter, invert(1));
+    filter: var(--ts-widget-img-btn-filter, invert(1));
     align-self: center;
     cursor: pointer;
 }
@@ -33,7 +33,9 @@
     margin: 20px 10px 20px 20px;
 }
 
-#selectConditionStateId1,#selectConditionStateId2,#selectSign {
+#selectConditionStateId1,
+#selectConditionStateId2,
+#selectSign {
     font-size: 1.2rem;
     height: 28px;
 }

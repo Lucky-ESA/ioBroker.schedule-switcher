@@ -42,9 +42,10 @@
     cursor: pointer;
     vertical-align: bottom;
 }
-.md-radio label:before, .md-radio label:after {
+.md-radio label:before,
+.md-radio label:after {
     position: absolute;
-    content: '';
+    content: "";
     border-radius: 50%;
     transition: all 0.3s ease;
     transition-property: transform, border-color;

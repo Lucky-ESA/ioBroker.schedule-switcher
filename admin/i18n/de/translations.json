@@ -143,5 +143,7 @@
     "fsDateTime": "Breite der Datums-/Uhrzeiteingabe",
     "errorInvalid": "Ungültiges Datum",
     "errorLess": "Das Datum liegt vor der aktuellen Uhrzeit",
-    "errorGreater": "Das Datum ist größer als 1 Jahr"
+    "errorGreater": "Das Datum ist größer als 1 Jahr",
+    "errorMoreState": "Ein anderes Widget hat mehr Zustände",
+    "errorConditions": "Ein anderes Widget verwendet Bedingungen"
 }

@@ -143,5 +143,7 @@
     "fsDateTime": "Ancho de entrada de fecha y hora",
     "errorInvalid": "Fecha no válida",
     "errorLess": "La fecha es menor que la hora actual.",
-    "errorGreater": "La fecha es mayor a 1 año."
+    "errorGreater": "La fecha es mayor a 1 año.",
+    "errorMoreState": "Otro widget tiene más estados.",
+    "errorConditions": "Otro widget usa condiciones."
 }

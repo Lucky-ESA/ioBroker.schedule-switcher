@@ -143,5 +143,7 @@
     "fsDateTime": "日期时间输入的宽度",
     "errorInvalid": "无效日期",
     "errorLess": "日期小于当前时间",
-    "errorGreater": "日期大于 1 年"
+    "errorGreater": "日期大于 1 年",
+    "errorMoreState": "另一个小部件有更多状态",
+    "errorConditions": "另一个小部件使用条件"
 }

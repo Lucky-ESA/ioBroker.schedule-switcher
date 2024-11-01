@@ -9,7 +9,7 @@
 */
 "use strict";
 
-systemDictionary = {
+const systemDictionary = {
     "schedule-switcher adapter settings": {
         "en": "Adapter settings for schedule-switcher",
         "de": "Adaptereinstellungen für schedule-switcher",
@@ -1712,5 +1712,31 @@ systemDictionary = {
         "pl": "Data jest większa niż 1 rok",
         "uk": "Дата більше 1 року",
         "zh-cn": "日期超过1年"
+    },
+    "errorMoreState": {
+        "en": "Another widget has more states",
+        "de": "Ein anderes Widget hat mehr States",
+        "ru": "Другой виджет имеет больше состояний",
+        "pt": "Outro widget tem mais estados",
+        "nl": "Een ander widget heeft meer statussen",
+        "fr": "Un autre widget a plus d'états",
+        "it": "Un altro widget ha più stati",
+        "es": "Otro widget tiene más estados",
+        "pl": "Kolejny widget ma więcej stanów",
+        "uk": "Ще один віджет має більше штатів",
+        "zh-cn": "另一个部件的状态更多"
+    },
+    "errorConditions": {
+        "en": "Another widget uses conditions",
+        "de": "Ein weiteres Widget verwendet Bedingungen",
+        "ru": "Другой виджет использует условия",
+        "pt": "Outro widget usa condições",
+        "nl": "Een ander widget gebruikt voorwaarden",
+        "fr": "Un autre widget utilise des conditions",
+        "it": "Un altro widget utilizza le condizioni",
+        "es": "Otro widget utiliza las condiciones",
+        "pl": "Inne warunki korzystania z widgetu",
+        "uk": "Ще один віджет використовує умови",
+        "zh-cn": "其它部件使用条件"
     }
 };

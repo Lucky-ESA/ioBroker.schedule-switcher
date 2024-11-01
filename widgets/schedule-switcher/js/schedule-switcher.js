@@ -244,6 +244,7 @@ function showWarningInWidget(widgetElement, warning) {
 }
 
 function getConditionStateIdsAndAlias(widgetId) {
+    console.log("getConditionStateIdsAndAlias: " + widgetId);
     const data = vis.widgets[widgetId].data;
     const count = Number.parseInt(data.conditionStatesCount, 10);
     const ids = [];
