@@ -119,25 +119,50 @@ It is possible to configure at which time and on which weekdays the trigger shou
 {
     "vis-2.0": {
         // Which VIS version
-        "Timer": {
-            //Project
-            "w000009": {
-                // Widget ID
-                "prefix": "Timer", //Project
-                "namespace": "vis-2.0", // Which VIS version
-                "view": "default", // Which view
-                "widgetId": "w000009", // Widget ID
-                "newId": "timer-switch.0.onoff.0.data", // New Object
-                "oldId": "timer-switch.0.onoff.1.data" // Old Object
-            }
-        },
         "main": {
-            "w00003": {
-                "prefix": "main",
-                "namespace": "vis-2.0",
-                "view": "Rollladen",
-                "widgetId": "w00003",
-                "newId": "timer-switch.0.onoff.0.data"
+            // Project
+            "w000005": {
+                // Widget ID
+                "prefix": "main", // Project
+                "namespace": "vis-2.0", // Which VIS version
+                "view": "Rollladen", // Which view
+                "widgetId": "w000005", // Widget ID
+                "newId": "schedule-switcher.0.onoff.6.data", // New Object
+                "oldId": "timer-switch.0.onoff.1.data", // Old Object
+                "enabled": "schedule-switcher.0.onoff.6.enabled", // Enabled Objekt
+                "stateCount": 1, // Counter States
+                "state": [
+                    // States
+                    {
+                        "oid-stateId1": "0_userdata.0.test5"
+                    }
+                ],
+                "conditionCount": 1, // Counter Conditions
+                "condition": [
+                    // States of Conditions
+                    {
+                        "oid-conditionStateId1": "0_userdata.0.test"
+                    }
+                ]
+            },
+            "w000006": {
+                // Which VIS version
+                "prefix": "main", // Project
+                "namespace": "vis-2.0", // Which VIS version
+                "view": "Test", // Which view
+                "widgetId": "w000006", // Widget ID
+                "newId": "schedule-switcher.0.onoff.6.data", // New Object
+                "oldId": "timer-switch.0.onoff.1.data", // Old Object
+                "enabled": "schedule-switcher.0.onoff.6.enabled", // Enabled Objekt
+                "stateCount": 1, // Counter States
+                "state": [
+                    // States
+                    {
+                        "oid-stateId1": "0_userdata.0.test4"
+                    }
+                ],
+                "conditionCount": 1, // Counter Conditions
+                "condition": [] // States of Conditions
             }
         }
     }

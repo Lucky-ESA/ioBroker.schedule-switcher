@@ -118,25 +118,50 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 {
     "vis-2.0": {
         // Welche VIS Version
-        "Timer": {
-            //Projekt
-            "w000009": {
-                // Widget ID
-                "prefix": "Timer", //Projekt
-                "namespace": "vis-2.0", // Welche VIS Version
-                "view": "default", // Welche View
-                "widgetId": "w000009", // Widget ID
-                "newId": "timer-switch.0.onoff.0.data", // Neues Object
-                "oldId": "timer-switch.0.onoff.1.data" // Altes Object
-            }
-        },
         "main": {
-            "w00003": {
-                "prefix": "main",
-                "namespace": "vis-2.0",
-                "view": "Rollladen",
-                "widgetId": "w00003",
-                "newId": "timer-switch.0.onoff.0.data"
+            // Projekt
+            "w000005": {
+                // Widget ID
+                "prefix": "main", // Projekt
+                "namespace": "vis-2.0", // Welche VIS Version
+                "view": "Rollladen", // Welche View
+                "widgetId": "w000005", // Widget ID
+                "newId": "schedule-switcher.0.onoff.6.data", // Neues Objekt
+                "oldId": "timer-switch.0.onoff.1.data", // Altes Objekt
+                "enabled": "schedule-switcher.0.onoff.6.enabled", // Enabled Objekt
+                "stateCount": 1, // Counter Zustände
+                "state": [
+                    // Zustände
+                    {
+                        "oid-stateId1": "0_userdata.0.test5"
+                    }
+                ],
+                "conditionCount": 1, // Counter Bedingung
+                "condition": [
+                    // Zustände Bedingungen
+                    {
+                        "oid-conditionStateId1": "0_userdata.0.test"
+                    }
+                ]
+            },
+            "w000006": {
+                // Widget ID
+                "prefix": "main", // Projekt
+                "namespace": "vis-2.0", // Welche VIS Version
+                "view": "Test", // Welche View
+                "widgetId": "w000006", // Widget ID
+                "newId": "schedule-switcher.0.onoff.6.data", // Neues Objekt
+                "oldId": "timer-switch.0.onoff.1.data", // Altes Objekt
+                "enabled": "schedule-switcher.0.onoff.6.enabled", // Enabled Objekt
+                "stateCount": 1, // Counter Zustände
+                "state": [
+                    // Zustände
+                    {
+                        "oid-stateId1": "0_userdata.0.test4"
+                    }
+                ],
+                "conditionCount": 1, // Counter Bedingung
+                "condition": [] // Zustände Bedingungen
             }
         }
     }

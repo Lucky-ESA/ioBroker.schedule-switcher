@@ -372,6 +372,50 @@ export class IoBrokerValidationState implements validationState {
                                                     newViews[templates[template].widgets[widget].data["oid-dataId"]][
                                                         vis
                                                     ][folder] = {};
+                                                    const countCondition: number = Number.parseInt(
+                                                        templates[template].widgets[widget].data[
+                                                            "conditionStatesCount"
+                                                        ],
+                                                        10,
+                                                    );
+                                                    const idsCondition: any = [];
+                                                    for (let i = 1; i <= countCondition; i++) {
+                                                        const id: string =
+                                                            templates[template].widgets[widget].data[
+                                                                `oid-conditionStateId${i}`
+                                                            ];
+                                                        if (id !== undefined && id !== "") {
+                                                            const json: any = {};
+                                                            json[`oid-conditionStateId${i}`] =
+                                                                templates[template].widgets[widget].data[
+                                                                    `oid-conditionStateId${i}`
+                                                                ];
+                                                            idsCondition.push(json);
+                                                        }
+                                                    }
+                                                    const countState: number = Number.parseInt(
+                                                        templates[template].widgets[widget].data[
+                                                            "conditionStatesCount"
+                                                        ],
+                                                        10,
+                                                    );
+                                                    const idsState: any = [];
+                                                    for (let i = 1; i <= countState; i++) {
+                                                        const id: string =
+                                                            templates[template].widgets[widget].data[`oid-stateId${i}`];
+                                                        if (id !== undefined && id !== "") {
+                                                            const json: any = {};
+                                                            json[`oid-stateId${i}`] =
+                                                                templates[template].widgets[widget].data[
+                                                                    `oid-stateId${i}`
+                                                                ];
+                                                            idsState.push(json);
+                                                        }
+                                                    }
+                                                    const oid_enabled: string = templates[template].widgets[widget]
+                                                        .data["oid-enabled"]
+                                                        ? templates[template].widgets[widget].data["oid-enabled"]
+                                                        : "not select";
                                                     newViews[templates[template].widgets[widget].data["oid-dataId"]][
                                                         vis
                                                     ][folder][widget] = {
@@ -380,6 +424,11 @@ export class IoBrokerValidationState implements validationState {
                                                         view: template,
                                                         widgetId: widget,
                                                         newId: templates[template].widgets[widget].data["oid-dataId"],
+                                                        enabled: oid_enabled,
+                                                        stateCount: countState,
+                                                        state: idsState,
+                                                        conditionCount: countCondition,
+                                                        condition: idsCondition,
                                                     };
                                                 } else if (
                                                     templates[template].widgets[widget].data["oid-dataId"] != ""
@@ -400,6 +449,50 @@ export class IoBrokerValidationState implements validationState {
                                                         newViews[
                                                             templates[template].widgets[widget].data["oid-dataId"]
                                                         ][vis][folder] = {};
+                                                    const countCondition: number = Number.parseInt(
+                                                        templates[template].widgets[widget].data[
+                                                            "conditionStatesCount"
+                                                        ],
+                                                        10,
+                                                    );
+                                                    const idsCondition: any = [];
+                                                    for (let i = 1; i <= countCondition; i++) {
+                                                        const id: string =
+                                                            templates[template].widgets[widget].data[
+                                                                `oid-conditionStateId${i}`
+                                                            ];
+                                                        if (id !== undefined && id !== "") {
+                                                            const json: any = {};
+                                                            json[`oid-conditionStateId${i}`] =
+                                                                templates[template].widgets[widget].data[
+                                                                    `oid-conditionStateId${i}`
+                                                                ];
+                                                            idsCondition.push(json);
+                                                        }
+                                                    }
+                                                    const countState: number = Number.parseInt(
+                                                        templates[template].widgets[widget].data[
+                                                            "conditionStatesCount"
+                                                        ],
+                                                        10,
+                                                    );
+                                                    const idsState: any = [];
+                                                    for (let i = 1; i <= countState; i++) {
+                                                        const id: string =
+                                                            templates[template].widgets[widget].data[`oid-stateId${i}`];
+                                                        if (id !== undefined && id !== "") {
+                                                            const json: any = {};
+                                                            json[`oid-stateId${i}`] =
+                                                                templates[template].widgets[widget].data[
+                                                                    `oid-stateId${i}`
+                                                                ];
+                                                            idsState.push(json);
+                                                        }
+                                                    }
+                                                    const oid_enabled: string = templates[template].widgets[widget]
+                                                        .data["oid-enabled"]
+                                                        ? templates[template].widgets[widget].data["oid-enabled"]
+                                                        : "not select";
                                                     newViews[templates[template].widgets[widget].data["oid-dataId"]][
                                                         vis
                                                     ][folder][widget] = {
@@ -408,6 +501,11 @@ export class IoBrokerValidationState implements validationState {
                                                         view: template,
                                                         widgetId: widget,
                                                         newId: templates[template].widgets[widget].data["oid-dataId"],
+                                                        enabled: oid_enabled,
+                                                        stateCount: countState,
+                                                        state: idsState,
+                                                        conditionCount: countCondition,
+                                                        condition: idsCondition,
                                                     };
                                                 }
                                                 if (
@@ -482,6 +580,61 @@ export class IoBrokerValidationState implements validationState {
             for (const stateId in newViews) {
                 const id = stateId.replace("data", "views");
                 await this.adapter.setState(id, { val: JSON.stringify(newViews[stateId]), ack: true });
+            }
+        }
+        const prefix: string = `schedule-switcher.${this.adapter.instance}.`;
+        const currentStates: any = await this.adapter.getStatesAsync(`${prefix}*.data`);
+        for (const stateId in currentStates) {
+            if (!newViews[stateId] && typeof currentStates[stateId].val === "string") {
+                const id = stateId.replace("data", "enabled");
+                const eneabled = await this.adapter.getStateAsync(id);
+                const val = JSON.parse(currentStates[stateId].val);
+                if (
+                    val.onAction &&
+                    val.onAction.idsOfStatesToSet &&
+                    val.onAction.idsOfStatesToSet[0] === "default.state"
+                ) {
+                    this.adapter.log.debug("Default state!");
+                }
+                if (
+                    val.offAction &&
+                    val.offAction.idsOfStatesToSet &&
+                    val.offAction.idsOfStatesToSet[0] === "default.state"
+                ) {
+                    this.adapter.log.debug("Default state!");
+                }
+                const view = stateId.replace("data", "views");
+                if (
+                    (val.onAction.idsOfStatesToSet.length > 0 || val.offAction.idsOfStatesToSet.length > 0) &&
+                    val.triggers.length > 0
+                ) {
+                    await this.adapter.setState(id, { val: false, ack: true });
+                    if (eneabled && eneabled.val) {
+                        await this.adapter.setState(view, {
+                            val: JSON.stringify({
+                                error: `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`,
+                            }),
+                            ack: true,
+                        });
+                        this.adapter.log.error(
+                            `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`,
+                        );
+                    } else {
+                        await this.adapter.setState(view, {
+                            val: JSON.stringify({
+                                error: `Trigger ${stateId} is active but there is no widget.`,
+                            }),
+                            ack: true,
+                        });
+                    }
+                } else {
+                    await this.adapter.setState(view, {
+                        val: JSON.stringify({
+                            error: `The trigger ${stateId} is not used.`,
+                        }),
+                        ack: true,
+                    });
+                }
             }
         }
     }

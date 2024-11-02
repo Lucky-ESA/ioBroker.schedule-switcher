@@ -374,24 +374,88 @@ class IoBrokerValidationState {
                           newViews[templates[template].widgets[widget].data["oid-dataId"]] = {};
                           newViews[templates[template].widgets[widget].data["oid-dataId"]][vis] = {};
                           newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder] = {};
+                          const countCondition = Number.parseInt(
+                            templates[template].widgets[widget].data["conditionStatesCount"],
+                            10
+                          );
+                          const idsCondition = [];
+                          for (let i = 1; i <= countCondition; i++) {
+                            const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                            if (id !== void 0 && id !== "") {
+                              const json = {};
+                              json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                              idsCondition.push(json);
+                            }
+                          }
+                          const countState = Number.parseInt(
+                            templates[template].widgets[widget].data["conditionStatesCount"],
+                            10
+                          );
+                          const idsState = [];
+                          for (let i = 1; i <= countState; i++) {
+                            const id = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                            if (id !== void 0 && id !== "") {
+                              const json = {};
+                              json[`oid-stateId${i}`] = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                              idsState.push(json);
+                            }
+                          }
+                          const oid_enabled = templates[template].widgets[widget].data["oid-enabled"] ? templates[template].widgets[widget].data["oid-enabled"] : "not select";
                           newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
                             prefix: folder,
                             namespace: vis,
                             view: template,
                             widgetId: widget,
-                            newId: templates[template].widgets[widget].data["oid-dataId"]
+                            newId: templates[template].widgets[widget].data["oid-dataId"],
+                            enabled: oid_enabled,
+                            stateCount: countState,
+                            state: idsState,
+                            conditionCount: countCondition,
+                            condition: idsCondition
                           };
                         } else if (templates[template].widgets[widget].data["oid-dataId"] != "") {
                           if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis])
                             newViews[templates[template].widgets[widget].data["oid-dataId"]][vis] = {};
                           if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder])
                             newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder] = {};
+                          const countCondition = Number.parseInt(
+                            templates[template].widgets[widget].data["conditionStatesCount"],
+                            10
+                          );
+                          const idsCondition = [];
+                          for (let i = 1; i <= countCondition; i++) {
+                            const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                            if (id !== void 0 && id !== "") {
+                              const json = {};
+                              json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                              idsCondition.push(json);
+                            }
+                          }
+                          const countState = Number.parseInt(
+                            templates[template].widgets[widget].data["conditionStatesCount"],
+                            10
+                          );
+                          const idsState = [];
+                          for (let i = 1; i <= countState; i++) {
+                            const id = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                            if (id !== void 0 && id !== "") {
+                              const json = {};
+                              json[`oid-stateId${i}`] = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                              idsState.push(json);
+                            }
+                          }
+                          const oid_enabled = templates[template].widgets[widget].data["oid-enabled"] ? templates[template].widgets[widget].data["oid-enabled"] : "not select";
                           newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
                             prefix: folder,
                             namespace: vis,
                             view: template,
                             widgetId: widget,
-                            newId: templates[template].widgets[widget].data["oid-dataId"]
+                            newId: templates[template].widgets[widget].data["oid-dataId"],
+                            enabled: oid_enabled,
+                            stateCount: countState,
+                            state: idsState,
+                            conditionCount: countCondition,
+                            condition: idsCondition
                           };
                         }
                         if (!templates[template].widgets[widget].data["oid-dataId"] || templates[template].widgets[widget].data["oid-dataId"] == "") {
@@ -450,6 +514,50 @@ class IoBrokerValidationState {
       for (const stateId in newViews) {
         const id = stateId.replace("data", "views");
         await this.adapter.setState(id, { val: JSON.stringify(newViews[stateId]), ack: true });
+      }
+    }
+    const prefix = `schedule-switcher.${this.adapter.instance}.`;
+    const currentStates = await this.adapter.getStatesAsync(`${prefix}*.data`);
+    for (const stateId in currentStates) {
+      if (!newViews[stateId] && typeof currentStates[stateId].val === "string") {
+        const id = stateId.replace("data", "enabled");
+        const eneabled = await this.adapter.getStateAsync(id);
+        const val = JSON.parse(currentStates[stateId].val);
+        if (val.onAction && val.onAction.idsOfStatesToSet && val.onAction.idsOfStatesToSet[0] === "default.state") {
+          this.adapter.log.debug("Default state!");
+        }
+        if (val.offAction && val.offAction.idsOfStatesToSet && val.offAction.idsOfStatesToSet[0] === "default.state") {
+          this.adapter.log.debug("Default state!");
+        }
+        const view = stateId.replace("data", "views");
+        if ((val.onAction.idsOfStatesToSet.length > 0 || val.offAction.idsOfStatesToSet.length > 0) && val.triggers.length > 0) {
+          await this.adapter.setState(id, { val: false, ack: true });
+          if (eneabled && eneabled.val) {
+            await this.adapter.setState(view, {
+              val: JSON.stringify({
+                error: `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
+              }),
+              ack: true
+            });
+            this.adapter.log.error(
+              `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
+            );
+          } else {
+            await this.adapter.setState(view, {
+              val: JSON.stringify({
+                error: `Trigger ${stateId} is active but there is no widget.`
+              }),
+              ack: true
+            });
+          }
+        } else {
+          await this.adapter.setState(view, {
+            val: JSON.stringify({
+              error: `The trigger ${stateId} is not used.`
+            }),
+            ack: true
+          });
+        }
       }
     }
   }
