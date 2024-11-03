@@ -168,8 +168,8 @@
             widgetElement.appendChild(p);
         }
 
-        validateOnOffStatesWithWidgetSettings(widgetElement, newSettings) {
-            const state = JSON.parse(vis.states.attr(`${newSettings["oid-dataId"]}.val`));
+        async validateOnOffStatesWithWidgetSettings(widgetElement, newSettings) {
+            const state = JSON.parse(await vis.states.attr(`${newSettings["oid-dataId"]}.val`));
             console.log("validateOnOffStatesWithWidgetSettings: " + JSON.stringify(state));
             if (
                 !state.onAction ||
