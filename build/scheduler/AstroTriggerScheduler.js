@@ -26,12 +26,14 @@ var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_Weekday = require("../triggers/Weekday");
 var import_TriggerScheduler = require("./TriggerScheduler");
 class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
-  constructor(timeTriggerScheduler, getTimes, coordinate, logger) {
+  constructor(timeTriggerScheduler, getTimes, coordinate, logger, stateService, namespace) {
     super();
     this.timeTriggerScheduler = timeTriggerScheduler;
     this.getTimes = getTimes;
     this.coordinate = coordinate;
     this.logger = logger;
+    this.stateService = stateService;
+    this.namespace = namespace;
     this.timeTriggerScheduler.register(this.rescheduleTrigger);
   }
   registered = [];
@@ -93,6 +95,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
         }
       }).build();
       this.logger.logDebug(`Scheduled with ${timeTrigger}`);
+      this.setNewTime(timeTrigger);
       this.timeTriggerScheduler.register(timeTrigger);
       this.scheduled.push([trigger.getId(), timeTrigger]);
     } else {
@@ -109,6 +112,26 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     const next = this.getTimes(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude())[trigger.getAstroTime()];
     next.setMinutes(next.getMinutes() + trigger.getShiftInMinutes());
     return next;
+  }
+  async setNewTime(trigger) {
+    const val = await this.stateService.getState(
+      `${this.namespace}.onoff.${trigger.getObjectId().toString()}.data`
+    );
+    if (val && typeof val === "string") {
+      const actual_trigger = JSON.parse(val);
+      const triggerId = trigger.getId().split(":")[1];
+      if (actual_trigger && actual_trigger.triggers && triggerId != null) {
+        const old_trigger = actual_trigger.triggers.find((id) => id.id == triggerId);
+        if (trigger) {
+          old_trigger.todayTrigger = trigger.getTodayTrigger();
+          await this.stateService.setState(
+            `${this.namespace}.onoff.${trigger.getObjectId().toString()}.data`,
+            JSON.stringify(actual_trigger),
+            true
+          );
+        }
+      }
+    }
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

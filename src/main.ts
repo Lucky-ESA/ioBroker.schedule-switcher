@@ -573,6 +573,8 @@ class ScheduleSwitcher extends utils.Adapter {
                     getTimes,
                     await this.getCoordinate(),
                     this.loggingService,
+                    this.stateService,
+                    this.namespace,
                 ),
                 new OneTimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService, this),
             ]),

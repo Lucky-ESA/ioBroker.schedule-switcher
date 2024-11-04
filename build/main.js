@@ -567,7 +567,9 @@ class ScheduleSwitcher extends utils.Adapter {
           new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
           import_suncalc.getTimes,
           await this.getCoordinate(),
-          this.loggingService
+          this.loggingService,
+          this.stateService,
+          this.namespace
         ),
         new import_OneTimeTriggerScheduler.OneTimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService, this)
       ]),

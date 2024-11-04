@@ -1,5 +1,6 @@
 import { GetTimesResult } from "suncalc";
 import { Coordinate } from "../Coordinate";
+import { IoBrokerStateService } from "../services/IoBrokerStateService";
 import { LoggingService } from "../services/LoggingService";
 import { AstroTrigger } from "../triggers/AstroTrigger";
 import { TimeTrigger } from "../triggers/TimeTrigger";
@@ -31,6 +32,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
         private readonly coordinate: Coordinate,
         private readonly logger: LoggingService,
+        private readonly stateService: IoBrokerStateService,
+        private readonly namespace: string,
     ) {
         super();
         this.timeTriggerScheduler.register(this.rescheduleTrigger);
@@ -97,6 +100,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 })
                 .build();
             this.logger.logDebug(`Scheduled with ${timeTrigger}`);
+            this.setNewTime(timeTrigger);
             this.timeTriggerScheduler.register(timeTrigger);
             this.scheduled.push([trigger.getId(), timeTrigger]);
         } else {
@@ -118,5 +122,26 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         ];
         next.setMinutes(next.getMinutes() + trigger.getShiftInMinutes());
         return next;
+    }
+
+    private async setNewTime(trigger: TimeTrigger): Promise<void> {
+        const val = await this.stateService.getState(
+            `${this.namespace}.onoff.${trigger.getObjectId().toString()}.data`,
+        );
+        if (val && typeof val === "string") {
+            const actual_trigger = JSON.parse(val);
+            const triggerId: string = trigger.getId().split(":")[1];
+            if (actual_trigger && actual_trigger.triggers && triggerId != null) {
+                const old_trigger = actual_trigger.triggers.find((i: any) => i.id == triggerId);
+                if (trigger) {
+                    old_trigger.todayTrigger = trigger.getTodayTrigger();
+                    await this.stateService.setState(
+                        `${this.namespace}.onoff.${trigger.getObjectId().toString()}.data`,
+                        JSON.stringify(actual_trigger),
+                        true,
+                    );
+                }
+            }
+        }
     }
 }
