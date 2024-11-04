@@ -121,7 +121,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       const actual_trigger = JSON.parse(val);
       const triggerId = trigger.getId().split(":")[1];
       if (actual_trigger && actual_trigger.triggers && triggerId != null) {
-        const old_trigger = actual_trigger.triggers.find((id) => id.id == triggerId);
+        const old_trigger = actual_trigger.triggers.find((i) => i.id == triggerId);
         if (trigger) {
           old_trigger.todayTrigger = trigger.getTodayTrigger();
           await this.stateService.setState(

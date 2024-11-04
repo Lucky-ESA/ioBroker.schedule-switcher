@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "news": {
+      "0.0.4": {
+        "en": "Temporary function removed\nCreation of objects adjusted\nValidation check of the states\nValidation check for 2 widgets with one object",
+        "de": "Temporäre Funktion entfernt\nErstellung von Objekten angepasst\nValidierungsprüfung der Staaten\nValidierungsprüfung für 2 Widgets mit einem Objekt",
+        "ru": "Временные функции удалены\nСоздание объектов с поправкой\nПроверка достоверности\nПроверка достоверности для 2 виджетов с одним объектом",
+        "pt": "Função temporária removida\nCriação de objetos ajustados\nVerificação de validação dos estados\nVerificação de validação para 2 widgets com um objeto",
+        "nl": "Tijdelijke functie verwijderd\nAanmaken van objecten aangepast\nValidatiecontrole van de staten\nValidatiecontrole voor 2 widgets met één object",
+        "fr": "Fonction temporaire supprimée\nCréation d'objets ajustés\nContrôle de validation des états\nVérification de validation de 2 widgets avec un objet",
+        "it": "Funzione temporanea rimossa\nCreazione di oggetti regolati\nControllo di convalida degli stati\nControllo di convalida per 2 widget con un oggetto",
+        "es": "Función temporal eliminada\nCreación de objetos ajustados\nVerificación de validación de los estados\nVerificación de validación para 2 widgets con un objeto",
+        "pl": "Funkcja tymczasowa usunięta\nTworzenie skorygowanych obiektów\nKontrola walidacji stanów\nSprawdzanie walidacji dla 2 widżetów z jednym obiektem",
+        "uk": "Видалення тимчасової функції\nСтворення об'єктів налаштовується\nПеревірка стану\nПеревірка вірності для 2 віджетів з одним об'єктом",
+        "zh-cn": "暂时函数已删除\n创建调整对象\n各州的验证检查\n对 2 个对象的部件进行校验"
+      },
       "0.0.3": {
         "en": "Fixed VIS translate\nAdded astro time in trigger\nFixed OneTimeTrigger\nAdded date for OneTimeTrigger\nFixed some bugs",
         "de": "Feste VIS übersetzen\nAstro-Zeit in Trigger hinzugefügt\nEin TimeTrigger wurde behoben\nDatum für OneTimeTrigger hinzugefügt\nEinige Fehler behoben",
