@@ -117,7 +117,7 @@ class ScheduleSwitcher extends utils.Adapter {
     this.nextAstroTime.cancel();
     (_a = this.messageService) == null ? void 0 : _a.destroy();
     this.stateService.destroy();
-    for (const id in this.scheduleIdToSchedule.keys()) {
+    for (const id of this.scheduleIdToSchedule.keys()) {
       try {
         (_b = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _b.destroy();
       } catch (e) {
