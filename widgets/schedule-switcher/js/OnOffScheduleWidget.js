@@ -168,9 +168,9 @@
             widgetElement.appendChild(p);
         }
 
-        async validateOnOffStatesWithWidgetSettings(widgetElement, newSettings) {
-            const state = JSON.parse(await vis.states.attr(`${newSettings["oid-dataId"]}.val`));
+        validateOnOffStatesWithWidgetSettings(widgetElement, newSettings, state) {
             console.log("validateOnOffStatesWithWidgetSettings: " + JSON.stringify(state));
+            if (state == null) return true;
             if (
                 !state.onAction ||
                 typeof state.onAction.idsOfStatesToSet !== "object" ||
@@ -192,22 +192,25 @@
             return true;
         }
 
-        onWidgetIdChange() {
+        async onWidgetIdChange() {
             console.log("widget id change");
             const newSettings = vis.widgets[this.widgetId].data;
-            const widgetElement = document.querySelector(`#${this.widgetId}`);
-            if (!this.validateOnOffStatesWithWidgetSettings(widgetElement, newSettings)) {
-                return;
-            }
-            this.settings = newSettings;
             if (newSettings.showId && newSettings.statesCount === "1") {
                 this.sr.querySelector("#switched-oid").textContent = newSettings["oid-stateId1"];
             }
             const oldSettings = vis.binds["schedule-switcher"].onOffScheduleWidgets[this.widgetId];
+            this.settings = newSettings;
             this.detectSettingsChanges(oldSettings, newSettings);
             this.updateStoredSettings(newSettings);
-            if (vis.states.attr(`${this.settings["oid-dataId"]}.val`)) {
-                this.onScheduleDataChange(JSON.parse(vis.states.attr(`${this.settings["oid-dataId"]}.val`)));
+            const dataId = JSON.parse(vis.states.attr(`${this.settings["oid-dataId"]}.val`));
+            const widgetElement = document.querySelector(`#${this.widgetId}`);
+            if (!this.validateOnOffStatesWithWidgetSettings(widgetElement, newSettings, dataId)) {
+                return;
+            }
+            if (dataId) {
+                this.onScheduleDataChange(dataId);
+            } else {
+                console.warn(`Cannot read state ${this.settings["oid-dataId"]}!!!`);
             }
             this.enabled = vis.states.attr(`${this.settings["oid-enabled"]}.val`);
             vis.states.bind(`${newSettings["oid-dataId"]}.val`, (e, newVal) => {

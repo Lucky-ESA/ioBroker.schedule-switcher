@@ -19,6 +19,7 @@
     filter: var(--ts-widget-img-btn-filter, invert(1));
     width: 42px;
     height: 42px;
+    margin-left: auto;
 }
 
 .view .shift {

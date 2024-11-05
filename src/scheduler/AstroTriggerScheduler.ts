@@ -15,8 +15,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     private readonly rescheduleTrigger = new TimeTriggerBuilder()
         .setId(`AstroTriggerScheduler-Rescheduler`)
         .setWeekdays(AllWeekdays)
-        .setHour(2)
-        .setMinute(0)
+        .setHour(7)
+        .setMinute(10)
         .setTodayTrigger({})
         .setAction({
             execute: () => {
@@ -100,7 +100,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 })
                 .build();
             this.logger.logDebug(`Scheduled with ${timeTrigger}`);
-            this.setNewTime(timeTrigger);
+            // this.setNewTime(timeTrigger);
             this.timeTriggerScheduler.register(timeTrigger);
             this.scheduled.push([trigger.getId(), timeTrigger]);
         } else {
@@ -133,7 +133,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
             const triggerId: string = trigger.getId().split(":")[1];
             if (actual_trigger && actual_trigger.triggers && triggerId != null) {
                 const old_trigger = actual_trigger.triggers.find((i: any) => i.id == triggerId);
-                if (trigger) {
+                if (trigger instanceof TimeTrigger && old_trigger) {
                     old_trigger.todayTrigger = trigger.getTodayTrigger();
                     await this.stateService.setState(
                         `${this.namespace}.onoff.${trigger.getObjectId().toString()}.data`,

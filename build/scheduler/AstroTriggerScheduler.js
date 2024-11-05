@@ -22,6 +22,7 @@ __export(AstroTriggerScheduler_exports, {
 });
 module.exports = __toCommonJS(AstroTriggerScheduler_exports);
 var import_AstroTrigger = require("../triggers/AstroTrigger");
+var import_TimeTrigger = require("../triggers/TimeTrigger");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_Weekday = require("../triggers/Weekday");
 var import_TriggerScheduler = require("./TriggerScheduler");
@@ -38,7 +39,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   registered = [];
   scheduled = [];
-  rescheduleTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`AstroTriggerScheduler-Rescheduler`).setWeekdays(import_Weekday.AllWeekdays).setHour(2).setMinute(0).setTodayTrigger({}).setAction({
+  rescheduleTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`AstroTriggerScheduler-Rescheduler`).setWeekdays(import_Weekday.AllWeekdays).setHour(7).setMinute(10).setTodayTrigger({}).setAction({
     execute: () => {
       this.logger.logDebug(`Rescheduling astro triggers`);
       this.scheduled.forEach((s) => this.timeTriggerScheduler.unregister(s[1]));
@@ -95,7 +96,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
         }
       }).build();
       this.logger.logDebug(`Scheduled with ${timeTrigger}`);
-      this.setNewTime(timeTrigger);
       this.timeTriggerScheduler.register(timeTrigger);
       this.scheduled.push([trigger.getId(), timeTrigger]);
     } else {
@@ -122,7 +122,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       const triggerId = trigger.getId().split(":")[1];
       if (actual_trigger && actual_trigger.triggers && triggerId != null) {
         const old_trigger = actual_trigger.triggers.find((i) => i.id == triggerId);
-        if (trigger) {
+        if (trigger instanceof import_TimeTrigger.TimeTrigger && old_trigger) {
           old_trigger.todayTrigger = trigger.getTodayTrigger();
           await this.stateService.setState(
             `${this.namespace}.onoff.${trigger.getObjectId().toString()}.data`,

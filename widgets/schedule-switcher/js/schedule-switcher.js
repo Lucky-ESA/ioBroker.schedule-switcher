@@ -22,7 +22,7 @@ $.get("../schedule-switcher.admin/words.js", function (script) {
 
 // export vis binds for widget
 vis.binds["schedule-switcher"] = {
-    version: "0.0.3",
+    version: "0.0.5",
     showVersion: showVersion,
     createOnOffWidget: createOnOffWidget,
     onOffScheduleWidgets: {},
@@ -245,6 +245,11 @@ function showWarningInWidget(widgetElement, warning) {
 
 function getConditionStateIdsAndAlias(widgetId) {
     console.log("getConditionStateIdsAndAlias: " + widgetId);
+    if (!vis.widgets[widgetId]) {
+        const widgetElement = document.querySelector(`#${widgetId}`);
+        if (widgetElement) showWarningInWidget(widgetElement, "errorConditions");
+        return [];
+    }
     const data = vis.widgets[widgetId].data;
     const count = Number.parseInt(data.conditionStatesCount, 10);
     const ids = [];
