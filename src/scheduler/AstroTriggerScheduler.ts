@@ -15,8 +15,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     private readonly rescheduleTrigger = new TimeTriggerBuilder()
         .setId(`AstroTriggerScheduler-Rescheduler`)
         .setWeekdays(AllWeekdays)
-        .setHour(7)
-        .setMinute(10)
+        .setHour(2)
+        .setMinute(0)
         .setTodayTrigger({})
         .setAction({
             execute: () => {

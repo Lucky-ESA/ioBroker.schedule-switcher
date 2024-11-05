@@ -37,7 +37,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   registered = [];
   scheduled = [];
-  rescheduleTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`AstroTriggerScheduler-Rescheduler`).setWeekdays(import_Weekday.AllWeekdays).setHour(7).setMinute(10).setTodayTrigger({}).setAction({
+  rescheduleTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`AstroTriggerScheduler-Rescheduler`).setWeekdays(import_Weekday.AllWeekdays).setHour(2).setMinute(0).setTodayTrigger({}).setAction({
     execute: () => {
       this.logger.logDebug(`Rescheduling astro triggers`);
       this.scheduled.forEach((s) => this.timeTriggerScheduler.unregister(s[1]));
