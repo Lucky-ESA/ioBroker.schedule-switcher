@@ -49,6 +49,7 @@ class ScheduleSwitcher extends utils.Adapter {
   coordinate;
   messageService;
   widgetControl;
+  nextAstroTime;
   validation = new import_IoBrokerValidationState.IoBrokerValidationState(this);
   constructor(options = {}) {
     super({
@@ -60,6 +61,7 @@ class ScheduleSwitcher extends utils.Adapter {
     this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
     this.widgetControl = null;
+    this.nextAstroTime = null;
   }
   getEnabledIdFromScheduleId(scheduleId) {
     return scheduleId.replace("data", "enabled");
@@ -96,6 +98,7 @@ class ScheduleSwitcher extends utils.Adapter {
         this.log.error(`Could not retrieve state for ${id}`);
       }
     }
+    this.refreshAstroTime();
     this.subscribeStates(`*`);
     this.widgetControl = this.setInterval(
       () => {
@@ -111,6 +114,7 @@ class ScheduleSwitcher extends utils.Adapter {
     var _a, _b;
     this.log.info("cleaning everything up...");
     this.widgetControl && this.clearInterval(this.widgetControl);
+    this.nextAstroTime.cancel();
     (_a = this.messageService) == null ? void 0 : _a.destroy();
     this.stateService.destroy();
     for (const id in this.scheduleIdToSchedule.keys()) {
@@ -127,6 +131,16 @@ class ScheduleSwitcher extends utils.Adapter {
     } finally {
       callback();
     }
+  }
+  async refreshAstroTime() {
+    const rule = new import_node_schedule.RecurrenceRule();
+    rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
+    rule.hour = 2;
+    rule.minute = 2;
+    this.nextAstroTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
+      this.log.info("Start Update Astrotime!");
+      this.validation.setNextTime(await this.getCoordinate());
+    });
   }
   async checkConfig(config) {
     if (config && config.length > 0) {
@@ -554,7 +568,7 @@ class ScheduleSwitcher extends utils.Adapter {
               triggerId
             },
             command: "delete-trigger",
-            from: "schedule-switcher.0"
+            from: this.namespace
           });
         })
       ],
@@ -568,8 +582,7 @@ class ScheduleSwitcher extends utils.Adapter {
           import_suncalc.getTimes,
           await this.getCoordinate(),
           this.loggingService,
-          this.stateService,
-          this.namespace
+          this.stateService
         ),
         new import_OneTimeTriggerScheduler.OneTimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService, this)
       ]),

@@ -143,7 +143,11 @@ export class MessageService {
 
         if (data.triggerType === "TimeTrigger") {
             this.adapter.log.debug("Wants TimeTrigger");
-            triggerBuilder = new TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(parseInt(state[3]));
+            triggerBuilder = new TimeTriggerBuilder()
+                .setHour(0)
+                .setMinute(0)
+                .setObjectId(parseInt(state[3]))
+                .setTodayTrigger({});
         } else if (data.triggerType === "AstroTrigger") {
             this.adapter.log.debug("Wants AstroTrigger");
             triggerBuilder = new AstroTriggerBuilder()

@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { getTimes } from "suncalc";
 import { validationState } from "./ValidationState";
 
 export class IoBrokerValidationState implements validationState {
@@ -637,5 +638,39 @@ export class IoBrokerValidationState implements validationState {
                 }
             }
         }
+    }
+
+    public async setNextTime(coordinate: any): Promise<void> {
+        const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*.data`);
+        for (const id in states) {
+            const state = states[id];
+            if (state) {
+                if (typeof state.val === "string" && state.val.startsWith("{")) {
+                    const triggers = JSON.parse(state.val);
+                    if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+                        for (const trigger of triggers.triggers) {
+                            if (trigger && trigger.type === "AstroTrigger") {
+                                trigger.todayTrigger = await this.nextDate(trigger, coordinate);
+                                await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private async nextDate(data: any, coordinate: any): Promise<any> {
+        const next = getTimes(new Date(), coordinate.getLatitude(), coordinate.getLongitude());
+        let astro: Date;
+        if (data.astroTime === "sunset") {
+            astro = next.sunset;
+        } else if (data.astroTime === "sunrise") {
+            astro = next.sunrise;
+        } else {
+            astro = next.solarNoon;
+        }
+        new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+        return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
     }
 }

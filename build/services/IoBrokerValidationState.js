@@ -32,6 +32,7 @@ __export(IoBrokerValidationState_exports, {
 });
 module.exports = __toCommonJS(IoBrokerValidationState_exports);
 var fs = __toESM(require("fs"));
+var import_suncalc = require("suncalc");
 class IoBrokerValidationState {
   adapter;
   delayTimeout;
@@ -560,6 +561,38 @@ class IoBrokerValidationState {
         }
       }
     }
+  }
+  async setNextTime(coordinate) {
+    const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*.data`);
+    for (const id in states) {
+      const state = states[id];
+      if (state) {
+        if (typeof state.val === "string" && state.val.startsWith("{")) {
+          const triggers = JSON.parse(state.val);
+          if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+            for (const trigger of triggers.triggers) {
+              if (trigger && trigger.type === "AstroTrigger") {
+                trigger.todayTrigger = await this.nextDate(trigger, coordinate);
+                await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  async nextDate(data, coordinate) {
+    const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), coordinate.getLatitude(), coordinate.getLongitude());
+    let astro;
+    if (data.astroTime === "sunset") {
+      astro = next.sunset;
+    } else if (data.astroTime === "sunrise") {
+      astro = next.sunrise;
+    } else {
+      astro = next.solarNoon;
+    }
+    new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+    return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

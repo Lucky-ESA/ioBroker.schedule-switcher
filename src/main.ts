@@ -5,7 +5,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
-import { cancelJob, scheduleJob } from "node-schedule";
+import { cancelJob, RecurrenceRule, scheduleJob } from "node-schedule";
 import { getTimes } from "suncalc";
 import { Action } from "./actions/Action";
 import { Condition } from "./actions/conditions/Condition";
@@ -37,6 +37,7 @@ class ScheduleSwitcher extends utils.Adapter {
     private coordinate: Coordinate | undefined;
     private messageService: MessageService | undefined;
     private widgetControl: ioBroker.Interval | undefined | null;
+    private nextAstroTime: any | undefined | null;
     public validation = new IoBrokerValidationState(this);
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -50,6 +51,7 @@ class ScheduleSwitcher extends utils.Adapter {
         this.on("message", this.onMessage.bind(this));
         this.on("unload", this.onUnload.bind(this));
         this.widgetControl = null;
+        this.nextAstroTime = null;
     }
 
     private getEnabledIdFromScheduleId(scheduleId: string): string {
@@ -89,6 +91,7 @@ class ScheduleSwitcher extends utils.Adapter {
                 this.log.error(`Could not retrieve state for ${id}`);
             }
         }
+        this.refreshAstroTime();
         this.subscribeStates(`*`);
         this.widgetControl = this.setInterval(
             () => {
@@ -104,6 +107,7 @@ class ScheduleSwitcher extends utils.Adapter {
     private onUnload(callback: () => void): void {
         this.log.info("cleaning everything up...");
         this.widgetControl && this.clearInterval(this.widgetControl);
+        this.nextAstroTime.cancel();
         this.messageService?.destroy();
         this.stateService.destroy();
         for (const id in this.scheduleIdToSchedule.keys()) {
@@ -120,6 +124,17 @@ class ScheduleSwitcher extends utils.Adapter {
         } finally {
             callback();
         }
+    }
+
+    private async refreshAstroTime(): Promise<void> {
+        const rule = new RecurrenceRule();
+        rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
+        rule.hour = 2;
+        rule.minute = 2;
+        this.nextAstroTime = scheduleJob(rule, async () => {
+            this.log.info("Start Update Astrotime!");
+            this.validation.setNextTime(await this.getCoordinate());
+        });
     }
 
     private async checkConfig(config: any | null | undefined): Promise<any> {
@@ -559,7 +574,7 @@ class ScheduleSwitcher extends utils.Adapter {
                             triggerId: triggerId,
                         },
                         command: "delete-trigger",
-                        from: "schedule-switcher.0",
+                        from: this.namespace,
                     } as any as ioBroker.Message);
                 }),
             ],
@@ -574,7 +589,6 @@ class ScheduleSwitcher extends utils.Adapter {
                     await this.getCoordinate(),
                     this.loggingService,
                     this.stateService,
-                    this.namespace,
                 ),
                 new OneTimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService, this),
             ]),

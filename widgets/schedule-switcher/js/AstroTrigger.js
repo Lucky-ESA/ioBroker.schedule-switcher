@@ -61,12 +61,11 @@
         }
 
         onDataChanged() {
-            this.sr.querySelector(".container.nextevent").style.display = "none";
-            //if (this.data.todayTrigger && this.data.todayTrigger.hour != null && !this.edit) {
-            //    this.sr.querySelector(".container.nextevent").style.display = null;
-            //    const nextFormatted = `${("0" + this.data.todayTrigger.hour).slice(-2)}:${("0" + this.data.todayTrigger.minute).slice(-2)}`;
-            //    this.sr.querySelector(".nextevent .next").textContent = nextFormatted;
-            //}
+            if (this.data.todayTrigger && this.data.todayTrigger.hour != null && !this.edit) {
+                this.sr.querySelector(".container.nextevent").style.display = null;
+                const nextFormatted = `${("0" + this.data.todayTrigger.hour).slice(-2)}:${("0" + this.data.todayTrigger.minute).slice(-2)}`;
+                this.sr.querySelector(".nextevent .next").textContent = nextFormatted;
+            }
             if (this.data.astroTime !== this.astroTime || this.data.shiftInMinutes !== this.shiftInMinutes) {
                 this.astroTime = this.data.astroTime;
                 this.shiftInMinutes = this.data.shiftInMinutes;

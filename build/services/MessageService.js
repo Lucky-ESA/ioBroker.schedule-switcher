@@ -150,7 +150,7 @@ class MessageService {
     let triggerBuilder;
     if (data.triggerType === "TimeTrigger") {
       this.adapter.log.debug("Wants TimeTrigger");
-      triggerBuilder = new import_TimeTriggerBuilder.TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(parseInt(state[3]));
+      triggerBuilder = new import_TimeTriggerBuilder.TimeTriggerBuilder().setHour(0).setMinute(0).setObjectId(parseInt(state[3])).setTodayTrigger({});
     } else if (data.triggerType === "AstroTrigger") {
       this.adapter.log.debug("Wants AstroTrigger");
       triggerBuilder = new import_AstroTriggerBuilder.AstroTriggerBuilder().setAstroTime(import_AstroTime.AstroTime.Sunrise).setShift(0).setObjectId(parseInt(state[3])).setTodayTrigger(await this.nextDate({ astroTime: "sunrise", shiftInMinutes: 0 }));
