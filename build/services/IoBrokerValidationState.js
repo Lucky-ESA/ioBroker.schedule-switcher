@@ -514,7 +514,7 @@ class IoBrokerValidationState {
     if (Object.keys(newViews).length > 0) {
       for (const stateId in newViews) {
         const id = stateId.replace("data", "views");
-        await this.adapter.setState(id, { val: JSON.stringify(newViews[stateId]), ack: true });
+        await this.adapter.setState(id, JSON.stringify(newViews[stateId]), true);
       }
     }
     const prefix = `schedule-switcher.${this.adapter.instance}.`;
