@@ -44,7 +44,7 @@ class IoBrokerStateService {
   }
   async setState(id, value, ack = true) {
     this.checkId(id);
-    await this.adapter.setState(id, { val: value, ack });
+    await this.adapter.setState(id, value, ack);
   }
   async setForeignState(id, value, trigger) {
     this.adapter.log.debug(`TRIGGER SET: ${JSON.stringify(trigger)}`);

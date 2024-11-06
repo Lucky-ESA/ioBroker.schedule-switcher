@@ -27,7 +27,7 @@ export class IoBrokerStateService implements StateService {
 
     async setState(id: string, value: string | number | boolean, ack = true): Promise<any> {
         this.checkId(id);
-        await this.adapter.setState(id, { val: value, ack: ack });
+        await this.adapter.setState(id, value, ack);
     }
 
     async setForeignState(id: string, value: string | number | boolean, trigger: any): Promise<any> {

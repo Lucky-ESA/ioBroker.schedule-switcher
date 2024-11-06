@@ -111,6 +111,7 @@ export class MessageService {
         }
         this.adapter.log.debug("Finished message " + message.command);
         this.currentMessage = null;
+        //this.adapter.log.debug("CountTrigger: " + this.scheduleIdToSchedule.get(data.dataId)?.getTriggers().length);
     }
 
     private async changeName(data: any): Promise<void> {

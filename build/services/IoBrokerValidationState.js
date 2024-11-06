@@ -532,32 +532,35 @@ class IoBrokerValidationState {
         }
         const view = stateId.replace("data", "views");
         if ((val.onAction.idsOfStatesToSet.length > 0 || val.offAction.idsOfStatesToSet.length > 0) && val.triggers.length > 0) {
-          await this.adapter.setState(id, { val: false, ack: true });
+          await this.adapter.setState(id, false, true);
           if (eneabled && eneabled.val) {
-            await this.adapter.setState(view, {
-              val: JSON.stringify({
+            await this.adapter.setState(
+              view,
+              JSON.stringify({
                 error: `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
               }),
-              ack: true
-            });
+              true
+            );
             this.adapter.log.error(
               `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
             );
           } else {
-            await this.adapter.setState(view, {
-              val: JSON.stringify({
+            await this.adapter.setState(
+              view,
+              JSON.stringify({
                 error: `Trigger ${stateId} is active but there is no widget.`
               }),
-              ack: true
-            });
+              true
+            );
           }
         } else {
-          await this.adapter.setState(view, {
-            val: JSON.stringify({
+          await this.adapter.setState(
+            view,
+            JSON.stringify({
               error: `The trigger ${stateId} is not used.`
             }),
-            ack: true
-          });
+            true
+          );
         }
       }
     }
@@ -573,7 +576,7 @@ class IoBrokerValidationState {
             for (const trigger of triggers.triggers) {
               if (trigger && trigger.type === "AstroTrigger") {
                 trigger.todayTrigger = await this.nextDate(trigger, coordinate);
-                await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
+                await this.adapter.setState(id, JSON.stringify(triggers), true);
               }
             }
           }
