@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "news": {
+      "0.0.5": {
+        "en": "Fixed crash when updating astro time\nFixed some bugs",
+        "de": "Behobener Absturz bei der Aktualisierung der Astrozeit\nEinige Fehler behoben",
+        "ru": "Фиксированная авария при обновлении астро-времени\nИсправлены некоторые ошибки",
+        "pt": "Acidente fixo ao atualizar o tempo de astro\nCorrigido alguns bugs",
+        "nl": "Vaste crash bij het bijwerken van astrotijd\nEnkele bugs hersteld",
+        "fr": "Correction du crash lors de la mise à jour de l'heure d'astro\nCorrection de certains bugs",
+        "it": "Crash fisso durante l'aggiornamento del tempo di astro\nRisolto alcuni bug",
+        "es": "Accidente fijo al actualizar el tiempo de astro\nArreglado algunos errores",
+        "pl": "Naprawiono awarię podczas aktualizacji czasu astro\nNaprawiono kilka błędów",
+        "uk": "Виправлена аварія при оновленні часу\nВиправлено деякі помилки",
+        "zh-cn": "更新天体时的固定崩溃\n修补一些错误"
+      },
       "0.0.4": {
         "en": "Temporary function removed\nCreation of objects adjusted\nValidation check of the states\nValidation check for 2 widgets with one object",
         "de": "Temporäre Funktion entfernt\nErstellung von Objekten angepasst\nValidierungsprüfung der Staaten\nValidierungsprüfung für 2 Widgets mit einem Objekt",
