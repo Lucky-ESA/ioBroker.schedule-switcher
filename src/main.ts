@@ -29,6 +29,13 @@ import { IoBrokerStateService } from "./services/IoBrokerStateService";
 import { IoBrokerValidationState } from "./services/IoBrokerValidationState";
 import { MessageService } from "./services/MessageService";
 import { Trigger } from "./triggers/Trigger";
+interface schedulesData {
+    stateId: number | null;
+    active: string | null;
+    count: string | null;
+    objectid: string | null;
+    objectname: string | null;
+}
 
 class ScheduleSwitcher extends utils.Adapter {
     private scheduleIdToSchedule: Map<string, Schedule> = new Map<string, Schedule>();
@@ -66,7 +73,7 @@ class ScheduleSwitcher extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     private async onReady(): Promise<void> {
-        this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData as any);
+        this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData as Array<schedulesData>);
         await this.initMessageService();
         await this.fixStateStructure(this.config.schedules);
         await this.validation.validationView(utils.getAbsoluteDefaultDataDir());
@@ -107,7 +114,7 @@ class ScheduleSwitcher extends utils.Adapter {
     private onUnload(callback: () => void): void {
         this.log.info("cleaning everything up...");
         this.widgetControl && this.clearInterval(this.widgetControl);
-        this.nextAstroTime.cancel();
+        this.nextAstroTime?.cancel();
         this.messageService?.destroy();
         this.stateService.destroy();
         for (const id of this.scheduleIdToSchedule.keys()) {
@@ -137,7 +144,7 @@ class ScheduleSwitcher extends utils.Adapter {
         });
     }
 
-    private async checkConfig(config: any | null | undefined): Promise<any> {
+    private async checkConfig(config: Array<schedulesData>): Promise<any> {
         if (config && config.length > 0) {
             const allIds: number[] = [];
             for (const state of config) {

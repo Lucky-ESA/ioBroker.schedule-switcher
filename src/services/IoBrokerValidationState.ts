@@ -676,4 +676,13 @@ export class IoBrokerValidationState implements validationState {
         new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
         return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
     }
+
+    private async nextActiveDay(array: number[], day: number): Promise<number> {
+        array = array.map((val) => {
+            return val === 0 ? 7 : val;
+        });
+        const numChecker: any = (num: any) => array.find((v) => v > num);
+        const next: number | undefined = numChecker(day);
+        return next == undefined ? 0 : next;
+    }
 }

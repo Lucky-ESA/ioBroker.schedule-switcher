@@ -111,15 +111,15 @@ class ScheduleSwitcher extends utils.Adapter {
    * Is called when adapter shuts down - callback has to be called under any circumstances!
    */
   onUnload(callback) {
-    var _a, _b;
+    var _a, _b, _c;
     this.log.info("cleaning everything up...");
     this.widgetControl && this.clearInterval(this.widgetControl);
-    this.nextAstroTime.cancel();
-    (_a = this.messageService) == null ? void 0 : _a.destroy();
+    (_a = this.nextAstroTime) == null ? void 0 : _a.cancel();
+    (_b = this.messageService) == null ? void 0 : _b.destroy();
     this.stateService.destroy();
     for (const id of this.scheduleIdToSchedule.keys()) {
       try {
-        (_b = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _b.destroy();
+        (_c = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _c.destroy();
       } catch (e) {
         this.log.error(`scheduleIdToSchedule: ${e}`);
       }

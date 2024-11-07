@@ -597,6 +597,14 @@ class IoBrokerValidationState {
     new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
     return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
   }
+  async nextActiveDay(array, day) {
+    array = array.map((val) => {
+      return val === 0 ? 7 : val;
+    });
+    const numChecker = (num) => array.find((v) => v > num);
+    const next = numChecker(day);
+    return next == void 0 ? 0 : next;
+  }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
