@@ -5,7 +5,7 @@ import { TriggerScheduler } from "./TriggerScheduler";
 
 export class OneTimeTriggerScheduler extends TriggerScheduler {
     private registered: [OneTimeTrigger, Job][] = [];
-    private triggerTimeout: any;
+    private triggerTimeout: ioBroker.Timeout | undefined;
 
     constructor(
         private scheduleJob: (date: Date, callback: JobCallback) => Job,

@@ -35,7 +35,6 @@ var fs = __toESM(require("fs"));
 var import_suncalc = require("suncalc");
 class IoBrokerValidationState {
   adapter;
-  delayTimeout;
   constructor(adapter) {
     this.adapter = adapter;
   }
@@ -575,7 +574,7 @@ class IoBrokerValidationState {
           if (triggers && triggers.triggers && triggers.triggers.length > 0) {
             for (const trigger of triggers.triggers) {
               if (trigger && trigger.type === "AstroTrigger") {
-                trigger.todayTrigger = await this.nextDate(trigger, coordinate);
+                trigger.todayTrigger = await this.nextDate(/* @__PURE__ */ new Date(), trigger, coordinate);
                 await this.adapter.setState(id, JSON.stringify(triggers), true);
               }
             }
@@ -584,8 +583,108 @@ class IoBrokerValidationState {
       }
     }
   }
-  async nextDate(data, coordinate) {
-    const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), coordinate.getLatitude(), coordinate.getLongitude());
+  async setActionTime(coordinate) {
+    const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*.data`);
+    const allData = [];
+    for (const id in states) {
+      const state = states[id];
+      if (state) {
+        if (typeof state.val === "string" && state.val.startsWith("{")) {
+          const triggers = JSON.parse(state.val);
+          if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+            const enabled = await this.adapter.getStateAsync(id.replace(".data", ".enabled"));
+            for (const trigger of triggers.triggers) {
+              const switching = {
+                type: trigger.type,
+                name: triggers.name,
+                triggerid: parseInt(trigger.id),
+                action: trigger.action.type,
+                states: triggers.onAction.idsOfStatesToSet,
+                active: enabled && enabled.val ? true : false,
+                hour: 0,
+                minute: 0,
+                day: 0,
+                dateISO: "",
+                timestamp: 0,
+                objectId: trigger.objectId
+              };
+              const now = /* @__PURE__ */ new Date();
+              if (trigger && trigger.type === "TimeTrigger") {
+                let addDate = 0;
+                if (trigger.hour === 0 && trigger.minute === 0)
+                  addDate = 1;
+                const switchTime = /* @__PURE__ */ new Date(
+                  `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + addDate} ${trigger.hour}:${trigger.minute}`
+                );
+                if (switchTime >= now && trigger.weekdays.includes(now.getDay())) {
+                  switching.hour = trigger.hour;
+                  switching.minute = trigger.minute;
+                  switching.day = switchTime.getDate();
+                  switching.dateISO = new Date(switchTime).toISOString();
+                  switching.timestamp = switchTime.getTime();
+                } else {
+                  const t = await this.nextDateSwitch(now, trigger);
+                  switching.hour = trigger.hour;
+                  switching.minute = trigger.minute;
+                  switching.day = new Date(t).getDate();
+                  switching.dateISO = t;
+                  switching.timestamp = new Date(t).getTime();
+                }
+              } else if (trigger && trigger.type === "AstroTrigger") {
+                if (trigger.weekdays.includes(now.getDay())) {
+                  trigger.todayTrigger = await this.nextDate(/* @__PURE__ */ new Date(), trigger, coordinate);
+                  switching.hour = trigger.todayTrigger.hour;
+                  switching.minute = trigger.todayTrigger.minute;
+                  switching.day = now.getDate();
+                  switching.dateISO = trigger.date;
+                  switching.timestamp = new Date(trigger.date).getTime();
+                } else {
+                  const t = await this.nextDateSwitch(now, trigger);
+                  trigger.todayTrigger = await this.nextDate(new Date(t), trigger, coordinate);
+                  switching.hour = trigger.todayTrigger.hour;
+                  switching.minute = trigger.todayTrigger.minute;
+                  switching.day = new Date(trigger.todayTrigger.date).getDate();
+                  switching.dateISO = t;
+                  switching.timestamp = new Date(trigger.todayTrigger.date).getTime();
+                }
+              } else if (trigger && trigger.type === "OneTimeTrigger") {
+                if (new Date(trigger.date) >= now) {
+                  const d = new Date(trigger.date);
+                  switching.hour = d.getHours();
+                  switching.minute = d.getMinutes();
+                  switching.day = new Date(trigger.date).getDate();
+                  switching.dateISO = trigger.date;
+                  switching.timestamp = new Date(trigger.date).getTime();
+                }
+              }
+              if (switching.timestamp > 0) {
+                allData.push(switching);
+              }
+            }
+          }
+        }
+      }
+    }
+    if (allData.length > 0) {
+      const data = allData.sort((a, b) => a.timestamp - b.timestamp);
+      await this.adapter.setState("nextEvents", JSON.stringify(data), true);
+    }
+  }
+  async nextDateSwitch(now, trigger) {
+    let diffDays = 0;
+    const nextDay = trigger.weekdays === 1 ? trigger.weekdays[0] : await this.nextActiveDay(trigger.weekdays, now.getDay());
+    if (nextDay > now.getDay()) {
+      diffDays = nextDay - now.getDay();
+    } else {
+      diffDays = nextDay + 7 - now.getDay();
+    }
+    const next = new Date(now.setDate(now.getDate() + diffDays));
+    return (/* @__PURE__ */ new Date(
+      `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${trigger.hour}:${trigger.minute}`
+    )).toISOString();
+  }
+  async nextDate(date, data, coordinate) {
+    const next = (0, import_suncalc.getTimes)(date, coordinate.getLatitude(), coordinate.getLongitude());
     let astro;
     if (data.astroTime === "sunset") {
       astro = next.sunset;

@@ -15,6 +15,7 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 
 -   [Instanz Einstellungen](#instanz-einstellung-schedule-switcher)
 -   [Objekte](#states)
+-   [Beispiel Trigger Events als JSON](#beispiel-triggerevents-json)
 -   [Beispiel Trigger als JSON](#beispiel-auslöser-json)
 -   [Beispiel sendTo Trigger nur Experten](#beispiel-auslöser-mit-sendto-anlegen-oder-editieren-experten)
 -   [Beispiel Widget als JSON](#beispiel-widgets-json)
@@ -52,12 +53,36 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 -   `schedule-switcher.0.onoff.6.data` Alle Auslöser als JSON
 -   `schedule-switcher.0.onoff.6.enabled` Aktiv oder Inaktiv
 -   `schedule-switcher.0.onoff.6.views` Wo wurden Widgets für die Objekte angelegt
--   Historie
--   `schedule-switcher.0.sendto` Histerie der Schaltungen
--   sendTo
+-   Status
+-   `schedule-switcher.0.counterTrigger` Anzahl Trigger (aktive und inaktive)
+-   `schedule-switcher.0.history` Histerie der Schaltungen
+-   `schedule-switcher.0.nextEvents` Nächste Schaltvorgänge als JSON Table
 -   `schedule-switcher.0.sendto` Bei VIS-2 werden Änderungen über dieses Objekt an den Adapter übergeben
 
 ![101_remote.png](img/view_states.png)
+
+# Beispiel Triggerevents JSON
+
+[Zusammenfassung](#zusammenfassung)
+
+```json
+[
+    {
+        "type": "TimeTrigger", // TimeTrigger, AstroTrigger oder OneTimeTrigger
+        "name": "Rollloade Wohn", // Name
+        "triggerid": 0, // Trigger ID
+        "action": "OnOffStateAction", // OnOffStateAction oder Condition
+        "states": ["0_userdata.0.test", "0_userdata.0.test5"], // States
+        "active": true, // enabled true oder false
+        "hour": 16, // Stunde
+        "minute": 22, // Minute
+        "day": 9, // Tag
+        "dateISO": "2024-11-09T15:22:00.000Z", // Zeit ohne Zeitzone
+        "timestamp": 1731165720000, // Timestamp ohne Zeitzone
+        "objectId": 1 // ObejektId schedule-switcher.0.onoff.<objectid>.data
+    }
+]
+```
 
 # Beispiel Auslöser JSON
 

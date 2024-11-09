@@ -15,7 +15,7 @@ import { StateService } from "./StateService";
 
 export class MessageService {
     private currentMessage: ioBroker.Message | null = null;
-    private triggerTimeout: any;
+    private triggerTimeout: ioBroker.Timeout | undefined;
 
     constructor(
         private stateService: StateService,
@@ -57,21 +57,29 @@ export class MessageService {
         switch (message.command) {
             case "add-trigger":
                 await this.addTrigger(schedule, data);
+                await this.validation.setActionTime(this.coordinate);
+                await this.setCountTrigger();
                 break;
             case "add-one-time-trigger":
                 await this.addOneTimeTrigger(schedule, data);
+                await this.validation.setActionTime(this.coordinate);
+                await this.setCountTrigger();
                 break;
             case "update-one-time-trigger":
                 await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
+                await this.validation.setActionTime(this.coordinate);
                 break;
             case "update-trigger":
                 if (data.trigger && data.trigger.type === "AstroTrigger") {
                     data.trigger.todayTrigger = await this.nextDate(data.trigger);
                 }
                 await this.updateTrigger(schedule, data.trigger, data.dataId);
+                await this.validation.setActionTime(this.coordinate);
                 break;
             case "delete-trigger":
                 schedule.removeTrigger(data.triggerId);
+                await this.validation.setActionTime(this.coordinate);
+                await this.setCountTrigger();
                 break;
             case "change-name":
                 if (data.name == null) {
@@ -84,16 +92,19 @@ export class MessageService {
             case "enable-schedule":
                 schedule.setEnabled(true);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
+                await this.setCountTrigger();
                 break;
             case "disable-schedule":
                 schedule.setEnabled(false);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
+                await this.setCountTrigger();
                 break;
             case "change-switched-values":
                 this.changeOnOffSchedulesSwitchedValues(schedule, data);
                 break;
             case "change-switched-ids":
                 this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
+                await this.setCountTrigger();
                 break;
             default:
                 this.adapter.log.error("Unknown command received");
@@ -111,7 +122,6 @@ export class MessageService {
         }
         this.adapter.log.debug("Finished message " + message.command);
         this.currentMessage = null;
-        //this.adapter.log.debug("CountTrigger: " + this.scheduleIdToSchedule.get(data.dataId)?.getTriggers().length);
     }
 
     private async changeName(data: any): Promise<void> {
@@ -122,6 +132,19 @@ export class MessageService {
 
     private getEnabledIdFromScheduleId(scheduleId: string): string {
         return scheduleId.replace("data", "enabled");
+    }
+
+    public async setCountTrigger(): Promise<void> {
+        let count: number = 0;
+        for (const id of this.scheduleIdToSchedule.keys()) {
+            try {
+                const len = this.scheduleIdToSchedule.get(id)?.getTriggers().length;
+                count += len != null ? len : 0;
+            } catch (e) {
+                this.adapter.log.debug(`scheduleIdToSchedule: ${e}`);
+            }
+        }
+        await this.adapter.setState("counterTrigger", count, true);
     }
 
     private async nextDate(data: any): Promise<any> {

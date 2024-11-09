@@ -69,21 +69,29 @@ class MessageService {
     switch (message.command) {
       case "add-trigger":
         await this.addTrigger(schedule, data);
+        await this.validation.setActionTime(this.coordinate);
+        await this.setCountTrigger();
         break;
       case "add-one-time-trigger":
         await this.addOneTimeTrigger(schedule, data);
+        await this.validation.setActionTime(this.coordinate);
+        await this.setCountTrigger();
         break;
       case "update-one-time-trigger":
         await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
+        await this.validation.setActionTime(this.coordinate);
         break;
       case "update-trigger":
         if (data.trigger && data.trigger.type === "AstroTrigger") {
           data.trigger.todayTrigger = await this.nextDate(data.trigger);
         }
         await this.updateTrigger(schedule, data.trigger, data.dataId);
+        await this.validation.setActionTime(this.coordinate);
         break;
       case "delete-trigger":
         schedule.removeTrigger(data.triggerId);
+        await this.validation.setActionTime(this.coordinate);
+        await this.setCountTrigger();
         break;
       case "change-name":
         if (data.name == null) {
@@ -96,16 +104,19 @@ class MessageService {
       case "enable-schedule":
         schedule.setEnabled(true);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
+        await this.setCountTrigger();
         break;
       case "disable-schedule":
         schedule.setEnabled(false);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
+        await this.setCountTrigger();
         break;
       case "change-switched-values":
         this.changeOnOffSchedulesSwitchedValues(schedule, data);
         break;
       case "change-switched-ids":
         this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
+        await this.setCountTrigger();
         break;
       default:
         this.adapter.log.error("Unknown command received");
@@ -131,6 +142,19 @@ class MessageService {
   }
   getEnabledIdFromScheduleId(scheduleId) {
     return scheduleId.replace("data", "enabled");
+  }
+  async setCountTrigger() {
+    var _a;
+    let count = 0;
+    for (const id of this.scheduleIdToSchedule.keys()) {
+      try {
+        const len = (_a = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _a.getTriggers().length;
+        count += len != null ? len : 0;
+      } catch (e) {
+        this.adapter.log.debug(`scheduleIdToSchedule: ${e}`);
+      }
+    }
+    await this.adapter.setState("counterTrigger", count, true);
   }
   async nextDate(data) {
     const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());

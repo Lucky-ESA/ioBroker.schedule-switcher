@@ -24,7 +24,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
     public register(trigger: TimeTrigger): void {
         this.logger.logDebug(`Register trigger ${trigger}`);
         if (this.getAssociatedJob(trigger)) {
-            throw new Error(`Trigger ${trigger} is already registered.`);
+            this.logger.logWarn(`Trigger ${trigger} is already registered.`);
         }
         const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
             this.logger.logDebug(`Executing trigger ${trigger}`);
@@ -40,7 +40,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
             this.cancelJob(job);
             this.removeTrigger(trigger);
         } else {
-            throw new Error(`Trigger ${trigger} is not registered.`);
+            this.logger.logWarn(`Trigger ${trigger} is not registered.`);
         }
     }
 

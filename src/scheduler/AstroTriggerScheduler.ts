@@ -21,8 +21,12 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         .setAction({
             execute: () => {
                 this.logger.logDebug(`Rescheduling astro triggers`);
-                this.scheduled.forEach((s) => this.timeTriggerScheduler.unregister(s[1]));
-                this.registered.forEach((r) => this.tryScheduleTriggerToday(r));
+                for (const s of this.scheduled) {
+                    this.timeTriggerScheduler.unregister(s[1]);
+                }
+                for (const r of this.registered) {
+                    this.tryScheduleTriggerToday(r);
+                }
             },
         })
         .build();

@@ -50,6 +50,8 @@ class ScheduleSwitcher extends utils.Adapter {
   messageService;
   widgetControl;
   nextAstroTime;
+  nextActionTime;
+  setCountTriggerStart;
   validation = new import_IoBrokerValidationState.IoBrokerValidationState(this);
   constructor(options = {}) {
     super({
@@ -62,6 +64,8 @@ class ScheduleSwitcher extends utils.Adapter {
     this.on("unload", this.onUnload.bind(this));
     this.widgetControl = null;
     this.nextAstroTime = null;
+    this.nextActionTime = null;
+    this.setCountTriggerStart = null;
   }
   getEnabledIdFromScheduleId(scheduleId) {
     return scheduleId.replace("data", "enabled");
@@ -99,6 +103,7 @@ class ScheduleSwitcher extends utils.Adapter {
       }
     }
     this.refreshAstroTime();
+    this.refreshActionTime();
     this.subscribeStates(`*`);
     this.widgetControl = this.setInterval(
       () => {
@@ -106,20 +111,28 @@ class ScheduleSwitcher extends utils.Adapter {
       },
       24 * 60 * 1e3 * 60
     );
+    this.validation.setActionTime(await this.getCoordinate());
+    this.setCountTriggerStart = this.setTimeout(() => {
+      var _a;
+      (_a = this.messageService) == null ? void 0 : _a.setCountTrigger();
+      this.setCountTriggerStart = void 0;
+    }, 3e3);
   }
   /**
    * Is called when adapter shuts down - callback has to be called under any circumstances!
    */
   onUnload(callback) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     this.log.info("cleaning everything up...");
     this.widgetControl && this.clearInterval(this.widgetControl);
     (_a = this.nextAstroTime) == null ? void 0 : _a.cancel();
-    (_b = this.messageService) == null ? void 0 : _b.destroy();
+    (_b = this.nextActionTime) == null ? void 0 : _b.cancel();
+    this.setCountTriggerStart && this.clearTimeout(this.setCountTriggerStart);
+    (_c = this.messageService) == null ? void 0 : _c.destroy();
     this.stateService.destroy();
     for (const id of this.scheduleIdToSchedule.keys()) {
       try {
-        (_c = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _c.destroy();
+        (_d = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _d.destroy();
       } catch (e) {
         this.log.error(`scheduleIdToSchedule: ${e}`);
       }
@@ -140,6 +153,16 @@ class ScheduleSwitcher extends utils.Adapter {
     this.nextAstroTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
       this.log.info("Start Update Astrotime!");
       this.validation.setNextTime(await this.getCoordinate());
+    });
+  }
+  async refreshActionTime() {
+    const rule = new import_node_schedule.RecurrenceRule();
+    rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
+    rule.hour = 0;
+    rule.minute = 1;
+    this.nextActionTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
+      this.log.info("Start Update next time switch!");
+      this.validation.setActionTime(await this.getCoordinate());
     });
   }
   async checkConfig(config) {

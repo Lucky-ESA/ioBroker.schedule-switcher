@@ -2,7 +2,7 @@ import { StateService } from "./StateService";
 
 export class IoBrokerStateService implements StateService {
     private adapter: ioBroker.Adapter;
-    private delayTimeout: any;
+    private delayTimeout: ioBroker.Timeout | undefined;
     constructor(
         adapter: ioBroker.Adapter,
         private checkTime: number = 0,
@@ -120,6 +120,7 @@ export class IoBrokerStateService implements StateService {
 
     public destroy(): void {
         this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
+        this.delayTimeout = undefined;
     }
 
     private checkId(id: string): void {

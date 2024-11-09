@@ -15,6 +15,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 -   [Instance Settings](#instance-settings-schedule-switcher)
 -   [Objecte](#states)
+-   [Example trigger evenst as JSON](#example-trigger-events-json)
 -   [Example trigger as JSON](#example-trigger-json)
 -   [Example sendTo Trigger (Experts only)](#example-of-creating-or-editing-triggers-with-sendto-experts)
 -   [Example widget as JSON](#example-widgets-json)
@@ -53,12 +54,36 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   `schedule-switcher.0.onoff.6.data` All triggers as JSON
 -   `schedule-switcher.0.onoff.6.enabled` Active or Inactive
 -   `schedule-switcher.0.onoff.6.views` Where widgets were created for the objects
--   Historie
--   `schedule-switcher.0.sendto` History from schedules switching
--   sendTo
+-   Status
+-   `schedule-switcher.0.counterTrigger` Number of triggers (active and inactive)
+-   `schedule-switcher.0.history` History from schedules switching
+-   `schedule-switcher.0.nextEvents` Next switching operations as JSON Table
 -   `schedule-switcher.0.sendto` With VIS-2, changes are passed to the adapter via this object
 
 ![101_remote.png](img/view_states.png)
+
+# Example trigger events JSON
+
+[Summary](#summary)
+
+```json
+[
+    {
+        "type": "TimeTrigger", // TimeTrigger, AstroTrigger or OneTimeTrigger
+        "name": "Rollloade Wohn", // Name
+        "triggerid": 0, // Trigger ID
+        "action": "OnOffStateAction", // OnOffStateAction or Condition
+        "states": ["0_userdata.0.test", "0_userdata.0.test5"], // States
+        "active": true, // enabled true or false
+        "hour": 16, // Hour
+        "minute": 22, // Minute
+        "day": 9, // Day
+        "dateISO": "2024-11-09T15:22:00.000Z", // Time without timezone
+        "timestamp": 1731165720000, // Timestamp without timezone
+        "objectId": 1 // ObejektId schedule-switcher.0.onoff.<objectid>.data
+    }
+]
+```
 
 # Example trigger JSON
 

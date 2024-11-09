@@ -45,6 +45,8 @@ class ScheduleSwitcher extends utils.Adapter {
     private messageService: MessageService | undefined;
     private widgetControl: ioBroker.Interval | undefined | null;
     private nextAstroTime: any | undefined | null;
+    private nextActionTime: any | undefined | null;
+    private setCountTriggerStart: ioBroker.Timeout | undefined | null;
     public validation = new IoBrokerValidationState(this);
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -59,6 +61,8 @@ class ScheduleSwitcher extends utils.Adapter {
         this.on("unload", this.onUnload.bind(this));
         this.widgetControl = null;
         this.nextAstroTime = null;
+        this.nextActionTime = null;
+        this.setCountTriggerStart = null;
     }
 
     private getEnabledIdFromScheduleId(scheduleId: string): string {
@@ -99,6 +103,7 @@ class ScheduleSwitcher extends utils.Adapter {
             }
         }
         this.refreshAstroTime();
+        this.refreshActionTime();
         this.subscribeStates(`*`);
         this.widgetControl = this.setInterval(
             () => {
@@ -106,6 +111,11 @@ class ScheduleSwitcher extends utils.Adapter {
             },
             24 * 60 * 1000 * 60,
         );
+        this.validation.setActionTime(await this.getCoordinate());
+        this.setCountTriggerStart = this.setTimeout(() => {
+            this.messageService?.setCountTrigger();
+            this.setCountTriggerStart = undefined;
+        }, 3000);
     }
 
     /**
@@ -115,6 +125,8 @@ class ScheduleSwitcher extends utils.Adapter {
         this.log.info("cleaning everything up...");
         this.widgetControl && this.clearInterval(this.widgetControl);
         this.nextAstroTime?.cancel();
+        this.nextActionTime?.cancel();
+        this.setCountTriggerStart && this.clearTimeout(this.setCountTriggerStart);
         this.messageService?.destroy();
         this.stateService.destroy();
         for (const id of this.scheduleIdToSchedule.keys()) {
@@ -144,6 +156,16 @@ class ScheduleSwitcher extends utils.Adapter {
         });
     }
 
+    private async refreshActionTime(): Promise<void> {
+        const rule = new RecurrenceRule();
+        rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
+        rule.hour = 0;
+        rule.minute = 1;
+        this.nextActionTime = scheduleJob(rule, async () => {
+            this.log.info("Start Update next time switch!");
+            this.validation.setActionTime(await this.getCoordinate());
+        });
+    }
     private async checkConfig(config: Array<schedulesData>): Promise<any> {
         if (config && config.length > 0) {
             const allIds: number[] = [];

@@ -188,6 +188,58 @@
                 "desc": "History all switching"
             },
             "native": {}
+        },
+        {
+            "_id": "nextEvents",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Next time switch event",
+                    "de": "Nächster Zeitschalter Ereignis",
+                    "ru": "В следующий раз",
+                    "pt": "Evento de interruptor de próxima vez",
+                    "nl": "Volgende keer wisselen gebeurtenis",
+                    "fr": "Prochaine étape",
+                    "it": "Il prossimo evento di commutazione",
+                    "es": "Próximo evento de conmutación",
+                    "pl": "Następne zdarzenie przełącznika czasu",
+                    "uk": "Попередній запис",
+                    "zh-cn": "下次切换事件"
+                },
+                "read": true,
+                "write": false,
+                "type": "string",
+                "role": "json",
+                "def": "[]",
+                "desc": "Next time switch event"
+            },
+            "native": {}
+        },
+        {
+            "_id": "counterTrigger",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Trigger counter",
+                    "de": "Triggerzähler",
+                    "ru": "Trigger counter",
+                    "pt": "Contador de gatilho",
+                    "nl": "Triggerteller",
+                    "fr": "Compteur de déclenchement",
+                    "it": "Trigger contatore",
+                    "es": "Contraataque",
+                    "pl": "Licznik dźwigni",
+                    "uk": "Тригерний лічильник",
+                    "zh-cn": "触发计数器"
+                },
+                "read": true,
+                "write": false,
+                "type": "number",
+                "role": "state",
+                "def": 0,
+                "desc": "Trigger counter"
+            },
+            "native": {}
         }
     ]
 }

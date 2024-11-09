@@ -132,6 +132,7 @@ class IoBrokerStateService {
   }
   destroy() {
     this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
+    this.delayTimeout = void 0;
   }
   checkId(id) {
     if (id == null || id.length === 0) {

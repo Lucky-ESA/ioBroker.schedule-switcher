@@ -44,6 +44,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
 ### **WORK IN PROGRESS**
 
 -   (Lucky_ESA) Put value of state correctly
+-   (Lucky_ESA) Added next triggers as JSON
+-   (Lucky_ESA) Added counter trigger
 
 ### 0.0.5 (2024-11-06)
 
