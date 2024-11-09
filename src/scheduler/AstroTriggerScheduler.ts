@@ -47,10 +47,12 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     public register(trigger: AstroTrigger): void {
         this.logger.logDebug(`Register astro trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
-            throw new Error(`AstroTrigger ${trigger} is already registered.`);
+            this.logger.logWarn(`AstroTrigger ${trigger} is already registered.`);
+            this.loadregister();
+        } else {
+            this.registered.push(trigger);
+            this.tryScheduleTriggerToday(trigger);
         }
-        this.registered.push(trigger);
-        this.tryScheduleTriggerToday(trigger);
     }
 
     public unregister(trigger: AstroTrigger): void {
@@ -68,6 +70,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
             }
         } else {
             this.logger.logWarn(`AstroTrigger ${trigger} is not registered.`);
+            this.loadregister();
         }
     }
 

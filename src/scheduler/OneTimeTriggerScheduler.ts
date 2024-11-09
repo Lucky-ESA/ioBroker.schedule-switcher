@@ -25,20 +25,21 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
     public register(trigger: OneTimeTrigger): void {
         this.logger.logDebug(`Register trigger ${trigger}`);
         if (this.getAssociatedJob(trigger)) {
-            throw new Error(`Trigger ${trigger} is already registered.`);
-        }
-        if (trigger.getDate() < new Date()) {
-            this.logger.logDebug(`Date is in past, deleting trigger ${trigger}`);
-            this.triggerTimeout = this.adapter.setTimeout(() => {
-                trigger.destroy();
-                this.triggerTimeout = undefined;
-            }, 2000);
+            this.logger.logWarn(`OneTimeTrigger ${trigger} is already registered.`);
         } else {
-            const newJob = this.scheduleJob(trigger.getDate(), () => {
-                this.logger.logDebug(`Executing trigger ${trigger}`);
-                trigger.getAction().execute(trigger.getData() as any);
-            });
-            this.registered.push([trigger, newJob]);
+            if (trigger.getDate() < new Date()) {
+                this.logger.logDebug(`Date is in past, deleting trigger ${trigger}`);
+                this.triggerTimeout = this.adapter.setTimeout(() => {
+                    trigger.destroy();
+                    this.triggerTimeout = undefined;
+                }, 2000);
+            } else {
+                const newJob = this.scheduleJob(trigger.getDate(), () => {
+                    this.logger.logDebug(`Executing trigger ${trigger}`);
+                    trigger.getAction().execute(trigger.getData() as any);
+                });
+                this.registered.push([trigger, newJob]);
+            }
         }
     }
 
@@ -67,6 +68,7 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
         if (entry) {
             return entry[1];
         } else {
+            this.loadregister();
             return null;
         }
     }

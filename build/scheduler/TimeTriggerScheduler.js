@@ -41,12 +41,13 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     this.logger.logDebug(`Register trigger ${trigger}`);
     if (this.getAssociatedJob(trigger)) {
       this.logger.logWarn(`Trigger ${trigger} is already registered.`);
+    } else {
+      const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
+        this.logger.logDebug(`Executing trigger ${trigger}`);
+        trigger.getAction().execute(trigger.getData());
+      });
+      this.registered.push([trigger, newJob]);
     }
-    const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
-      this.logger.logDebug(`Executing trigger ${trigger}`);
-      trigger.getAction().execute(trigger.getData());
-    });
-    this.registered.push([trigger, newJob]);
   }
   loadregister() {
     for (const r of this.registered) {
@@ -61,6 +62,7 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.removeTrigger(trigger);
     } else {
       this.logger.logWarn(`Trigger ${trigger} is not registered.`);
+      this.loadregister();
     }
   }
   destroy() {
@@ -74,6 +76,7 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     if (entry) {
       return entry[1];
     } else {
+      this.loadregister();
       return null;
     }
   }
