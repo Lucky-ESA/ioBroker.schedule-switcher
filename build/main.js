@@ -116,6 +116,7 @@ class ScheduleSwitcher extends utils.Adapter {
       var _a;
       (_a = this.messageService) == null ? void 0 : _a.setCountTrigger();
       this.setCountTriggerStart = void 0;
+      this.moreLogs();
     }, 3e3);
   }
   /**
@@ -154,6 +155,7 @@ class ScheduleSwitcher extends utils.Adapter {
       this.log.info("Start Update Astrotime!");
       this.validation.setNextTime(await this.getCoordinate());
     });
+    this.moreLogs();
   }
   async refreshActionTime() {
     const rule = new import_node_schedule.RecurrenceRule();
@@ -164,6 +166,13 @@ class ScheduleSwitcher extends utils.Adapter {
       this.log.info("Start Update next time switch!");
       this.validation.setActionTime(await this.getCoordinate());
     });
+    this.moreLogs();
+  }
+  moreLogs() {
+    var _a;
+    for (const id of this.scheduleIdToSchedule.keys()) {
+      (_a = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _a.loadregister();
+    }
   }
   async checkConfig(config) {
     if (config && config.length > 0) {
@@ -598,17 +607,20 @@ class ScheduleSwitcher extends utils.Adapter {
       this.loggingService
     );
     return new import_OnOffScheduleSerializer.OnOffScheduleSerializer(
-      new import_UniversalTriggerScheduler.UniversalTriggerScheduler([
-        new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
-        new import_AstroTriggerScheduler.AstroTriggerScheduler(
+      new import_UniversalTriggerScheduler.UniversalTriggerScheduler(
+        [
           new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
-          import_suncalc.getTimes,
-          await this.getCoordinate(),
-          this.loggingService,
-          this.stateService
-        ),
-        new import_OneTimeTriggerScheduler.OneTimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService, this)
-      ]),
+          new import_AstroTriggerScheduler.AstroTriggerScheduler(
+            new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
+            import_suncalc.getTimes,
+            await this.getCoordinate(),
+            this.loggingService,
+            this.stateService
+          ),
+          new import_OneTimeTriggerScheduler.OneTimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService, this)
+        ],
+        this.loggingService
+      ),
       actionSerializer,
       triggerSerializer,
       this,

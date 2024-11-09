@@ -154,6 +154,9 @@ export class IoBrokerValidationState implements validationState {
                             this.adapter.log.error(`Empty weekday is not allowed in ${id}`);
                             trigger.weekdays = [0];
                         }
+                        if (trigger.todayTrigger == undefined) {
+                            trigger.todayTrigger = {};
+                        }
                     } else if (trigger.type === "AstroTrigger") {
                         if (
                             trigger.astroTime == null ||

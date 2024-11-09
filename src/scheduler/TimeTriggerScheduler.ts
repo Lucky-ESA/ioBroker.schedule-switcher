@@ -33,6 +33,12 @@ export class TimeTriggerScheduler extends TriggerScheduler {
         this.registered.push([trigger, newJob]);
     }
 
+    public loadregister(): void {
+        for (const r of this.registered) {
+            this.logger.logDebug(`TimeTriggerScheduler ${r[0]}`);
+        }
+    }
+
     public unregister(trigger: TimeTrigger): void {
         this.logger.logDebug(`Unregister trigger ${trigger}`);
         const job = this.getAssociatedJob(trigger);

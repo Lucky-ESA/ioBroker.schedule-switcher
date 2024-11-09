@@ -60,6 +60,13 @@ export abstract class Schedule implements Destroyable {
         }
     }
 
+    public loadregister(): void {
+        for (const r of this.triggers) {
+            this.logger.logDebug(`Schedule ${r}`);
+        }
+        this.triggerScheduler.loadregister();
+    }
+
     public updateTrigger(trigger: Trigger): void {
         const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
         if (index == -1) {

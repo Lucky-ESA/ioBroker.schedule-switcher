@@ -1,10 +1,13 @@
+import { LoggingService } from "../services/LoggingService";
 import { Trigger } from "../triggers/Trigger";
 import { TriggerScheduler } from "./TriggerScheduler";
 
 export class UniversalTriggerScheduler extends TriggerScheduler {
     private readonly schedulers: TriggerScheduler[];
-
-    constructor(schedulers: TriggerScheduler[]) {
+    constructor(
+        schedulers: TriggerScheduler[],
+        private readonly logger: LoggingService,
+    ) {
         super();
         this.schedulers = schedulers;
     }
@@ -24,6 +27,13 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
             return scheduler.unregister(trigger);
         } else {
             throw new Error(`No scheduler for trigger of type ${trigger.constructor.name} found`);
+        }
+    }
+
+    public loadregister(): void {
+        for (const r of this.schedulers) {
+            this.logger.logDebug(`Start UniversalTriggerScheduler`);
+            r.loadregister();
         }
     }
 

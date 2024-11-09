@@ -70,6 +70,12 @@ class Schedule {
       }
     }
   }
+  loadregister() {
+    for (const r of this.triggers) {
+      this.logger.logDebug(`Schedule ${r}`);
+    }
+    this.triggerScheduler.loadregister();
+  }
   updateTrigger(trigger) {
     const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
     if (index == -1) {

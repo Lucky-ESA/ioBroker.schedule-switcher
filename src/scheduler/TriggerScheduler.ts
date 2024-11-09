@@ -9,4 +9,6 @@ export abstract class TriggerScheduler implements Destroyable {
     abstract forType(): string;
 
     abstract destroy(): void;
+
+    abstract loadregister(): void;
 }

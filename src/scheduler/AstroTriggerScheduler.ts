@@ -15,8 +15,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     private readonly rescheduleTrigger = new TimeTriggerBuilder()
         .setId(`AstroTriggerScheduler-Rescheduler`)
         .setWeekdays(AllWeekdays)
-        .setHour(2)
-        .setMinute(0)
+        .setHour(19)
+        .setMinute(1)
         .setTodayTrigger({})
         .setAction({
             execute: () => {
@@ -27,6 +27,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 for (const r of this.registered) {
                     this.tryScheduleTriggerToday(r);
                 }
+                this.loadregister();
+                this.timeTriggerScheduler.loadregister();
             },
         })
         .build();
@@ -66,6 +68,12 @@ export class AstroTriggerScheduler extends TriggerScheduler {
             }
         } else {
             this.logger.logWarn(`AstroTrigger ${trigger} is not registered.`);
+        }
+    }
+
+    public loadregister(): void {
+        for (const r of this.registered) {
+            this.logger.logDebug(`AstroTriggerScheduler ${r}`);
         }
     }
 

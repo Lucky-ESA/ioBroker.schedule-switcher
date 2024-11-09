@@ -115,6 +115,7 @@ class ScheduleSwitcher extends utils.Adapter {
         this.setCountTriggerStart = this.setTimeout(() => {
             this.messageService?.setCountTrigger();
             this.setCountTriggerStart = undefined;
+            this.moreLogs();
         }, 3000);
     }
 
@@ -154,6 +155,7 @@ class ScheduleSwitcher extends utils.Adapter {
             this.log.info("Start Update Astrotime!");
             this.validation.setNextTime(await this.getCoordinate());
         });
+        this.moreLogs();
     }
 
     private async refreshActionTime(): Promise<void> {
@@ -165,7 +167,15 @@ class ScheduleSwitcher extends utils.Adapter {
             this.log.info("Start Update next time switch!");
             this.validation.setActionTime(await this.getCoordinate());
         });
+        this.moreLogs();
     }
+
+    private moreLogs(): void {
+        for (const id of this.scheduleIdToSchedule.keys()) {
+            this.scheduleIdToSchedule.get(id)?.loadregister();
+        }
+    }
+
     private async checkConfig(config: Array<schedulesData>): Promise<any> {
         if (config && config.length > 0) {
             const allIds: number[] = [];
@@ -610,17 +620,20 @@ class ScheduleSwitcher extends utils.Adapter {
             this.loggingService,
         );
         return new OnOffScheduleSerializer(
-            new UniversalTriggerScheduler([
-                new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),
-                new AstroTriggerScheduler(
+            new UniversalTriggerScheduler(
+                [
                     new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),
-                    getTimes,
-                    await this.getCoordinate(),
-                    this.loggingService,
-                    this.stateService,
-                ),
-                new OneTimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService, this),
-            ]),
+                    new AstroTriggerScheduler(
+                        new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),
+                        getTimes,
+                        await this.getCoordinate(),
+                        this.loggingService,
+                        this.stateService,
+                    ),
+                    new OneTimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService, this),
+                ],
+                this.loggingService,
+            ),
             actionSerializer,
             triggerSerializer,
             this,

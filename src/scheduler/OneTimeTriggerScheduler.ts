@@ -51,6 +51,12 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
         }
     }
 
+    public loadregister(): void {
+        for (const r of this.registered) {
+            this.logger.logDebug(`OneTimeTriggerScheduler ${r[0]}`);
+        }
+    }
+
     public destroy(): void {
         this.triggerTimeout && this.adapter.clearTimeout(this.triggerTimeout);
         this.registered.forEach((r) => this.unregister(r[0]));

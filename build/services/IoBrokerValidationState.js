@@ -180,6 +180,9 @@ class IoBrokerValidationState {
               this.adapter.log.error(`Empty weekday is not allowed in ${id}`);
               trigger.weekdays = [0];
             }
+            if (trigger.todayTrigger == void 0) {
+              trigger.todayTrigger = {};
+            }
           } else if (trigger.type === "AstroTrigger") {
             if (trigger.astroTime == null || trigger.astroTime !== "sunrise" && trigger.astroTime !== "sunset" && trigger.astroTime !== "solarNoon") {
               this.adapter.log.warn(`Astro time may not be null - in ${id}`);

@@ -23,11 +23,12 @@ __export(UniversalTriggerScheduler_exports, {
 module.exports = __toCommonJS(UniversalTriggerScheduler_exports);
 var import_TriggerScheduler = require("./TriggerScheduler");
 class UniversalTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
-  schedulers;
-  constructor(schedulers) {
+  constructor(schedulers, logger) {
     super();
+    this.logger = logger;
     this.schedulers = schedulers;
   }
+  schedulers;
   register(trigger) {
     const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
     if (scheduler) {
@@ -42,6 +43,12 @@ class UniversalTriggerScheduler extends import_TriggerScheduler.TriggerScheduler
       return scheduler.unregister(trigger);
     } else {
       throw new Error(`No scheduler for trigger of type ${trigger.constructor.name} found`);
+    }
+  }
+  loadregister() {
+    for (const r of this.schedulers) {
+      this.logger.logDebug(`Start UniversalTriggerScheduler`);
+      r.loadregister();
     }
   }
   destroy() {
