@@ -45,7 +45,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     public register(trigger: AstroTrigger): void {
         this.logger.logDebug(`Register astro trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
-            throw new Error(`Trigger ${trigger} is already registered.`);
+            throw new Error(`AstroTrigger ${trigger} is already registered.`);
         }
         this.registered.push(trigger);
         this.tryScheduleTriggerToday(trigger);
@@ -65,7 +65,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 });
             }
         } else {
-            throw new Error(`Trigger ${trigger} is not registered.`);
+            this.logger.logWarn(`AstroTrigger ${trigger} is not registered.`);
         }
     }
 
@@ -97,12 +97,12 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 .setWeekdays([next.getDay()])
                 .setAction({
                     execute: () => {
-                        this.logger.logDebug(`Executing trigger ${trigger}`);
+                        this.logger.logDebug(`Executing astrotrigger ${trigger}`);
                         trigger.getAction().execute(trigger.getData() as any);
                     },
                 })
                 .build();
-            this.logger.logDebug(`Scheduled with ${timeTrigger}`);
+            this.logger.logDebug(`Scheduled astro with ${timeTrigger}`);
             this.timeTriggerScheduler.register(timeTrigger);
             this.scheduled.push([trigger.getId(), timeTrigger]);
         } else {
