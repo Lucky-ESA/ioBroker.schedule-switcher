@@ -17,7 +17,7 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
         if (scheduler) {
             return scheduler.register(trigger);
         } else {
-            throw new Error(`No scheduler for trigger of type ${trigger.constructor.name} found`);
+            throw new Error(`Register - No scheduler for trigger of type ${trigger.constructor.name} found`);
         }
     }
 
@@ -26,7 +26,7 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
         if (scheduler) {
             return scheduler.unregister(trigger);
         } else {
-            throw new Error(`No scheduler for trigger of type ${trigger.constructor.name} found`);
+            throw new Error(`Unregister - No scheduler for trigger of type ${trigger.constructor.name} found`);
         }
     }
 

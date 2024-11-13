@@ -24,7 +24,6 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 for (const s of this.scheduled) {
                     this.timeTriggerScheduler.unregister(s[1]);
                 }
-                this.scheduled = [];
                 for (const r of this.registered) {
                     this.tryScheduleTriggerToday(r);
                 }
@@ -80,7 +79,10 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 
     public loadregister(): void {
         for (const r of this.registered) {
-            this.logger.logDebug(`Check AstroTriggerScheduler ${r}`);
+            this.logger.logDebug(`Check AstroTriggerRegistered ${r}`);
+        }
+        for (const s of this.scheduled) {
+            this.logger.logDebug(`Check AstroTriggerScheduler ${s[1]}`);
         }
     }
 
@@ -114,6 +116,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                     execute: () => {
                         this.logger.logDebug(`Executing astrotrigger ${trigger}`);
                         trigger.getAction().execute(trigger.getData() as any);
+                        this.unregister(trigger);
                     },
                 })
                 .build();
@@ -121,7 +124,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
             this.timeTriggerScheduler.register(timeTrigger);
             this.scheduled.push([trigger.getId(), timeTrigger]);
         } else {
-            this.logger.logDebug(`Didn't schedule`);
+            this.logger.logDebug(`Didn't schedule ${trigger}`);
         }
     }
 

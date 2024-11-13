@@ -39,12 +39,12 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     return import_OneTimeTrigger.OneTimeTrigger.prototype.constructor.name;
   }
   register(trigger) {
-    this.logger.logDebug(`Register trigger ${trigger}`);
+    this.logger.logDebug(`Register OneTimeTriggerScheduler trigger ${trigger}`);
     if (this.getAssociatedJob(trigger)) {
       this.logger.logWarn(`OneTimeTrigger ${trigger} is already registered.`);
     } else {
       if (trigger.getDate() < /* @__PURE__ */ new Date()) {
-        this.logger.logDebug(`Date is in past, deleting trigger ${trigger}`);
+        this.logger.logDebug(`Date is in past, deleting OneTimeTriggerScheduler ${trigger}`);
         this.triggerTimeout = this.adapter.setTimeout(() => {
           trigger.destroy();
           this.triggerTimeout = void 0;
@@ -59,16 +59,19 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     }
   }
   unregister(trigger) {
-    this.logger.logDebug(`Unregister trigger ${trigger}`);
+    this.logger.logDebug(`Unregister OneTimeTriggerScheduler trigger ${trigger}`);
     const job = this.getAssociatedJob(trigger);
     if (job) {
+      this.logger.logDebug(`Unregister OneTimeTriggerScheduler trigger ${trigger}`);
       this.cancelJob(job);
       this.removeTrigger(trigger);
+    } else {
+      this.logger.logDebug(`Error Unregister OneTimeTriggerScheduler trigger ${trigger}`);
     }
   }
   loadregister() {
     for (const r of this.registered) {
-      this.logger.logDebug(`OneTimeTriggerScheduler ${r[0]}`);
+      this.logger.logDebug(`Check OneTimeTriggerScheduler ${r[0]}`);
     }
   }
   destroy() {

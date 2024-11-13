@@ -72,6 +72,9 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
           }
           return true;
         });
+      } else {
+        this.logger.logWarn(`AstroTrigger ${trigger} is not today.`);
+        this.loadregister();
       }
     } else {
       this.logger.logWarn(`AstroTrigger ${trigger} is not registered.`);
@@ -80,7 +83,10 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   loadregister() {
     for (const r of this.registered) {
-      this.logger.logDebug(`AstroTriggerScheduler ${r}`);
+      this.logger.logDebug(`Check AstroTriggerRegistered ${r}`);
+    }
+    for (const s of this.scheduled) {
+      this.logger.logDebug(`Check AstroTriggerScheduler ${s[1]}`);
     }
   }
   destroy() {
@@ -105,13 +111,14 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
         execute: () => {
           this.logger.logDebug(`Executing astrotrigger ${trigger}`);
           trigger.getAction().execute(trigger.getData());
+          this.unregister(trigger);
         }
       }).build();
       this.logger.logDebug(`Scheduled astro with ${timeTrigger}`);
       this.timeTriggerScheduler.register(timeTrigger);
       this.scheduled.push([trigger.getId(), timeTrigger]);
     } else {
-      this.logger.logDebug(`Didn't schedule`);
+      this.logger.logDebug(`Didn't schedule ${trigger}`);
     }
   }
   isRegistered(trigger) {
