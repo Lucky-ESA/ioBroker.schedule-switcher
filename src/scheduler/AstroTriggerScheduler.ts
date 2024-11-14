@@ -101,6 +101,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         const next = this.nextDate(trigger);
         this.logger.logDebug(`Time ${next} - Date ${now}`);
         if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
+            this.removeScheduled(trigger);
             const timeTrigger = new TimeTriggerBuilder()
                 .setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`)
                 .setHour(next.getHours())
@@ -116,7 +117,6 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                     execute: () => {
                         this.logger.logDebug(`Executing astrotrigger ${trigger}`);
                         trigger.getAction().execute(trigger.getData() as any);
-                        this.unregister(trigger);
                     },
                 })
                 .build();
@@ -134,6 +134,11 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 
     private isScheduledToday(trigger: AstroTrigger): boolean {
         return this.scheduled.find((s) => s[0] === trigger.getId()) != undefined;
+    }
+
+    private removeScheduled(trigger: AstroTrigger): void {
+        this.logger.logDebug(`Scheduled remove ${trigger}`);
+        this.scheduled = this.scheduled.filter((s) => s[0] !== trigger.getId());
     }
 
     private nextDate(trigger: AstroTrigger): Date {

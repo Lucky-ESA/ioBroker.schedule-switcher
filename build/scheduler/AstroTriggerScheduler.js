@@ -102,6 +102,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     const next = this.nextDate(trigger);
     this.logger.logDebug(`Time ${next} - Date ${now}`);
     if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
+      this.removeScheduled(trigger);
       const timeTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`).setHour(next.getHours()).setMinute(next.getMinutes()).setTodayTrigger({
         hour: next.getHours(),
         minute: next.getMinutes(),
@@ -111,7 +112,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
         execute: () => {
           this.logger.logDebug(`Executing astrotrigger ${trigger}`);
           trigger.getAction().execute(trigger.getData());
-          this.unregister(trigger);
         }
       }).build();
       this.logger.logDebug(`Scheduled astro with ${timeTrigger}`);
@@ -126,6 +126,10 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   isScheduledToday(trigger) {
     return this.scheduled.find((s) => s[0] === trigger.getId()) != void 0;
+  }
+  removeScheduled(trigger) {
+    this.logger.logDebug(`Scheduled remove ${trigger}`);
+    this.scheduled = this.scheduled.filter((s) => s[0] !== trigger.getId());
   }
   nextDate(trigger) {
     const next = this.getTimes(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude())[trigger.getAstroTime()];
