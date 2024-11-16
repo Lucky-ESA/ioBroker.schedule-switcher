@@ -40,7 +40,8 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   register(trigger) {
     this.logger.logDebug(`Register TimeTriggerScheduler trigger ${trigger}`);
     if (this.getAssociatedJob(trigger)) {
-      this.logger.logWarn(`TimeTriggerScheduler Trigger ${trigger} is already registered.`);
+      this.loadregister();
+      throw new Error(`TimeTriggerScheduler Trigger ${trigger} is already registered.`);
     } else {
       const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
         this.logger.logDebug(`Executing TimeTriggerScheduler trigger ${trigger}`);
@@ -61,8 +62,8 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.cancelJob(job);
       this.removeTrigger(trigger);
     } else {
-      this.logger.logWarn(`TimeTriggerScheduler Trigger ${trigger} is not registered.`);
       this.loadregister();
+      throw new Error(`TimeTriggerScheduler Trigger ${trigger} is not registered.`);
     }
   }
   destroy() {
