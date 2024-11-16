@@ -102,8 +102,10 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     const next = this.nextDate(trigger);
     this.logger.logDebug(`Time ${next} - Date ${now}`);
     if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
+      const entry = this.registered.find((t) => t.getId() === trigger.getId());
+      const objectId = entry && typeof entry.getObjectId() === "number" ? entry.getObjectId() : 0;
       this.removeScheduled(trigger);
-      const timeTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`).setHour(next.getHours()).setMinute(next.getMinutes()).setTodayTrigger({
+      const timeTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`).setHour(next.getHours()).setMinute(next.getMinutes()).setObjectId(objectId).setTodayTrigger({
         hour: next.getHours(),
         minute: next.getMinutes(),
         weekday: next.getDay(),

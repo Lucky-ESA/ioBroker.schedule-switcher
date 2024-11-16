@@ -46,7 +46,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
             this.offValue as any,
             this.booleanValue,
             this.stateService as any,
-            this.valueType,
+            this.valueType as string,
         );
     }
 }
