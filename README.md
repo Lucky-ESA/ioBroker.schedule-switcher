@@ -46,6 +46,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   (Lucky_ESA) Put value of state correctly
 -   (Lucky_ESA) Added next triggers as JSON
 -   (Lucky_ESA) Added counter trigger
+-   (Lucky_ESA) Updating astro time fixed
 
 ### 0.0.5 (2024-11-06)
 
