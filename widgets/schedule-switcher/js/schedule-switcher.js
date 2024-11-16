@@ -22,7 +22,7 @@ $.get("../schedule-switcher.admin/words.js", function (script) {
 
 // export vis binds for widget
 vis.binds["schedule-switcher"] = {
-    version: "0.0.5",
+    version: "0.0.6",
     showVersion: showVersion,
     createOnOffWidget: createOnOffWidget,
     onOffScheduleWidgets: {},
