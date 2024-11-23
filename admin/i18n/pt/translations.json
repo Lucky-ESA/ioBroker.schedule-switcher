@@ -145,5 +145,7 @@
     "errorLess": "A data é menor que a hora atual",
     "errorGreater": "A data é superior a 1 ano",
     "errorMoreState": "Outro widget tem mais estados",
-    "errorConditions": "Outro widget usa condições"
+    "errorConditions": "Outro widget usa condições",
+    "html_text": "Crie HTML para VIS e VIS-2 (VIS-2 veja descrição)",
+    "link to description": "Link para a descrição"
 }

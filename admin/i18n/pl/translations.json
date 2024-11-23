@@ -145,5 +145,7 @@
     "errorLess": "Data jest krótsza niż bieżąca godzina",
     "errorGreater": "Data jest dłuższa niż 1 rok",
     "errorMoreState": "Inny widget ma więcej stanów",
-    "errorConditions": "Inny widget używa warunków"
+    "errorConditions": "Inny widget używa warunków",
+    "html_text": "Utwórz HTML dla VIS i VIS-2 (VIS-2 patrz opis)",
+    "link to description": "Link do opisu"
 }

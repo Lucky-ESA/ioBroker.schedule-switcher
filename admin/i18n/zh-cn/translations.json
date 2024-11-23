@@ -145,5 +145,7 @@
     "errorLess": "日期小于当前时间",
     "errorGreater": "日期大于 1 年",
     "errorMoreState": "另一个小部件有更多状态",
-    "errorConditions": "另一个小部件使用条件"
+    "errorConditions": "另一个小部件使用条件",
+    "html_text": "为 VIS 和 VIS-2 创建 HTML（VIS-2 请参阅说明）",
+    "link to description": "链接到说明"
 }

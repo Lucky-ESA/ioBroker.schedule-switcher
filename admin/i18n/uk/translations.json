@@ -145,5 +145,7 @@
     "errorLess": "Дата менша за поточний час",
     "errorGreater": "Дата більше 1 року",
     "errorMoreState": "Інший віджет має більше станів",
-    "errorConditions": "Інший віджет використовує умови"
+    "errorConditions": "Інший віджет використовує умови",
+    "html_text": "Створення HTML для VIS і VIS-2 (VIS-2 див. опис)",
+    "link to description": "Посилання на опис"
 }

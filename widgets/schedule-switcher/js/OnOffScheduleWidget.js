@@ -429,7 +429,7 @@
 					<div class="manual-container multiple" style="display: none;">
 						<p>${vis.binds["schedule-switcher"].translate("manualSwitching")}</p>
 						<button type="button" class="material-button" id="manual-on" title="${vis.binds["schedule-switcher"].translate("allOn")}">${vis.binds["schedule-switcher"].translate("allOn")}</button>
-						<button type="button" class="material-button" id="manual-off" title="${vis.binds["schedule-switcher"].translate("allOff")}">${vis.binds["schedule-switcher"].translate("allOff", "w000005")}</button>
+						<button type="button" class="material-button" id="manual-off" title="${vis.binds["schedule-switcher"].translate("allOff")}">${vis.binds["schedule-switcher"].translate("allOff")}</button>
 					</div>
 					<div class="manual-container single" style="display: none;">
 						<div id="manual" class="md-switch-container">

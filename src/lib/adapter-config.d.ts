@@ -5,6 +5,7 @@ declare global {
     namespace ioBroker {
         interface AdapterConfig {
             switch_delay: number;
+            usehtml: boolean;
             history: number;
             schedules: {
                 onOff: [];

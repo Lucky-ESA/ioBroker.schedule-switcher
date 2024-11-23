@@ -145,5 +145,7 @@
     "errorLess": "Дата меньше текущего времени",
     "errorGreater": "Дата больше 1 года",
     "errorMoreState": "Другой виджет имеет больше состояний",
-    "errorConditions": "Другой виджет использует условия"
+    "errorConditions": "Другой виджет использует условия",
+    "html_text": "Создать HTML для VIS и VIS-2 (VIS-2 см. описание)",
+    "link to description": "Ссылка на описание"
 }

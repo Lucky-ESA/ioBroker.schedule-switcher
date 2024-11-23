@@ -145,5 +145,7 @@
     "errorLess": "Datum is kleiner dan de huidige tijd",
     "errorGreater": "Datum is groter dan 1 jaar",
     "errorMoreState": "Een andere widget heeft meer statussen",
-    "errorConditions": "Een andere widget gebruikt voorwaarden"
+    "errorConditions": "Een andere widget gebruikt voorwaarden",
+    "html_text": "HTML maken voor VIS en VIS-2 (VIS-2 zie beschrijving)",
+    "link to description": "Link naar beschrijving"
 }

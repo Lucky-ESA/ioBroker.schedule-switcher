@@ -704,7 +704,7 @@ export class IoBrokerValidationState implements validationState {
                                     switching.dateISO = new Date(switchTime).toISOString();
                                     switching.timestamp = switchTime.getTime();
                                 } else {
-                                    const t: string = await this.nextDateSwitch(now, trigger);
+                                    const t: string = await this.nextDateSwitch(new Date(), trigger);
                                     switching.hour = trigger.hour;
                                     switching.minute = trigger.minute;
                                     switching.day = new Date(t).getDate();
@@ -720,7 +720,7 @@ export class IoBrokerValidationState implements validationState {
                                     switching.dateISO = trigger.date;
                                     switching.timestamp = new Date(trigger.date).getTime();
                                 } else {
-                                    const t: string = await this.nextDateSwitch(now, trigger);
+                                    const t: string = await this.nextDateSwitch(new Date(), trigger);
                                     trigger.todayTrigger = await this.nextDate(new Date(t), trigger, coordinate);
                                     switching.hour = trigger.todayTrigger.hour;
                                     switching.minute = trigger.todayTrigger.minute;
@@ -755,15 +755,19 @@ export class IoBrokerValidationState implements validationState {
     private async nextDateSwitch(now: Date, trigger: any): Promise<string> {
         let diffDays: number = 0;
         const nextDay: number =
-            trigger.weekdays === 1 ? trigger.weekdays[0] : await this.nextActiveDay(trigger.weekdays, now.getDay());
+            trigger.weekdays.length === 1
+                ? trigger.weekdays[0]
+                : await this.nextActiveDay(trigger.weekdays, now.getDay());
         if (nextDay > now.getDay()) {
             diffDays = nextDay - now.getDay();
         } else {
             diffDays = nextDay + 7 - now.getDay();
         }
         const next: Date = new Date(now.setDate(now.getDate() + diffDays));
+        const hour = trigger.hour != null ? trigger.hour : trigger.todayTrigger.hour;
+        const minute = trigger.minute != null ? trigger.minute : trigger.todayTrigger.minute;
         return new Date(
-            `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${trigger.hour}:${trigger.minute}`,
+            `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${hour}:${minute}`,
         ).toISOString();
     }
 

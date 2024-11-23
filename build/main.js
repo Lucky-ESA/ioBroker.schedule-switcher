@@ -25,6 +25,7 @@ var utils = __toESM(require("@iobroker/adapter-core"));
 var import_node_schedule = require("node-schedule");
 var import_suncalc = require("suncalc");
 var import_Coordinate = require("./Coordinate");
+var import_VisHtmlTable = require("./html/VisHtmlTable");
 var import_AstroTriggerScheduler = require("./scheduler/AstroTriggerScheduler");
 var import_OneTimeTriggerScheduler = require("./scheduler/OneTimeTriggerScheduler");
 var import_TimeTriggerScheduler = require("./scheduler/TimeTriggerScheduler");
@@ -53,6 +54,7 @@ class ScheduleSwitcher extends utils.Adapter {
   nextActionTime;
   setCountTriggerStart;
   validation = new import_IoBrokerValidationState.IoBrokerValidationState(this);
+  vishtmltable = new import_VisHtmlTable.VisHtmlTable(this);
   constructor(options = {}) {
     super({
       ...options,
@@ -77,6 +79,15 @@ class ScheduleSwitcher extends utils.Adapter {
    * Is called when databases are connected and adapter received configuration.
    */
   async onReady() {
+    if (!this.config.usehtml)
+      await this.delObjectAsync("html", { recursive: true });
+    const obj = await this.getForeignObjectAsync("system.config");
+    let lang = "de";
+    if (obj && obj.common && obj.common.language) {
+      lang = obj.common.language;
+    }
+    if (this.config.usehtml)
+      await this.vishtmltable.createStates(lang);
     this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData);
     await this.initMessageService();
     await this.fixStateStructure(this.config.schedules);
@@ -84,6 +95,7 @@ class ScheduleSwitcher extends utils.Adapter {
     const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.*.data`);
     for (const id in record) {
       const state = record[id];
+      await this.vishtmltable.changeTrigger(id, state, false);
       this.log.debug(`got state: ${state ? JSON.stringify(state) : "null"} with id: ${id}`);
       if (state) {
         this.log.info("ID: " + id);
@@ -104,6 +116,7 @@ class ScheduleSwitcher extends utils.Adapter {
     }
     this.refreshAstroTime();
     this.refreshActionTime();
+    this.vishtmltable.updateHTML();
     this.subscribeStates(`*`);
     this.widgetControl = this.setInterval(
       () => {
@@ -253,10 +266,12 @@ class ScheduleSwitcher extends utils.Adapter {
         const command = id.split(".").pop();
         if (command === "data") {
           this.log.debug("is schedule id start");
+          this.vishtmltable.changeTrigger(id, state);
           await this.onScheduleChange(id, state.val);
           this.log.debug("is schedule id end");
         } else if (command === "enabled") {
           this.log.debug("is enabled id start");
+          this.vishtmltable.changeEnabled(id, state);
           const dataId = this.getScheduleIdFromEnabledId(id);
           const scheduleData = (_a = await this.getStateAsync(dataId)) == null ? void 0 : _a.val;
           await this.onScheduleChange(dataId, scheduleData);
@@ -264,8 +279,17 @@ class ScheduleSwitcher extends utils.Adapter {
         } else if (command === "sendto" && typeof state.val === "string") {
           this.log.debug("is sendto id");
           this.setSendTo(state.val);
+        } else if (command === "update" && state.val) {
+          this.vishtmltable.updateHTML();
+          this.setState(id, false, true);
         }
-        this.stateService.setState(id, state.val, true);
+        const secsplit = id.split(".")[id.split(".").length - 2];
+        if (secsplit === "html" && typeof command === "string" && command != "html_code" && command != "update") {
+          this.vishtmltable.changeHTML(command, state);
+          this.setState(id, state.val, true);
+        } else {
+          this.stateService.setState(id, state.val, true);
+        }
       }
     }
   }
@@ -335,12 +359,147 @@ class ScheduleSwitcher extends utils.Adapter {
               this.log.error("Message service not initialized");
             }
             break;
+          case "week":
+          case "astro":
+          case "datetime":
+          case "time":
+            this.changeTrigger(obj);
+            break;
           default:
             this.log.error(`Message service ${obj.command} not initialized`);
         }
       } catch (e) {
         this.log.error(`Could not handle message:`);
       }
+    }
+  }
+  async changeTrigger(obj) {
+    let valueTrigger;
+    if (obj.message.dataid) {
+      valueTrigger = await this.getStateAsync(obj.message.dataid);
+    } else {
+      this.log.warn(`Missing dataId ${JSON.stringify(obj.message)}`);
+      return;
+    }
+    switch (obj.command) {
+      case "week":
+        if (valueTrigger && typeof valueTrigger.val === "string") {
+          const triggers = JSON.parse(valueTrigger.val);
+          const trigger = triggers.triggers.find((t) => t.id === obj.message.triggerid);
+          if (trigger) {
+            if (trigger.weekdays.includes(obj.message.changeid)) {
+              trigger.weekdays = trigger.weekdays.filter((t) => t !== obj.message.changeid);
+            } else {
+              trigger.weekdays.push(obj.message.changeid);
+              trigger.weekdays.sort((a, b) => a - b);
+              if (trigger.weekdays.includes(0)) {
+                trigger.weekdays.shift();
+                trigger.weekdays.push(0);
+              }
+            }
+            if (this.messageService) {
+              const data = {
+                dataId: obj.message.dataid,
+                trigger
+              };
+              obj.command = "update-trigger";
+              obj.message = data;
+              await this.messageService.handleMessage(obj);
+              valueTrigger.val = JSON.stringify(triggers);
+              this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+            } else {
+              this.log.error("Message service not initialized");
+            }
+          } else {
+            this.log.warn(`Missing trigger ${JSON.stringify(obj.message)} - ${valueTrigger.val}`);
+          }
+        } else {
+          this.log.warn(`Missing dataId ${JSON.stringify(obj.message)}`);
+        }
+        break;
+      case "astro":
+        if (valueTrigger && typeof valueTrigger.val === "string") {
+          const triggers = JSON.parse(valueTrigger.val);
+          const trigger = triggers.triggers.find((t) => t.id === obj.message.triggerid);
+          if (trigger) {
+            trigger.astroTime = obj.message.astrotime;
+            trigger.shiftInMinutes = obj.message.shift;
+            if (this.messageService) {
+              const data = {
+                dataId: obj.message.dataid,
+                trigger
+              };
+              obj.command = "update-trigger";
+              obj.message = data;
+              await this.messageService.handleMessage(obj);
+              valueTrigger.val = JSON.stringify(triggers);
+              this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+            } else {
+              this.log.error("Message service not initialized");
+            }
+          } else {
+            this.log.warn(`Missing trigger ${JSON.stringify(obj.message)} - ${valueTrigger.val}`);
+          }
+        } else {
+          this.log.warn(`Missing dataId ${JSON.stringify(obj.message)}`);
+        }
+        break;
+      case "datetime":
+        if (valueTrigger && typeof valueTrigger.val === "string") {
+          const triggers = JSON.parse(valueTrigger.val);
+          const trigger = triggers.triggers.find((t) => t.id === obj.message.triggerid);
+          if (trigger) {
+            trigger.date = new Date(obj.message.time).toISOString();
+            if (this.messageService) {
+              const data = {
+                dataId: obj.message.dataid,
+                trigger
+              };
+              obj.command = "add-one-time-trigger";
+              obj.message = data;
+              await this.messageService.handleMessage(obj);
+              valueTrigger.val = JSON.stringify(triggers);
+              this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+            } else {
+              this.log.error("Message service not initialized");
+            }
+          } else {
+            this.log.warn(`Missing trigger ${JSON.stringify(obj.message)} - ${valueTrigger.val}`);
+          }
+        } else {
+          this.log.warn(`Missing dataId ${JSON.stringify(obj.message)}`);
+        }
+        break;
+      case "time":
+        if (valueTrigger && typeof valueTrigger.val === "string") {
+          const triggers = JSON.parse(valueTrigger.val);
+          const trigger = triggers.triggers.find((t) => t.id === obj.message.triggerid);
+          if (trigger) {
+            const splittime = obj.message.time.split(":");
+            trigger.hour = parseFloat(splittime[0]);
+            trigger.minute = parseFloat(splittime[1]);
+            if (this.messageService) {
+              const data = {
+                dataId: obj.message.dataid,
+                trigger
+              };
+              obj.command = "update-trigger";
+              obj.message = data;
+              await this.messageService.handleMessage(obj);
+              valueTrigger.val = JSON.stringify(triggers);
+              this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+            } else {
+              this.log.error("Message service not initialized");
+            }
+          } else {
+            this.log.warn(`Missing trigger ${JSON.stringify(obj.message)} - ${valueTrigger.val}`);
+          }
+        } else {
+          this.log.warn(`Missing dataId ${JSON.stringify(obj.message)}`);
+        }
+        break;
+      default:
+        this.log.error(`HTML message service ${obj.command} not initialized`);
     }
   }
   async loadData(obj, answer) {
@@ -634,6 +793,10 @@ class ScheduleSwitcher extends utils.Adapter {
     const send = JSON.parse(data);
     this.log.debug(JSON.stringify(send));
     try {
+      if (send.command === "week" || send.command === "astro" || send.command === "datetime" || send.command === "time") {
+        this.changeTrigger(send);
+        return;
+      }
       if (this.messageService) {
         await this.messageService.handleMessage(send);
       } else {

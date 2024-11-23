@@ -145,5 +145,7 @@
     "errorLess": "Das Datum liegt vor der aktuellen Uhrzeit",
     "errorGreater": "Das Datum ist größer als 1 Jahr",
     "errorMoreState": "Ein anderes Widget hat mehr Zustände",
-    "errorConditions": "Ein anderes Widget verwendet Bedingungen"
+    "errorConditions": "Ein anderes Widget verwendet Bedingungen",
+    "html_text": "HTML für VIS und VIS-2 erstellen (VIS-2 siehe Beschreibung)",
+    "link to description": "Link zur Beschreibung"
 }

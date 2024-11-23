@@ -626,7 +626,7 @@ class IoBrokerValidationState {
                   switching.dateISO = new Date(switchTime).toISOString();
                   switching.timestamp = switchTime.getTime();
                 } else {
-                  const t = await this.nextDateSwitch(now, trigger);
+                  const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
                   switching.hour = trigger.hour;
                   switching.minute = trigger.minute;
                   switching.day = new Date(t).getDate();
@@ -642,7 +642,7 @@ class IoBrokerValidationState {
                   switching.dateISO = trigger.date;
                   switching.timestamp = new Date(trigger.date).getTime();
                 } else {
-                  const t = await this.nextDateSwitch(now, trigger);
+                  const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
                   trigger.todayTrigger = await this.nextDate(new Date(t), trigger, coordinate);
                   switching.hour = trigger.todayTrigger.hour;
                   switching.minute = trigger.todayTrigger.minute;
@@ -675,15 +675,17 @@ class IoBrokerValidationState {
   }
   async nextDateSwitch(now, trigger) {
     let diffDays = 0;
-    const nextDay = trigger.weekdays === 1 ? trigger.weekdays[0] : await this.nextActiveDay(trigger.weekdays, now.getDay());
+    const nextDay = trigger.weekdays.length === 1 ? trigger.weekdays[0] : await this.nextActiveDay(trigger.weekdays, now.getDay());
     if (nextDay > now.getDay()) {
       diffDays = nextDay - now.getDay();
     } else {
       diffDays = nextDay + 7 - now.getDay();
     }
     const next = new Date(now.setDate(now.getDate() + diffDays));
+    const hour = trigger.hour != null ? trigger.hour : trigger.todayTrigger.hour;
+    const minute = trigger.minute != null ? trigger.minute : trigger.todayTrigger.minute;
     return (/* @__PURE__ */ new Date(
-      `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${trigger.hour}:${trigger.minute}`
+      `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${hour}:${minute}`
     )).toISOString();
   }
   async nextDate(date, data, coordinate) {

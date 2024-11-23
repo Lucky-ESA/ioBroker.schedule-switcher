@@ -102,6 +102,7 @@
             "min": 10,
             "max": 100000,
             "step": 50,
+            "default": 500,
             "newLine": true
         },
         "history": {
@@ -115,7 +116,31 @@
             "min": 0,
             "max": 100,
             "step": 1,
+            "default": 10,
             "newLine": true
+        },
+        "usehtml": {
+            "type": "checkbox",
+            "label": "html_text",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "default": false,
+            "newLine": true
+        },
+        "staticLink1": {
+            "type": "staticLink",
+            "text": "link to description",
+            "href": "https://github.com/Lucky-ESA/ioBroker.schedule-switcher/blob/main/docs/de/README.md",
+            "icon": "info",
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
         }
     }
 }
