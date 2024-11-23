@@ -45,8 +45,10 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -   `Status`: Status enabled/disabled
 -   `Delay between 2 switching operations in ms`: Prevents states from being set at the same time
 -   `History switching as JSON (max 100/0 for off)` Max. history json
+-   `Create HTML for VIS and VIS-2 (VIS-2 see description)` HTML overview enabled
 
-    ![instance_settings.png](img/instance_settings.png)
+    ![instance_settings.png](img/instance_settings.png)</br>
+    ![instance_settings_1.png](img/instance_settings_1.png)
 
 ### States
 

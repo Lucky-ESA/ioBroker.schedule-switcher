@@ -44,8 +44,10 @@ Es kann konfiguriert werden, zu welcher Uhrzeit und an welchen Wochentagen der T
 -   `Löschen`: Zeitplan löschen
 -   `Verzögerung zwischen 2 Schaltvorgängen in ms`: Verhindert zeitgleiches setzen von States
 -   `Historie Umschaltung als JSON (max. 100/0 für Aus)` Max. Speicherung der Historie
+-   `HTML für VIS und VIS-2 erstellen (VIS-2 siehe Beschreibung)` Aktivierung HTML Übersicht
 
-    ![instance_settings.png](img/instance_settings.png)
+    ![instance_settings.png](img/instance_settings.png)</br>
+    ![instance_settings_1.png](img/instance_settings_1.png)
 
 ### States
 
