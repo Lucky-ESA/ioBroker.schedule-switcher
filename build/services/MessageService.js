@@ -27,18 +27,19 @@ var import_AstroTime = require("../triggers/AstroTime");
 var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_Weekday = require("../triggers/Weekday");
-var import_IoBrokerValidationState = require("./IoBrokerValidationState");
 class MessageService {
-  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate, validation) {
+  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate, validation, html) {
     this.stateService = stateService;
     this.scheduleIdToSchedule = scheduleIdToSchedule;
     this.createOnOffScheduleSerializer = createOnOffScheduleSerializer;
     this.adapter = adapter;
     this.coordinate = coordinate;
     this.validation = validation;
+    this.html = html;
     this.adapter = adapter;
     this.triggerTimeout = void 0;
-    this.validation = new import_IoBrokerValidationState.IoBrokerValidationState(adapter);
+    this.validation = validation;
+    this.html = html;
   }
   currentMessage = null;
   triggerTimeout;
@@ -102,12 +103,14 @@ class MessageService {
         this.changeName(data);
         break;
       case "enable-schedule":
+        this.html.changeEnabled(data.dataId, true);
         schedule.setEnabled(true);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
         await this.setCountTrigger();
         break;
       case "disable-schedule":
         schedule.setEnabled(false);
+        this.html.changeEnabled(data.dataId, false);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
         await this.setCountTrigger();
         break;
@@ -124,10 +127,9 @@ class MessageService {
         return;
     }
     if (schedule instanceof import_OnOffSchedule.OnOffSchedule) {
-      this.stateService.setState(
-        data.dataId,
-        (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule)
-      );
+      const saveTrigger = (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule);
+      this.stateService.setState(data.dataId, saveTrigger);
+      this.html.changeTrigger(data.dataId, saveTrigger);
     } else {
       this.adapter.log.error("Cannot update schedule state after message, no serializer found for schedule");
       return;

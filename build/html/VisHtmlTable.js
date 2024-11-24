@@ -36,8 +36,9 @@ class VisHtmlTable {
     if (!this.adapter.config.usehtml)
       return;
     this.adapter.log.debug(`changeEnabled: ${id} - ${JSON.stringify(val)}`);
-    if (val != null && val.val != null) {
-      this.stateVal[id.replace(".enabled", ".data")]["enabled"] = val.val;
+    const value = typeof val === "boolean" ? val : val == null ? void 0 : val.val;
+    if (value != null) {
+      this.stateVal[id.replace(".enabled", ".data")]["enabled"] = value;
       this.createHTML();
     }
   }
@@ -59,9 +60,10 @@ class VisHtmlTable {
     if (!this.adapter.config.usehtml)
       return;
     this.adapter.log.debug(`changeTrigger: ${id} - ${JSON.stringify(val)} - ${first}`);
-    if (id != void 0 && val != null && val.val != null) {
+    const values = typeof val === "string" ? val : val == null ? void 0 : val.val;
+    if (id != void 0 && values != null) {
       const enabled = await this.adapter.getStateAsync(id.replace(".data", ".enabled"));
-      const value = typeof val.val === "string" ? JSON.parse(val.val) : val.val;
+      const value = typeof values === "string" ? JSON.parse(values) : values;
       value["enabled"] = enabled != null && enabled.val != null ? enabled.val : false;
       this.stateVal[id] = value;
       if (first)
@@ -95,6 +97,7 @@ class VisHtmlTable {
       let nextDateTime = 0;
       let nextDateTimeIcon = 0;
       let nextaction = "";
+      const nextName = [];
       for (const trigger of data.triggers) {
         ++countall;
         nextDateTimeIcon = nextDateTime;
@@ -102,6 +105,11 @@ class VisHtmlTable {
         let times = "";
         let action = "";
         ++counter;
+        const nextNameData = {
+          getDate: 0,
+          date: /* @__PURE__ */ new Date(),
+          action: ""
+        };
         const isodd = counter % 2 != 0 ? id["background_color_even"] : id["background_color_odd"];
         let addDate = 0;
         if (trigger.type === "TimeTrigger") {
@@ -116,6 +124,8 @@ class VisHtmlTable {
             const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
             nextDateTime = await this.nextEvent(new Date(t).getDay(), nextDateTime);
           }
+          nextNameData.getDate = nextDateTime;
+          nextNameData.date = switchTime;
           times = `${trigger.hour.toString().padStart(2, "0")}:${trigger.minute.toString().padStart(2, "0")}`;
           change_times = `<input type="time" id="nexttime${countall}" value="${times}" required /> <input for="nexttime" type="button" value="save" onclick="sendToTime('${this.adapter.namespace}', 'time', '${trigger.id}', '${state}', '${countall}')" /> `;
         } else if (trigger.type === "AstroTrigger") {
@@ -124,6 +134,8 @@ class VisHtmlTable {
           } else {
             nextDateTime = await this.nextEvent(new Date(trigger.todayTrigger.date).getDay(), nextDateTime);
           }
+          nextNameData.getDate = nextDateTime;
+          nextNameData.date = new Date(trigger.todayTrigger.date);
           times = `${trigger.todayTrigger.hour.toString().padStart(2, "0")}:${trigger.todayTrigger.minute.toString().padStart(2, "0")}`;
           change_times = `<select id="timeselect${countall}">
                     <option value="sunrise" ${trigger.astroTime === "sunrise" ? 'selected="selected"' : ""}>
@@ -140,18 +152,24 @@ class VisHtmlTable {
           if (await this.getWeek(new Date(trigger.date)) === await this.getWeek(/* @__PURE__ */ new Date())) {
             trigger.weekdays = [(/* @__PURE__ */ new Date()).getDay()];
           }
+          nextNameData.getDate = nextDateTime;
+          nextNameData.date = new Date(trigger.date);
           times = `${new Date(trigger.date).getHours().toString().padStart(2, "0")}:${new Date(trigger.date).getMinutes().toString().padStart(2, "0")}`;
           change_times = `<input class="datetime" type="datetime-local" name="datetime" id="datetime${countall}" value="${this.adapter.formatDate(new Date(trigger.date), "YYYY-MM-DD hh:mm")}"min="${this.adapter.formatDate(/* @__PURE__ */ new Date(), "YYYY-MM-DD hh:mm")}"max="${this.adapter.formatDate(new Date((/* @__PURE__ */ new Date()).setFullYear((/* @__PURE__ */ new Date()).getFullYear() + 1)), "YYYY-MM-DD hh:mm")}"required /><input for="datetime${countall}" type="button" value="save" onclick="sendToDateTime('${this.adapter.namespace}', 'datetime', '${trigger.id}', '${state}', '${countall}')" /> `;
         }
         if (trigger.action && trigger.action.type === "ConditionAction") {
-          action = `&ensp;${iTag}${trigger.action.condition.constant}${trigger.action.condition.sign}${trigger.action.condition.constant}${iTagEnd}&ensp;${trigger.action.action.name === "On" ? id["icon_true"] : id["icon_false"]}`;
+          const iconCon = trigger.action.action.name === "On" ? id["icon_true"] : id["icon_false"];
+          action = `&ensp;${iTag}${trigger.action.condition.constant}${trigger.action.condition.sign}${trigger.action.condition.constant}${iTagEnd}&ensp;${iconCon}`;
           if (nextDateTimeIcon != nextDateTime)
-            nextaction = trigger.action.action.name === "On" ? id["icon_true"] : id["icon_false"];
+            nextaction = iconCon;
+          nextNameData.action = iconCon;
         }
         if (trigger.action && trigger.action.type === "OnOffStateAction") {
-          action = `&ensp;${trigger.action.name === "On" ? id["icon_true"] : id["icon_false"]}`;
+          const icon = trigger.action.name === "On" ? id["icon_true"] : id["icon_false"];
+          action = `&ensp;${icon}`;
           if (nextDateTimeIcon != nextDateTime)
-            nextaction = trigger.action.name === "On" ? id["icon_true"] : id["icon_false"];
+            nextaction = icon;
+          nextNameData.action = icon;
         }
         triggers += `
                 <tr style="background-color:${isodd}; 
@@ -172,11 +190,12 @@ class VisHtmlTable {
                 <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" style="text-align:${id["column_align_row_09"]}; color:${trigger.weekdays && trigger.weekdays.includes(6) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">${iTag}${id["column_text_09"]}${iTagEnd}</td>
                 <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" style="text-align:${id["column_align_row_10"]}; color:${trigger.weekdays && trigger.weekdays.includes(0) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">${iTag}${id["column_text_10"]}${iTagEnd}</td>
                 </tr>`;
+        nextName.push(nextNameData);
       }
       if (nextDateTime < 8) {
         if (nextDateTime === 7)
           nextDateTime = 0;
-        next_event[nextDateTime] = nextaction;
+        next_event[nextDateTime] = await this.nextAction(nextDateTime, nextName, nextaction);
       }
       if (data.onAction && data.onAction && data.onAction.idsOfStatesToSet) {
         if (data.onAction.idsOfStatesToSet[0] !== "default.state") {
@@ -218,6 +237,14 @@ class VisHtmlTable {
       ++count;
     }
     await this.mergeHTML(text, countall, count);
+  }
+  async nextAction(nextDateTime, nextName, nextaction) {
+    const action = nextName.filter((t) => t.getDate === nextDateTime);
+    if (action && action.length > 0) {
+      const next = action.sort((a, b) => a.date - b.date);
+      return next[0].action;
+    }
+    return nextaction;
   }
   async getWeek(times) {
     const onejan = new Date(times.getFullYear(), 0, 1);
@@ -315,10 +342,10 @@ class VisHtmlTable {
         </style>
         <script> 
         function deleteTrigger(stateId, command, id, dataid, count) {
-            var check = document.getElementById('delete' + count).checked;
-            if (ckeck) {
+            var checked = document.getElementById('delete' + count).checked;
+            if (checked) {
                 var data = {
-                    "triggerid": id,
+                    "triggerId": id,
                     "dataId": dataid,
                 };
                 this.servConn._socket.emit("sendTo", stateId, command, data);
@@ -518,7 +545,6 @@ class VisHtmlTable {
         "zh-cn": "\u4E2D\u5348"
       }
     };
-    this.adapter.log.debug(`Lang ${this.lang}`);
     return all[word][this.lang];
   }
   async createStates(lang) {

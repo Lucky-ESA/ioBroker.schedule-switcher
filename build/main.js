@@ -282,6 +282,7 @@ class ScheduleSwitcher extends utils.Adapter {
         } else if (command === "update" && state.val) {
           this.vishtmltable.updateHTML();
           this.setState(id, false, true);
+          return;
         }
         const secsplit = id.split(".")[id.split(".").length - 2];
         if (secsplit === "html" && typeof command === "string" && command != "html_code" && command != "update") {
@@ -547,7 +548,8 @@ class ScheduleSwitcher extends utils.Adapter {
       this.createNewOnOffScheduleSerializer.bind(this),
       this,
       await this.getCoordinate(),
-      this.validation
+      this.validation,
+      this.vishtmltable
     );
   }
   async fixStateStructure(statesInSettings) {

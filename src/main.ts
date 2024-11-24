@@ -284,6 +284,7 @@ class ScheduleSwitcher extends utils.Adapter {
                 } else if (command === "update" && state.val) {
                     this.vishtmltable.updateHTML();
                     this.setState(id, false, true);
+                    return;
                 }
                 const secsplit = id.split(".")[id.split(".").length - 2];
                 if (
@@ -560,6 +561,7 @@ class ScheduleSwitcher extends utils.Adapter {
             this,
             await this.getCoordinate(),
             this.validation,
+            this.vishtmltable,
         );
     }
 

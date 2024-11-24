@@ -1,6 +1,7 @@
 import { getTimes } from "suncalc";
 import { Coordinate } from "../Coordinate";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
+import { VisHtmlTable } from "../html/VisHtmlTable";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
 import { Schedule } from "../schedules/Schedule";
 import { OnOffScheduleSerializer } from "../serialization/OnOffScheduleSerializer";
@@ -24,10 +25,12 @@ export class MessageService {
         private adapter: ioBroker.Adapter,
         private readonly coordinate: Coordinate,
         private readonly validation: IoBrokerValidationState,
+        private readonly html: VisHtmlTable,
     ) {
         this.adapter = adapter;
         this.triggerTimeout = undefined;
-        this.validation = new IoBrokerValidationState(adapter);
+        this.validation = validation;
+        this.html = html;
     }
 
     public async handleMessage(message: ioBroker.Message): Promise<void> {
@@ -90,12 +93,14 @@ export class MessageService {
                 this.changeName(data);
                 break;
             case "enable-schedule":
+                this.html.changeEnabled(data.dataId, true);
                 schedule.setEnabled(true);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
                 await this.setCountTrigger();
                 break;
             case "disable-schedule":
                 schedule.setEnabled(false);
+                this.html.changeEnabled(data.dataId, false);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
                 await this.setCountTrigger();
                 break;
@@ -112,10 +117,9 @@ export class MessageService {
                 return;
         }
         if (schedule instanceof OnOffSchedule) {
-            this.stateService.setState(
-                data.dataId,
-                (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule),
-            );
+            const saveTrigger = (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule);
+            this.stateService.setState(data.dataId, saveTrigger);
+            this.html.changeTrigger(data.dataId, saveTrigger);
         } else {
             this.adapter.log.error("Cannot update schedule state after message, no serializer found for schedule");
             return;
