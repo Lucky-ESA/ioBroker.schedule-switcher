@@ -1,4 +1,4 @@
-import { htmltable } from "./htmlTable";
+import { htmltable, NextActionName } from "./htmlTable";
 
 export class VisHtmlTable implements htmltable {
     private adapter: ioBroker.Adapter;
@@ -80,7 +80,7 @@ export class VisHtmlTable implements htmltable {
             let nextDateTime: number = 0;
             let nextDateTimeIcon: number = 0;
             let nextaction: string = "";
-            const nextName: any = [];
+            const nextName: NextActionName[] = [];
             for (const trigger of data.triggers) {
                 ++countall;
                 nextDateTimeIcon = nextDateTime;
@@ -88,7 +88,7 @@ export class VisHtmlTable implements htmltable {
                 let times: string = "";
                 let action: string = "";
                 ++counter;
-                const nextNameData: any = {
+                const nextNameData: NextActionName = {
                     getDate: 0,
                     date: new Date(),
                     action: "",
@@ -262,8 +262,8 @@ export class VisHtmlTable implements htmltable {
         await this.mergeHTML(text, countall, count);
     }
 
-    private async nextAction(nextDateTime: number, nextName: any, nextaction: string): Promise<string> {
-        const action = nextName.filter((t: any) => t.getDate === nextDateTime);
+    private async nextAction(nextDateTime: number, nextName: NextActionName[], nextaction: string): Promise<string> {
+        const action: any = nextName.filter((t: any) => t.getDate === nextDateTime);
         if (action && action.length > 0) {
             const next = action.sort((a: any, b: any) => a.date - b.date);
             return next[0].action;

@@ -5,3 +5,8 @@ export interface htmltable {
     createStates(lang: string): Promise<any>;
     updateHTML(): void;
 }
+export interface NextActionName {
+    getDate: number;
+    date: Date;
+    action: string;
+}

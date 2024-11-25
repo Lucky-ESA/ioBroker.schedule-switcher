@@ -589,6 +589,7 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Auslöser mit bekannter ID 
 -   Um ein Auslöser zu löschen muss man erst einen Haken setzen und dann den Button `delete` drücken
 -   Zeiten/Astro ändern und den Button `save` drücken um die Änderungen zu übernehmen
 -   Wochentag anklicken um diesen zu aktivieren/deaktivieren
+-   Zeile Triggername wird unter Wochentage der nächste Event on/off angezeigt
 
 ![vis_view_1.png](img/vis_view_1.png)</br>
 ![vis_view_2.png](img/vis_view_2.png)

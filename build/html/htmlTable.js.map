@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/html/htmlTable.ts"],
-  "sourcesContent": ["export interface htmltable {\n    changeHTML(id: string, val: ioBroker.State | null | undefined): void;\n    changeTrigger(id: string, val: ioBroker.State | null | undefined | string): Promise<void>;\n    changeEnabled(id: string, val: ioBroker.State | null | undefined | boolean): void;\n    createStates(lang: string): Promise<any>;\n    updateHTML(): void;\n}\n"],
+  "sourcesContent": ["export interface htmltable {\n    changeHTML(id: string, val: ioBroker.State | null | undefined): void;\n    changeTrigger(id: string, val: ioBroker.State | null | undefined | string): Promise<void>;\n    changeEnabled(id: string, val: ioBroker.State | null | undefined | boolean): void;\n    createStates(lang: string): Promise<any>;\n    updateHTML(): void;\n}\nexport interface NextActionName {\n    getDate: number;\n    date: Date;\n    action: string;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

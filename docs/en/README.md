@@ -590,6 +590,7 @@ sendTo("schedule-switcher.0", "delete-trigger", { // Delete trigger with known I
 -   To delete a trigger you first have to tick the checkbox and then press the 'delete' button
 -   Change times/Astro and press the 'save' button to apply the changes
 -   Click on the day of the week to activate/deactivate it
+-   In the trigger name line, the next event on/off is displayed under days of the week
 
 ![vis_view_1.png](img/vis_view_1.png)</br>
 ![vis_view_2.png](img/vis_view_2.png)
