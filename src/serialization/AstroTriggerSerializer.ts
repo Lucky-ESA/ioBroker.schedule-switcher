@@ -1,13 +1,22 @@
-import { Action } from "../actions/Action";
+import type { Action } from "../actions/Action";
 import { AstroTrigger } from "../triggers/AstroTrigger";
 import { AstroTriggerBuilder } from "../triggers/AstroTriggerBuilder";
-import { Trigger } from "../triggers/Trigger";
-import { Serializer } from "./Serializer";
-import { UniversalSerializer } from "./UniversalSerializer";
+import type { Trigger } from "../triggers/Trigger";
+import type { Serializer } from "./Serializer";
+import type { UniversalSerializer } from "./UniversalSerializer";
 
+/**
+ * AstroTriggerSerializer
+ */
 export class AstroTriggerSerializer implements Serializer<Trigger> {
+    /**
+     * @param actionSerializer UniversalSerializer
+     */
     constructor(private readonly actionSerializer: UniversalSerializer<Action>) {}
 
+    /**
+     * @param stringToDeserialize Trigger
+     */
     public deserialize(stringToDeserialize: string): Trigger {
         const json = JSON.parse(stringToDeserialize);
         if (json.type !== this.getType()) {
@@ -24,6 +33,9 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
             .build();
     }
 
+    /**
+     * @param objectToSerialize Trigger
+     */
     public serialize(objectToSerialize: Trigger): string {
         if (objectToSerialize == null) {
             throw new Error("objectToSerialize may not be null or undefined.");
@@ -39,10 +51,12 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
                 action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
                 todayTrigger: objectToSerialize.getTodayTrigger(),
             });
-        } else {
-            throw new Error("objectToSerialize must be of type AstroTrigger.");
         }
+        throw new Error("objectToSerialize must be of type AstroTrigger.");
     }
+    /**
+     * getType
+     */
     getType(): string {
         return AstroTrigger.prototype.constructor.name;
     }

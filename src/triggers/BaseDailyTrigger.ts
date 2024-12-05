@@ -1,7 +1,10 @@
-import { Action } from "../actions/Action";
-import { DailyTrigger } from "./DailyTrigger";
-import { Weekday } from "./Weekday";
+import type { Action } from "../actions/Action";
+import type { DailyTrigger } from "./DailyTrigger";
+import type { Weekday } from "./Weekday";
 
+/**
+ * DailyTrigger
+ */
 export abstract class BaseDailyTrigger implements DailyTrigger {
     private readonly weekdays: Weekday[];
     private readonly id: string;
@@ -20,14 +23,23 @@ export abstract class BaseDailyTrigger implements DailyTrigger {
         this.id = id;
     }
 
+    /**
+     * getWeekdays
+     */
     public getWeekdays(): Weekday[] {
         return this.weekdays;
     }
 
+    /**
+     * getAction
+     */
     public getAction(): Action {
         return this.action;
     }
 
+    /**
+     * @param action Action
+     */
     public setAction(action: Action): void {
         if (action == null) {
             throw new Error("Action may not be null or undefined.");
@@ -35,6 +47,9 @@ export abstract class BaseDailyTrigger implements DailyTrigger {
         this.action = action;
     }
 
+    /**
+     * getId
+     */
     public getId(): string {
         return this.id;
     }

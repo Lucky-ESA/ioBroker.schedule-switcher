@@ -26,6 +26,13 @@ var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_Weekday = require("../triggers/Weekday");
 var import_TriggerScheduler = require("./TriggerScheduler");
 class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
+  /**
+   * @param timeTriggerScheduler Scheduler
+   * @param getTimes GetTimesResult
+   * @param coordinate Coodinate
+   * @param logger Log service
+   * @param stateService setState
+   */
   constructor(timeTriggerScheduler, getTimes, coordinate, logger, stateService) {
     super();
     this.timeTriggerScheduler = timeTriggerScheduler;
@@ -50,6 +57,9 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.timeTriggerScheduler.loadregister();
     }
   }).build();
+  /**
+   * @param trigger Trigger
+   */
   register(trigger) {
     this.logger.logDebug(`Register astro trigger ${trigger}`);
     if (this.isRegistered(trigger)) {
@@ -60,6 +70,9 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.tryScheduleTriggerToday(trigger);
     }
   }
+  /**
+   * @param trigger Trigger
+   */
   unregister(trigger) {
     this.logger.logDebug(`Unregister astro trigger ${trigger}`);
     if (this.isRegistered(trigger)) {
@@ -81,6 +94,9 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.loadregister();
     }
   }
+  /**
+   * loadregister
+   */
   loadregister() {
     for (const r of this.registered) {
       this.logger.logDebug(`Check AstroTriggerRegistered ${r}`);
@@ -89,18 +105,24 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.logger.logDebug(`Check AstroTriggerScheduler ${s[1]}`);
     }
   }
+  /**
+   * destroy
+   */
   destroy() {
     this.timeTriggerScheduler.destroy();
     this.registered = [];
     this.scheduled = [];
   }
+  /**
+   * forType
+   */
   forType() {
     return import_AstroTrigger.AstroTrigger.prototype.constructor.name;
   }
   tryScheduleTriggerToday(trigger) {
     const now = /* @__PURE__ */ new Date();
     const next = this.nextDate(trigger);
-    this.logger.logDebug(`Time ${next} - Date ${now}`);
+    this.logger.logDebug(`Time ${next.toString()} - Date ${now.toString()}`);
     if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
       const entry = this.registered.find((t) => t.getId() === trigger.getId());
       const objectId = entry && typeof entry.getObjectId() === "number" ? entry.getObjectId() : 0;

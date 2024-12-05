@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/actions/Action.ts"],
-  "sourcesContent": ["export interface Action {\n    execute(trigger: any): void;\n}\n"],
+  "sourcesContent": ["/**\n * Action\n */\nexport interface Action {\n    /**\n     * execute\n     */\n    execute(trigger: any): void;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

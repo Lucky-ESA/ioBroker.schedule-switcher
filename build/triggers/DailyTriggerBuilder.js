@@ -25,14 +25,26 @@ class DailyTriggerBuilder {
   action = null;
   id = "0";
   weekdays = [];
+  /**
+   * @param action Action
+   * @returns this
+   */
   setAction(action) {
     this.action = action;
     return this;
   }
+  /**
+   * @param id ID
+   * @returns this
+   */
   setId(id) {
     this.id = id;
     return this;
   }
+  /**
+   * @param weekdays Weekdays
+   * @returns this
+   */
   setWeekdays(weekdays) {
     this.weekdays = weekdays;
     return this;

@@ -23,11 +23,19 @@ __export(ConditionActionSerializer_exports, {
 module.exports = __toCommonJS(ConditionActionSerializer_exports);
 var import_ConditionAction = require("../actions/ConditionAction");
 class ConditionActionSerializer {
+  /**
+   * @param conditionSerializer Serializer
+   * @param actionSerializer Action
+   * @param adapter ioBroker
+   */
   constructor(conditionSerializer, actionSerializer, adapter) {
     this.conditionSerializer = conditionSerializer;
     this.actionSerializer = actionSerializer;
     this.adapter = adapter;
   }
+  /**
+   * @param stringToDeserialize Action
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -39,6 +47,9 @@ class ConditionActionSerializer {
       this.adapter
     );
   }
+  /**
+   * @param objectToSerialize Action
+   */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
       this.adapter.log.error("objectToSerialize may not be null or undefined.");
@@ -50,11 +61,13 @@ class ConditionActionSerializer {
         condition: JSON.parse(this.conditionSerializer.serialize(objectToSerialize.getCondition())),
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction()))
       });
-    } else {
-      this.adapter.log.error("objectToSerialize must be of type ConditionAction.");
-      return JSON.stringify({});
     }
+    this.adapter.log.error("objectToSerialize must be of type ConditionAction.");
+    return JSON.stringify({});
   }
+  /**
+   * getType
+   */
   getType() {
     return import_ConditionAction.ConditionAction.prototype.constructor.name;
   }

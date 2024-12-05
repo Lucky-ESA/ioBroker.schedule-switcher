@@ -20,10 +20,10 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 ## Requirements
 
--   Node 18
--   JS-Controller >= 6.0.11
--   Admin >= 7.0.23
--   VIS or VIS-2
+- Node 18
+- JS-Controller >= 6.0.11
+- Admin >= 7.0.23
+- VIS or VIS-2
 
 ## Description
 
@@ -40,48 +40,54 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+- (Lucky-ESA) Migration to ESLint9
+- (Lucky-ESA) Bugfixes
+
 ### 0.0.7 (2024-11-26)
 
--   (Lucky_ESA) HTML overview added
+- (Lucky_ESA) HTML overview added
 
 ### 0.0.6 (2024-11-16)
 
--   (Lucky_ESA) Put value of state correctly
--   (Lucky_ESA) Added next triggers as JSON
--   (Lucky_ESA) Added counter trigger
--   (Lucky_ESA) Updating astro time fixed
+- (Lucky_ESA) Put value of state correctly
+- (Lucky_ESA) Added next triggers as JSON
+- (Lucky_ESA) Added counter trigger
+- (Lucky_ESA) Updating astro time fixed
 
 ### 0.0.5 (2024-11-06)
 
--   (Lucky_ESA) Crash when updating astro time fixed
--   (Lucky_ESA) Fixed some bugs
+- (Lucky_ESA) Crash when updating astro time fixed
+- (Lucky_ESA) Fixed some bugs
 
 ### 0.0.4 (2024-11-04)
 
--   (Lucky_ESA) Temporary function removed
--   (Lucky_ESA) Creation of objects adjusted
--   (Lucky_ESA) Validation check of the states
--   (Lucky_ESA) Validation check for 2 widgets with one object
+- (Lucky_ESA) Temporary function removed
+- (Lucky_ESA) Creation of objects adjusted
+- (Lucky_ESA) Validation check of the states
+- (Lucky_ESA) Validation check for 2 widgets with one object
 
 ### 0.0.3 (2024-10-30)
 
--   (Lucky_ESA) Fixed VIS translate
--   (Lucky_ESA) Added astro time in trigger
--   (Lucky_ESA) Fixed OneTimeTrigger
--   (Lucky_ESA) Added date for OneTimeTrigger
--   (Lucky_ESA) Fixed some bugs
+- (Lucky_ESA) Fixed VIS translate
+- (Lucky_ESA) Added astro time in trigger
+- (Lucky_ESA) Fixed OneTimeTrigger
+- (Lucky_ESA) Added date for OneTimeTrigger
+- (Lucky_ESA) Fixed some bugs
 
 ### 0.0.2 (2024-10-22)
 
--   (Lucky_ESA) Fix translate
--   (Lucky_ESA) Fix background color disable Weekdays
--   (Lucky_ESA) Fix sendTo
--   (Lucky_ESA) Added jsonConfig
--   (Lucky_ESA) Added history
+- (Lucky_ESA) Fix translate
+- (Lucky_ESA) Fix background color disable Weekdays
+- (Lucky_ESA) Fix sendTo
+- (Lucky_ESA) Added jsonConfig
+- (Lucky_ESA) Added history
 
 ### 0.0.1 (2024-10-19)
 
--   (Lucky_ESA) initial release
+- (Lucky_ESA) initial release
 
 ## License
 

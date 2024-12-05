@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/services/LoggingService.ts"],
-  "sourcesContent": ["export interface LoggingService {\n    logInfo(message: string): void;\n    logError(message: string): void;\n    logDebug(message: string): void;\n    logSilly(message: string): void;\n    logWarn(message: string): void;\n}\n"],
+  "sourcesContent": ["/**\n * LoggingService\n */\nexport interface LoggingService {\n    /**\n     * Info\n     */\n    logInfo(message: string): void;\n    /**\n     * Error\n     */\n    logError(message: string): void;\n    /**\n     * Debug\n     */\n    logDebug(message: string): void;\n    /**\n     * Silly\n     */\n    logSilly(message: string): void;\n    /**\n     * Warn\n     */\n    logWarn(message: string): void;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

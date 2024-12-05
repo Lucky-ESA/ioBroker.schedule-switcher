@@ -1,13 +1,22 @@
 import { ConditionAction } from "../actions/ConditionAction";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
-import { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
-import { LoggingService } from "../services/LoggingService";
+import type { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
+import type { LoggingService } from "../services/LoggingService";
 import { Schedule } from "./Schedule";
 
+/**
+ * OnOffSchedule
+ */
 export class OnOffSchedule extends Schedule {
     private onAction: OnOffStateAction<string | boolean | number>;
     private offAction: OnOffStateAction<string | boolean | number>;
 
+    /**
+     * @param onAction on
+     * @param offAction off
+     * @param triggerScheduler Scheduler
+     * @param loggingService Log service
+     */
     constructor(
         onAction: OnOffStateAction<string | boolean | number>,
         offAction: OnOffStateAction<string | boolean | number>,
@@ -25,12 +34,15 @@ export class OnOffSchedule extends Schedule {
         this.offAction = offAction;
     }
 
+    /**
+     * @param onAction Action
+     */
     public setOnAction(onAction: OnOffStateAction<string | boolean | number>): void {
         if (onAction == null) {
             throw new Error(`onAction may not be null or undefined`);
         }
         this.onAction = onAction;
-        this.getTriggers().forEach((t) => {
+        this.getTriggers().forEach(t => {
             const action = t.getAction();
             if (action instanceof OnOffStateAction) {
                 if (action.getBooleanValue()) {
@@ -47,12 +59,15 @@ export class OnOffSchedule extends Schedule {
         });
     }
 
+    /**
+     * @param offAction Action
+     */
     public setOffAction(offAction: OnOffStateAction<string | boolean | number>): void {
         if (offAction == null) {
             throw new Error(`offAction may not be null or undefined`);
         }
         this.offAction = offAction;
-        this.getTriggers().forEach((t) => {
+        this.getTriggers().forEach(t => {
             const action = t.getAction();
             if (action instanceof OnOffStateAction) {
                 if (!action.getBooleanValue()) {
@@ -69,10 +84,16 @@ export class OnOffSchedule extends Schedule {
         });
     }
 
+    /**
+     * getOnAction
+     */
     public getOnAction(): OnOffStateAction<string | boolean | number> {
         return this.onAction;
     }
 
+    /**
+     * getOffAction
+     */
     public getOffAction(): OnOffStateAction<string | boolean | number> {
         return this.offAction;
     }

@@ -1,14 +1,24 @@
-import { Action } from "../actions/Action";
+import type { Action } from "../actions/Action";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
-import { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
+import type { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
-import { LoggingService } from "../services/LoggingService";
-import { Trigger } from "../triggers/Trigger";
+import type { LoggingService } from "../services/LoggingService";
+import type { Trigger } from "../triggers/Trigger";
 import { ActionReferenceSerializer } from "./ActionReferenceSerializer";
-import { Serializer } from "./Serializer";
-import { UniversalSerializer } from "./UniversalSerializer";
+import type { Serializer } from "./Serializer";
+import type { UniversalSerializer } from "./UniversalSerializer";
 
+/**
+ * OnOffScheduleSerializer
+ */
 export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
+    /**
+     * @param triggerScheduler Scheduler
+     * @param actionSerializer Serializer
+     * @param triggerSerializer Serializer
+     * @param adapter ioBroker
+     * @param loggingService Log Service
+     */
     constructor(
         private triggerScheduler: UniversalTriggerScheduler,
         private actionSerializer: UniversalSerializer<Action>,
@@ -17,6 +27,9 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
         private loggingService: LoggingService,
     ) {}
 
+    /**
+     * @param stringToDeserialize OnOffSchedule
+     */
     deserialize(stringToDeserialize: string): OnOffSchedule {
         const json = JSON.parse(stringToDeserialize);
         if (json.type !== this.getType()) {
@@ -30,16 +43,18 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
             schedule.setName(json.name);
 
             this.useActionReferenceSerializer(schedule);
-            json.triggers.forEach(async (t: any) => {
+            json.triggers.forEach((t: any) => {
                 schedule.addTrigger(this.triggerSerializer.deserialize(JSON.stringify(t)));
             });
 
             return schedule;
-        } else {
-            throw new Error("Actions are not OnOffStateActions");
         }
+        throw new Error("Actions are not OnOffStateActions");
     }
 
+    /**
+     * @param schedule OnOffSchedule
+     */
     serialize(schedule: OnOffSchedule): string {
         const json: any = {
             type: this.getType(),
@@ -48,14 +63,20 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
             offAction: JSON.parse(this.actionSerializer.serialize(schedule.getOffAction())),
         };
         this.useActionReferenceSerializer(schedule);
-        json.triggers = schedule.getTriggers().map((t) => JSON.parse(this.triggerSerializer.serialize(t)));
+        json.triggers = schedule.getTriggers().map(t => JSON.parse(this.triggerSerializer.serialize(t)));
         return JSON.stringify(json);
     }
 
+    /**
+     * getType
+     */
     getType(): string {
         return "OnOffSchedule";
     }
 
+    /**
+     * @param schedule OnOffSchedule
+     */
     public getTriggerSerializer(schedule: OnOffSchedule): UniversalSerializer<Trigger> {
         if (schedule == null) {
             throw new Error("Schedule may not be null/undefined");

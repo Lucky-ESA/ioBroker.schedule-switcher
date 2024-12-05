@@ -1,6 +1,9 @@
-import { StateService } from "../services/StateService";
+import type { StateService } from "../services/StateService";
 import { BaseStateAction } from "./BaseStateAction";
 
+/**
+ * OnOffStateAction
+ */
 export class OnOffStateAction<T extends string | number | boolean> extends BaseStateAction {
     private idsOfStatesToSet: string[];
     private readonly onValue: T;
@@ -8,6 +11,14 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
     private readonly booleanValue: boolean;
     private readonly valueType: string;
 
+    /**
+     * @param idsOfStatesToSet States
+     * @param onValue on
+     * @param offValue off
+     * @param booleanValue Value
+     * @param stateService State
+     * @param valueType Type
+     */
     constructor(
         idsOfStatesToSet: string[],
         onValue: T,
@@ -36,38 +47,62 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
         this.valueType = valueType;
     }
 
+    /**
+     * getIdsOfStatesToSet
+     */
     public getIdsOfStatesToSet(): string[] {
         return this.idsOfStatesToSet;
     }
 
+    /**
+     * @param idsOfStatesToSet States
+     */
     public setIdsOfStatesToSet(idsOfStatesToSet: string[]): void {
         this.checkIdsOfStates(idsOfStatesToSet);
         this.idsOfStatesToSet = idsOfStatesToSet;
     }
 
+    /**
+     * getOnValue
+     */
     public getOnValue(): T {
         return this.onValue;
     }
 
+    /**
+     * getOffValue
+     */
     public getOffValue(): T {
         return this.offValue;
     }
 
+    /**
+     * getBooleanValue
+     */
     public getBooleanValue(): boolean {
         return this.booleanValue;
     }
 
+    /**
+     * getValueType
+     */
     public getValueType(): string {
         return this.valueType;
     }
 
+    /**
+     * @param trigger Trigger
+     */
     public execute(trigger: any): void {
         const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
-        this.getIdsOfStatesToSet().forEach((id) => {
+        this.getIdsOfStatesToSet().forEach(id => {
             this.getStateService().setForeignState(id, valueToUse, trigger);
         });
     }
 
+    /**
+     * toBooleanValueType
+     */
     public toBooleanValueType(): OnOffStateAction<boolean> {
         return new OnOffStateAction(
             this.getIdsOfStatesToSet(),
@@ -79,6 +114,10 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
         );
     }
 
+    /**
+     * @param onValue on
+     * @param offValue off
+     */
     public toStringValueType(onValue: string, offValue: string): OnOffStateAction<string> {
         return new OnOffStateAction(
             this.getIdsOfStatesToSet(),
@@ -90,6 +129,10 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
         );
     }
 
+    /**
+     * @param onValue on
+     * @param offValue off
+     */
     public toNumberValueType(onValue: number, offValue: number): OnOffStateAction<number> {
         return new OnOffStateAction(
             this.getIdsOfStatesToSet(),

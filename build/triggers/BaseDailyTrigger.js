@@ -37,18 +37,30 @@ class BaseDailyTrigger {
     this.action = action;
     this.id = id;
   }
+  /**
+   * getWeekdays
+   */
   getWeekdays() {
     return this.weekdays;
   }
+  /**
+   * getAction
+   */
   getAction() {
     return this.action;
   }
+  /**
+   * @param action Action
+   */
   setAction(action) {
     if (action == null) {
       throw new Error("Action may not be null or undefined.");
     }
     this.action = action;
   }
+  /**
+   * getId
+   */
   getId() {
     return this.id;
   }

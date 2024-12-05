@@ -1,12 +1,21 @@
-import { Condition } from "../../actions/conditions/Condition";
+import type { Condition } from "../../actions/conditions/Condition";
 import { EqualitySign } from "../../actions/conditions/EqualitySign";
 import { StringStateAndStateCondition } from "../../actions/conditions/StringStateAndStateCondition";
-import { StateService } from "../../services/StateService";
-import { Serializer } from "../Serializer";
+import type { StateService } from "../../services/StateService";
+import type { Serializer } from "../Serializer";
 
+/**
+ * StringStateAndStateConditionSerializer
+ */
 export class StringStateAndStateConditionSerializer implements Serializer<Condition> {
+    /**
+     * @param stateService StateService
+     */
     constructor(private stateService: StateService) {}
 
+    /**
+     * @param stringToDeserialize Condition
+     */
     deserialize(stringToDeserialize: string): Condition {
         const json = JSON.parse(stringToDeserialize);
         if (json.type !== this.getType()) {
@@ -18,6 +27,9 @@ export class StringStateAndStateConditionSerializer implements Serializer<Condit
         return new StringStateAndStateCondition(json.stateId1, json.stateId2, json.sign, this.stateService);
     }
 
+    /**
+     * @param objectToSerialize Condition
+     */
     serialize(objectToSerialize: Condition): string {
         if (objectToSerialize == null) {
             throw new Error("objectToSerialize may not be null or undefined.");
@@ -29,11 +41,13 @@ export class StringStateAndStateConditionSerializer implements Serializer<Condit
                 stateId2: objectToSerialize.getStateId2(),
                 sign: objectToSerialize.getSign(),
             });
-        } else {
-            throw new Error("objectToSerialize must be of type StringStateAndStateCondition .");
         }
+        throw new Error("objectToSerialize must be of type StringStateAndStateCondition .");
     }
 
+    /**
+     * getType
+     */
     getType(): string {
         return StringStateAndStateCondition.prototype.constructor.name;
     }

@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/actions/BaseStateAction.ts"],
-  "sourcesContent": ["import { StateService } from \"../services/StateService\";\nimport { Action } from \"./Action\";\n\nexport abstract class BaseStateAction implements Action {\n    private readonly stateService: StateService;\n\n    protected constructor(stateService: StateService) {\n        if (stateService == null) {\n            throw new Error(\"StateService may not be null or undefined.\");\n        }\n        this.stateService = stateService;\n    }\n\n    abstract execute(trigger: any): void;\n\n    protected getStateService(): StateService {\n        return this.stateService;\n    }\n}\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAGO,MAAe,gBAAkC;AAAA,EACnC;AAAA,EAEP,YAAY,cAA4B;AAC9C,QAAI,gBAAgB,MAAM;AACtB,YAAM,IAAI,MAAM,4CAA4C;AAAA,IAChE;AACA,SAAK,eAAe;AAAA,EACxB;AAAA,EAIU,kBAAgC;AACtC,WAAO,KAAK;AAAA,EAChB;AACJ;",
+  "sourcesContent": ["import type { StateService } from \"../services/StateService\";\nimport type { Action } from \"./Action\";\n\n/**\n * BaseStateAction\n */\nexport abstract class BaseStateAction implements Action {\n    private readonly stateService: StateService;\n    protected constructor(stateService: StateService) {\n        if (stateService == null) {\n            throw new Error(\"StateService may not be null or undefined.\");\n        }\n        this.stateService = stateService;\n    }\n    abstract execute(trigger: any): void;\n    protected getStateService(): StateService {\n        return this.stateService;\n    }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAMO,MAAe,gBAAkC;AAAA,EACnC;AAAA,EACP,YAAY,cAA4B;AAC9C,QAAI,gBAAgB,MAAM;AACtB,YAAM,IAAI,MAAM,4CAA4C;AAAA,IAChE;AACA,SAAK,eAAe;AAAA,EACxB;AAAA,EAEU,kBAAgC;AACtC,WAAO,KAAK;AAAA,EAChB;AACJ;",
   "names": []
 }

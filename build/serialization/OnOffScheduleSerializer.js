@@ -25,6 +25,13 @@ var import_OnOffStateAction = require("../actions/OnOffStateAction");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
 var import_ActionReferenceSerializer = require("./ActionReferenceSerializer");
 class OnOffScheduleSerializer {
+  /**
+   * @param triggerScheduler Scheduler
+   * @param actionSerializer Serializer
+   * @param triggerSerializer Serializer
+   * @param adapter ioBroker
+   * @param loggingService Log Service
+   */
   constructor(triggerScheduler, actionSerializer, triggerSerializer, adapter, loggingService) {
     this.triggerScheduler = triggerScheduler;
     this.actionSerializer = actionSerializer;
@@ -32,6 +39,9 @@ class OnOffScheduleSerializer {
     this.adapter = adapter;
     this.loggingService = loggingService;
   }
+  /**
+   * @param stringToDeserialize OnOffSchedule
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -43,14 +53,16 @@ class OnOffScheduleSerializer {
       const schedule = new import_OnOffSchedule.OnOffSchedule(onAction, offAction, this.triggerScheduler, this.loggingService);
       schedule.setName(json.name);
       this.useActionReferenceSerializer(schedule);
-      json.triggers.forEach(async (t) => {
+      json.triggers.forEach((t) => {
         schedule.addTrigger(this.triggerSerializer.deserialize(JSON.stringify(t)));
       });
       return schedule;
-    } else {
-      throw new Error("Actions are not OnOffStateActions");
     }
+    throw new Error("Actions are not OnOffStateActions");
   }
+  /**
+   * @param schedule OnOffSchedule
+   */
   serialize(schedule) {
     const json = {
       type: this.getType(),
@@ -62,9 +74,15 @@ class OnOffScheduleSerializer {
     json.triggers = schedule.getTriggers().map((t) => JSON.parse(this.triggerSerializer.serialize(t)));
     return JSON.stringify(json);
   }
+  /**
+   * getType
+   */
   getType() {
     return "OnOffSchedule";
   }
+  /**
+   * @param schedule OnOffSchedule
+   */
   getTriggerSerializer(schedule) {
     if (schedule == null) {
       throw new Error("Schedule may not be null/undefined");

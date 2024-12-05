@@ -24,9 +24,15 @@ module.exports = __toCommonJS(StringStateAndConstantConditionSerializer_exports)
 var import_EqualitySign = require("../../actions/conditions/EqualitySign");
 var import_StringStateAndConstantCondition = require("../../actions/conditions/StringStateAndConstantCondition");
 class StringStateAndConstantConditionSerializer {
+  /**
+   * @param stateService StateService
+   */
   constructor(stateService) {
     this.stateService = stateService;
   }
+  /**
+   * @param stringToDeserialize Condition
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -37,6 +43,9 @@ class StringStateAndConstantConditionSerializer {
     }
     return new import_StringStateAndConstantCondition.StringStateAndConstantCondition(json.constant, json.stateId, json.sign, this.stateService);
   }
+  /**
+   * @param objectToSerialize Condition
+   */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
       throw new Error("objectToSerialize may not be null or undefined.");
@@ -48,10 +57,12 @@ class StringStateAndConstantConditionSerializer {
         stateId: objectToSerialize.getStateId(),
         sign: objectToSerialize.getSign()
       });
-    } else {
-      throw new Error("objectToSerialize must be of type StringStateAndConstantCondition .");
     }
+    throw new Error("objectToSerialize must be of type StringStateAndConstantCondition .");
   }
+  /**
+   * @returns name
+   */
   getType() {
     return import_StringStateAndConstantCondition.StringStateAndConstantCondition.prototype.constructor.name;
   }

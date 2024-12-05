@@ -27,6 +27,16 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   shiftInMinutes;
   objectId;
   todayTrigger;
+  /**
+   *
+   * @param id ID
+   * @param astroTime Astrotime
+   * @param shiftInMinutes Shift
+   * @param weekdays Weekdays
+   * @param action Action
+   * @param objectId ObjectId
+   * @param todayTrigger Trigger
+   */
   constructor(id, astroTime, shiftInMinutes, weekdays, action, objectId, todayTrigger) {
     super(id, action, weekdays);
     this.astroTime = astroTime;
@@ -34,9 +44,15 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
     this.objectId = objectId;
     this.todayTrigger = todayTrigger;
   }
+  /**
+   * getAstroTime
+   */
   getAstroTime() {
     return this.astroTime;
   }
+  /**
+   * getData
+   */
   getData() {
     return {
       id: this.getId(),
@@ -44,19 +60,31 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
       shift: this.getShiftInMinutes(),
       todayTriger: this.getTodayTrigger(),
       objectId: this.getObjectId(),
-      weekdays: [this.getWeekdays()],
+      weekdays: this.getWeekdays(),
       trigger: "AstroTrigger"
     };
   }
+  /**
+   * getObjectId
+   */
   getObjectId() {
     return this.objectId;
   }
+  /**
+   * getTodayTrigger
+   */
   getTodayTrigger() {
     return this.todayTrigger;
   }
+  /**
+   * getShiftInMinutes
+   */
   getShiftInMinutes() {
     return this.shiftInMinutes;
   }
+  /**
+   * toString
+   */
   toString() {
     return `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;
   }

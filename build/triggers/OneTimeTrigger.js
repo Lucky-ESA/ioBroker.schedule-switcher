@@ -28,6 +28,14 @@ class OneTimeTrigger {
   action;
   date;
   onDestroy;
+  /**
+   * @param id ID
+   * @param objectId Object ID
+   * @param timedate Date
+   * @param action Action
+   * @param date Date
+   * @param onDestroy Destroy
+   */
   constructor(id, objectId, timedate, action, date, onDestroy) {
     if (id == null) {
       throw new Error("Id may not be null or undefined.");
@@ -45,6 +53,9 @@ class OneTimeTrigger {
     this.date = new Date(date);
     this.onDestroy = onDestroy;
   }
+  /**
+   * getAction
+   */
   getAction() {
     return {
       execute: (trigger) => {
@@ -53,24 +64,42 @@ class OneTimeTrigger {
       }
     };
   }
+  /**
+   * @param action Action
+   */
   setAction(action) {
     if (action == null) {
       throw new Error("Action may not be null or undefined.");
     }
     this.action = action;
   }
+  /**
+   * @returns ID
+   */
   getId() {
     return this.id;
   }
+  /**
+   * @returns date
+   */
   getDate() {
     return new Date(this.date);
   }
+  /**
+   * @returns objectid
+   */
   getObjectId() {
     return this.objectId;
   }
+  /**
+   * @returns time
+   */
   getTimeDate() {
     return this.timedate;
   }
+  /**
+   * getData
+   */
   getData() {
     return {
       id: this.getId(),
@@ -80,12 +109,21 @@ class OneTimeTrigger {
       trigger: "OneTimeTrigger"
     };
   }
+  /**
+   * @returns string
+   */
   toString() {
     return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}, timedate=${this.getTimeDate()}}`;
   }
+  /**
+   * @returns action
+   */
   getInternalAction() {
     return this.action;
   }
+  /**
+   * Destroy all
+   */
   destroy() {
     if (this.onDestroy) {
       this.onDestroy();

@@ -29,30 +29,57 @@ class OneTimeTriggerBuilder {
   timedate = false;
   date = null;
   onDestroy = null;
+  /**
+   * @param action Action
+   * @returns this
+   */
   setAction(action) {
     this.action = action;
     return this;
   }
+  /**
+   * @param id ID
+   * @returns this
+   */
   setId(id) {
     this.id = id;
     return this;
   }
+  /**
+   * @param date Date
+   * @returns this
+   */
   setDate(date) {
     this.date = date;
     return this;
   }
+  /**
+   * @param objectId ID
+   * @returns this
+   */
   setObjectId(objectId) {
     this.objectId = objectId;
     return this;
   }
+  /**
+   * @param timedate Time
+   * @returns this
+   */
   setTimeDate(timedate) {
     this.timedate = timedate;
     return this;
   }
+  /**
+   * @param onDestroy Destroy
+   * @returns this
+   */
   setOnDestroy(onDestroy) {
     this.onDestroy = onDestroy;
     return this;
   }
+  /**
+   * @returns OneTimeTrigger
+   */
   build() {
     return new import_OneTimeTrigger.OneTimeTrigger(
       this.id,

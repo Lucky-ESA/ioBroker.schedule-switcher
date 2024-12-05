@@ -24,10 +24,17 @@ module.exports = __toCommonJS(OneTimeTriggerSerializer_exports);
 var import_OneTimeTrigger = require("../triggers/OneTimeTrigger");
 var import_OneTimeTriggerBuilder = require("../triggers/OneTimeTriggerBuilder");
 class OneTimeTriggerSerializer {
+  /**
+   * @param actionSerializer Serializer
+   * @param deleteTrigger Trigger
+   */
   constructor(actionSerializer, deleteTrigger) {
     this.actionSerializer = actionSerializer;
     this.deleteTrigger = deleteTrigger;
   }
+  /**
+   * @param stringToDeserialize Deserialize
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -39,6 +46,9 @@ class OneTimeTriggerSerializer {
       }
     }).build();
   }
+  /**
+   * @param objectToSerialize Serialize
+   */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
       throw new Error("objectToSerialize may not be null or undefined.");
@@ -52,10 +62,12 @@ class OneTimeTriggerSerializer {
         id: objectToSerialize.getId(),
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getInternalAction()))
       });
-    } else {
-      throw new Error("objectToSerialize must be of type OneTimeTrigger.");
     }
+    throw new Error("objectToSerialize must be of type OneTimeTrigger.");
   }
+  /**
+   * getType
+   */
   getType() {
     return import_OneTimeTrigger.OneTimeTrigger.prototype.constructor.name;
   }

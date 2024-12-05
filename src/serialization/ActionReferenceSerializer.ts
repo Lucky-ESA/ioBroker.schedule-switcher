@@ -1,16 +1,28 @@
-import { Action } from "../actions/Action";
-import { Serializer } from "./Serializer";
+import type { Action } from "../actions/Action";
+import type { Serializer } from "./Serializer";
 
+/**
+ * ActionReferenceSerializer
+ */
 export class ActionReferenceSerializer implements Serializer<Action> {
     private readonly referencableActions: Map<string, Action>;
     private readonly typeToReference: string;
     private readonly adapter: ioBroker.Adapter;
+    /**
+     *
+     * @param typeToReference Reference
+     * @param referencableActions Actions
+     * @param adapter ioBroker
+     */
     constructor(typeToReference: string, referencableActions: Map<string, Action>, adapter: ioBroker.Adapter) {
         this.typeToReference = typeToReference;
         this.referencableActions = referencableActions;
         this.adapter = adapter;
     }
 
+    /**
+     * @param stringToDeserialize Action
+     */
     deserialize(stringToDeserialize: string): Action {
         const json = JSON.parse(stringToDeserialize);
         if (json.type !== this.getType()) {
@@ -19,11 +31,13 @@ export class ActionReferenceSerializer implements Serializer<Action> {
         const found = this.referencableActions.get(json.name);
         if (found) {
             return found;
-        } else {
-            throw new Error(`No existing action found with name ${json.name} to reference`);
         }
+        throw new Error(`No existing action found with name ${json.name} to reference`);
     }
 
+    /**
+     * @param objectToSerialize Action
+     */
     serialize(objectToSerialize: Action): string {
         if (objectToSerialize == null) {
             throw new Error("objectToSerialize may not be null or undefined.");
@@ -41,11 +55,13 @@ export class ActionReferenceSerializer implements Serializer<Action> {
                 type: this.getType(),
                 name: name,
             });
-        } else {
-            throw new Error("no existing action found");
         }
+        throw new Error("no existing action found");
     }
 
+    /**
+     * getType
+     */
     getType(): string {
         return this.typeToReference;
     }

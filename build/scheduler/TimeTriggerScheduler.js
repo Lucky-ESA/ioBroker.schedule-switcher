@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,16 +17,31 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var TimeTriggerScheduler_exports = {};
 __export(TimeTriggerScheduler_exports, {
   TimeTriggerScheduler: () => TimeTriggerScheduler
 });
 module.exports = __toCommonJS(TimeTriggerScheduler_exports);
-var import_node_schedule = require("node-schedule");
+var schedule = __toESM(require("node-schedule"));
 var import_TimeTrigger = require("../triggers/TimeTrigger");
 var import_TriggerScheduler = require("./TriggerScheduler");
 class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
+  /**
+   *
+   * @param stateService setState
+   * @param scheduleJob Schedule
+   * @param cancelJob Schedule
+   * @param logger Log service
+   */
   constructor(stateService, scheduleJob, cancelJob, logger) {
     super();
     this.stateService = stateService;
@@ -37,6 +54,9 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     this.stateService = stateService;
   }
   registered = [];
+  /**
+   * @param trigger TimeTrigger
+   */
   register(trigger) {
     this.logger.logDebug(`Register TimeTriggerScheduler trigger ${trigger}`);
     if (this.getAssociatedJob(trigger)) {
@@ -50,11 +70,17 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.registered.push([trigger, newJob]);
     }
   }
+  /**
+   * loadregister
+   */
   loadregister() {
     for (const r of this.registered) {
       this.logger.logDebug(`Check TimeTriggerScheduler ${r[0]}`);
     }
   }
+  /**
+   * @param trigger TimeTrigger
+   */
   unregister(trigger) {
     this.logger.logDebug(`Unregister TimeTriggerScheduler trigger ${trigger}`);
     const job = this.getAssociatedJob(trigger);
@@ -66,9 +92,15 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       throw new Error(`TimeTriggerScheduler Trigger ${trigger} is not registered.`);
     }
   }
+  /**
+   * destroy
+   */
   destroy() {
     this.registered.forEach((r) => this.unregister(r[0]));
   }
+  /**
+   * forType
+   */
   forType() {
     return import_TimeTrigger.TimeTrigger.prototype.constructor.name;
   }
@@ -76,16 +108,15 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     const entry = this.registered.find((r) => r[0] === trigger);
     if (entry) {
       return entry[1];
-    } else {
-      this.loadregister();
-      return null;
     }
+    this.loadregister();
+    return null;
   }
   removeTrigger(trigger) {
     this.registered = this.registered.filter((r) => r[0] !== trigger);
   }
   createRecurrenceRule(trigger) {
-    const rule = new import_node_schedule.RecurrenceRule();
+    const rule = new schedule.RecurrenceRule();
     rule.dayOfWeek = trigger.getWeekdays();
     rule.hour = trigger.getHour();
     rule.minute = trigger.getMinute();

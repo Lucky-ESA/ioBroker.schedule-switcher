@@ -1,14 +1,28 @@
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { getTimes } from "suncalc";
-import { validationState } from "./ValidationState";
+import type { validationState } from "./ValidationState";
 
+/**
+ * IoBrokerValidationState
+ */
 export class IoBrokerValidationState implements validationState {
     private adapter: ioBroker.Adapter;
+    /**
+     * @param adapter iobroker
+     */
     constructor(adapter: ioBroker.Adapter) {
         this.adapter = adapter;
     }
 
+    /**
+     * @param id ID
+     * @param val State val
+     * @param check boolean
+     */
     async validation(id: string, val: any, check: boolean): Promise<any> {
+        const removeDuplicate = (arr: number[]): number[] => {
+            return arr.filter((item, index) => arr.indexOf(item) === index);
+        };
         if ((val.type && val.type == "OnOffSchedule") || check) {
             if (!check) {
                 if (val.onAction) {
@@ -145,6 +159,9 @@ export class IoBrokerValidationState implements validationState {
                         if (trigger.minute == undefined || trigger.minute < 0 || trigger.minute > 59) {
                             this.adapter.log.warn(`Minute must be in range 0-59 - in ${id}`);
                             trigger.minute = 0;
+                        }
+                        if (trigger.weekdays) {
+                            trigger.weekdays = removeDuplicate(trigger.weekdays);
                         }
                         if (
                             typeof trigger.weekdays !== "object" ||
@@ -315,6 +332,9 @@ export class IoBrokerValidationState implements validationState {
         }
     }
 
+    /**
+     * @param utils Utils
+     */
     async validationView(utils: string): Promise<void> {
         this.adapter.log.info("Start Widget control!");
         const visFolder = [];
@@ -342,232 +362,246 @@ export class IoBrokerValidationState implements validationState {
             const path = `${utils}files/`;
             for (const vis of visFolder) {
                 allVisViews[vis] = {};
-                const folders = fs.readdirSync(`${path}${vis}/`);
-                for (const folder of folders) {
-                    if (fs.statSync(`${path}${vis}/${folder}`).isDirectory()) {
-                        if (fs.existsSync(`${path}${vis}/${folder}/vis-views.json`)) {
-                            const valViews = fs.readFileSync(`${path}${vis}/${folder}/vis-views.json`, "utf-8");
-                            if (valViews.indexOf("tplSchedule-switcherDevicePlan") !== -1) {
-                                const templates = JSON.parse(valViews);
-                                allVisViews[vis][folder] = {};
-                                for (const template in templates) {
-                                    if (
-                                        templates[template].widgets &&
-                                        JSON.stringify(templates[template].widgets).indexOf(
-                                            "tplSchedule-switcherDevicePlan",
-                                        ) !== -1
-                                    ) {
-                                        allVisViews[vis][folder][template] = [];
-                                        for (const widget in templates[template].widgets) {
-                                            if (
-                                                templates[template].widgets[widget].tpl ===
-                                                "tplSchedule-switcherDevicePlan"
-                                            ) {
+                if (fs.existsSync(`${path}${vis}/`)) {
+                    const folders = fs.readdirSync(`${path}${vis}/`);
+                    for (const folder of folders) {
+                        if (fs.statSync(`${path}${vis}/${folder}`).isDirectory()) {
+                            if (fs.existsSync(`${path}${vis}/${folder}/vis-views.json`)) {
+                                const valViews = fs.readFileSync(`${path}${vis}/${folder}/vis-views.json`, "utf-8");
+                                if (valViews.indexOf("tplSchedule-switcherDevicePlan") !== -1) {
+                                    const templates = JSON.parse(valViews);
+                                    allVisViews[vis][folder] = {};
+                                    for (const template in templates) {
+                                        if (
+                                            templates[template].widgets &&
+                                            JSON.stringify(templates[template].widgets).indexOf(
+                                                "tplSchedule-switcherDevicePlan",
+                                            ) !== -1
+                                        ) {
+                                            allVisViews[vis][folder][template] = [];
+                                            for (const widget in templates[template].widgets) {
                                                 if (
-                                                    templates[template].widgets[widget].data["oid-dataId"] != "" &&
-                                                    !newViews[templates[template].widgets[widget].data["oid-dataId"]]
-                                                ) {
-                                                    newViews[templates[template].widgets[widget].data["oid-dataId"]] =
-                                                        {};
-                                                    newViews[templates[template].widgets[widget].data["oid-dataId"]][
-                                                        vis
-                                                    ] = {};
-                                                    newViews[templates[template].widgets[widget].data["oid-dataId"]][
-                                                        vis
-                                                    ][folder] = {};
-                                                    const countCondition: number = Number.parseInt(
-                                                        templates[template].widgets[widget].data[
-                                                            "conditionStatesCount"
-                                                        ],
-                                                        10,
-                                                    );
-                                                    const idsCondition: any = [];
-                                                    for (let i = 1; i <= countCondition; i++) {
-                                                        const id: string =
-                                                            templates[template].widgets[widget].data[
-                                                                `oid-conditionStateId${i}`
-                                                            ];
-                                                        if (id !== undefined && id !== "") {
-                                                            const json: any = {};
-                                                            json[`oid-conditionStateId${i}`] =
-                                                                templates[template].widgets[widget].data[
-                                                                    `oid-conditionStateId${i}`
-                                                                ];
-                                                            idsCondition.push(json);
-                                                        }
-                                                    }
-                                                    const countState: number = Number.parseInt(
-                                                        templates[template].widgets[widget].data[
-                                                            "conditionStatesCount"
-                                                        ],
-                                                        10,
-                                                    );
-                                                    const idsState: any = [];
-                                                    for (let i = 1; i <= countState; i++) {
-                                                        const id: string =
-                                                            templates[template].widgets[widget].data[`oid-stateId${i}`];
-                                                        if (id !== undefined && id !== "") {
-                                                            const json: any = {};
-                                                            json[`oid-stateId${i}`] =
-                                                                templates[template].widgets[widget].data[
-                                                                    `oid-stateId${i}`
-                                                                ];
-                                                            idsState.push(json);
-                                                        }
-                                                    }
-                                                    const oid_enabled: string = templates[template].widgets[widget]
-                                                        .data["oid-enabled"]
-                                                        ? templates[template].widgets[widget].data["oid-enabled"]
-                                                        : "not select";
-                                                    newViews[templates[template].widgets[widget].data["oid-dataId"]][
-                                                        vis
-                                                    ][folder][widget] = {
-                                                        prefix: folder,
-                                                        namespace: vis,
-                                                        view: template,
-                                                        widgetId: widget,
-                                                        newId: templates[template].widgets[widget].data["oid-dataId"],
-                                                        enabled: oid_enabled,
-                                                        stateCount: countState,
-                                                        state: idsState,
-                                                        conditionCount: countCondition,
-                                                        condition: idsCondition,
-                                                    };
-                                                } else if (
-                                                    templates[template].widgets[widget].data["oid-dataId"] != ""
+                                                    templates[template].widgets[widget].tpl ===
+                                                    "tplSchedule-switcherDevicePlan"
                                                 ) {
                                                     if (
+                                                        templates[template].widgets[widget].data["oid-dataId"] != "" &&
                                                         !newViews[
                                                             templates[template].widgets[widget].data["oid-dataId"]
-                                                        ][vis]
-                                                    )
+                                                        ]
+                                                    ) {
+                                                        newViews[
+                                                            templates[template].widgets[widget].data["oid-dataId"]
+                                                        ] = {};
                                                         newViews[
                                                             templates[template].widgets[widget].data["oid-dataId"]
                                                         ][vis] = {};
-                                                    if (
-                                                        !newViews[
-                                                            templates[template].widgets[widget].data["oid-dataId"]
-                                                        ][vis][folder]
-                                                    )
                                                         newViews[
                                                             templates[template].widgets[widget].data["oid-dataId"]
                                                         ][vis][folder] = {};
-                                                    const countCondition: number = Number.parseInt(
-                                                        templates[template].widgets[widget].data[
-                                                            "conditionStatesCount"
-                                                        ],
-                                                        10,
-                                                    );
-                                                    const idsCondition: any = [];
-                                                    for (let i = 1; i <= countCondition; i++) {
-                                                        const id: string =
-                                                            templates[template].widgets[widget].data[
-                                                                `oid-conditionStateId${i}`
-                                                            ];
-                                                        if (id !== undefined && id !== "") {
-                                                            const json: any = {};
-                                                            json[`oid-conditionStateId${i}`] =
+                                                        const countCondition: number = Number.parseInt(
+                                                            templates[template].widgets[widget].data
+                                                                .conditionStatesCount,
+                                                            10,
+                                                        );
+                                                        const idsCondition: any = [];
+                                                        for (let i = 1; i <= countCondition; i++) {
+                                                            const id: string =
                                                                 templates[template].widgets[widget].data[
                                                                     `oid-conditionStateId${i}`
                                                                 ];
-                                                            idsCondition.push(json);
+                                                            if (id !== undefined && id !== "") {
+                                                                const json: any = {};
+                                                                json[`oid-conditionStateId${i}`] =
+                                                                    templates[template].widgets[widget].data[
+                                                                        `oid-conditionStateId${i}`
+                                                                    ];
+                                                                idsCondition.push(json);
+                                                            }
                                                         }
-                                                    }
-                                                    const countState: number = Number.parseInt(
-                                                        templates[template].widgets[widget].data[
-                                                            "conditionStatesCount"
-                                                        ],
-                                                        10,
-                                                    );
-                                                    const idsState: any = [];
-                                                    for (let i = 1; i <= countState; i++) {
-                                                        const id: string =
-                                                            templates[template].widgets[widget].data[`oid-stateId${i}`];
-                                                        if (id !== undefined && id !== "") {
-                                                            const json: any = {};
-                                                            json[`oid-stateId${i}`] =
+                                                        const countState: number = Number.parseInt(
+                                                            templates[template].widgets[widget].data
+                                                                .conditionStatesCount,
+                                                            10,
+                                                        );
+                                                        const idsState: any = [];
+                                                        for (let i = 1; i <= countState; i++) {
+                                                            const id: string =
                                                                 templates[template].widgets[widget].data[
                                                                     `oid-stateId${i}`
                                                                 ];
-                                                            idsState.push(json);
+                                                            if (id !== undefined && id !== "") {
+                                                                const json: any = {};
+                                                                json[`oid-stateId${i}`] =
+                                                                    templates[template].widgets[widget].data[
+                                                                        `oid-stateId${i}`
+                                                                    ];
+                                                                idsState.push(json);
+                                                            }
+                                                        }
+                                                        const oid_enabled: string = templates[template].widgets[widget]
+                                                            .data["oid-enabled"]
+                                                            ? templates[template].widgets[widget].data["oid-enabled"]
+                                                            : "not select";
+                                                        newViews[
+                                                            templates[template].widgets[widget].data["oid-dataId"]
+                                                        ][vis][folder][widget] = {
+                                                            prefix: folder,
+                                                            namespace: vis,
+                                                            view: template,
+                                                            widgetId: widget,
+                                                            newId: templates[template].widgets[widget].data[
+                                                                "oid-dataId"
+                                                            ],
+                                                            enabled: oid_enabled,
+                                                            stateCount: countState,
+                                                            state: idsState,
+                                                            conditionCount: countCondition,
+                                                            condition: idsCondition,
+                                                        };
+                                                    } else if (
+                                                        templates[template].widgets[widget].data["oid-dataId"] != ""
+                                                    ) {
+                                                        if (
+                                                            !newViews[
+                                                                templates[template].widgets[widget].data["oid-dataId"]
+                                                            ][vis]
+                                                        ) {
+                                                            newViews[
+                                                                templates[template].widgets[widget].data["oid-dataId"]
+                                                            ][vis] = {};
+                                                        }
+                                                        if (
+                                                            !newViews[
+                                                                templates[template].widgets[widget].data["oid-dataId"]
+                                                            ][vis][folder]
+                                                        ) {
+                                                            newViews[
+                                                                templates[template].widgets[widget].data["oid-dataId"]
+                                                            ][vis][folder] = {};
+                                                        }
+                                                        const countCondition: number = Number.parseInt(
+                                                            templates[template].widgets[widget].data
+                                                                .conditionStatesCount,
+                                                            10,
+                                                        );
+                                                        const idsCondition: any = [];
+                                                        for (let i = 1; i <= countCondition; i++) {
+                                                            const id: string =
+                                                                templates[template].widgets[widget].data[
+                                                                    `oid-conditionStateId${i}`
+                                                                ];
+                                                            if (id !== undefined && id !== "") {
+                                                                const json: any = {};
+                                                                json[`oid-conditionStateId${i}`] =
+                                                                    templates[template].widgets[widget].data[
+                                                                        `oid-conditionStateId${i}`
+                                                                    ];
+                                                                idsCondition.push(json);
+                                                            }
+                                                        }
+                                                        const countState: number = Number.parseInt(
+                                                            templates[template].widgets[widget].data
+                                                                .conditionStatesCount,
+                                                            10,
+                                                        );
+                                                        const idsState: any = [];
+                                                        for (let i = 1; i <= countState; i++) {
+                                                            const id: string =
+                                                                templates[template].widgets[widget].data[
+                                                                    `oid-stateId${i}`
+                                                                ];
+                                                            if (id !== undefined && id !== "") {
+                                                                const json: any = {};
+                                                                json[`oid-stateId${i}`] =
+                                                                    templates[template].widgets[widget].data[
+                                                                        `oid-stateId${i}`
+                                                                    ];
+                                                                idsState.push(json);
+                                                            }
+                                                        }
+                                                        const oid_enabled: string = templates[template].widgets[widget]
+                                                            .data["oid-enabled"]
+                                                            ? templates[template].widgets[widget].data["oid-enabled"]
+                                                            : "not select";
+                                                        newViews[
+                                                            templates[template].widgets[widget].data["oid-dataId"]
+                                                        ][vis][folder][widget] = {
+                                                            prefix: folder,
+                                                            namespace: vis,
+                                                            view: template,
+                                                            widgetId: widget,
+                                                            newId: templates[template].widgets[widget].data[
+                                                                "oid-dataId"
+                                                            ],
+                                                            enabled: oid_enabled,
+                                                            stateCount: countState,
+                                                            state: idsState,
+                                                            conditionCount: countCondition,
+                                                            condition: idsCondition,
+                                                        };
+                                                    }
+                                                    if (
+                                                        !templates[template].widgets[widget].data["oid-dataId"] ||
+                                                        templates[template].widgets[widget].data["oid-dataId"] == ""
+                                                    ) {
+                                                        this.adapter.log.warn(
+                                                            `Missing dataId for ${widget} - ${template} - ${folder} - ${vis}`,
+                                                        );
+                                                    }
+                                                    if (
+                                                        !templates[template].widgets[widget].data["oid-stateId1"] ||
+                                                        templates[template].widgets[widget].data["oid-stateId1"] == ""
+                                                    ) {
+                                                        this.adapter.log.warn(
+                                                            `Missing stateId for ${widget} - ${template} - ${folder} - ${vis}`,
+                                                        );
+                                                    }
+                                                    if (
+                                                        !templates[template].widgets[widget].data["oid-enabled"] ||
+                                                        templates[template].widgets[widget].data["oid-enabled"] == ""
+                                                    ) {
+                                                        this.adapter.log.warn(
+                                                            `Missing oid-enabledId for ${widget} - ${template} - ${folder} - ${vis}`,
+                                                        );
+                                                    }
+                                                    if (
+                                                        templates[template].widgets[widget].data["oid-dataId"] &&
+                                                        templates[template].widgets[widget].data["oid-enabled"] &&
+                                                        templates[template].widgets[widget].data["oid-dataId"] != "" &&
+                                                        templates[template].widgets[widget].data["oid-enabled"] != ""
+                                                    ) {
+                                                        const splitDataId =
+                                                            templates[template].widgets[widget].data[
+                                                                "oid-dataId"
+                                                            ].split(".");
+                                                        const splitEnabledId =
+                                                            templates[template].widgets[widget].data[
+                                                                "oid-enabled"
+                                                            ].split(".");
+                                                        if (splitDataId.length != 5 || splitDataId[4] != "data") {
+                                                            this.adapter.log.warn(
+                                                                `Wrong dataId ${templates[template].widgets[widget].data["oid-dataId"]} for ${widget} - ${template} - ${folder} - ${vis}`,
+                                                            );
+                                                        }
+                                                        if (
+                                                            splitEnabledId.length != 5 ||
+                                                            splitEnabledId[4] != "enabled"
+                                                        ) {
+                                                            this.adapter.log.warn(
+                                                                `Wrong dataId ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`,
+                                                            );
+                                                        }
+                                                        if (splitEnabledId[3] != splitDataId[3]) {
+                                                            this.adapter.log.warn(
+                                                                `Wrong dataId and enabledID ${templates[template].widgets[widget].data["oid-dataId"]} - ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`,
+                                                            );
                                                         }
                                                     }
-                                                    const oid_enabled: string = templates[template].widgets[widget]
-                                                        .data["oid-enabled"]
-                                                        ? templates[template].widgets[widget].data["oid-enabled"]
-                                                        : "not select";
-                                                    newViews[templates[template].widgets[widget].data["oid-dataId"]][
-                                                        vis
-                                                    ][folder][widget] = {
-                                                        prefix: folder,
-                                                        namespace: vis,
-                                                        view: template,
-                                                        widgetId: widget,
-                                                        newId: templates[template].widgets[widget].data["oid-dataId"],
-                                                        enabled: oid_enabled,
-                                                        stateCount: countState,
-                                                        state: idsState,
-                                                        conditionCount: countCondition,
-                                                        condition: idsCondition,
-                                                    };
+                                                    const wid: any = {};
+                                                    wid[widget] = templates[template].widgets[widget];
+                                                    allVisViews[vis][folder][template].push(wid);
                                                 }
-                                                if (
-                                                    !templates[template].widgets[widget].data["oid-dataId"] ||
-                                                    templates[template].widgets[widget].data["oid-dataId"] == ""
-                                                ) {
-                                                    this.adapter.log.warn(
-                                                        `Missing dataId for ${widget} - ${template} - ${folder} - ${vis}`,
-                                                    );
-                                                }
-                                                if (
-                                                    !templates[template].widgets[widget].data["oid-stateId1"] ||
-                                                    templates[template].widgets[widget].data["oid-stateId1"] == ""
-                                                ) {
-                                                    this.adapter.log.warn(
-                                                        `Missing stateId for ${widget} - ${template} - ${folder} - ${vis}`,
-                                                    );
-                                                }
-                                                if (
-                                                    !templates[template].widgets[widget].data["oid-enabled"] ||
-                                                    templates[template].widgets[widget].data["oid-enabled"] == ""
-                                                ) {
-                                                    this.adapter.log.warn(
-                                                        `Missing oid-enabledId for ${widget} - ${template} - ${folder} - ${vis}`,
-                                                    );
-                                                }
-                                                if (
-                                                    templates[template].widgets[widget].data["oid-dataId"] &&
-                                                    templates[template].widgets[widget].data["oid-enabled"] &&
-                                                    templates[template].widgets[widget].data["oid-dataId"] != "" &&
-                                                    templates[template].widgets[widget].data["oid-enabled"] != ""
-                                                ) {
-                                                    const splitDataId =
-                                                        templates[template].widgets[widget].data["oid-dataId"].split(
-                                                            ".",
-                                                        );
-                                                    const splitEnabledId =
-                                                        templates[template].widgets[widget].data["oid-enabled"].split(
-                                                            ".",
-                                                        );
-                                                    if (splitDataId.length != 5 || splitDataId[4] != "data") {
-                                                        this.adapter.log.warn(
-                                                            `Wrong dataId ${templates[template].widgets[widget].data["oid-dataId"]} for ${widget} - ${template} - ${folder} - ${vis}`,
-                                                        );
-                                                    }
-                                                    if (splitEnabledId.length != 5 || splitEnabledId[4] != "enabled") {
-                                                        this.adapter.log.warn(
-                                                            `Wrong dataId ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`,
-                                                        );
-                                                    }
-                                                    if (splitEnabledId[3] != splitDataId[3]) {
-                                                        this.adapter.log.warn(
-                                                            `Wrong dataId and enabledID ${templates[template].widgets[widget].data["oid-dataId"]} - ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`,
-                                                        );
-                                                    }
-                                                }
-                                                const wid: any = {};
-                                                wid[widget] = templates[template].widgets[widget];
-                                                allVisViews[vis][folder][template].push(wid);
                                             }
                                         }
                                     }
@@ -575,17 +609,29 @@ export class IoBrokerValidationState implements validationState {
                             }
                         }
                     }
+                } else {
+                    this.adapter.log.debug(`Cannot found ${path}${vis}/`);
                 }
             }
         }
-        this.adapter.log.debug("newViews: " + JSON.stringify(newViews));
+        this.adapter.log.debug(`newViews: ${JSON.stringify(newViews)}`);
         if (Object.keys(newViews).length > 0) {
             for (const stateId in newViews) {
                 const id = stateId.replace("data", "views");
-                await this.adapter.setState(id, JSON.stringify(newViews[stateId]), true);
+                const obj = await this.adapter.getObjectAsync(id);
+                if (obj) {
+                    await this.adapter.setState(id, {
+                        val: JSON.stringify(newViews[stateId]),
+                        ack: true,
+                    });
+                } else {
+                    this.adapter.log.error(
+                        `Missing object ${id} - Please delete Widgets: ${JSON.stringify(newViews[stateId])}`,
+                    );
+                }
             }
         }
-        const prefix: string = `schedule-switcher.${this.adapter.instance}.`;
+        const prefix = `schedule-switcher.${this.adapter.instance}.`;
         const currentStates: any = await this.adapter.getStatesAsync(`${prefix}*.data`);
         for (const stateId in currentStates) {
             if (!newViews[stateId] && typeof currentStates[stateId].val === "string") {
@@ -645,6 +691,9 @@ export class IoBrokerValidationState implements validationState {
         }
     }
 
+    /**
+     * @param coordinate Coordinates
+     */
     public async setNextTime(coordinate: any): Promise<void> {
         const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*.data`);
         for (const id in states) {
@@ -653,11 +702,20 @@ export class IoBrokerValidationState implements validationState {
                 if (typeof state.val === "string" && state.val.startsWith("{")) {
                     const triggers = JSON.parse(state.val);
                     if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+                        let isChange = false;
                         for (const trigger of triggers.triggers) {
                             if (trigger && trigger.type === "AstroTrigger") {
-                                trigger.todayTrigger = await this.nextDate(new Date(), trigger, coordinate);
-                                await this.adapter.setState(id, JSON.stringify(triggers), true);
+                                trigger.todayTrigger.date = await this.nextDate(new Date(), trigger, coordinate);
+                                trigger.todayTrigger.date = await this.nextDateSwitch(new Date(), trigger);
+                                const actual = new Date(trigger.todayTrigger.date);
+                                trigger.todayTrigger.hour = actual.getHours();
+                                trigger.todayTrigger.minute = actual.getMinutes();
+                                trigger.todayTrigger.weekday = actual.getDay();
+                                isChange = true;
                             }
+                        }
+                        if (isChange) {
+                            await this.adapter.setState(id, JSON.stringify(triggers), true);
                         }
                     }
                 }
@@ -665,6 +723,9 @@ export class IoBrokerValidationState implements validationState {
         }
     }
 
+    /**
+     * @param coordinate Coordinates
+     */
     public async setActionTime(coordinate: any): Promise<void> {
         const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*.data`);
         const allData: any = [];
@@ -692,8 +753,10 @@ export class IoBrokerValidationState implements validationState {
                             };
                             const now: Date = new Date();
                             if (trigger && trigger.type === "TimeTrigger") {
-                                let addDate: number = 0;
-                                if (trigger.hour === 0 && trigger.minute === 0) addDate = 1;
+                                let addDate = 0;
+                                if (trigger.hour === 0 && trigger.minute === 0) {
+                                    addDate = 1;
+                                }
                                 const switchTime: Date = new Date(
                                     `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + addDate} ${trigger.hour}:${trigger.minute}`,
                                 );
@@ -753,7 +816,7 @@ export class IoBrokerValidationState implements validationState {
     }
 
     private async nextDateSwitch(now: Date, trigger: any): Promise<string> {
-        let diffDays: number = 0;
+        let diffDays = 0;
         const nextDay: number =
             trigger.weekdays.length === 1
                 ? trigger.weekdays[0]
@@ -771,7 +834,7 @@ export class IoBrokerValidationState implements validationState {
         ).toISOString();
     }
 
-    private async nextDate(date: Date, data: any, coordinate: any): Promise<any> {
+    private nextDate(date: Date, data: any, coordinate: any): Promise<any> {
         const next = getTimes(date, coordinate.getLatitude(), coordinate.getLongitude());
         let astro: Date;
         if (data.astroTime === "sunset") {
@@ -782,15 +845,20 @@ export class IoBrokerValidationState implements validationState {
             astro = next.solarNoon;
         }
         new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
-        return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
+        return Promise.resolve({
+            hour: astro.getHours(),
+            minute: astro.getMinutes(),
+            weekday: astro.getDay(),
+            date: astro,
+        });
     }
 
-    private async nextActiveDay(array: number[], day: number): Promise<number> {
-        array = array.map((val) => {
+    private nextActiveDay(array: number[], day: number): Promise<number> {
+        array = array.map(val => {
             return val === 0 ? 7 : val;
         });
-        const numChecker: any = (num: any) => array.find((v) => v > num);
+        const numChecker: any = (num: any) => array.find(v => v > num);
         const next: number | undefined = numChecker(day);
-        return next == undefined ? 0 : next;
+        return Promise.resolve(next == undefined ? 0 : next);
     }
 }

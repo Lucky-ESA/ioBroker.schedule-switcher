@@ -1,14 +1,27 @@
-import { Action } from "../actions/Action";
-import { AstroTime } from "./AstroTime";
+import type { Action } from "../actions/Action";
+import type { AstroTime } from "./AstroTime";
 import { BaseDailyTrigger } from "./BaseDailyTrigger";
-import { Weekday } from "./Weekday";
+import type { Weekday } from "./Weekday";
 
+/**
+ * BaseDailyTrigger
+ */
 export class AstroTrigger extends BaseDailyTrigger {
     private readonly astroTime: AstroTime;
     private readonly shiftInMinutes: number;
     private readonly objectId: number;
     private readonly todayTrigger: any;
 
+    /**
+     *
+     * @param id ID
+     * @param astroTime Astrotime
+     * @param shiftInMinutes Shift
+     * @param weekdays Weekdays
+     * @param action Action
+     * @param objectId ObjectId
+     * @param todayTrigger Trigger
+     */
     constructor(
         id: string,
         astroTime: AstroTime,
@@ -25,10 +38,16 @@ export class AstroTrigger extends BaseDailyTrigger {
         this.todayTrigger = todayTrigger;
     }
 
+    /**
+     * getAstroTime
+     */
     public getAstroTime(): AstroTime {
         return this.astroTime;
     }
 
+    /**
+     * getData
+     */
     public getData(): any {
         return {
             id: this.getId(),
@@ -36,23 +55,35 @@ export class AstroTrigger extends BaseDailyTrigger {
             shift: this.getShiftInMinutes(),
             todayTriger: this.getTodayTrigger(),
             objectId: this.getObjectId(),
-            weekdays: [this.getWeekdays()],
+            weekdays: this.getWeekdays(),
             trigger: "AstroTrigger",
         };
     }
 
+    /**
+     * getObjectId
+     */
     public getObjectId(): number {
         return this.objectId;
     }
 
+    /**
+     * getTodayTrigger
+     */
     public getTodayTrigger(): any {
         return this.todayTrigger;
     }
 
+    /**
+     * getShiftInMinutes
+     */
     public getShiftInMinutes(): number {
         return this.shiftInMinutes;
     }
 
+    /**
+     * toString
+     */
     public toString(): string {
         return (
             `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())},` +

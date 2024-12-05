@@ -34,6 +34,9 @@ class Schedule {
     this.triggerScheduler = triggerScheduler;
     this.logger = logger;
   }
+  /**
+   * @param enabled enabled
+   */
   setEnabled(enabled) {
     if (enabled !== this.enabled) {
       if (enabled) {
@@ -44,6 +47,9 @@ class Schedule {
       this.enabled = enabled;
     }
   }
+  /**
+   * @param name change name
+   */
   setName(name) {
     if (name == null) {
       this.logger.logWarn(`name may not be null or undefined`);
@@ -51,15 +57,27 @@ class Schedule {
     }
     this.name = name;
   }
+  /**
+   * isEnabled
+   */
   isEnabled() {
     return this.enabled;
   }
+  /**
+   * getName
+   */
   getName() {
     return this.name;
   }
+  /**
+   * getTriggers
+   */
   getTriggers() {
     return this.triggers;
   }
+  /**
+   * @param trigger Trigger
+   */
   addTrigger(trigger) {
     if (this.findTriggerById(trigger.getId())) {
       this.logger.logWarn(`Cannot add trigger, trigger id ${trigger.getId()} exists already`);
@@ -70,12 +88,18 @@ class Schedule {
       }
     }
   }
+  /**
+   * loadregister
+   */
   loadregister() {
     for (const r of this.triggers) {
       this.logger.logDebug(`Schedule ${r}`);
     }
     this.triggerScheduler.loadregister();
   }
+  /**
+   * @param trigger Trigger
+   */
   updateTrigger(trigger) {
     const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
     if (index == -1) {
@@ -88,6 +112,9 @@ class Schedule {
       this.triggers[index] = trigger;
     }
   }
+  /**
+   * @param triggerId ID
+   */
   removeTrigger(triggerId) {
     const trigger = this.triggers.find((t) => t.getId() === triggerId);
     if (trigger) {
@@ -96,6 +123,9 @@ class Schedule {
       this.logger.logInfo(`Cannot delete trigger, trigger id ${triggerId} not found`);
     }
   }
+  /**
+   * destroy
+   */
   destroy() {
     if (this.isEnabled()) {
       this.triggerScheduler.destroy();

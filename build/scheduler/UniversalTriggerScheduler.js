@@ -23,37 +23,54 @@ __export(UniversalTriggerScheduler_exports, {
 module.exports = __toCommonJS(UniversalTriggerScheduler_exports);
 var import_TriggerScheduler = require("./TriggerScheduler");
 class UniversalTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
+  /**
+   * @param schedulers TriggerScheduler
+   * @param logger Log service
+   */
   constructor(schedulers, logger) {
     super();
     this.logger = logger;
     this.schedulers = schedulers;
   }
   schedulers;
+  /**
+   * @param trigger Trigger
+   */
   register(trigger) {
     const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
     if (scheduler) {
       return scheduler.register(trigger);
-    } else {
-      throw new Error(`Register - No scheduler for trigger of type ${trigger.constructor.name} found`);
     }
+    throw new Error(`Register - No scheduler for trigger of type ${trigger.constructor.name} found`);
   }
+  /**
+   * @param trigger Trigger
+   */
   unregister(trigger) {
     const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
     if (scheduler) {
       return scheduler.unregister(trigger);
-    } else {
-      throw new Error(`Unregister - No scheduler for trigger of type ${trigger.constructor.name} found`);
     }
+    throw new Error(`Unregister - No scheduler for trigger of type ${trigger.constructor.name} found`);
   }
+  /**
+   * loadregister
+   */
   loadregister() {
     for (const r of this.schedulers) {
       this.logger.logDebug(`Start UniversalTriggerScheduler`);
       r.loadregister();
     }
   }
+  /**
+   * destroy
+   */
   destroy() {
     this.schedulers.forEach((s) => s.destroy());
   }
+  /**
+   * forType
+   */
   forType() {
     return "Universal";
   }

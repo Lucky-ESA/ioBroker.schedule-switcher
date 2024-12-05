@@ -24,6 +24,11 @@ module.exports = __toCommonJS(Coordinate_exports);
 class Coordinate {
   latitude;
   longitude;
+  /**
+   * @param latitude number
+   * @param longitude number
+   * @param that ioBroker.Adapter
+   */
   constructor(latitude, longitude, that) {
     if (Math.abs(latitude) > 90) {
       that.log.error("Latitude must be < 90 and > -90 - use 90");
@@ -38,9 +43,15 @@ class Coordinate {
       this.longitude = longitude;
     }
   }
+  /**
+   * @returns latitude
+   */
   getLatitude() {
     return this.latitude;
   }
+  /**
+   * @returns longitude
+   */
   getLongitude() {
     return this.longitude;
   }

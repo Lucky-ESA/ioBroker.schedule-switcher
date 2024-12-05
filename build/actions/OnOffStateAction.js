@@ -28,6 +28,14 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
   offValue;
   booleanValue;
   valueType;
+  /**
+   * @param idsOfStatesToSet States
+   * @param onValue on
+   * @param offValue off
+   * @param booleanValue Value
+   * @param stateService State
+   * @param valueType Type
+   */
   constructor(idsOfStatesToSet, onValue, offValue, booleanValue, stateService, valueType) {
     super(stateService);
     this.checkIdsOfStates(idsOfStatesToSet);
@@ -46,31 +54,55 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
     this.booleanValue = booleanValue;
     this.valueType = valueType;
   }
+  /**
+   * getIdsOfStatesToSet
+   */
   getIdsOfStatesToSet() {
     return this.idsOfStatesToSet;
   }
+  /**
+   * @param idsOfStatesToSet States
+   */
   setIdsOfStatesToSet(idsOfStatesToSet) {
     this.checkIdsOfStates(idsOfStatesToSet);
     this.idsOfStatesToSet = idsOfStatesToSet;
   }
+  /**
+   * getOnValue
+   */
   getOnValue() {
     return this.onValue;
   }
+  /**
+   * getOffValue
+   */
   getOffValue() {
     return this.offValue;
   }
+  /**
+   * getBooleanValue
+   */
   getBooleanValue() {
     return this.booleanValue;
   }
+  /**
+   * getValueType
+   */
   getValueType() {
     return this.valueType;
   }
+  /**
+   * @param trigger Trigger
+   */
   execute(trigger) {
     const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
     this.getIdsOfStatesToSet().forEach((id) => {
       this.getStateService().setForeignState(id, valueToUse, trigger);
     });
   }
+  /**
+   * toBooleanValueType
+   */
   toBooleanValueType() {
     return new OnOffStateAction(
       this.getIdsOfStatesToSet(),
@@ -81,6 +113,10 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
       this.getValueType()
     );
   }
+  /**
+   * @param onValue on
+   * @param offValue off
+   */
   toStringValueType(onValue, offValue) {
     return new OnOffStateAction(
       this.getIdsOfStatesToSet(),
@@ -91,6 +127,10 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
       this.getValueType()
     );
   }
+  /**
+   * @param onValue on
+   * @param offValue off
+   */
   toNumberValueType(onValue, offValue) {
     return new OnOffStateAction(
       this.getIdsOfStatesToSet(),

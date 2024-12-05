@@ -1,17 +1,26 @@
-import { Action } from "../actions/Action";
+import type { Action } from "../actions/Action";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
 import { OnOffStateActionBuilder } from "../actions/OnOffStateActionBuilder";
-import { StateService } from "../services/StateService";
-import { Serializer } from "./Serializer";
+import type { StateService } from "../services/StateService";
+import type { Serializer } from "./Serializer";
 
+/**
+ * OnOffStateActionSerializer
+ */
 export class OnOffStateActionSerializer implements Serializer<Action> {
     private readonly builder: OnOffStateActionBuilder<string | number | boolean>;
 
+    /**
+     * @param stateService setState
+     */
     constructor(stateService: StateService) {
         this.builder = new OnOffStateActionBuilder<string | number | boolean>();
         this.builder.setStateService(stateService);
     }
 
+    /**
+     * @param stringToDeserialize Action
+     */
     deserialize(stringToDeserialize: string): Action {
         const json = JSON.parse(stringToDeserialize);
         if (json.type !== this.getType()) {
@@ -29,6 +38,9 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
             .build();
     }
 
+    /**
+     * @param objectToSerialize Action
+     */
     serialize(objectToSerialize: Action): string {
         if (objectToSerialize == null) {
             throw new Error("objectToSerialize may not be null or undefined.");
@@ -42,11 +54,13 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
                 booleanValue: objectToSerialize.getBooleanValue(),
                 idsOfStatesToSet: objectToSerialize.getIdsOfStatesToSet(),
             });
-        } else {
-            throw new Error("objectToSerialize must be of type OnOffStateAction.");
         }
+        throw new Error("objectToSerialize must be of type OnOffStateAction.");
     }
 
+    /**
+     * getType
+     */
     public getType(): string {
         return OnOffStateAction.prototype.constructor.name;
     }

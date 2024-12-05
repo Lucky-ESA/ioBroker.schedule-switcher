@@ -1,14 +1,17 @@
-import { GetTimesResult } from "suncalc";
-import { Coordinate } from "../Coordinate";
-import { IoBrokerStateService } from "../services/IoBrokerStateService";
-import { LoggingService } from "../services/LoggingService";
+import type { GetTimesResult } from "suncalc";
+import type { Coordinate } from "../Coordinate";
+import type { IoBrokerStateService } from "../services/IoBrokerStateService";
+import type { LoggingService } from "../services/LoggingService";
 import { AstroTrigger } from "../triggers/AstroTrigger";
-import { TimeTrigger } from "../triggers/TimeTrigger";
+import type { TimeTrigger } from "../triggers/TimeTrigger";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
 import { AllWeekdays } from "../triggers/Weekday";
-import { TimeTriggerScheduler } from "./TimeTriggerScheduler";
+import type { TimeTriggerScheduler } from "./TimeTriggerScheduler";
 import { TriggerScheduler } from "./TriggerScheduler";
 
+/**
+ * AstroTriggerScheduler
+ */
 export class AstroTriggerScheduler extends TriggerScheduler {
     private registered: AstroTrigger[] = [];
     private scheduled: [string, TimeTrigger][] = [];
@@ -33,6 +36,13 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         })
         .build();
 
+    /**
+     * @param timeTriggerScheduler Scheduler
+     * @param getTimes GetTimesResult
+     * @param coordinate Coodinate
+     * @param logger Log service
+     * @param stateService setState
+     */
     constructor(
         private readonly timeTriggerScheduler: TimeTriggerScheduler,
         private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
@@ -44,6 +54,9 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         this.timeTriggerScheduler.register(this.rescheduleTrigger);
     }
 
+    /**
+     * @param trigger Trigger
+     */
     public register(trigger: AstroTrigger): void {
         this.logger.logDebug(`Register astro trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
@@ -55,12 +68,15 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         }
     }
 
+    /**
+     * @param trigger Trigger
+     */
     public unregister(trigger: AstroTrigger): void {
         this.logger.logDebug(`Unregister astro trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
-            this.registered = this.registered.filter((t) => t.getId() !== trigger.getId());
+            this.registered = this.registered.filter(t => t.getId() !== trigger.getId());
             if (this.isScheduledToday(trigger)) {
-                this.scheduled = this.scheduled.filter((s) => {
+                this.scheduled = this.scheduled.filter(s => {
                     if (s[0] === trigger.getId()) {
                         this.timeTriggerScheduler.unregister(s[1]);
                         return false;
@@ -77,6 +93,9 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         }
     }
 
+    /**
+     * loadregister
+     */
     public loadregister(): void {
         for (const r of this.registered) {
             this.logger.logDebug(`Check AstroTriggerRegistered ${r}`);
@@ -86,12 +105,18 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         }
     }
 
+    /**
+     * destroy
+     */
     public destroy(): void {
         this.timeTriggerScheduler.destroy();
         this.registered = [];
         this.scheduled = [];
     }
 
+    /**
+     * forType
+     */
     public forType(): string {
         return AstroTrigger.prototype.constructor.name;
     }
@@ -99,9 +124,9 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     private tryScheduleTriggerToday(trigger: AstroTrigger): void {
         const now = new Date();
         const next = this.nextDate(trigger);
-        this.logger.logDebug(`Time ${next} - Date ${now}`);
+        this.logger.logDebug(`Time ${next.toString()} - Date ${now.toString()}`);
         if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
-            const entry = this.registered.find((t) => t.getId() === trigger.getId());
+            const entry = this.registered.find(t => t.getId() === trigger.getId());
             const objectId = entry && typeof entry.getObjectId() === "number" ? entry.getObjectId() : 0;
             this.removeScheduled(trigger);
             const timeTrigger = new TimeTriggerBuilder()
@@ -119,7 +144,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 .setAction({
                     execute: () => {
                         this.logger.logDebug(`Executing astrotrigger ${trigger}`);
-                        trigger.getAction().execute(trigger.getData() as any);
+                        trigger.getAction().execute(trigger.getData());
                     },
                 })
                 .build();
@@ -132,16 +157,16 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     }
 
     private isRegistered(trigger: AstroTrigger): boolean {
-        return this.registered.find((r) => r.getId() === trigger.getId()) != undefined;
+        return this.registered.find(r => r.getId() === trigger.getId()) != undefined;
     }
 
     private isScheduledToday(trigger: AstroTrigger): boolean {
-        return this.scheduled.find((s) => s[0] === trigger.getId()) != undefined;
+        return this.scheduled.find(s => s[0] === trigger.getId()) != undefined;
     }
 
     private removeScheduled(trigger: AstroTrigger): void {
         this.logger.logDebug(`Scheduled remove ${trigger}`);
-        this.scheduled = this.scheduled.filter((s) => s[0] !== trigger.getId());
+        this.scheduled = this.scheduled.filter(s => s[0] !== trigger.getId());
     }
 
     private nextDate(trigger: AstroTrigger): Date {

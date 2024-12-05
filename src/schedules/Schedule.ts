@@ -1,8 +1,11 @@
-import { Destroyable } from "../Destroyable";
-import { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
-import { LoggingService } from "../services/LoggingService";
-import { Trigger } from "../triggers/Trigger";
+import type { Destroyable } from "../Destroyable";
+import type { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
+import type { LoggingService } from "../services/LoggingService";
+import type { Trigger } from "../triggers/Trigger";
 
+/**
+ * Schedule
+ */
 export abstract class Schedule implements Destroyable {
     private enabled = false;
     private name = "New Schedule";
@@ -18,10 +21,13 @@ export abstract class Schedule implements Destroyable {
         this.logger = logger;
     }
 
+    /**
+     * @param enabled enabled
+     */
     public setEnabled(enabled: boolean): void {
         if (enabled !== this.enabled) {
             if (enabled) {
-                this.getTriggers().forEach((t) => this.triggerScheduler.register(t));
+                this.getTriggers().forEach(t => this.triggerScheduler.register(t));
             } else {
                 this.triggerScheduler.destroy();
             }
@@ -29,6 +35,9 @@ export abstract class Schedule implements Destroyable {
         }
     }
 
+    /**
+     * @param name change name
+     */
     public setName(name: string): void {
         if (name == null) {
             this.logger.logWarn(`name may not be null or undefined`);
@@ -37,18 +46,30 @@ export abstract class Schedule implements Destroyable {
         this.name = name;
     }
 
+    /**
+     * isEnabled
+     */
     public isEnabled(): boolean {
         return this.enabled;
     }
 
+    /**
+     * getName
+     */
     public getName(): string {
         return this.name;
     }
 
+    /**
+     * getTriggers
+     */
     public getTriggers(): Trigger[] {
         return this.triggers;
     }
 
+    /**
+     * @param trigger Trigger
+     */
     public addTrigger(trigger: Trigger): void {
         if (this.findTriggerById(trigger.getId())) {
             this.logger.logWarn(`Cannot add trigger, trigger id ${trigger.getId()} exists already`);
@@ -60,6 +81,9 @@ export abstract class Schedule implements Destroyable {
         }
     }
 
+    /**
+     * loadregister
+     */
     public loadregister(): void {
         for (const r of this.triggers) {
             this.logger.logDebug(`Schedule ${r}`);
@@ -67,8 +91,11 @@ export abstract class Schedule implements Destroyable {
         this.triggerScheduler.loadregister();
     }
 
+    /**
+     * @param trigger Trigger
+     */
     public updateTrigger(trigger: Trigger): void {
-        const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
+        const index = this.getTriggers().findIndex(t => t.getId() === trigger.getId());
         if (index == -1) {
             this.logger.logWarn(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
         } else {
@@ -80,8 +107,11 @@ export abstract class Schedule implements Destroyable {
         }
     }
 
+    /**
+     * @param triggerId ID
+     */
     public removeTrigger(triggerId: string): void {
-        const trigger = this.triggers.find((t) => t.getId() === triggerId);
+        const trigger = this.triggers.find(t => t.getId() === triggerId);
         if (trigger) {
             this.removeTriggerAndUnregister(trigger);
         } else {
@@ -89,6 +119,9 @@ export abstract class Schedule implements Destroyable {
         }
     }
 
+    /**
+     * destroy
+     */
     public destroy(): void {
         if (this.isEnabled()) {
             this.triggerScheduler.destroy();
@@ -100,10 +133,10 @@ export abstract class Schedule implements Destroyable {
         if (this.isEnabled()) {
             this.triggerScheduler.unregister(trigger);
         }
-        this.triggers = this.triggers.filter((t) => t.getId() !== trigger.getId());
+        this.triggers = this.triggers.filter(t => t.getId() !== trigger.getId());
     }
 
     private findTriggerById(id: string): Trigger | undefined {
-        return this.getTriggers().find((t) => t.getId() === id);
+        return this.getTriggers().find(t => t.getId() === id);
     }
 }

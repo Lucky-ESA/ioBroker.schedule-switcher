@@ -28,6 +28,17 @@ var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_Weekday = require("../triggers/Weekday");
 class MessageService {
+  /**
+   * Messages
+   *
+   * @param stateService Nothing
+   * @param scheduleIdToSchedule Nothing
+   * @param createOnOffScheduleSerializer Nothing
+   * @param adapter Nothing
+   * @param coordinate Nothing
+   * @param validation Nothing
+   * @param html Nothing
+   */
   constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate, validation, html) {
     this.stateService = stateService;
     this.scheduleIdToSchedule = scheduleIdToSchedule;
@@ -43,10 +54,13 @@ class MessageService {
   }
   currentMessage = null;
   triggerTimeout;
+  /**
+   * @param message ioBroker.Message
+   */
   async handleMessage(message) {
     if (this.currentMessage) {
-      this.triggerTimeout = this.adapter.setTimeout(() => {
-        this.handleMessage(message);
+      this.triggerTimeout = this.adapter.setTimeout(async () => {
+        await this.handleMessage(message);
         this.triggerTimeout = void 0;
       }, 50);
       return;
@@ -55,7 +69,7 @@ class MessageService {
     const data = message.message;
     if (message.command === "change-view-dataId") {
       await this.updateViews(data);
-      this.adapter.log.debug("Finished message " + message.command);
+      this.adapter.log.debug(`Finished message ${message.command}`);
       this.currentMessage = null;
       return;
     }
@@ -100,17 +114,17 @@ class MessageService {
           return;
         }
         schedule.setName(data.name);
-        this.changeName(data);
+        await this.changeName(data);
         break;
       case "enable-schedule":
-        this.html.changeEnabled(data.dataId, true);
+        await this.html.changeEnabled(data.dataId, true);
         schedule.setEnabled(true);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
         await this.setCountTrigger();
         break;
       case "disable-schedule":
         schedule.setEnabled(false);
-        this.html.changeEnabled(data.dataId, false);
+        await this.html.changeEnabled(data.dataId, false);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
         await this.setCountTrigger();
         break;
@@ -118,7 +132,7 @@ class MessageService {
         this.changeOnOffSchedulesSwitchedValues(schedule, data);
         break;
       case "change-switched-ids":
-        this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
+        await this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
         await this.setCountTrigger();
         break;
       default:
@@ -128,13 +142,13 @@ class MessageService {
     }
     if (schedule instanceof import_OnOffSchedule.OnOffSchedule) {
       const saveTrigger = (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule);
-      this.stateService.setState(data.dataId, saveTrigger);
-      this.html.changeTrigger(data.dataId, saveTrigger);
+      await this.stateService.setState(data.dataId, saveTrigger);
+      await this.html.changeTrigger(data.dataId, saveTrigger);
     } else {
       this.adapter.log.error("Cannot update schedule state after message, no serializer found for schedule");
       return;
     }
-    this.adapter.log.debug("Finished message " + message.command);
+    this.adapter.log.debug(`Finished message ${message.command}`);
     this.currentMessage = null;
   }
   async changeName(data) {
@@ -145,6 +159,9 @@ class MessageService {
   getEnabledIdFromScheduleId(scheduleId) {
     return scheduleId.replace("data", "enabled");
   }
+  /**
+   * Counter trigger
+   */
   async setCountTrigger() {
     var _a;
     let count = 0;
@@ -158,7 +175,7 @@ class MessageService {
     }
     await this.adapter.setState("counterTrigger", count, true);
   }
-  async nextDate(data) {
+  nextDate(data) {
     const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
     let astro;
     if (data.astroTime === "sunset") {
@@ -256,7 +273,7 @@ class MessageService {
               newView[data.namespace][data.prefix] = {};
               newView[data.namespace][data.prefix][data.widgetId] = data;
             }
-            this.stateService.setState(path, JSON.stringify(newView));
+            await this.stateService.setState(path, JSON.stringify(newView));
           }
         }
       }
@@ -276,7 +293,7 @@ class MessageService {
               } else {
                 delete oldView[data.namespace][data.prefix][data.widgetId];
               }
-              this.stateService.setState(oldPath, JSON.stringify(oldView));
+              await this.stateService.setState(oldPath, JSON.stringify(oldView));
             }
           }
         }
@@ -367,8 +384,13 @@ class MessageService {
         throw new Error(`Value Type ${data.valueType} not supported`);
     }
   }
+  /**
+   * Destroy all triggers
+   */
   destroy() {
     this.triggerTimeout && this.adapter.clearTimeout(this.triggerTimeout);
+    this.triggerTimeout = null;
+    return Promise.resolve(true);
   }
   getNextTriggerId(current) {
     const numbers = current.map((t) => t.getId()).map((id) => Number.parseInt(id, 10)).filter((id) => !Number.isNaN(id)).sort((a, b) => a - b);

@@ -23,6 +23,9 @@ __export(BaseStateActionBuilder_exports, {
 module.exports = __toCommonJS(BaseStateActionBuilder_exports);
 class BaseStateActionBuilder {
   stateService = null;
+  /**
+   * @param stateService setState
+   */
   setStateService(stateService) {
     this.stateService = stateService;
     return this;

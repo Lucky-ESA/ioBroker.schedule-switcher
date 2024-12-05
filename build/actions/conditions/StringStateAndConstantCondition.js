@@ -27,6 +27,12 @@ class StringStateAndConstantCondition {
   stateId;
   stateService;
   sign;
+  /**
+   * @param constant Constant
+   * @param stateId ID
+   * @param sign Sign
+   * @param stateService setState
+   */
   constructor(constant, stateId, sign, stateService) {
     if (constant == null) {
       throw new Error("Constant value may not be null or undefined.");
@@ -45,6 +51,9 @@ class StringStateAndConstantCondition {
     this.sign = sign;
     this.stateService = stateService;
   }
+  /**
+   * evaluate
+   */
   async evaluate() {
     const stateValue = String(await this.stateService.getForeignState(this.stateId));
     let result;
@@ -55,15 +64,27 @@ class StringStateAndConstantCondition {
     }
     return Promise.resolve(result);
   }
+  /**
+   * getConstant
+   */
   getConstant() {
     return this.constant;
   }
+  /**
+   * getStateId
+   */
   getStateId() {
     return this.stateId;
   }
+  /**
+   * getSign
+   */
   getSign() {
     return this.sign;
   }
+  /**
+   * toString
+   */
   toString() {
     return `${this.constant} ${this.sign} ${this.stateId}`;
   }

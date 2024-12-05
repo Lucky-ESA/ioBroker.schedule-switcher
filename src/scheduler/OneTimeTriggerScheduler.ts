@@ -1,12 +1,21 @@
-import { Job, JobCallback } from "node-schedule";
-import { LoggingService } from "../services/LoggingService";
+import type { Job, JobCallback } from "node-schedule";
+import type { LoggingService } from "../services/LoggingService";
 import { OneTimeTrigger } from "../triggers/OneTimeTrigger";
 import { TriggerScheduler } from "./TriggerScheduler";
 
+/**
+ * OneTimeTriggerScheduler
+ */
 export class OneTimeTriggerScheduler extends TriggerScheduler {
     private registered: [OneTimeTrigger, Job][] = [];
     private triggerTimeout: ioBroker.Timeout | undefined;
 
+    /**
+     * @param scheduleJob Schedule
+     * @param cancelJob Schedule
+     * @param logger Log service
+     * @param adapter ioBroker
+     */
     constructor(
         private scheduleJob: (date: Date, callback: JobCallback) => Job,
         private cancelJob: (job: Job) => boolean,
@@ -18,10 +27,16 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
         this.triggerTimeout = undefined;
     }
 
+    /**
+     * forType
+     */
     public forType(): string {
         return OneTimeTrigger.prototype.constructor.name;
     }
 
+    /**
+     * @param trigger OneTimeTrigger
+     */
     public register(trigger: OneTimeTrigger): void {
         this.logger.logDebug(`Register OneTimeTriggerScheduler trigger ${trigger}`);
         if (this.getAssociatedJob(trigger)) {
@@ -36,13 +51,16 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
             } else {
                 const newJob = this.scheduleJob(trigger.getDate(), () => {
                     this.logger.logDebug(`Executing trigger ${trigger}`);
-                    trigger.getAction().execute(trigger.getData() as any);
+                    trigger.getAction().execute(trigger.getData());
                 });
                 this.registered.push([trigger, newJob]);
             }
         }
     }
 
+    /**
+     * @param trigger OneTimeTrigger
+     */
     public unregister(trigger: OneTimeTrigger): void {
         this.logger.logDebug(`Unregister OneTimeTriggerScheduler trigger ${trigger}`);
         const job = this.getAssociatedJob(trigger);
@@ -55,28 +73,33 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
         }
     }
 
+    /**
+     * loadregister
+     */
     public loadregister(): void {
         for (const r of this.registered) {
             this.logger.logDebug(`Check OneTimeTriggerScheduler ${r[0]}`);
         }
     }
 
+    /**
+     * destroy
+     */
     public destroy(): void {
         this.triggerTimeout && this.adapter.clearTimeout(this.triggerTimeout);
-        this.registered.forEach((r) => this.unregister(r[0]));
+        this.registered.forEach(r => this.unregister(r[0]));
     }
 
     private getAssociatedJob(trigger: OneTimeTrigger): Job | null {
-        const entry = this.registered.find((r) => r[0] === trigger);
+        const entry = this.registered.find(r => r[0] === trigger);
         if (entry) {
             return entry[1];
-        } else {
-            this.loadregister();
-            return null;
         }
+        this.loadregister();
+        return null;
     }
 
     private removeTrigger(trigger: OneTimeTrigger): void {
-        this.registered = this.registered.filter((r) => r[0] !== trigger);
+        this.registered = this.registered.filter(r => r[0] !== trigger);
     }
 }

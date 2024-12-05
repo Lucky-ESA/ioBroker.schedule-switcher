@@ -29,30 +29,51 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   offValue = null;
   booleanValue = true;
   valueType = "";
+  /**
+   * @param idsOfStatesToSet States
+   */
   setIdsOfStatesToSet(idsOfStatesToSet) {
     this.idsOfStatesToSet = idsOfStatesToSet;
     return this;
   }
+  /**
+   * @param onValue on
+   */
   setOnValue(onValue) {
     this.onValue = onValue;
     return this;
   }
+  /**
+   * @param offValue off
+   */
   setOffValue(offValue) {
     this.offValue = offValue;
     return this;
   }
+  /**
+   * @param booleanValue value
+   */
   setBooleanValue(booleanValue) {
     this.booleanValue = booleanValue;
     return this;
   }
+  /**
+   * @param valueType set type
+   */
   setValueType(valueType) {
     this.valueType = valueType;
     return this;
   }
+  /**
+   * @param stateService setState
+   */
   setStateService(stateService) {
     super.setStateService(stateService);
     return this;
   }
+  /**
+   * OnOffStateAction
+   */
   build() {
     return new import_OnOffStateAction.OnOffStateAction(
       this.idsOfStatesToSet,

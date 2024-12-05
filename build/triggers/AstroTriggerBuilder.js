@@ -28,34 +28,63 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
   shift = 0;
   objectId = 0;
   todayTrigger = {};
+  /**
+   * @param astroTime AstroTime
+   */
   setAstroTime(astroTime) {
     this.astroTime = astroTime;
     return this;
   }
+  /**
+   * @param shift shiftminutes
+   */
   setShift(shift) {
     this.shift = shift;
     return this;
   }
+  /**
+   * @param objectId Object ID
+   * @returns this
+   */
   setObjectId(objectId) {
     this.objectId = objectId;
     return this;
   }
+  /**
+   * @param todayTrigger trigger
+   * @returns this
+   */
   setTodayTrigger(todayTrigger) {
     this.todayTrigger = todayTrigger;
     return this;
   }
+  /**
+   * @param action Action
+   * @returns this
+   */
   setAction(action) {
     super.setAction(action);
     return this;
   }
+  /**
+   * @param id Trigger ID
+   * @returns this
+   */
   setId(id) {
     super.setId(id);
     return this;
   }
+  /**
+   * @param weekdays Weekdays
+   * @returns this
+   */
   setWeekdays(weekdays) {
     super.setWeekdays(weekdays);
     return this;
   }
+  /**
+   * @returns build
+   */
   build() {
     return new import_AstroTrigger.AstroTrigger(
       this.getId(),

@@ -1,50 +1,84 @@
-import { Action } from "../actions/Action";
-import { Builder } from "../Builder";
+import type { Action } from "../actions/Action";
+import type { Builder } from "../Builder";
 import { DailyTriggerBuilder } from "./DailyTriggerBuilder";
 import { TimeTrigger } from "./TimeTrigger";
-import { Weekday } from "./Weekday";
+import type { Weekday } from "./Weekday";
 
+/**
+ * TimeTriggerBuilder
+ */
 export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<TimeTrigger> {
     private hour = 0;
     private minute = 0;
     private objectId = 0;
     private todayTrigger = {};
 
+    /**
+     * @param hour Hour
+     * @returns this
+     */
     public setHour(hour: number): TimeTriggerBuilder {
         this.hour = hour;
         return this;
     }
 
+    /**
+     * @param minute Minute
+     * @returns this
+     */
     public setMinute(minute: number): TimeTriggerBuilder {
         this.minute = minute;
         return this;
     }
 
+    /**
+     * @param objectId Object ID
+     * @returns this
+     */
     public setObjectId(objectId: number): TimeTriggerBuilder {
         this.objectId = objectId;
         return this;
     }
 
+    /**
+     * @param todayTrigger Trigger
+     * @returns this
+     */
     public setTodayTrigger(todayTrigger: any): TimeTriggerBuilder {
         this.todayTrigger = todayTrigger;
         return this;
     }
 
+    /**
+     * @param action Action
+     * @returns this
+     */
     public setAction(action: Action): TimeTriggerBuilder {
         super.setAction(action);
         return this;
     }
 
+    /**
+     * @param id ID
+     * @returns this
+     */
     public setId(id: string): TimeTriggerBuilder {
         super.setId(id);
         return this;
     }
 
+    /**
+     * @param weekdays Weekdays
+     * @returns this
+     */
     public setWeekdays(weekdays: Weekday[]): TimeTriggerBuilder {
         super.setWeekdays(weekdays);
         return this;
     }
 
+    /**
+     * TimeTrigger
+     */
     public build(): TimeTrigger {
         return new TimeTrigger(
             this.getId(),

@@ -27,6 +27,12 @@ var import_Schedule = require("./Schedule");
 class OnOffSchedule extends import_Schedule.Schedule {
   onAction;
   offAction;
+  /**
+   * @param onAction on
+   * @param offAction off
+   * @param triggerScheduler Scheduler
+   * @param loggingService Log service
+   */
   constructor(onAction, offAction, triggerScheduler, loggingService) {
     super(triggerScheduler, loggingService);
     if (onAction == null) {
@@ -38,6 +44,9 @@ class OnOffSchedule extends import_Schedule.Schedule {
     this.onAction = onAction;
     this.offAction = offAction;
   }
+  /**
+   * @param onAction Action
+   */
   setOnAction(onAction) {
     if (onAction == null) {
       throw new Error(`onAction may not be null or undefined`);
@@ -59,6 +68,9 @@ class OnOffSchedule extends import_Schedule.Schedule {
       }
     });
   }
+  /**
+   * @param offAction Action
+   */
   setOffAction(offAction) {
     if (offAction == null) {
       throw new Error(`offAction may not be null or undefined`);
@@ -80,9 +92,15 @@ class OnOffSchedule extends import_Schedule.Schedule {
       }
     });
   }
+  /**
+   * getOnAction
+   */
   getOnAction() {
     return this.onAction;
   }
+  /**
+   * getOffAction
+   */
   getOffAction() {
     return this.offAction;
   }

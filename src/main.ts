@@ -7,15 +7,15 @@
 import * as utils from "@iobroker/adapter-core";
 import { cancelJob, RecurrenceRule, scheduleJob } from "node-schedule";
 import { getTimes } from "suncalc";
-import { Action } from "./actions/Action";
-import { Condition } from "./actions/conditions/Condition";
+import type { Action } from "./actions/Action";
+import type { Condition } from "./actions/conditions/Condition";
 import { Coordinate } from "./Coordinate";
 import { VisHtmlTable } from "./html/VisHtmlTable";
 import { AstroTriggerScheduler } from "./scheduler/AstroTriggerScheduler";
 import { OneTimeTriggerScheduler } from "./scheduler/OneTimeTriggerScheduler";
 import { TimeTriggerScheduler } from "./scheduler/TimeTriggerScheduler";
 import { UniversalTriggerScheduler } from "./scheduler/UniversalTriggerScheduler";
-import { Schedule } from "./schedules/Schedule";
+import type { Schedule } from "./schedules/Schedule";
 import { AstroTriggerSerializer } from "./serialization/AstroTriggerSerializer";
 import { ConditionActionSerializer } from "./serialization/ConditionActionSerializer";
 import { StringStateAndConstantConditionSerializer } from "./serialization/conditions/StringStateAndConstantConditionSerializer";
@@ -29,7 +29,7 @@ import { IoBrokerLoggingService } from "./services/IoBrokerLoggingService";
 import { IoBrokerStateService } from "./services/IoBrokerStateService";
 import { IoBrokerValidationState } from "./services/IoBrokerValidationState";
 import { MessageService } from "./services/MessageService";
-import { Trigger } from "./triggers/Trigger";
+import type { Trigger } from "./triggers/Trigger";
 interface schedulesData {
     stateId: number | null;
     active: string | null;
@@ -45,8 +45,8 @@ class ScheduleSwitcher extends utils.Adapter {
     private coordinate: Coordinate | undefined;
     private messageService: MessageService | undefined;
     private widgetControl: ioBroker.Interval | undefined | null;
-    private nextAstroTime: any | undefined | null;
-    private nextActionTime: any | undefined | null;
+    private nextAstroTime: any;
+    private nextActionTime: any;
     private setCountTriggerStart: ioBroker.Timeout | undefined | null;
     public validation = new IoBrokerValidationState(this);
     private vishtmltable = new VisHtmlTable(this);
@@ -79,29 +79,36 @@ class ScheduleSwitcher extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     private async onReady(): Promise<void> {
-        if (!this.config.usehtml) await this.delObjectAsync("html", { recursive: true });
+        if (!this.config.usehtml) {
+            await this.delObjectAsync("html", { recursive: true });
+        }
         const obj = await this.getForeignObjectAsync("system.config");
         let lang = "de";
         if (obj && obj.common && obj.common.language) {
             lang = obj.common.language;
         }
-        if (this.config.usehtml) await this.vishtmltable.createStates(lang as string);
+        if (this.config.usehtml) {
+            await this.vishtmltable.createStates(lang);
+        }
         this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData as Array<schedulesData>);
+        this.log.debug(`onoff: ${JSON.stringify(this.config.schedules.onOff)}`);
         await this.initMessageService();
         await this.fixStateStructure(this.config.schedules);
         await this.validation.validationView(utils.getAbsoluteDefaultDataDir());
+        await this.validation.setNextTime(await this.getCoordinate());
+        await this.validation.setActionTime(await this.getCoordinate());
         const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.*.data`);
         for (const id in record) {
             const state = record[id];
             await this.vishtmltable.changeTrigger(id, state, false);
             this.log.debug(`got state: ${state ? JSON.stringify(state) : "null"} with id: ${id}`);
             if (state) {
-                this.log.info("ID: " + id);
+                this.log.info(`ID: ${id}`);
                 if (typeof state.val === "string" && state.val.startsWith("{")) {
                     const stateVal = JSON.parse(state.val);
                     await this.validation.validation(id, stateVal, false);
                     if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
-                        this.onScheduleChange(id, JSON.stringify(stateVal) as string);
+                        await this.onScheduleChange(id, JSON.stringify(stateVal));
                     } else {
                         this.log.error(`Skip id ${id} - Wrong values!!`);
                     }
@@ -112,49 +119,46 @@ class ScheduleSwitcher extends utils.Adapter {
                 this.log.error(`Could not retrieve state for ${id}`);
             }
         }
-        this.refreshAstroTime();
-        this.refreshActionTime();
-        this.vishtmltable.updateHTML();
+        await this.refreshAstroTime();
+        await this.refreshActionTime();
+        await this.vishtmltable.updateHTML();
         this.subscribeStates(`*`);
         this.widgetControl = this.setInterval(
-            () => {
-                this.validation.validationView(utils.getAbsoluteDefaultDataDir());
+            async () => {
+                await this.validation.validationView(utils.getAbsoluteDefaultDataDir());
             },
             24 * 60 * 1000 * 60,
         );
-        this.validation.setActionTime(await this.getCoordinate());
-        this.setCountTriggerStart = this.setTimeout(() => {
-            this.messageService?.setCountTrigger();
+        this.setCountTriggerStart = this.setTimeout(async () => {
+            await this.messageService?.setCountTrigger();
             this.setCountTriggerStart = undefined;
             this.moreLogs();
         }, 3000);
     }
 
-    /**
-     * Is called when adapter shuts down - callback has to be called under any circumstances!
-     */
-    private onUnload(callback: () => void): void {
+    private async onUnload(callback: () => void): Promise<void> {
         this.log.info("cleaning everything up...");
         this.widgetControl && this.clearInterval(this.widgetControl);
-        this.nextAstroTime?.cancel();
-        this.nextActionTime?.cancel();
         this.setCountTriggerStart && this.clearTimeout(this.setCountTriggerStart);
-        this.messageService?.destroy();
-        this.stateService.destroy();
         for (const id of this.scheduleIdToSchedule.keys()) {
             try {
                 this.scheduleIdToSchedule.get(id)?.destroy();
             } catch (e) {
-                this.log.error(`scheduleIdToSchedule: ${e}`);
+                this.logError(e as Error);
+                this.log.error(`ScheduleIdToSchedule!`);
             }
         }
         try {
             this.scheduleIdToSchedule.clear();
         } catch (e) {
-            this.log.error(`scheduleIdToSchedule clear: ${e}`);
-        } finally {
-            callback();
+            this.logError(e as Error);
+            this.log.error(`scheduleIdToSchedule clear!`);
         }
+        await this.nextAstroTime?.cancel();
+        await this.nextActionTime?.cancel();
+        await this.messageService?.destroy();
+        await this.stateService.destroy();
+        callback();
     }
 
     private async refreshAstroTime(): Promise<void> {
@@ -164,9 +168,10 @@ class ScheduleSwitcher extends utils.Adapter {
         rule.minute = 2;
         this.nextAstroTime = scheduleJob(rule, async () => {
             this.log.info("Start Update Astrotime!");
-            this.validation.setNextTime(await this.getCoordinate());
+            void this.validation.setNextTime(await this.getCoordinate());
         });
         this.moreLogs();
+        return Promise.resolve();
     }
 
     private async refreshActionTime(): Promise<void> {
@@ -176,9 +181,10 @@ class ScheduleSwitcher extends utils.Adapter {
         rule.minute = 1;
         this.nextActionTime = scheduleJob(rule, async () => {
             this.log.info("Start Update next time switch!");
-            this.validation.setActionTime(await this.getCoordinate());
+            void this.validation.setActionTime(await this.getCoordinate());
         });
         this.moreLogs();
+        return Promise.resolve();
     }
 
     private moreLogs(): void {
@@ -200,11 +206,11 @@ class ScheduleSwitcher extends utils.Adapter {
                     }
                 }
             }
-            let isChange: boolean = false;
+            let isChange = false;
             for (const state of config) {
-                let count: number = 0;
+                let count = 0;
                 if (state.stateId == null) {
-                    const nextid: number = await this.nextId(allIds as number[], 0 as number);
+                    const nextid: number = await this.nextId(allIds, 0);
                     state.stateId = nextid;
                     allIds.push(nextid);
                     count = nextid;
@@ -224,8 +230,14 @@ class ScheduleSwitcher extends utils.Adapter {
                     state.active = enabled.val.toString();
                 }
             }
+            //if (allIds.length != this.config.schedules.onOff.length) {
+            //    this.log.debug(`Difference ${allIds.length} - ${this.config.schedules.onOff.length}`);
+            //    isChange = true;
+            //}
             if (isChange) {
-                this.log.info("Cleanup native...restart adapter now..." + JSON.stringify(config));
+                this.log.info(
+                    `Cleanup native...restart adapter now... ${JSON.stringify(config)} - ${JSON.stringify(allIds)}`,
+                );
                 await this.extendForeignObjectAsync(`system.adapter.${this.namespace}`, {
                     native: { schedulesData: config, schedules: { onOff: allIds } },
                 });
@@ -234,14 +246,18 @@ class ScheduleSwitcher extends utils.Adapter {
         }
     }
 
-    private async nextId(ids: number[], start: number): Promise<number> {
-        ids.every((a) => {
+    private nextId(ids: number[], start: number): Promise<number> {
+        const removeDuplicate = (arr: number[]): number[] => {
+            return arr.filter((item, index) => arr.indexOf(item) === index);
+        };
+        ids.sort((a, b) => a - b);
+        removeDuplicate(ids).every(a => {
             if (start === a) {
                 start = a + 1;
                 return true;
             }
         });
-        return start;
+        return Promise.resolve(start);
     }
 
     // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
@@ -260,30 +276,22 @@ class ScheduleSwitcher extends utils.Adapter {
     // }
 
     /**
-     * Is called if a subscribed state changes
+     * @param id Object ID
+     * @param state State value
      */
     private async onStateChange(id: string, state: ioBroker.State | null | undefined): Promise<void> {
         if (state) {
             if (!state.ack) {
                 const command = id.split(".").pop();
                 if (command === "data") {
-                    this.log.debug("is schedule id start");
-                    this.vishtmltable.changeTrigger(id, state);
-                    await this.onScheduleChange(id, state.val as string);
-                    this.log.debug("is schedule id end");
+                    void this.updateData(id, state);
                 } else if (command === "enabled") {
-                    this.log.debug("is enabled id start");
-                    this.vishtmltable.changeEnabled(id, state);
-                    const dataId = this.getScheduleIdFromEnabledId(id);
-                    const scheduleData = (await this.getStateAsync(dataId))?.val;
-                    await this.onScheduleChange(dataId, scheduleData as string);
-                    this.log.debug("is enabled id end");
+                    void this.updateEnabled(id, state);
                 } else if (command === "sendto" && typeof state.val === "string") {
                     this.log.debug("is sendto id");
-                    this.setSendTo(state.val);
+                    void this.setSendTo(state.val);
                 } else if (command === "update" && state.val) {
-                    this.vishtmltable.updateHTML();
-                    this.setState(id, false, true);
+                    void this.updateValidation(id);
                     return;
                 }
                 const secsplit = id.split(".")[id.split(".").length - 2];
@@ -293,49 +301,46 @@ class ScheduleSwitcher extends utils.Adapter {
                     command != "html_code" &&
                     command != "update"
                 ) {
-                    this.vishtmltable.changeHTML(command, state);
-                    this.setState(id, state.val, true);
+                    void this.updateHTML(id, state, command);
                 } else {
-                    this.stateService.setState(id, state.val as string, true);
+                    await this.stateService.setState(id, state.val as string, true);
                 }
             }
         }
     }
 
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
     /**
-     * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-     * Using this method requires "common.messagebox" property to be set to true in io-package.json
+     * @param obj If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
         if (typeof obj === "object" && obj.message) {
             try {
-                this.log.debug("obj: " + JSON.stringify(obj));
+                this.log.debug(`obj: ${JSON.stringify(obj)}`);
                 switch (obj.command) {
                     case "getActiv":
                         if (obj && obj.message && obj.message.schedule != null) {
-                            this.loadData(obj, 1);
+                            void this.loadData(obj, 1);
                         } else {
                             this.sendTo(obj.from, obj.command, `false`, obj.callback);
                         }
                         break;
                     case "getNameSchedule":
                         if (obj && obj.message && obj.message.schedule != null) {
-                            this.loadData(obj, 4);
+                            void this.loadData(obj, 4);
                         } else {
                             this.sendTo(obj.from, obj.command, `New Schedule`, obj.callback);
                         }
                         break;
                     case "getCountSchedule":
                         if (obj && obj.message && obj.message.schedule != null) {
-                            this.loadData(obj, 3);
+                            void this.loadData(obj, 3);
                         } else {
                             this.sendTo(obj.from, obj.command, `0`, obj.callback);
                         }
                         break;
                     case "getIdNameSchedule":
                         if (obj && obj.message && obj.message.schedule != null) {
-                            this.loadData(obj, 2);
+                            void this.loadData(obj, 2);
                         } else {
                             this.sendTo(
                                 obj.from,
@@ -358,10 +363,12 @@ class ScheduleSwitcher extends utils.Adapter {
                     case "change-view-dataId":
                         if (this.messageService) {
                             if (obj.message && obj.message.parameter && obj.command === "add-trigger" && obj.callback) {
-                                this.addNewTrigger(obj);
+                                void this.addNewTrigger(obj);
                                 return;
                             }
-                            if (obj.message && obj.message.parameter) obj.message = obj.message.parameter;
+                            if (obj.message && obj.message.parameter) {
+                                obj.message = obj.message.parameter;
+                            }
                             await this.messageService.handleMessage(obj);
                         } else {
                             this.log.error("Message service not initialized");
@@ -371,15 +378,47 @@ class ScheduleSwitcher extends utils.Adapter {
                     case "astro":
                     case "datetime":
                     case "time":
-                        this.changeTrigger(obj);
+                        void this.changeTrigger(obj);
                         break;
                     default:
                         this.log.error(`Message service ${obj.command} not initialized`);
                 }
             } catch (e) {
+                this.logError(e as Error);
                 this.log.error(`Could not handle message:`);
             }
         }
+    }
+
+    private async updateHTML(id: string, state: ioBroker.State | null | undefined, command: string): Promise<void> {
+        await this.vishtmltable.changeHTML(command, state);
+        if (state) {
+            await this.setState(id, state.val, true);
+        }
+    }
+
+    private async updateData(id: string, state: ioBroker.State | null | undefined): Promise<void> {
+        this.log.debug("is schedule id start");
+        await this.vishtmltable.changeTrigger(id, state);
+        if (state) {
+            await this.onScheduleChange(id, state.val as string);
+        }
+        this.log.debug("is schedule id end");
+    }
+
+    private async updateEnabled(id: string, state: ioBroker.State | null | undefined): Promise<void> {
+        this.log.debug("is enabled id start");
+        await this.vishtmltable.changeEnabled(id, state);
+        const dataId = this.getScheduleIdFromEnabledId(id);
+        const scheduleData = (await this.getStateAsync(dataId))?.val;
+        await this.onScheduleChange(dataId, scheduleData as string);
+        this.log.debug("is enabled id end");
+    }
+
+    private async updateValidation(id: string): Promise<void> {
+        await this.validation.setNextTime(await this.getCoordinate());
+        await this.vishtmltable.updateHTML();
+        await this.setState(id, false, true);
     }
 
     private async changeTrigger(obj: ioBroker.Message): Promise<void> {
@@ -415,7 +454,7 @@ class ScheduleSwitcher extends utils.Adapter {
                             obj.message = data;
                             await this.messageService.handleMessage(obj);
                             valueTrigger.val = JSON.stringify(triggers);
-                            this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+                            void this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
                         } else {
                             this.log.error("Message service not initialized");
                         }
@@ -442,7 +481,7 @@ class ScheduleSwitcher extends utils.Adapter {
                             obj.message = data;
                             await this.messageService.handleMessage(obj);
                             valueTrigger.val = JSON.stringify(triggers);
-                            this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+                            void this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
                         } else {
                             this.log.error("Message service not initialized");
                         }
@@ -468,7 +507,7 @@ class ScheduleSwitcher extends utils.Adapter {
                             obj.message = data;
                             await this.messageService.handleMessage(obj);
                             valueTrigger.val = JSON.stringify(triggers);
-                            this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+                            void this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
                         } else {
                             this.log.error("Message service not initialized");
                         }
@@ -496,7 +535,7 @@ class ScheduleSwitcher extends utils.Adapter {
                             obj.message = data;
                             await this.messageService.handleMessage(obj);
                             valueTrigger.val = JSON.stringify(triggers);
-                            this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+                            void this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
                         } else {
                             this.log.error("Message service not initialized");
                         }
@@ -580,16 +619,16 @@ class ScheduleSwitcher extends utils.Adapter {
             const id = Number.parseInt(split[3], 10);
             if (type == "onoff") {
                 if (statesInSettings.onOff.includes(id)) {
-                    statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
-                    this.log.debug("Found state " + fullId);
+                    statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
+                    this.log.debug(`Found state ${fullId}`);
                 } else {
-                    this.log.debug("Deleting state " + fullId);
+                    this.log.debug(`Deleting state ${fullId}`);
                     await this.deleteOnOffSchedule(id);
                 }
             }
         }
         for (const i of statesInSettings.onOff) {
-            this.log.debug("Onoff state " + i + " not found, creating");
+            this.log.debug(`Onoff state ${i} not found, creating`);
             await this.createOnOffSchedule(i);
         }
     }
@@ -702,9 +741,9 @@ class ScheduleSwitcher extends utils.Adapter {
     }
 
     private async onScheduleChange(id: string, scheduleString: string): Promise<void> {
-        this.log.debug("onScheduleChange: " + scheduleString + " " + id);
+        this.log.debug(`onScheduleChange: ${scheduleString} ${id}`);
         if (this.scheduleIdToSchedule.get(id)) {
-            this.log.debug("schedule found: " + this.scheduleIdToSchedule.get(id));
+            this.log.debug(`schedule found: ${this.scheduleIdToSchedule.get(id)}`);
         }
         try {
             const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
@@ -722,27 +761,15 @@ class ScheduleSwitcher extends utils.Adapter {
     }
 
     private async getCoordinate(): Promise<Coordinate> {
-        if (this.coordinate) {
-            return Promise.resolve(this.coordinate);
-        } else {
-            return new Promise((resolve, _) => {
-                this.getForeignObject("system.config", (error, obj) => {
-                    if (obj && obj.common) {
-                        const lat = (obj.common as any).latitude;
-                        const long = (obj.common as any).longitude;
-                        if (lat && long) {
-                            this.log.debug(`Got coordinates lat=${lat} long=${long}`);
-                            resolve(new Coordinate(lat, long, this));
-                            return;
-                        }
-                    }
-                    this.log.error(
-                        "Could not read coordinates from system.config, using Berlins coordinates as fallback",
-                    );
-                    resolve(new Coordinate(52, 13, this));
-                });
-            });
+        const obj = await this.getForeignObjectAsync("system.config");
+        if (obj && obj.common && obj.common.latitude && obj.common.longitude) {
+            const lat = obj.common.latitude;
+            const long = obj.common.longitude;
+            this.log.debug(`Got coordinates lat=${lat} long=${long}`);
+            return new Coordinate(lat, long, this);
         }
+        this.log.error("Could not read coordinates from system.config, using Berlins coordinates as fallback");
+        return new Coordinate(52, 13, this);
     }
 
     private logError(error: Error): void {
@@ -771,8 +798,8 @@ class ScheduleSwitcher extends utils.Adapter {
             [
                 new TimeTriggerSerializer(actionSerializer),
                 new AstroTriggerSerializer(actionSerializer),
-                new OneTimeTriggerSerializer(actionSerializer, (triggerId: string) => {
-                    this.messageService?.handleMessage({
+                new OneTimeTriggerSerializer(actionSerializer, async (triggerId: string) => {
+                    await this.messageService?.handleMessage({
                         message: {
                             dataId: dataId,
                             triggerId: triggerId,
@@ -806,9 +833,6 @@ class ScheduleSwitcher extends utils.Adapter {
         );
     }
 
-    /**
-     * Is called when vis-2 receives a message.
-     */
     private async setSendTo(data: string): Promise<void> {
         const send = JSON.parse(data);
         this.log.debug(JSON.stringify(send));
@@ -819,7 +843,7 @@ class ScheduleSwitcher extends utils.Adapter {
                 send.command === "datetime" ||
                 send.command === "time"
             ) {
-                this.changeTrigger(send);
+                await this.changeTrigger(send);
                 return;
             }
             if (this.messageService) {

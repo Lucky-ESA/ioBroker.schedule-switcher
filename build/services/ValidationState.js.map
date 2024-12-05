@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/services/ValidationState.ts"],
-  "sourcesContent": ["export interface validationState {\n    validation(id: string, val: any, check: boolean): Promise<any>;\n    validationView(utils: string): Promise<any>;\n    setNextTime(coordinate: any): Promise<any>;\n    setActionTime(coordinate: any): Promise<any>;\n}\n"],
+  "sourcesContent": ["/**\n * validation\n */\nexport interface validationState {\n    /**\n     * validation\n     */\n    validation(id: string, val: any, check: boolean): Promise<any>;\n    /**\n     * view\n     */\n    validationView(utils: string): Promise<any>;\n    /**\n     * Time\n     */\n    setNextTime(coordinate: any): Promise<any>;\n    /**\n     * Coodinates\n     */\n    setActionTime(coordinate: any): Promise<any>;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

@@ -22,6 +22,11 @@ __export(ConditionAction_exports, {
 });
 module.exports = __toCommonJS(ConditionAction_exports);
 class ConditionAction {
+  /**
+   * @param condition Condition
+   * @param action Action
+   * @param adapter ioBroker
+   */
   constructor(condition, action, adapter) {
     this.adapter = adapter;
     if (condition == null) {
@@ -35,9 +40,15 @@ class ConditionAction {
   }
   condition;
   action;
+  /**
+   * getAction
+   */
   getAction() {
     return this.action;
   }
+  /**
+   * @param action Action
+   */
   setAction(action) {
     if (action == null) {
       this.adapter.log.error("action may not be null or undefined");
@@ -45,9 +56,15 @@ class ConditionAction {
     }
     this.action = action;
   }
+  /**
+   * getCondition
+   */
   getCondition() {
     return this.condition;
   }
+  /**
+   * execute
+   */
   execute() {
     this.condition.evaluate().then((result) => {
       if (result) {

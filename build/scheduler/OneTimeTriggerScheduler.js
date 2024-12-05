@@ -24,6 +24,12 @@ module.exports = __toCommonJS(OneTimeTriggerScheduler_exports);
 var import_OneTimeTrigger = require("../triggers/OneTimeTrigger");
 var import_TriggerScheduler = require("./TriggerScheduler");
 class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
+  /**
+   * @param scheduleJob Schedule
+   * @param cancelJob Schedule
+   * @param logger Log service
+   * @param adapter ioBroker
+   */
   constructor(scheduleJob, cancelJob, logger, adapter) {
     super();
     this.scheduleJob = scheduleJob;
@@ -35,9 +41,15 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   registered = [];
   triggerTimeout;
+  /**
+   * forType
+   */
   forType() {
     return import_OneTimeTrigger.OneTimeTrigger.prototype.constructor.name;
   }
+  /**
+   * @param trigger OneTimeTrigger
+   */
   register(trigger) {
     this.logger.logDebug(`Register OneTimeTriggerScheduler trigger ${trigger}`);
     if (this.getAssociatedJob(trigger)) {
@@ -58,6 +70,9 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       }
     }
   }
+  /**
+   * @param trigger OneTimeTrigger
+   */
   unregister(trigger) {
     this.logger.logDebug(`Unregister OneTimeTriggerScheduler trigger ${trigger}`);
     const job = this.getAssociatedJob(trigger);
@@ -69,11 +84,17 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.logger.logDebug(`Error Unregister OneTimeTriggerScheduler trigger ${trigger}`);
     }
   }
+  /**
+   * loadregister
+   */
   loadregister() {
     for (const r of this.registered) {
       this.logger.logDebug(`Check OneTimeTriggerScheduler ${r[0]}`);
     }
   }
+  /**
+   * destroy
+   */
   destroy() {
     this.triggerTimeout && this.adapter.clearTimeout(this.triggerTimeout);
     this.registered.forEach((r) => this.unregister(r[0]));
@@ -82,10 +103,9 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     const entry = this.registered.find((r) => r[0] === trigger);
     if (entry) {
       return entry[1];
-    } else {
-      this.loadregister();
-      return null;
     }
+    this.loadregister();
+    return null;
   }
   removeTrigger(trigger) {
     this.registered = this.registered.filter((r) => r[0] !== trigger);

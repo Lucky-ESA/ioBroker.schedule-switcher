@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../src/Builder.ts"],
-  "sourcesContent": ["export interface Builder<T> {\n    build(): T;\n}\n"],
+  "sourcesContent": ["/**\n * Builder\n */\nexport interface Builder<T> {\n    /**\n     * build\n     */\n    build(): T;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

@@ -1,7 +1,16 @@
+/**
+ * @param latitude number
+ * @param longitude number
+ */
 export class Coordinate {
     private readonly latitude: number;
     private readonly longitude: number;
 
+    /**
+     * @param latitude number
+     * @param longitude number
+     * @param that ioBroker.Adapter
+     */
     constructor(latitude: number, longitude: number, that: ioBroker.Adapter) {
         if (Math.abs(latitude) > 90) {
             that.log.error("Latitude must be < 90 and > -90 - use 90");
@@ -17,10 +26,16 @@ export class Coordinate {
         }
     }
 
+    /**
+     * @returns latitude
+     */
     public getLatitude(): number {
         return this.latitude;
     }
 
+    /**
+     * @returns longitude
+     */
     public getLongitude(): number {
         return this.longitude;
     }

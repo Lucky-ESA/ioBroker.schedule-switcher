@@ -24,9 +24,15 @@ module.exports = __toCommonJS(TimeTriggerSerializer_exports);
 var import_TimeTrigger = require("../triggers/TimeTrigger");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 class TimeTriggerSerializer {
+  /**
+   * @param actionSerializer UniversalSerializer
+   */
   constructor(actionSerializer) {
     this.actionSerializer = actionSerializer;
   }
+  /**
+   * @param stringToDeserialize Trigger
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -34,6 +40,9 @@ class TimeTriggerSerializer {
     }
     return new import_TimeTriggerBuilder.TimeTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setHour(json.hour).setMinute(json.minute).setObjectId(json.objectId).setWeekdays(json.weekdays).setTodayTrigger(json.todayTrigger).setId(json.id).build();
   }
+  /**
+   * @param objectToSerialize Trigger
+   */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
       throw new Error("objectToSerialize may not be null or undefined.");
@@ -49,10 +58,12 @@ class TimeTriggerSerializer {
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
         todayTrigger: objectToSerialize.getTodayTrigger()
       });
-    } else {
-      throw new Error("objectToSerialize must be of type TimeTrigger.");
     }
+    throw new Error("objectToSerialize must be of type TimeTrigger.");
   }
+  /**
+   * getType
+   */
   getType() {
     return import_TimeTrigger.TimeTrigger.prototype.constructor.name;
   }

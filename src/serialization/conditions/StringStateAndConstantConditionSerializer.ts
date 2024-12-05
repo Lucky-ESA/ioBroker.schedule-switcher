@@ -1,12 +1,21 @@
-import { Condition } from "../../actions/conditions/Condition";
+import type { Condition } from "../../actions/conditions/Condition";
 import { EqualitySign } from "../../actions/conditions/EqualitySign";
 import { StringStateAndConstantCondition } from "../../actions/conditions/StringStateAndConstantCondition";
-import { StateService } from "../../services/StateService";
-import { Serializer } from "../Serializer";
+import type { StateService } from "../../services/StateService";
+import type { Serializer } from "../Serializer";
 
+/**
+ * StringStateAndConstantConditionSerializer
+ */
 export class StringStateAndConstantConditionSerializer implements Serializer<Condition> {
+    /**
+     * @param stateService StateService
+     */
     constructor(private stateService: StateService) {}
 
+    /**
+     * @param stringToDeserialize Condition
+     */
     deserialize(stringToDeserialize: string): Condition {
         const json = JSON.parse(stringToDeserialize);
         if (json.type !== this.getType()) {
@@ -18,6 +27,9 @@ export class StringStateAndConstantConditionSerializer implements Serializer<Con
         return new StringStateAndConstantCondition(json.constant, json.stateId, json.sign, this.stateService);
     }
 
+    /**
+     * @param objectToSerialize Condition
+     */
     serialize(objectToSerialize: Condition): string {
         if (objectToSerialize == null) {
             throw new Error("objectToSerialize may not be null or undefined.");
@@ -29,11 +41,13 @@ export class StringStateAndConstantConditionSerializer implements Serializer<Con
                 stateId: objectToSerialize.getStateId(),
                 sign: objectToSerialize.getSign(),
             });
-        } else {
-            throw new Error("objectToSerialize must be of type StringStateAndConstantCondition .");
         }
+        throw new Error("objectToSerialize must be of type StringStateAndConstantCondition .");
     }
 
+    /**
+     * @returns name
+     */
     getType(): string {
         return StringStateAndConstantCondition.prototype.constructor.name;
     }

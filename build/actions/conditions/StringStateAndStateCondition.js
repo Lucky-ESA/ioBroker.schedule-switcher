@@ -27,6 +27,12 @@ class StringStateAndStateCondition {
   stateId2;
   stateService;
   sign;
+  /**
+   * @param stateId1 ID 1
+   * @param stateId2 ID 2
+   * @param sign Sign
+   * @param stateService setState
+   */
   constructor(stateId1, stateId2, sign, stateService) {
     if (stateId1 == null || stateId1.length === 0) {
       throw new Error("First state id may not be null, undefined or empty.");
@@ -45,6 +51,9 @@ class StringStateAndStateCondition {
     this.sign = sign;
     this.stateService = stateService;
   }
+  /**
+   * evaluate
+   */
   async evaluate() {
     const firstStateValue = String(await this.stateService.getForeignState(this.stateId1));
     const secondStateValue = String(await this.stateService.getForeignState(this.stateId2));
@@ -56,15 +65,27 @@ class StringStateAndStateCondition {
     }
     return Promise.resolve(result);
   }
+  /**
+   * getStateId1
+   */
   getStateId1() {
     return this.stateId1;
   }
+  /**
+   * getStateId2
+   */
   getStateId2() {
     return this.stateId2;
   }
+  /**
+   * getSign
+   */
   getSign() {
     return this.sign;
   }
+  /**
+   * toString
+   */
   toString() {
     return `${this.stateId1} ${this.sign} ${this.stateId2}`;
   }

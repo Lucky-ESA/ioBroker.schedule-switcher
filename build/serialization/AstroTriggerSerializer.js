@@ -24,9 +24,15 @@ module.exports = __toCommonJS(AstroTriggerSerializer_exports);
 var import_AstroTrigger = require("../triggers/AstroTrigger");
 var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 class AstroTriggerSerializer {
+  /**
+   * @param actionSerializer UniversalSerializer
+   */
   constructor(actionSerializer) {
     this.actionSerializer = actionSerializer;
   }
+  /**
+   * @param stringToDeserialize Trigger
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -34,6 +40,9 @@ class AstroTriggerSerializer {
     }
     return new import_AstroTriggerBuilder.AstroTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setAstroTime(json.astroTime).setShift(json.shiftInMinutes).setObjectId(json.objectId).setTodayTrigger(json.todayTrigger).setWeekdays(json.weekdays).setId(json.id).build();
   }
+  /**
+   * @param objectToSerialize Trigger
+   */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
       throw new Error("objectToSerialize may not be null or undefined.");
@@ -49,10 +58,12 @@ class AstroTriggerSerializer {
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
         todayTrigger: objectToSerialize.getTodayTrigger()
       });
-    } else {
-      throw new Error("objectToSerialize must be of type AstroTrigger.");
     }
+    throw new Error("objectToSerialize must be of type AstroTrigger.");
   }
+  /**
+   * getType
+   */
   getType() {
     return import_AstroTrigger.AstroTrigger.prototype.constructor.name;
   }

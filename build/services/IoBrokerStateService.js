@@ -22,6 +22,11 @@ __export(IoBrokerStateService_exports, {
 });
 module.exports = __toCommonJS(IoBrokerStateService_exports);
 class IoBrokerStateService {
+  /**
+   * @param adapter ioBroker
+   * @param checkTime check
+   * @param mergeTime merge
+   */
   constructor(adapter, checkTime = 0, mergeTime = 0) {
     this.checkTime = checkTime;
     this.mergeTime = mergeTime;
@@ -35,6 +40,10 @@ class IoBrokerStateService {
   }
   adapter;
   delayTimeout;
+  /**
+   * @param id ID
+   * @param value Values
+   */
   async extendObject(id, value) {
     if (!id || !value) {
       throw new Error("State or Object is empty! - extendObject");
@@ -42,10 +51,20 @@ class IoBrokerStateService {
     this.checkId(id);
     await this.adapter.extendObject(id, value);
   }
+  /**
+   * @param id ID
+   * @param value Values
+   * @param ack Ack flag
+   */
   async setState(id, value, ack = true) {
     this.checkId(id);
     await this.adapter.setState(id, { val: value, ack });
   }
+  /**
+   * @param id ID
+   * @param value Values
+   * @param trigger Trigger
+   */
   async setForeignState(id, value, trigger) {
     this.adapter.log.debug(`TRIGGER SET: ${JSON.stringify(trigger)}`);
     const diffTime = Date.now() - this.checkTime;
@@ -65,48 +84,56 @@ class IoBrokerStateService {
     this.adapter.log.debug(`Setting state ${id} with value ${value == null ? void 0 : value.toString()}`);
     this.adapter.setForeignState(id, value, false);
   }
+  /**
+   * @param id ID
+   * @param value Values
+   * @param trigger Trigger
+   */
   async setHistory(id, value, trigger) {
-    if (!trigger || trigger.id == null)
-      return;
-    let history_newvalue = [];
-    const history_value = await this.getState(`history`);
-    try {
-      if (history_value != null && typeof history_value == "string") {
-        history_newvalue = JSON.parse(history_value);
-      } else {
+    if (!trigger || trigger.id != null) {
+      let history_newvalue = [];
+      const history_value = await this.getState(`history`);
+      try {
+        if (history_value != null && typeof history_value == "string") {
+          history_newvalue = JSON.parse(history_value);
+        } else {
+          history_newvalue = [];
+        }
+      } catch {
         history_newvalue = [];
       }
-    } catch (e) {
-      history_newvalue = [];
-    }
-    if (Object.keys(history_newvalue).length > this.adapter.config.history) {
-      history_newvalue.pop();
-    }
-    const new_data = {
-      setObjectId: id,
-      objectId: trigger.objectId ? trigger.objectId : "unknown",
-      value: value.toString(),
-      trigger: trigger.trigger ? trigger.trigger : "unknown",
-      astroTime: trigger.astroTime ? trigger.astroTime : "unknown",
-      shift: trigger.shift ? trigger.shift : 0,
-      date: trigger.date ? trigger.date : 0,
-      hour: trigger.hour ? trigger.hour : 0,
-      minute: trigger.minute ? trigger.minute : 0,
-      weekdays: trigger.weekdays ? trigger.weekdays : [],
-      time: Date.now()
-    };
-    history_newvalue.push(new_data);
-    history_newvalue.sort((a, b) => {
-      if (a.time > b.time) {
-        return -1;
+      if (Object.keys(history_newvalue).length > this.adapter.config.history) {
+        history_newvalue.pop();
       }
-    });
-    await this.setState(`history`, JSON.stringify(history_newvalue), true);
+      const new_data = {
+        setObjectId: id,
+        objectId: trigger.objectId ? trigger.objectId : "unknown",
+        value: value.toString(),
+        trigger: trigger.trigger ? trigger.trigger : "unknown",
+        astroTime: trigger.astroTime ? trigger.astroTime : "unknown",
+        shift: trigger.shift ? trigger.shift : 0,
+        date: trigger.date ? trigger.date : 0,
+        hour: trigger.hour ? trigger.hour : 0,
+        minute: trigger.minute ? trigger.minute : 0,
+        weekdays: trigger.weekdays ? trigger.weekdays : [],
+        time: Date.now()
+      };
+      history_newvalue.push(new_data);
+      history_newvalue.sort((a, b) => {
+        if (a.time > b.time) {
+          return -1;
+        }
+      });
+      await this.setState(`history`, JSON.stringify(history_newvalue), true);
+    }
   }
+  /**
+   * @param id ID
+   */
   async getForeignState(id) {
     return new Promise((resolve, _) => {
       this.checkId(id);
-      this.adapter.getForeignState(id, (err, state) => {
+      void this.adapter.getForeignState(id, (err, state) => {
         if (err || state == null) {
           this.adapter.log.error(`Requested state ${id} returned null/undefined!`);
         }
@@ -114,6 +141,9 @@ class IoBrokerStateService {
       });
     });
   }
+  /**
+   * @param id ID
+   */
   async getState(id) {
     return new Promise((resolve, _) => {
       this.checkId(id);
@@ -125,14 +155,21 @@ class IoBrokerStateService {
       });
     });
   }
+  /**
+   * @param ms milliseconds
+   */
   delay(ms) {
     return new Promise((resolve) => {
       this.delayTimeout = this.adapter.setTimeout(resolve, ms);
     });
   }
+  /**
+   * destroy all
+   */
   destroy() {
     this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
     this.delayTimeout = void 0;
+    return Promise.resolve(true);
   }
   checkId(id) {
     if (id == null || id.length === 0) {

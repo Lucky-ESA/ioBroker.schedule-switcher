@@ -1,7 +1,10 @@
-import { Action } from "../actions/Action";
-import { Destroyable } from "../Destroyable";
-import { Trigger } from "./Trigger";
+import type { Action } from "../actions/Action";
+import type { Destroyable } from "../Destroyable";
+import type { Trigger } from "./Trigger";
 
+/**
+ * OneTimeTrigger
+ */
 export class OneTimeTrigger implements Trigger, Destroyable {
     private readonly id: string;
     private readonly objectId: number;
@@ -10,6 +13,14 @@ export class OneTimeTrigger implements Trigger, Destroyable {
     private readonly date: Date;
     private readonly onDestroy: (() => void) | null;
 
+    /**
+     * @param id ID
+     * @param objectId Object ID
+     * @param timedate Date
+     * @param action Action
+     * @param date Date
+     * @param onDestroy Destroy
+     */
     constructor(
         id: string,
         objectId: number,
@@ -35,15 +46,21 @@ export class OneTimeTrigger implements Trigger, Destroyable {
         this.onDestroy = onDestroy;
     }
 
+    /**
+     * getAction
+     */
     public getAction(): Action {
         return {
             execute: (trigger: any) => {
-                this.action.execute(trigger as any);
+                this.action.execute(trigger);
                 this.destroy();
             },
         } as Action;
     }
 
+    /**
+     * @param action Action
+     */
     public setAction(action: Action): void {
         if (action == null) {
             throw new Error("Action may not be null or undefined.");
@@ -51,22 +68,37 @@ export class OneTimeTrigger implements Trigger, Destroyable {
         this.action = action;
     }
 
+    /**
+     * @returns ID
+     */
     public getId(): string {
         return this.id;
     }
 
+    /**
+     * @returns date
+     */
     public getDate(): Date {
         return new Date(this.date);
     }
 
+    /**
+     * @returns objectid
+     */
     public getObjectId(): number {
         return this.objectId;
     }
 
+    /**
+     * @returns time
+     */
     public getTimeDate(): boolean {
         return this.timedate;
     }
 
+    /**
+     * getData
+     */
     public getData(): any {
         return {
             id: this.getId(),
@@ -77,14 +109,23 @@ export class OneTimeTrigger implements Trigger, Destroyable {
         };
     }
 
+    /**
+     * @returns string
+     */
     public toString(): string {
         return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}, timedate=${this.getTimeDate()}}`;
     }
 
+    /**
+     * @returns action
+     */
     public getInternalAction(): Action {
         return this.action;
     }
 
+    /**
+     * Destroy all
+     */
     public destroy(): void {
         if (this.onDestroy) {
             this.onDestroy();

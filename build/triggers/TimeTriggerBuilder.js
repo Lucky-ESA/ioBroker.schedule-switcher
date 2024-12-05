@@ -28,34 +28,65 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
   minute = 0;
   objectId = 0;
   todayTrigger = {};
+  /**
+   * @param hour Hour
+   * @returns this
+   */
   setHour(hour) {
     this.hour = hour;
     return this;
   }
+  /**
+   * @param minute Minute
+   * @returns this
+   */
   setMinute(minute) {
     this.minute = minute;
     return this;
   }
+  /**
+   * @param objectId Object ID
+   * @returns this
+   */
   setObjectId(objectId) {
     this.objectId = objectId;
     return this;
   }
+  /**
+   * @param todayTrigger Trigger
+   * @returns this
+   */
   setTodayTrigger(todayTrigger) {
     this.todayTrigger = todayTrigger;
     return this;
   }
+  /**
+   * @param action Action
+   * @returns this
+   */
   setAction(action) {
     super.setAction(action);
     return this;
   }
+  /**
+   * @param id ID
+   * @returns this
+   */
   setId(id) {
     super.setId(id);
     return this;
   }
+  /**
+   * @param weekdays Weekdays
+   * @returns this
+   */
   setWeekdays(weekdays) {
     super.setWeekdays(weekdays);
     return this;
   }
+  /**
+   * TimeTrigger
+   */
   build() {
     return new import_TimeTrigger.TimeTrigger(
       this.getId(),

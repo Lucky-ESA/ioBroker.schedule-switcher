@@ -1,11 +1,17 @@
-import { htmltable, NextActionName } from "./htmlTable";
+import type { htmltable, NextActionName } from "./htmlTable";
 
+/**
+ * VisHtmlTable
+ */
 export class VisHtmlTable implements htmltable {
     private adapter: ioBroker.Adapter;
     private htmlVal: any;
     private stateVal: any;
     private lang: string;
 
+    /**
+     * @param adapter ioBroker
+     */
     constructor(adapter: ioBroker.Adapter) {
         this.adapter = adapter;
         this.htmlVal = {};
@@ -13,90 +19,120 @@ export class VisHtmlTable implements htmltable {
         this.lang = "de";
     }
 
-    public changeEnabled(id: string, val: ioBroker.State | null | undefined | boolean): void {
-        if (!this.adapter.config.usehtml) return;
+    /**
+     * @param id ID
+     * @param val Value state
+     */
+    public async changeEnabled(id: string, val: ioBroker.State | null | undefined | boolean): Promise<void> {
+        if (!this.adapter.config.usehtml) {
+            return;
+        }
         this.adapter.log.debug(`changeEnabled: ${id} - ${JSON.stringify(val)}`);
         const value = typeof val === "boolean" ? val : val?.val;
         if (value != null) {
-            this.stateVal[id.replace(".enabled", ".data")]["enabled"] = value;
-            this.createHTML();
+            this.stateVal[id.replace(".enabled", ".data")].enabled = value;
+            await this.createHTML();
         }
     }
 
-    public changeHTML(id: string, val: ioBroker.State | null | undefined): void {
-        if (!this.adapter.config.usehtml) return;
+    /**
+     * @param id ID
+     * @param val Value state
+     */
+    public async changeHTML(id: string, val: ioBroker.State | null | undefined): Promise<void> {
+        if (!this.adapter.config.usehtml) {
+            return;
+        }
         this.adapter.log.debug(`changeHTML: ${id} - ${JSON.stringify(val)}`);
         if (val != null && val.val != null) {
             this.htmlVal[id] = val.val;
-            this.createHTML();
+            await this.createHTML();
         }
     }
 
-    public updateHTML(): void {
-        if (!this.adapter.config.usehtml) return;
-        this.createHTML();
+    /**
+     * updateHTML
+     */
+    public async updateHTML(): Promise<void> {
+        if (!this.adapter.config.usehtml) {
+            return;
+        }
+        await this.createHTML();
     }
 
+    /**
+     * @param id ID
+     * @param val Value State
+     * @param first boolean
+     */
     public async changeTrigger(
         id: string,
         val: ioBroker.State | null | undefined | string,
         first = true,
     ): Promise<void> {
-        if (!this.adapter.config.usehtml) return;
+        if (!this.adapter.config.usehtml) {
+            return;
+        }
         this.adapter.log.debug(`changeTrigger: ${id} - ${JSON.stringify(val)} - ${first}`);
         const values = typeof val === "string" ? val : val?.val;
         if (id != undefined && values != null) {
             const enabled = await this.adapter.getStateAsync(id.replace(".data", ".enabled"));
             const value = typeof values === "string" ? JSON.parse(values) : values;
-            value["enabled"] = enabled != null && enabled.val != null ? enabled.val : false;
+            value.enabled = enabled != null && enabled.val != null ? enabled.val : false;
             this.stateVal[id] = value;
-            if (first) this.createHTML();
+            if (first) {
+                await this.createHTML();
+            }
         }
     }
 
     private async createHTML(): Promise<void> {
         this.adapter.log.debug(`Start update HTML!`);
-        if (typeof this.stateVal === "object" && Object.keys(this.stateVal).length === 0) return;
+        if (typeof this.stateVal === "object" && Object.keys(this.stateVal).length === 0) {
+            return;
+        }
         const id = this.htmlVal;
-        let text: string = "";
-        let count: number = 0;
-        let countall: number = 0;
+        let text = "";
+        let count = 0;
+        let countall = 0;
         const now: Date = new Date();
         for (const state in this.stateVal) {
             const data = this.stateVal[state];
-            let devices: string = "";
-            let status: string = "";
+            let devices = "";
+            let status = "";
             const next_event: string[] = ["", "", "", "", "", "", ""];
-            let triggers: string = "";
-            let iTag: string = "";
-            let iTagEnd: string = "";
-            let font_text_color: string = id["font_color_text_enabled"];
+            let triggers = "";
+            let iTag = "";
+            let iTagEnd = "";
+            let font_text_color: string = id.font_color_text_enabled;
             if (!data.enabled) {
                 iTag = `<i>`;
                 iTagEnd = `</i>`;
-                font_text_color = id["font_color_text_disabled"];
+                font_text_color = id.font_color_text_disabled;
             }
-            let counter: number = 0;
-            let nextDateTime: number = 0;
-            let nextDateTimeIcon: number = 0;
-            let nextaction: string = "";
+            let counter = 0;
+            let nextDateTime = 0;
+            let nextDateTimeIcon = 0;
+            let nextaction = "";
             const nextName: NextActionName[] = [];
             for (const trigger of data.triggers) {
                 ++countall;
                 nextDateTimeIcon = nextDateTime;
-                let change_times: string = "";
-                let times: string = "";
-                let action: string = "";
+                let change_times = "";
+                let times = "";
+                let action = "";
                 ++counter;
                 const nextNameData: NextActionName = {
                     getDate: 0,
                     date: new Date(),
                     action: "",
                 };
-                const isodd = counter % 2 != 0 ? id["background_color_even"] : id["background_color_odd"];
-                let addDate: number = 0;
+                const isodd = counter % 2 != 0 ? id.background_color_even : id.background_color_odd;
+                let addDate = 0;
                 if (trigger.type === "TimeTrigger") {
-                    if (trigger.hour === 0 && trigger.minute === 0) addDate = 1;
+                    if (trigger.hour === 0 && trigger.minute === 0) {
+                        addDate = 1;
+                    }
                     const switchTime: Date = new Date(
                         `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + addDate} ${trigger.hour}:${trigger.minute}`,
                     );
@@ -113,8 +149,8 @@ export class VisHtmlTable implements htmltable {
                         `<input type="time" id="nexttime${countall}" value="${times}" required />` +
                         ` <input for="nexttime" type="button" value="save" onclick="sendToTime('${this.adapter.namespace}', 'time', '${trigger.id}', '${state}', '${countall}')" /> `;
                 } else if (trigger.type === "AstroTrigger") {
-                    if (new Date(trigger.todayTrigger.date) >= now && trigger.weekdays.includes(now.getDay())) {
-                        nextDateTime = await this.nextEvent(now.getDay(), nextDateTime);
+                    if (new Date(trigger.todayTrigger.date) >= now) {
+                        nextDateTime = new Date(trigger.todayTrigger.date).getDay();
                     } else {
                         nextDateTime = await this.nextEvent(new Date(trigger.todayTrigger.date).getDay(), nextDateTime);
                     }
@@ -152,18 +188,22 @@ export class VisHtmlTable implements htmltable {
                         `<input for="datetime${countall}" type="button" value="save" onclick="sendToDateTime('${this.adapter.namespace}', 'datetime', '${trigger.id}', '${state}', '${countall}')" /> `;
                 }
                 if (trigger.action && trigger.action.type === "ConditionAction") {
-                    const iconCon = trigger.action.action.name === "On" ? id["icon_true"] : id["icon_false"];
+                    const iconCon = trigger.action.action.name === "On" ? id.icon_true : id.icon_false;
                     action =
                         `&ensp;${iTag}${trigger.action.condition.constant}` +
                         `${trigger.action.condition.sign}${trigger.action.condition.constant}${iTagEnd}&ensp;` +
                         `${iconCon}`;
-                    if (nextDateTimeIcon != nextDateTime) nextaction = iconCon;
+                    if (nextDateTimeIcon != nextDateTime) {
+                        nextaction = iconCon;
+                    }
                     nextNameData.action = iconCon;
                 }
                 if (trigger.action && trigger.action.type === "OnOffStateAction") {
-                    const icon = trigger.action.name === "On" ? id["icon_true"] : id["icon_false"];
+                    const icon = trigger.action.name === "On" ? id.icon_true : id.icon_false;
                     action = `&ensp;${icon}`;
-                    if (nextDateTimeIcon != nextDateTime) nextaction = icon;
+                    if (nextDateTimeIcon != nextDateTime) {
+                        nextaction = icon;
+                    }
                     nextNameData.action = icon;
                 }
                 triggers +=
@@ -171,90 +211,95 @@ export class VisHtmlTable implements htmltable {
                 <tr style="background-color:${isodd}; 
                 color:${font_text_color};
                 font-weight:"bold";
-                font-size:${id["header_font_size"]}px;">
-                <td style="text-align:${id["column_align_row_01"]}">
+                font-size:${id.header_font_size}px;">
+                <td style="text-align:${id.column_align_row_01}">
                 <label for="delete${countall}">${iTag}${trigger.type}${iTagEnd}</label>&ensp;
                 <input type="checkbox" id="delete${countall}" name="delete${countall}" />
                 <input for="delete${countall}" type="button" value="delete" onclick="deleteTrigger('${this.adapter.namespace}', 'delete-trigger', '${trigger.id}', '${state}', '${countall}')" /></td>
-                <td title="${times}" style="text-align:${id["column_align_row_02"]}">${change_times}</td>
-                <td title="${times}" style="text-align:${id["column_align_row_03"]}">${iTag}${times}${iTagEnd}${action}</td>
+                <td title="${times}" style="text-align:${id.column_align_row_02}">${change_times}</td>
+                <td title="${times}" style="text-align:${id.column_align_row_03}">${iTag}${times}${iTagEnd}${action}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 1, '${trigger.type}')" ` +
-                    `style="text-align:${id["column_align_row_04"]}; ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(1) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">` +
-                    `${iTag}${id["column_text_04"]}${iTagEnd}</td>
+                    `style="text-align:${id.column_align_row_04}; ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(1) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
+                    `${iTag}${id.column_text_04}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 2, '${trigger.type}')" ` +
-                    `style="text-align:${id["column_align_row_05"]}; ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(2) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">` +
-                    `${iTag}${id["column_text_05"]}${iTagEnd}</td>
+                    `style="text-align:${id.column_align_row_05}; ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(2) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
+                    `${iTag}${id.column_text_05}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 3, '${trigger.type}')" ` +
-                    `style="text-align:${id["column_align_row_06"]}; ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(3) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">` +
-                    `${iTag}${id["column_text_06"]}${iTagEnd}</td>
+                    `style="text-align:${id.column_align_row_06}; ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(3) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
+                    `${iTag}${id.column_text_06}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 4, '${trigger.type}')" ` +
-                    `style="text-align:${id["column_align_row_07"]}; ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(4) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">` +
-                    `${iTag}${id["column_text_07"]}${iTagEnd}</td>
+                    `style="text-align:${id.column_align_row_07}; ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(4) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
+                    `${iTag}${id.column_text_07}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 5, '${trigger.type}')" ` +
-                    `style="text-align:${id["column_align_row_08"]}; ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(5) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">` +
-                    `${iTag}${id["column_text_08"]}${iTagEnd}</td>
+                    `style="text-align:${id.column_align_row_08}; ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(5) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
+                    `${iTag}${id.column_text_08}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" ` +
-                    `style="text-align:${id["column_align_row_09"]}; ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(6) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">` +
-                    `${iTag}${id["column_text_09"]}${iTagEnd}</td>
+                    `style="text-align:${id.column_align_row_09}; ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(6) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
+                    `${iTag}${id.column_text_09}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" ` +
-                    `style="text-align:${id["column_align_row_10"]}; ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(0) ? id["font_color_weekdays_enabled"] : id["font_color_weekdays_disabled"]};">` +
-                    `${iTag}${id["column_text_10"]}${iTagEnd}</td>
+                    `style="text-align:${id.column_align_row_10}; ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(0) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
+                    `${iTag}${id.column_text_10}${iTagEnd}</td>
                 </tr>`;
                 nextName.push(nextNameData);
             }
             if (nextDateTime < 8) {
-                if (nextDateTime === 7) nextDateTime = 0;
+                if (nextDateTime === 7) {
+                    nextDateTime = 0;
+                }
                 next_event[nextDateTime] = await this.nextAction(nextDateTime, nextName, nextaction);
             }
             if (data.onAction && data.onAction && data.onAction.idsOfStatesToSet) {
                 if (data.onAction.idsOfStatesToSet[0] !== "default.state") {
                     for (const dev of data.onAction.idsOfStatesToSet) {
-                        if (devices == "") devices = dev;
-                        else devices += `<br/>${dev}`;
+                        if (devices == "") {
+                            devices = dev;
+                        } else {
+                            devices += `<br/>${dev}`;
+                        }
                     }
                 }
             }
             status =
-                `${iTag}${data.onAction.onValue}/${data.onAction.offValue}${iTagEnd}` +
-                `&ensp;${data.enabled ? id["icon_true"] : id["icon_false"]}`;
+                `${data.onAction.onValue}/${data.onAction.offValue}` +
+                `&ensp;${data.enabled ? id.icon_true : id.icon_false}`;
             const status_icon = data.enabled ? "green" : "red";
             text += `
-            <tr style="background-color:${id["background_color_trigger"]}; 
+            <tr style="background-color:${id.background_color_trigger}; 
             color:${font_text_color};
             font-weight:"bold";
-            font-size:${id["header_font_size"]}px;">
-            <td style="text-align:${id["column_align_row_01"]}">
+            font-size:${id.header_font_size}px;">
+            <td style="text-align:${id.column_align_row_01}">
             <button 
                 style="border:none; 
                 background-color:transparent; 
                 color:${status_icon}; 
-                font-size:${id["column_width_01"]}px; 
+                font-size:${id.column_width_01}px; 
                 text-align:left" 
-                value="${data.enabled}" onclick="setState('${state.replace("data", "enabled")}', this.value)">${id["icon_switch_symbol"]}
+                value="${data.enabled}" onclick="setState('${state.replace("data", "enabled")}', this.value)">${id.icon_switch_symbol}
             </button>&ensp;&ensp;${iTag}${data.name}&ensp;(${count})${iTagEnd}</td>
-            <td title="${devices}" style="text-align:${id["column_align_row_02"]}">${iTag}${devices}${iTagEnd}</td>
-            <td title="${status}" style="text-align:${id["column_align_row_03"]}">${status}</td>
-            <td style="text-align:${id["column_align_row_04"]}">${next_event[1]}</td>
-            <td style="text-align:${id["column_align_row_05"]}">${next_event[2]}</td>
-            <td style="text-align:${id["column_align_row_06"]}">${next_event[3]}</td>
-            <td style="text-align:${id["column_align_row_07"]}">${next_event[4]}</td>
-            <td style="text-align:${id["column_align_row_08"]}">${next_event[5]}</td>
-            <td style="text-align:${id["column_align_row_09"]}">${next_event[6]}</td>
-            <td style="text-align:${id["column_align_row_10"]}">${next_event[0]}</td>
+            <td title="${devices}" style="text-align:${id.column_align_row_02}">${iTag}${devices}${iTagEnd}</td>
+            <td title="${status}" style="text-align:${id.column_align_row_03}">${iTag}${status}${iTagEnd}</td>
+            <td style="text-align:${id.column_align_row_04}">${next_event[1]}</td>
+            <td style="text-align:${id.column_align_row_05}">${next_event[2]}</td>
+            <td style="text-align:${id.column_align_row_06}">${next_event[3]}</td>
+            <td style="text-align:${id.column_align_row_07}">${next_event[4]}</td>
+            <td style="text-align:${id.column_align_row_08}">${next_event[5]}</td>
+            <td style="text-align:${id.column_align_row_09}">${next_event[6]}</td>
+            <td style="text-align:${id.column_align_row_10}">${next_event[0]}</td>
             </tr>`;
             text += triggers;
             ++count;
@@ -262,30 +307,34 @@ export class VisHtmlTable implements htmltable {
         await this.mergeHTML(text, countall, count);
     }
 
-    private async nextAction(nextDateTime: number, nextName: NextActionName[], nextaction: string): Promise<string> {
+    private nextAction(nextDateTime: number, nextName: NextActionName[], nextaction: string): Promise<string> {
         const action: any = nextName.filter((t: any) => t.getDate === nextDateTime);
         if (action && action.length > 0) {
             const next = action.sort((a: any, b: any) => a.date - b.date);
             return next[0].action;
         }
-        return nextaction;
+        return Promise.resolve(nextaction);
     }
 
-    private async getWeek(times: Date): Promise<number> {
+    private getWeek(times: Date): Promise<number> {
         const onejan: any = new Date(times.getFullYear(), 0, 1);
         const today: any = new Date(times.getFullYear(), times.getMonth(), times.getDate());
         const dayOfYear = (today - onejan + 86400000) / 86400000;
-        return Math.ceil(dayOfYear / 7);
+        return Promise.resolve(Math.ceil(dayOfYear / 7));
     }
 
-    private async nextEvent(actual: number, next: number): Promise<number> {
-        if (actual === 0) actual = 7;
-        if (actual > next) return actual;
-        return next;
+    private nextEvent(actual: number, next: number): Promise<number> {
+        if (actual === 0) {
+            actual = 7;
+        }
+        if (actual > next) {
+            return Promise.resolve(actual);
+        }
+        return Promise.resolve(next);
     }
 
     private async nextDateSwitch(now: Date, trigger: any): Promise<string> {
-        let diffDays: number = 0;
+        let diffDays = 0;
         const nextDay: number =
             trigger.weekdays.length === 1
                 ? trigger.weekdays[0]
@@ -303,13 +352,13 @@ export class VisHtmlTable implements htmltable {
         ).toISOString();
     }
 
-    private async nextActiveDay(array: number[], day: number): Promise<number> {
-        array = array.map((val) => {
+    private nextActiveDay(array: number[], day: number): Promise<number> {
+        array = array.map(val => {
             return val === 0 ? 7 : val;
         });
-        const numChecker: any = (num: any) => array.find((v) => v > num);
+        const numChecker: any = (num: any) => array.find(v => v > num);
         const next: number | undefined = numChecker(day);
-        return next == undefined ? 0 : next;
+        return Promise.resolve(next == undefined ? 0 : next);
     }
 
     private async mergeHTML(htmltext: string, countall: number, count: number): Promise<void> {
@@ -321,7 +370,7 @@ export class VisHtmlTable implements htmltable {
             justify-content: center;
         }`;
         let min = "";
-        if (id["jarvis"]) {
+        if (id.jarvis) {
             div = "<div>";
             div_css = "";
             min = "min-width:100%;";
@@ -335,28 +384,28 @@ export class VisHtmlTable implements htmltable {
             margin: 0;
         }
         body {
-            background-color: ${id["background_color_body"]}; margin: 0 auto;
+            background-color: ${id.background_color_body}; margin: 0 auto;
         }
         p {
-            padding-top: 10px; padding-bottom: 10px; text-align: ${id["p_tag_text_algin"]}
+            padding-top: 10px; padding-bottom: 10px; text-align: ${id.p_tag_text_algin}
         }
         #updatetime:hover {
             cursor: pointer;
         }
         #weekday:hover {
             cursor: pointer;
-            background-color: ${id["background_color_weekdays_hover"]};
+            background-color: ${id.background_color_weekdays_hover};
         }
         td {
-            padding:${id["td_tag_cell"]}px; border:0px solid ${id["td_tag_border_color"]}; 
-            border-right:${id["td_tag_border_right"]}px solid ${id["td_tag_border_color"]};
-            border-bottom:${id["td_tag_border_bottom"]}px solid ${id["td_tag_border_color"]};
+            padding:${id.td_tag_cell}px; border:0px solid ${id.td_tag_border_color}; 
+            border-right:${id.td_tag_border_right}px solid ${id.td_tag_border_color};
+            border-bottom:${id.td_tag_border_bottom}px solid ${id.td_tag_border_color};
         }
         table {
-            width: ${id["table_tag_width"]};
-            margin: ${id["table_tag_text_align"]};
-            border:1px solid ${id["table_tag_border_color"]};
-            border-spacing: ${id["table_tag_cell"]}px;
+            width: ${id.table_tag_width};
+            margin: ${id.table_tag_text_align};
+            border:1px solid ${id.table_tag_border_color};
+            border-spacing: ${id.table_tag_cell}px;
             border-collapse: collapse;
         }
         ${div_css}
@@ -427,60 +476,60 @@ export class VisHtmlTable implements htmltable {
         }
         </script>
         ${div}
-        <table style="${min} width:${id["header_width"]};
-        border:${id["header_border"]}px; border-color:${id["header_tag_border_color"]}; 
-        font-size:${id["header_font_size"]}px; font-family:${id["header_font_family"]}; 
-        background-image: linear-gradient(42deg,${id["header_linear_color_2"]},
-        ${id["header_linear_color_1"]});">
+        <table style="${min} width:${id.header_width};
+        border:${id.header_border}px; border-color:${id.header_tag_border_color}; 
+        font-size:${id.header_font_size}px; font-family:${id.header_font_family}; 
+        background-image: linear-gradient(42deg,${id.header_linear_color_2},
+        ${id.header_linear_color_1});">
         <thead>
         <tr>
         <th colspan="10" scope="colgroup">
         <p onClick="updateTrigger('${this.adapter.namespace}')"
-        id="updatetime" style="color:${id["top_text_color"]}; font-family:${id["top_font_family"]}; 
-        font-size:${id["top_font_size"]}px; font-weight:${id["top_font_weight"]}">
-        ${id["top_text"]}&ensp;&ensp;${await this.helper_translator("top_last_update")} 
+        id="updatetime" style="color:${id.top_text_color}; font-family:${id.top_font_family}; 
+        font-size:${id.top_font_size}px; font-weight:${id.top_font_weight}">
+        ${id.top_text}&ensp;&ensp;${await this.helper_translator("top_last_update")} 
         ${this.adapter.formatDate(new Date(), "TT.MM.JJJJ hh:mm:ss")}</p></th>
         </tr>
-        <tr style="color:${id["headline_color"]}; height:${id["headline_height"]}px;
-        font-size: ${id["headline_font_size"]}px; font-weight: ${id["headline_weight"]}; 
-        border-bottom: ${id["headline_underlined"]}px solid ${id["headline_underlined_color"]}">
-        <th style="text-align:${id["column_align_01"]}; width:${id["column_width_01"]}">
-        ${id["column_text_01"]}
+        <tr style="color:${id.headline_color}; height:${id.headline_height}px;
+        font-size: ${id.headline_font_size}px; font-weight: ${id.headline_weight}; 
+        border-bottom: ${id.headline_underlined}px solid ${id.headline_underlined_color}">
+        <th style="text-align:${id.column_align_01}; width:${id.column_width_01}">
+        ${id.column_text_01}
         </th>
-        <th style="text-align:${id["column_align_02"]}; width:${id["column_width_02"]}">
-        ${id["column_text_02"]}
+        <th style="text-align:${id.column_align_02}; width:${id.column_width_02}">
+        ${id.column_text_02}
         </th>
-        <th style="text-align:${id["column_align_03"]}; width:${id["column_width_03"]}">
-        ${id["column_text_03"]}
+        <th style="text-align:${id.column_align_03}; width:${id.column_width_03}">
+        ${id.column_text_03}
         </th>
-        <th style="text-align:${id["column_align_04"]}; width:${id["column_width_04"]}">
-        ${id["column_text_04"]}
+        <th style="text-align:${id.column_align_04}; width:${id.column_width_04}">
+        ${id.column_text_04}
         </th>
-        <th style="text-align:${id["column_align_05"]}; width:${id["column_width_05"]}">
-        ${id["column_text_05"]}
+        <th style="text-align:${id.column_align_05}; width:${id.column_width_05}">
+        ${id.column_text_05}
         </th>
-        <th style="text-align:${id["column_align_06"]}; width:${id["column_width_06"]}">
-        ${id["column_text_06"]}
+        <th style="text-align:${id.column_align_06}; width:${id.column_width_06}">
+        ${id.column_text_06}
         </th>
-        <th style="text-align:${id["column_align_07"]}; width:${id["column_width_07"]}">
-        ${id["column_text_07"]}
+        <th style="text-align:${id.column_align_07}; width:${id.column_width_07}">
+        ${id.column_text_07}
         </th>
-        <th style="text-align:${id["column_align_08"]}; width:${id["column_width_08"]}">
-        ${id["column_text_08"]}
+        <th style="text-align:${id.column_align_08}; width:${id.column_width_08}">
+        ${id.column_text_08}
         </th>
-        <th style="text-align:${id["column_align_09"]}; width:${id["column_width_09"]}">
-        ${id["column_text_09"]}
+        <th style="text-align:${id.column_align_09}; width:${id.column_width_09}">
+        ${id.column_text_09}
         </th>
-        <th style="text-align:${id["column_align_10"]}; width:${id["column_width_10"]}">
-        ${id["column_text_10"]}
+        <th style="text-align:${id.column_align_10}; width:${id.column_width_10}">
+        ${id.column_text_10}
         </th>
         </tr>
         </thead>
         <tfoot>
         <tr>
         <th colspan="10" scope="colgroup">
-        <p style="color:${id["top_text_color"]}; font-family:${id["top_font_family"]}; 
-        font-size:${id["top_font_size"]}px; font-weight:${id["top_font_weight"]}">
+        <p style="color:${id.top_text_color}; font-family:${id.top_font_family}; 
+        font-size:${id.top_font_size}px; font-weight:${id.top_font_weight}">
         ${await this.helper_translator("footerobject")}&ensp;&ensp;${count}</br>
         ${await this.helper_translator("footer")}&ensp;&ensp;${countall}</p></th>
         </tr>
@@ -495,7 +544,7 @@ export class VisHtmlTable implements htmltable {
         });
     }
 
-    private async helper_translator(word: string): Promise<string> {
+    private helper_translator(word: string): Promise<string> {
         const all: any = {
             top_last_update: {
                 en: "Last update:",
@@ -579,6 +628,9 @@ export class VisHtmlTable implements htmltable {
         return all[word][this.lang];
     }
 
+    /**
+     * @param lang Lang
+     */
     public async createStates(lang: string): Promise<any> {
         this.lang = lang;
         this.adapter.log.info(`Create HTML states!`);
@@ -612,7 +664,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.headline_underlined_color", common, "state");
         val = await this.adapter.getStateAsync("html.headline_underlined_color");
-        this.htmlVal["headline_underlined_color"] = val?.val;
+        this.htmlVal.headline_underlined_color = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -637,7 +689,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.headline_underlined", common, "state");
         val = await this.adapter.getStateAsync("html.headline_underlined");
-        this.htmlVal["headline_underlined"] = val?.val;
+        this.htmlVal.headline_underlined = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -665,7 +717,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.headline_weight", common, "state");
         val = await this.adapter.getStateAsync("html.headline_weight");
-        this.htmlVal["headline_weight"] = val?.val;
+        this.htmlVal.headline_weight = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -690,7 +742,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.headline_font_size", common, "state");
         val = await this.adapter.getStateAsync("html.headline_font_size");
-        this.htmlVal["headline_font_size"] = val?.val;
+        this.htmlVal.headline_font_size = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -715,7 +767,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.headline_height", common, "state");
         val = await this.adapter.getStateAsync("html.headline_height");
-        this.htmlVal["headline_height"] = val?.val;
+        this.htmlVal.headline_height = val?.val;
         common = {
             type: "string",
             role: "level.color.rgb",
@@ -739,7 +791,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.headline_color", common, "state");
         val = await this.adapter.getStateAsync("html.headline_color");
-        this.htmlVal["headline_color"] = val?.val;
+        this.htmlVal.headline_color = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -763,7 +815,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.top_text", common, "state");
         val = await this.adapter.getStateAsync("html.top_text");
-        this.htmlVal["top_text"] = val?.val;
+        this.htmlVal.top_text = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -791,7 +843,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.top_font_weight", common, "state");
         val = await this.adapter.getStateAsync("html.top_font_weight");
-        this.htmlVal["top_font_weight"] = val?.val;
+        this.htmlVal.top_font_weight = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -816,7 +868,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.top_font_size", common, "state");
         val = await this.adapter.getStateAsync("html.top_font_size");
-        this.htmlVal["top_font_size"] = val?.val;
+        this.htmlVal.top_font_size = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -840,7 +892,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.top_font_family", common, "state");
         val = await this.adapter.getStateAsync("html.top_font_family");
-        this.htmlVal["top_font_family"] = val?.val;
+        this.htmlVal.top_font_family = val?.val;
         common = {
             type: "string",
             role: "level.color.rgb",
@@ -864,7 +916,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.top_text_color", common, "state");
         val = await this.adapter.getStateAsync("html.top_text_color");
-        this.htmlVal["top_text_color"] = val?.val;
+        this.htmlVal.top_text_color = val?.val;
         common = {
             type: "string",
             role: "level.color.rgb",
@@ -888,7 +940,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.header_linear_color_2", common, "state");
         val = await this.adapter.getStateAsync("html.header_linear_color_2");
-        this.htmlVal["header_linear_color_2"] = val?.val;
+        this.htmlVal.header_linear_color_2 = val?.val;
         common = {
             type: "string",
             role: "level.color.rgb",
@@ -912,7 +964,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.header_linear_color_1", common, "state");
         val = await this.adapter.getStateAsync("html.header_linear_color_1");
-        this.htmlVal["header_linear_color_1"] = val?.val;
+        this.htmlVal.header_linear_color_1 = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -936,7 +988,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.header_font_family", common, "state");
         val = await this.adapter.getStateAsync("html.header_font_family");
-        this.htmlVal["header_font_family"] = val?.val;
+        this.htmlVal.header_font_family = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -961,7 +1013,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.header_font_size", common, "state");
         val = await this.adapter.getStateAsync("html.header_font_size");
-        this.htmlVal["header_font_size"] = val?.val;
+        this.htmlVal.header_font_size = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -986,7 +1038,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.header_border", common, "state");
         val = await this.adapter.getStateAsync("html.header_border");
-        this.htmlVal["header_border"] = val?.val;
+        this.htmlVal.header_border = val?.val;
         common = {
             type: "string",
             role: "level.color.rgb",
@@ -1010,7 +1062,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.header_tag_border_color", common, "state");
         val = await this.adapter.getStateAsync("html.header_tag_border_color");
-        this.htmlVal["header_tag_border_color"] = val?.val;
+        this.htmlVal.header_tag_border_color = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1034,7 +1086,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.header_width", common, "state");
         val = await this.adapter.getStateAsync("html.header_width");
-        this.htmlVal["header_width"] = val?.val;
+        this.htmlVal.header_width = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -1059,7 +1111,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.table_tag_cell", common, "state");
         val = await this.adapter.getStateAsync("html.table_tag_cell");
-        this.htmlVal["table_tag_cell"] = val?.val;
+        this.htmlVal.table_tag_cell = val?.val;
         common = {
             type: "string",
             role: "level.color.rgb",
@@ -1083,7 +1135,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.table_tag_border_color", common, "state");
         val = await this.adapter.getStateAsync("html.table_tag_border_color");
-        this.htmlVal["table_tag_border_color"] = val?.val;
+        this.htmlVal.table_tag_border_color = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1108,7 +1160,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.table_tag_text_align", common, "state");
         val = await this.adapter.getStateAsync("html.table_tag_text_align");
-        this.htmlVal["table_tag_text_align"] = val?.val;
+        this.htmlVal.table_tag_text_align = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1132,7 +1184,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.table_tag_width", common, "state");
         val = await this.adapter.getStateAsync("html.table_tag_width");
-        this.htmlVal["table_tag_width"] = val?.val;
+        this.htmlVal.table_tag_width = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1156,7 +1208,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.table_tag_width", common, "state");
         val = await this.adapter.getStateAsync("html.table_tag_width");
-        this.htmlVal["table_tag_width"] = val?.val;
+        this.htmlVal.table_tag_width = val?.val;
         common = {
             type: "string",
             role: "level.color.rgb",
@@ -1180,7 +1232,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.td_tag_border_color", common, "state");
         val = await this.adapter.getStateAsync("html.td_tag_border_color");
-        this.htmlVal["td_tag_border_color"] = val?.val;
+        this.htmlVal.td_tag_border_color = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -1205,7 +1257,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.td_tag_border_bottom", common, "state");
         val = await this.adapter.getStateAsync("html.td_tag_border_bottom");
-        this.htmlVal["td_tag_border_bottom"] = val?.val;
+        this.htmlVal.td_tag_border_bottom = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -1230,7 +1282,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.td_tag_border_right", common, "state");
         val = await this.adapter.getStateAsync("html.td_tag_border_right");
-        this.htmlVal["td_tag_border_right"] = val?.val;
+        this.htmlVal.td_tag_border_right = val?.val;
         common = {
             type: "number",
             role: "value",
@@ -1255,7 +1307,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.td_tag_cell", common, "state");
         val = await this.adapter.getStateAsync("html.td_tag_cell");
-        this.htmlVal["td_tag_cell"] = val?.val;
+        this.htmlVal.td_tag_cell = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1280,7 +1332,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.p_tag_text_algin", common, "state");
         val = await this.adapter.getStateAsync("html.p_tag_text_algin");
-        this.htmlVal["p_tag_text_algin"] = val?.val;
+        this.htmlVal.p_tag_text_algin = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1304,7 +1356,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.font_color_text_enabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_text_enabled");
-        this.htmlVal["font_color_text_enabled"] = val?.val;
+        this.htmlVal.font_color_text_enabled = val?.val;
         common = {
             type: "boolean",
             role: "button",
@@ -1350,7 +1402,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.font_color_text_disabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_text_disabled");
-        this.htmlVal["font_color_text_disabled"] = val?.val;
+        this.htmlVal.font_color_text_disabled = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1374,7 +1426,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.font_color_weekdays_enabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_weekdays_enabled");
-        this.htmlVal["font_color_weekdays_enabled"] = val?.val;
+        this.htmlVal.font_color_weekdays_enabled = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1398,7 +1450,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.font_color_weekdays_disabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_weekdays_disabled");
-        this.htmlVal["font_color_weekdays_disabled"] = val?.val;
+        this.htmlVal.font_color_weekdays_disabled = val?.val;
         const states = ["🟡", "⚪", "✅", "❌", "⚪", "⚫", "⭕", "🔴", "🔵", "⏱", "💀", "👍", "👎", "📑", "💲", "👀"];
         common = {
             type: "string",
@@ -1424,7 +1476,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.icon_true", common, "state");
         val = await this.adapter.getStateAsync("html.icon_true");
-        this.htmlVal["icon_true"] = val?.val;
+        this.htmlVal.icon_true = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1449,7 +1501,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.icon_false", common, "state");
         val = await this.adapter.getStateAsync("html.icon_false");
-        this.htmlVal["icon_false"] = val?.val;
+        this.htmlVal.icon_false = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1474,7 +1526,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.icon_switch_symbol", common, "state");
         val = await this.adapter.getStateAsync("html.icon_switch_symbol");
-        this.htmlVal["icon_switch_symbol"] = val?.val;
+        this.htmlVal.icon_switch_symbol = val?.val;
         const text = ["Schedule", "Devices", "Switch", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
         for (let i = 1; i < 11; i++) {
             common = {
@@ -1599,7 +1651,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.background_color_even", common, "state");
         val = await this.adapter.getStateAsync("html.background_color_even");
-        this.htmlVal["background_color_even"] = val?.val;
+        this.htmlVal.background_color_even = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1623,7 +1675,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.background_color_odd", common, "state");
         val = await this.adapter.getStateAsync("html.background_color_odd");
-        this.htmlVal["background_color_odd"] = val?.val;
+        this.htmlVal.background_color_odd = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1647,7 +1699,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.background_color_trigger", common, "state");
         val = await this.adapter.getStateAsync("html.background_color_trigger");
-        this.htmlVal["background_color_trigger"] = val?.val;
+        this.htmlVal.background_color_trigger = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1671,7 +1723,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.background_color_body", common, "state");
         val = await this.adapter.getStateAsync("html.background_color_body");
-        this.htmlVal["background_color_body"] = val?.val;
+        this.htmlVal.background_color_body = val?.val;
         common = {
             type: "boolean",
             role: "switch",
@@ -1695,7 +1747,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.jarvis", common, "state");
         val = await this.adapter.getStateAsync("html.jarvis");
-        this.htmlVal["jarvis"] = val?.val;
+        this.htmlVal.jarvis = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1719,7 +1771,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.background_color_weekdays_hover", common, "state");
         val = await this.adapter.getStateAsync("html.background_color_weekdays_hover");
-        this.htmlVal["background_color_weekdays_hover"] = val?.val;
+        this.htmlVal.background_color_weekdays_hover = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1743,7 +1795,7 @@ export class VisHtmlTable implements htmltable {
         };
         await this.createDataPoint("html.html_code", common, "state");
         val = await this.adapter.getStateAsync("html.html_code");
-        this.htmlVal["html_code"] = val?.val;
+        this.htmlVal.html_code = val?.val;
     }
 
     private async createDataPoint(ident: string, common: any, types: any, native: any = null): Promise<any> {
@@ -1758,10 +1810,12 @@ export class VisHtmlTable implements htmltable {
                         common: common,
                         ...nativvalue,
                     })
-                    .catch((error) => {
+                    .catch(error => {
                         this.adapter.log.warn(`createDataPoint: ${error}`);
                     });
-                if (common.def != null) await this.adapter.setState(ident, { val: common.def, ack: true });
+                if (common.def != null) {
+                    await this.adapter.setState(ident, { val: common.def, ack: true });
+                }
             } else {
                 let ischange = false;
                 if (Object.keys(objs.common).length == Object.keys(common).length) {
@@ -1786,7 +1840,7 @@ export class VisHtmlTable implements htmltable {
                             if (nativvalue.native[key] == null) {
                                 ischange = true;
                                 delete objs.native;
-                                objs["native"] = native;
+                                objs.native = native;
                                 break;
                             } else if (JSON.stringify(objs.native[key]) != JSON.stringify(nativvalue.native[key])) {
                                 ischange = true;
@@ -1800,14 +1854,14 @@ export class VisHtmlTable implements htmltable {
                 }
                 if (ischange) {
                     this.adapter.log.debug(`INFORMATION - Change common: ${this.adapter.namespace}.${ident}`);
-                    delete objs["common"];
-                    objs["common"] = common;
-                    objs["type"] = types;
+                    delete objs.common;
+                    objs.common = common;
+                    objs.type = types;
                     await this.adapter.setObjectAsync(ident, objs);
                 }
             }
-        } catch (error) {
-            this.adapter.log.warn(`createDataPoint e: ${error}`);
+        } catch (error: any) {
+            this.adapter.log.warn(`createDataPoint e: ${error.name}: ${error.message}`);
         }
     }
 }

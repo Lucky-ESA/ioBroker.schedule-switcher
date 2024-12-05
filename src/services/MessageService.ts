@@ -1,23 +1,38 @@
 import { getTimes } from "suncalc";
-import { Coordinate } from "../Coordinate";
-import { OnOffStateAction } from "../actions/OnOffStateAction";
-import { VisHtmlTable } from "../html/VisHtmlTable";
+import type { Coordinate } from "../Coordinate";
+import type { OnOffStateAction } from "../actions/OnOffStateAction";
+import type { VisHtmlTable } from "../html/VisHtmlTable";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
-import { Schedule } from "../schedules/Schedule";
-import { OnOffScheduleSerializer } from "../serialization/OnOffScheduleSerializer";
+import type { Schedule } from "../schedules/Schedule";
+import type { OnOffScheduleSerializer } from "../serialization/OnOffScheduleSerializer";
 import { AstroTime } from "../triggers/AstroTime";
 import { AstroTriggerBuilder } from "../triggers/AstroTriggerBuilder";
-import { DailyTriggerBuilder } from "../triggers/DailyTriggerBuilder";
+import type { DailyTriggerBuilder } from "../triggers/DailyTriggerBuilder";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
-import { Trigger } from "../triggers/Trigger";
+import type { Trigger } from "../triggers/Trigger";
 import { AllWeekdays } from "../triggers/Weekday";
-import { IoBrokerValidationState } from "./IoBrokerValidationState";
-import { StateService } from "./StateService";
+import type { IoBrokerValidationState } from "./IoBrokerValidationState";
+import type { StateService } from "./StateService";
 
+/**
+ * @param currentMessage ioBroker.Message | null
+ * @param triggerTimeout ioBroker.Timeout | undefined
+ */
 export class MessageService {
     private currentMessage: ioBroker.Message | null = null;
     private triggerTimeout: ioBroker.Timeout | undefined;
 
+    /**
+     * Messages
+     *
+     * @param stateService Nothing
+     * @param scheduleIdToSchedule Nothing
+     * @param createOnOffScheduleSerializer Nothing
+     * @param adapter Nothing
+     * @param coordinate Nothing
+     * @param validation Nothing
+     * @param html Nothing
+     */
     constructor(
         private stateService: StateService,
         private scheduleIdToSchedule: Map<string, Schedule>,
@@ -33,10 +48,13 @@ export class MessageService {
         this.html = html;
     }
 
+    /**
+     * @param message ioBroker.Message
+     */
     public async handleMessage(message: ioBroker.Message): Promise<void> {
         if (this.currentMessage) {
-            this.triggerTimeout = this.adapter.setTimeout(() => {
-                this.handleMessage(message);
+            this.triggerTimeout = this.adapter.setTimeout(async () => {
+                await this.handleMessage(message);
                 this.triggerTimeout = undefined;
             }, 50);
             return;
@@ -45,7 +63,7 @@ export class MessageService {
         const data: any = message.message;
         if (message.command === "change-view-dataId") {
             await this.updateViews(data);
-            this.adapter.log.debug("Finished message " + message.command);
+            this.adapter.log.debug(`Finished message ${message.command}`);
             this.currentMessage = null;
             return;
         }
@@ -90,17 +108,17 @@ export class MessageService {
                     return;
                 }
                 schedule.setName(data.name);
-                this.changeName(data);
+                await this.changeName(data);
                 break;
             case "enable-schedule":
-                this.html.changeEnabled(data.dataId, true);
+                await this.html.changeEnabled(data.dataId, true);
                 schedule.setEnabled(true);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
                 await this.setCountTrigger();
                 break;
             case "disable-schedule":
                 schedule.setEnabled(false);
-                this.html.changeEnabled(data.dataId, false);
+                await this.html.changeEnabled(data.dataId, false);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
                 await this.setCountTrigger();
                 break;
@@ -108,7 +126,7 @@ export class MessageService {
                 this.changeOnOffSchedulesSwitchedValues(schedule, data);
                 break;
             case "change-switched-ids":
-                this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
+                await this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
                 await this.setCountTrigger();
                 break;
             default:
@@ -118,13 +136,13 @@ export class MessageService {
         }
         if (schedule instanceof OnOffSchedule) {
             const saveTrigger = (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule);
-            this.stateService.setState(data.dataId, saveTrigger);
-            this.html.changeTrigger(data.dataId, saveTrigger);
+            await this.stateService.setState(data.dataId, saveTrigger);
+            await this.html.changeTrigger(data.dataId, saveTrigger);
         } else {
             this.adapter.log.error("Cannot update schedule state after message, no serializer found for schedule");
             return;
         }
-        this.adapter.log.debug("Finished message " + message.command);
+        this.adapter.log.debug(`Finished message ${message.command}`);
         this.currentMessage = null;
     }
 
@@ -138,20 +156,23 @@ export class MessageService {
         return scheduleId.replace("data", "enabled");
     }
 
+    /**
+     * Counter trigger
+     */
     public async setCountTrigger(): Promise<void> {
-        let count: number = 0;
+        let count = 0;
         for (const id of this.scheduleIdToSchedule.keys()) {
             try {
                 const len = this.scheduleIdToSchedule.get(id)?.getTriggers().length;
                 count += len != null ? len : 0;
-            } catch (e) {
+            } catch (e: any) {
                 this.adapter.log.debug(`scheduleIdToSchedule: ${e}`);
             }
         }
         await this.adapter.setState("counterTrigger", count, true);
     }
 
-    private async nextDate(data: any): Promise<any> {
+    private nextDate(data: any): any {
         const next = getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
         let astro: Date;
         if (data.astroTime === "sunset") {
@@ -275,7 +296,7 @@ export class MessageService {
                             newView[data.namespace][data.prefix] = {};
                             newView[data.namespace][data.prefix][data.widgetId] = data;
                         }
-                        this.stateService.setState(path, JSON.stringify(newView));
+                        await this.stateService.setState(path, JSON.stringify(newView));
                     }
                 }
             }
@@ -300,7 +321,7 @@ export class MessageService {
                             } else {
                                 delete oldView[data.namespace][data.prefix][data.widgetId];
                             }
-                            this.stateService.setState(oldPath, JSON.stringify(oldView));
+                            await this.stateService.setState(oldPath, JSON.stringify(oldView));
                         }
                     }
                 }
@@ -399,15 +420,20 @@ export class MessageService {
         }
     }
 
-    public destroy(): void {
+    /**
+     * Destroy all triggers
+     */
+    public destroy(): Promise<boolean> {
         this.triggerTimeout && this.adapter.clearTimeout(this.triggerTimeout);
+        this.triggerTimeout = null;
+        return Promise.resolve(true);
     }
 
     private getNextTriggerId(current: Trigger[]): string {
         const numbers = current
-            .map((t) => t.getId())
-            .map((id) => Number.parseInt(id, 10))
-            .filter((id) => !Number.isNaN(id))
+            .map(t => t.getId())
+            .map(id => Number.parseInt(id, 10))
+            .filter(id => !Number.isNaN(id))
             .sort((a, b) => a - b);
         let newId = 0;
         for (let i = 0; i < numbers.length; i++) {

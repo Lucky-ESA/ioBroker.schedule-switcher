@@ -1,13 +1,22 @@
-import { StateService } from "../../services/StateService";
-import { Condition } from "./Condition";
+import type { StateService } from "../../services/StateService";
+import type { Condition } from "./Condition";
 import { EqualitySign } from "./EqualitySign";
 
+/**
+ * StringStateAndConstantCondition
+ */
 export class StringStateAndConstantCondition implements Condition {
     private readonly constant: string;
     private readonly stateId: string;
     private readonly stateService: StateService;
     private readonly sign: EqualitySign;
 
+    /**
+     * @param constant Constant
+     * @param stateId ID
+     * @param sign Sign
+     * @param stateService setState
+     */
     constructor(constant: string, stateId: string, sign: EqualitySign, stateService: StateService) {
         if (constant == null) {
             throw new Error("Constant value may not be null or undefined.");
@@ -27,6 +36,9 @@ export class StringStateAndConstantCondition implements Condition {
         this.stateService = stateService;
     }
 
+    /**
+     * evaluate
+     */
     public async evaluate(): Promise<boolean> {
         const stateValue = String(await this.stateService.getForeignState(this.stateId));
         let result: boolean;
@@ -38,18 +50,30 @@ export class StringStateAndConstantCondition implements Condition {
         return Promise.resolve(result);
     }
 
+    /**
+     * getConstant
+     */
     public getConstant(): string {
         return this.constant;
     }
 
+    /**
+     * getStateId
+     */
     public getStateId(): string {
         return this.stateId;
     }
 
+    /**
+     * getSign
+     */
     public getSign(): EqualitySign {
         return this.sign;
     }
 
+    /**
+     * toString
+     */
     public toString(): string {
         return `${this.constant} ${this.sign} ${this.stateId}`;
     }

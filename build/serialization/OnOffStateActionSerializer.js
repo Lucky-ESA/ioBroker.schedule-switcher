@@ -25,10 +25,16 @@ var import_OnOffStateAction = require("../actions/OnOffStateAction");
 var import_OnOffStateActionBuilder = require("../actions/OnOffStateActionBuilder");
 class OnOffStateActionSerializer {
   builder;
+  /**
+   * @param stateService setState
+   */
   constructor(stateService) {
     this.builder = new import_OnOffStateActionBuilder.OnOffStateActionBuilder();
     this.builder.setStateService(stateService);
   }
+  /**
+   * @param stringToDeserialize Action
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -39,6 +45,9 @@ class OnOffStateActionSerializer {
     }
     return this.builder.setOffValue(json.offValue).setOnValue(json.onValue).setBooleanValue(json.booleanValue).setIdsOfStatesToSet(json.idsOfStatesToSet).setValueType(json.valueType).build();
   }
+  /**
+   * @param objectToSerialize Action
+   */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
       throw new Error("objectToSerialize may not be null or undefined.");
@@ -52,10 +61,12 @@ class OnOffStateActionSerializer {
         booleanValue: objectToSerialize.getBooleanValue(),
         idsOfStatesToSet: objectToSerialize.getIdsOfStatesToSet()
       });
-    } else {
-      throw new Error("objectToSerialize must be of type OnOffStateAction.");
     }
+    throw new Error("objectToSerialize must be of type OnOffStateAction.");
   }
+  /**
+   * getType
+   */
   getType() {
     return import_OnOffStateAction.OnOffStateAction.prototype.constructor.name;
   }

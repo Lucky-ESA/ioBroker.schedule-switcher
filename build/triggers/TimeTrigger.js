@@ -27,6 +27,15 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   minutes;
   objectId;
   todayTrigger;
+  /**
+   * @param id ID
+   * @param hour Hour
+   * @param minute Minutes
+   * @param objectId Object ID
+   * @param weekdays Weekdays
+   * @param action Action
+   * @param todayTrigger Trigger
+   */
   constructor(id, hour, minute, objectId, weekdays, action, todayTrigger) {
     super(id, action, weekdays);
     this.hours = hour;
@@ -34,29 +43,47 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
     this.objectId = objectId;
     this.todayTrigger = todayTrigger;
   }
+  /**
+   * @returns this
+   */
   getHour() {
     return this.hours;
   }
+  /**
+   * @returns this
+   */
   getMinute() {
     return this.minutes;
   }
+  /**
+   * @returns this
+   */
   getObjectId() {
     return this.objectId;
   }
+  /**
+   * @returns this
+   */
   getTodayTrigger() {
     return this.todayTrigger;
   }
+  /**
+   * @returns all data
+   */
   getData() {
     return {
       id: this.getId(),
       hour: this.getHour(),
       minute: this.getMinute(),
       objectId: this.getObjectId(),
-      weekdays: [this.getWeekdays()],
+      weekdays: this.getWeekdays(),
       trigger: "TimeTrigger",
       todayTrigger: this.getTodayTrigger()
     };
   }
+  /**
+   *@returns string
+   */
   toString() {
     return `TimeTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`;
   }

@@ -31,14 +31,25 @@ __export(IoBrokerValidationState_exports, {
   IoBrokerValidationState: () => IoBrokerValidationState
 });
 module.exports = __toCommonJS(IoBrokerValidationState_exports);
-var fs = __toESM(require("fs"));
+var fs = __toESM(require("node:fs"));
 var import_suncalc = require("suncalc");
 class IoBrokerValidationState {
   adapter;
+  /**
+   * @param adapter iobroker
+   */
   constructor(adapter) {
     this.adapter = adapter;
   }
+  /**
+   * @param id ID
+   * @param val State val
+   * @param check boolean
+   */
   async validation(id, val, check) {
+    const removeDuplicate = (arr) => {
+      return arr.filter((item, index) => arr.indexOf(item) === index);
+    };
     if (val.type && val.type == "OnOffSchedule" || check) {
       if (!check) {
         if (val.onAction) {
@@ -175,6 +186,9 @@ class IoBrokerValidationState {
             if (trigger.minute == void 0 || trigger.minute < 0 || trigger.minute > 59) {
               this.adapter.log.warn(`Minute must be in range 0-59 - in ${id}`);
               trigger.minute = 0;
+            }
+            if (trigger.weekdays) {
+              trigger.weekdays = removeDuplicate(trigger.weekdays);
             }
             if (typeof trigger.weekdays !== "object" || trigger.weekdays.length === 0 || trigger.weekdays.length > 7) {
               this.adapter.log.error(`Empty weekday is not allowed in ${id}`);
@@ -331,6 +345,9 @@ class IoBrokerValidationState {
       return;
     }
   }
+  /**
+   * @param utils Utils
+   */
   async validationView(utils) {
     this.adapter.log.info("Start Widget control!");
     const visFolder = [];
@@ -358,150 +375,150 @@ class IoBrokerValidationState {
       const path = `${utils}files/`;
       for (const vis of visFolder) {
         allVisViews[vis] = {};
-        const folders = fs.readdirSync(`${path}${vis}/`);
-        for (const folder of folders) {
-          if (fs.statSync(`${path}${vis}/${folder}`).isDirectory()) {
-            if (fs.existsSync(`${path}${vis}/${folder}/vis-views.json`)) {
-              const valViews = fs.readFileSync(`${path}${vis}/${folder}/vis-views.json`, "utf-8");
-              if (valViews.indexOf("tplSchedule-switcherDevicePlan") !== -1) {
-                const templates = JSON.parse(valViews);
-                allVisViews[vis][folder] = {};
-                for (const template in templates) {
-                  if (templates[template].widgets && JSON.stringify(templates[template].widgets).indexOf(
-                    "tplSchedule-switcherDevicePlan"
-                  ) !== -1) {
-                    allVisViews[vis][folder][template] = [];
-                    for (const widget in templates[template].widgets) {
-                      if (templates[template].widgets[widget].tpl === "tplSchedule-switcherDevicePlan") {
-                        if (templates[template].widgets[widget].data["oid-dataId"] != "" && !newViews[templates[template].widgets[widget].data["oid-dataId"]]) {
-                          newViews[templates[template].widgets[widget].data["oid-dataId"]] = {};
-                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis] = {};
-                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder] = {};
-                          const countCondition = Number.parseInt(
-                            templates[template].widgets[widget].data["conditionStatesCount"],
-                            10
-                          );
-                          const idsCondition = [];
-                          for (let i = 1; i <= countCondition; i++) {
-                            const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
-                            if (id !== void 0 && id !== "") {
-                              const json = {};
-                              json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
-                              idsCondition.push(json);
-                            }
-                          }
-                          const countState = Number.parseInt(
-                            templates[template].widgets[widget].data["conditionStatesCount"],
-                            10
-                          );
-                          const idsState = [];
-                          for (let i = 1; i <= countState; i++) {
-                            const id = templates[template].widgets[widget].data[`oid-stateId${i}`];
-                            if (id !== void 0 && id !== "") {
-                              const json = {};
-                              json[`oid-stateId${i}`] = templates[template].widgets[widget].data[`oid-stateId${i}`];
-                              idsState.push(json);
-                            }
-                          }
-                          const oid_enabled = templates[template].widgets[widget].data["oid-enabled"] ? templates[template].widgets[widget].data["oid-enabled"] : "not select";
-                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
-                            prefix: folder,
-                            namespace: vis,
-                            view: template,
-                            widgetId: widget,
-                            newId: templates[template].widgets[widget].data["oid-dataId"],
-                            enabled: oid_enabled,
-                            stateCount: countState,
-                            state: idsState,
-                            conditionCount: countCondition,
-                            condition: idsCondition
-                          };
-                        } else if (templates[template].widgets[widget].data["oid-dataId"] != "") {
-                          if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis])
+        if (fs.existsSync(`${path}${vis}/`)) {
+          const folders = fs.readdirSync(`${path}${vis}/`);
+          for (const folder of folders) {
+            if (fs.statSync(`${path}${vis}/${folder}`).isDirectory()) {
+              if (fs.existsSync(`${path}${vis}/${folder}/vis-views.json`)) {
+                const valViews = fs.readFileSync(`${path}${vis}/${folder}/vis-views.json`, "utf-8");
+                if (valViews.indexOf("tplSchedule-switcherDevicePlan") !== -1) {
+                  const templates = JSON.parse(valViews);
+                  allVisViews[vis][folder] = {};
+                  for (const template in templates) {
+                    if (templates[template].widgets && JSON.stringify(templates[template].widgets).indexOf(
+                      "tplSchedule-switcherDevicePlan"
+                    ) !== -1) {
+                      allVisViews[vis][folder][template] = [];
+                      for (const widget in templates[template].widgets) {
+                        if (templates[template].widgets[widget].tpl === "tplSchedule-switcherDevicePlan") {
+                          if (templates[template].widgets[widget].data["oid-dataId"] != "" && !newViews[templates[template].widgets[widget].data["oid-dataId"]]) {
+                            newViews[templates[template].widgets[widget].data["oid-dataId"]] = {};
                             newViews[templates[template].widgets[widget].data["oid-dataId"]][vis] = {};
-                          if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder])
                             newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder] = {};
-                          const countCondition = Number.parseInt(
-                            templates[template].widgets[widget].data["conditionStatesCount"],
-                            10
-                          );
-                          const idsCondition = [];
-                          for (let i = 1; i <= countCondition; i++) {
-                            const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
-                            if (id !== void 0 && id !== "") {
-                              const json = {};
-                              json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
-                              idsCondition.push(json);
+                            const countCondition = Number.parseInt(
+                              templates[template].widgets[widget].data.conditionStatesCount,
+                              10
+                            );
+                            const idsCondition = [];
+                            for (let i = 1; i <= countCondition; i++) {
+                              const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                              if (id !== void 0 && id !== "") {
+                                const json = {};
+                                json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                                idsCondition.push(json);
+                              }
+                            }
+                            const countState = Number.parseInt(
+                              templates[template].widgets[widget].data.conditionStatesCount,
+                              10
+                            );
+                            const idsState = [];
+                            for (let i = 1; i <= countState; i++) {
+                              const id = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                              if (id !== void 0 && id !== "") {
+                                const json = {};
+                                json[`oid-stateId${i}`] = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                                idsState.push(json);
+                              }
+                            }
+                            const oid_enabled = templates[template].widgets[widget].data["oid-enabled"] ? templates[template].widgets[widget].data["oid-enabled"] : "not select";
+                            newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
+                              prefix: folder,
+                              namespace: vis,
+                              view: template,
+                              widgetId: widget,
+                              newId: templates[template].widgets[widget].data["oid-dataId"],
+                              enabled: oid_enabled,
+                              stateCount: countState,
+                              state: idsState,
+                              conditionCount: countCondition,
+                              condition: idsCondition
+                            };
+                          } else if (templates[template].widgets[widget].data["oid-dataId"] != "") {
+                            if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis]) {
+                              newViews[templates[template].widgets[widget].data["oid-dataId"]][vis] = {};
+                            }
+                            if (!newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder]) {
+                              newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder] = {};
+                            }
+                            const countCondition = Number.parseInt(
+                              templates[template].widgets[widget].data.conditionStatesCount,
+                              10
+                            );
+                            const idsCondition = [];
+                            for (let i = 1; i <= countCondition; i++) {
+                              const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                              if (id !== void 0 && id !== "") {
+                                const json = {};
+                                json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                                idsCondition.push(json);
+                              }
+                            }
+                            const countState = Number.parseInt(
+                              templates[template].widgets[widget].data.conditionStatesCount,
+                              10
+                            );
+                            const idsState = [];
+                            for (let i = 1; i <= countState; i++) {
+                              const id = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                              if (id !== void 0 && id !== "") {
+                                const json = {};
+                                json[`oid-stateId${i}`] = templates[template].widgets[widget].data[`oid-stateId${i}`];
+                                idsState.push(json);
+                              }
+                            }
+                            const oid_enabled = templates[template].widgets[widget].data["oid-enabled"] ? templates[template].widgets[widget].data["oid-enabled"] : "not select";
+                            newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
+                              prefix: folder,
+                              namespace: vis,
+                              view: template,
+                              widgetId: widget,
+                              newId: templates[template].widgets[widget].data["oid-dataId"],
+                              enabled: oid_enabled,
+                              stateCount: countState,
+                              state: idsState,
+                              conditionCount: countCondition,
+                              condition: idsCondition
+                            };
+                          }
+                          if (!templates[template].widgets[widget].data["oid-dataId"] || templates[template].widgets[widget].data["oid-dataId"] == "") {
+                            this.adapter.log.warn(
+                              `Missing dataId for ${widget} - ${template} - ${folder} - ${vis}`
+                            );
+                          }
+                          if (!templates[template].widgets[widget].data["oid-stateId1"] || templates[template].widgets[widget].data["oid-stateId1"] == "") {
+                            this.adapter.log.warn(
+                              `Missing stateId for ${widget} - ${template} - ${folder} - ${vis}`
+                            );
+                          }
+                          if (!templates[template].widgets[widget].data["oid-enabled"] || templates[template].widgets[widget].data["oid-enabled"] == "") {
+                            this.adapter.log.warn(
+                              `Missing oid-enabledId for ${widget} - ${template} - ${folder} - ${vis}`
+                            );
+                          }
+                          if (templates[template].widgets[widget].data["oid-dataId"] && templates[template].widgets[widget].data["oid-enabled"] && templates[template].widgets[widget].data["oid-dataId"] != "" && templates[template].widgets[widget].data["oid-enabled"] != "") {
+                            const splitDataId = templates[template].widgets[widget].data["oid-dataId"].split(".");
+                            const splitEnabledId = templates[template].widgets[widget].data["oid-enabled"].split(".");
+                            if (splitDataId.length != 5 || splitDataId[4] != "data") {
+                              this.adapter.log.warn(
+                                `Wrong dataId ${templates[template].widgets[widget].data["oid-dataId"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                              );
+                            }
+                            if (splitEnabledId.length != 5 || splitEnabledId[4] != "enabled") {
+                              this.adapter.log.warn(
+                                `Wrong dataId ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                              );
+                            }
+                            if (splitEnabledId[3] != splitDataId[3]) {
+                              this.adapter.log.warn(
+                                `Wrong dataId and enabledID ${templates[template].widgets[widget].data["oid-dataId"]} - ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                              );
                             }
                           }
-                          const countState = Number.parseInt(
-                            templates[template].widgets[widget].data["conditionStatesCount"],
-                            10
-                          );
-                          const idsState = [];
-                          for (let i = 1; i <= countState; i++) {
-                            const id = templates[template].widgets[widget].data[`oid-stateId${i}`];
-                            if (id !== void 0 && id !== "") {
-                              const json = {};
-                              json[`oid-stateId${i}`] = templates[template].widgets[widget].data[`oid-stateId${i}`];
-                              idsState.push(json);
-                            }
-                          }
-                          const oid_enabled = templates[template].widgets[widget].data["oid-enabled"] ? templates[template].widgets[widget].data["oid-enabled"] : "not select";
-                          newViews[templates[template].widgets[widget].data["oid-dataId"]][vis][folder][widget] = {
-                            prefix: folder,
-                            namespace: vis,
-                            view: template,
-                            widgetId: widget,
-                            newId: templates[template].widgets[widget].data["oid-dataId"],
-                            enabled: oid_enabled,
-                            stateCount: countState,
-                            state: idsState,
-                            conditionCount: countCondition,
-                            condition: idsCondition
-                          };
+                          const wid = {};
+                          wid[widget] = templates[template].widgets[widget];
+                          allVisViews[vis][folder][template].push(wid);
                         }
-                        if (!templates[template].widgets[widget].data["oid-dataId"] || templates[template].widgets[widget].data["oid-dataId"] == "") {
-                          this.adapter.log.warn(
-                            `Missing dataId for ${widget} - ${template} - ${folder} - ${vis}`
-                          );
-                        }
-                        if (!templates[template].widgets[widget].data["oid-stateId1"] || templates[template].widgets[widget].data["oid-stateId1"] == "") {
-                          this.adapter.log.warn(
-                            `Missing stateId for ${widget} - ${template} - ${folder} - ${vis}`
-                          );
-                        }
-                        if (!templates[template].widgets[widget].data["oid-enabled"] || templates[template].widgets[widget].data["oid-enabled"] == "") {
-                          this.adapter.log.warn(
-                            `Missing oid-enabledId for ${widget} - ${template} - ${folder} - ${vis}`
-                          );
-                        }
-                        if (templates[template].widgets[widget].data["oid-dataId"] && templates[template].widgets[widget].data["oid-enabled"] && templates[template].widgets[widget].data["oid-dataId"] != "" && templates[template].widgets[widget].data["oid-enabled"] != "") {
-                          const splitDataId = templates[template].widgets[widget].data["oid-dataId"].split(
-                            "."
-                          );
-                          const splitEnabledId = templates[template].widgets[widget].data["oid-enabled"].split(
-                            "."
-                          );
-                          if (splitDataId.length != 5 || splitDataId[4] != "data") {
-                            this.adapter.log.warn(
-                              `Wrong dataId ${templates[template].widgets[widget].data["oid-dataId"]} for ${widget} - ${template} - ${folder} - ${vis}`
-                            );
-                          }
-                          if (splitEnabledId.length != 5 || splitEnabledId[4] != "enabled") {
-                            this.adapter.log.warn(
-                              `Wrong dataId ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
-                            );
-                          }
-                          if (splitEnabledId[3] != splitDataId[3]) {
-                            this.adapter.log.warn(
-                              `Wrong dataId and enabledID ${templates[template].widgets[widget].data["oid-dataId"]} - ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
-                            );
-                          }
-                        }
-                        const wid = {};
-                        wid[widget] = templates[template].widgets[widget];
-                        allVisViews[vis][folder][template].push(wid);
                       }
                     }
                   }
@@ -509,14 +526,26 @@ class IoBrokerValidationState {
               }
             }
           }
+        } else {
+          this.adapter.log.debug(`Cannot found ${path}${vis}/`);
         }
       }
     }
-    this.adapter.log.debug("newViews: " + JSON.stringify(newViews));
+    this.adapter.log.debug(`newViews: ${JSON.stringify(newViews)}`);
     if (Object.keys(newViews).length > 0) {
       for (const stateId in newViews) {
         const id = stateId.replace("data", "views");
-        await this.adapter.setState(id, JSON.stringify(newViews[stateId]), true);
+        const obj = await this.adapter.getObjectAsync(id);
+        if (obj) {
+          await this.adapter.setState(id, {
+            val: JSON.stringify(newViews[stateId]),
+            ack: true
+          });
+        } else {
+          this.adapter.log.error(
+            `Missing object ${id} - Please delete Widgets: ${JSON.stringify(newViews[stateId])}`
+          );
+        }
       }
     }
     const prefix = `schedule-switcher.${this.adapter.instance}.`;
@@ -567,6 +596,9 @@ class IoBrokerValidationState {
       }
     }
   }
+  /**
+   * @param coordinate Coordinates
+   */
   async setNextTime(coordinate) {
     const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*.data`);
     for (const id in states) {
@@ -575,17 +607,29 @@ class IoBrokerValidationState {
         if (typeof state.val === "string" && state.val.startsWith("{")) {
           const triggers = JSON.parse(state.val);
           if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+            let isChange = false;
             for (const trigger of triggers.triggers) {
               if (trigger && trigger.type === "AstroTrigger") {
-                trigger.todayTrigger = await this.nextDate(/* @__PURE__ */ new Date(), trigger, coordinate);
-                await this.adapter.setState(id, JSON.stringify(triggers), true);
+                trigger.todayTrigger.date = await this.nextDate(/* @__PURE__ */ new Date(), trigger, coordinate);
+                trigger.todayTrigger.date = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
+                const actual = new Date(trigger.todayTrigger.date);
+                trigger.todayTrigger.hour = actual.getHours();
+                trigger.todayTrigger.minute = actual.getMinutes();
+                trigger.todayTrigger.weekday = actual.getDay();
+                isChange = true;
               }
+            }
+            if (isChange) {
+              await this.adapter.setState(id, JSON.stringify(triggers), true);
             }
           }
         }
       }
     }
   }
+  /**
+   * @param coordinate Coordinates
+   */
   async setActionTime(coordinate) {
     const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*.data`);
     const allData = [];
@@ -614,8 +658,9 @@ class IoBrokerValidationState {
               const now = /* @__PURE__ */ new Date();
               if (trigger && trigger.type === "TimeTrigger") {
                 let addDate = 0;
-                if (trigger.hour === 0 && trigger.minute === 0)
+                if (trigger.hour === 0 && trigger.minute === 0) {
                   addDate = 1;
+                }
                 const switchTime = /* @__PURE__ */ new Date(
                   `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + addDate} ${trigger.hour}:${trigger.minute}`
                 );
@@ -688,7 +733,7 @@ class IoBrokerValidationState {
       `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${hour}:${minute}`
     )).toISOString();
   }
-  async nextDate(date, data, coordinate) {
+  nextDate(date, data, coordinate) {
     const next = (0, import_suncalc.getTimes)(date, coordinate.getLatitude(), coordinate.getLongitude());
     let astro;
     if (data.astroTime === "sunset") {
@@ -699,15 +744,20 @@ class IoBrokerValidationState {
       astro = next.solarNoon;
     }
     new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
-    return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
+    return Promise.resolve({
+      hour: astro.getHours(),
+      minute: astro.getMinutes(),
+      weekday: astro.getDay(),
+      date: astro
+    });
   }
-  async nextActiveDay(array, day) {
+  nextActiveDay(array, day) {
     array = array.map((val) => {
       return val === 0 ? 7 : val;
     });
     const numChecker = (num) => array.find((v) => v > num);
     const next = numChecker(day);
-    return next == void 0 ? 0 : next;
+    return Promise.resolve(next == void 0 ? 0 : next);
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

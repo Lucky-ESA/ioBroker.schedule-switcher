@@ -25,11 +25,20 @@ class ActionReferenceSerializer {
   referencableActions;
   typeToReference;
   adapter;
+  /**
+   *
+   * @param typeToReference Reference
+   * @param referencableActions Actions
+   * @param adapter ioBroker
+   */
   constructor(typeToReference, referencableActions, adapter) {
     this.typeToReference = typeToReference;
     this.referencableActions = referencableActions;
     this.adapter = adapter;
   }
+  /**
+   * @param stringToDeserialize Action
+   */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
@@ -38,10 +47,12 @@ class ActionReferenceSerializer {
     const found = this.referencableActions.get(json.name);
     if (found) {
       return found;
-    } else {
-      throw new Error(`No existing action found with name ${json.name} to reference`);
     }
+    throw new Error(`No existing action found with name ${json.name} to reference`);
   }
+  /**
+   * @param objectToSerialize Action
+   */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
       throw new Error("objectToSerialize may not be null or undefined.");
@@ -59,10 +70,12 @@ class ActionReferenceSerializer {
         type: this.getType(),
         name
       });
-    } else {
-      throw new Error("no existing action found");
     }
+    throw new Error("no existing action found");
   }
+  /**
+   * getType
+   */
   getType() {
     return this.typeToReference;
   }

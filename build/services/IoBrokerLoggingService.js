@@ -22,21 +22,39 @@ __export(IoBrokerLoggingService_exports, {
 });
 module.exports = __toCommonJS(IoBrokerLoggingService_exports);
 class IoBrokerLoggingService {
+  /**
+   * @param adapter ioBroker
+   */
   constructor(adapter) {
     this.adapter = adapter;
   }
+  /**
+   * @param message Text
+   */
   logDebug(message) {
     this.adapter.log.debug(message);
   }
+  /**
+   * @param message Text
+   */
   logError(message) {
     this.adapter.log.error(message);
   }
+  /**
+   * @param message Text
+   */
   logInfo(message) {
     this.adapter.log.info(message);
   }
+  /**
+   * @param message Text
+   */
   logSilly(message) {
     this.adapter.log.silly(message);
   }
+  /**
+   * @param message Text
+   */
   logWarn(message) {
     this.adapter.log.warn(message);
   }

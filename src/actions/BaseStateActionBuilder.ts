@@ -1,10 +1,16 @@
-import { Builder } from "../Builder";
-import { StateService } from "../services/StateService";
-import { BaseStateAction } from "./BaseStateAction";
+import type { Builder } from "../Builder";
+import type { StateService } from "../services/StateService";
+import type { BaseStateAction } from "./BaseStateAction";
 
+/**
+ * BaseStateActionBuilder
+ */
 export abstract class BaseStateActionBuilder implements Builder<BaseStateAction> {
     protected stateService: StateService | null = null;
 
+    /**
+     * @param stateService setState
+     */
     public setStateService(stateService: StateService): BaseStateActionBuilder {
         this.stateService = stateService;
         return this;
