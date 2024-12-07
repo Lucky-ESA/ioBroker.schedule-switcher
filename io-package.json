@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "news": {
+      "0.0.8": {
+        "en": "Migration to ESLint9\nBugfixes",
+        "de": "Migration auf ESLint9\nBugfixes",
+        "ru": "Миграция в ESLint9\nBugfixs",
+        "pt": "Migração para ESLint9\nBugfixs",
+        "nl": "Migratie naar ESLint9\nBugfixes",
+        "fr": "Migration vers ESLint9\nFixes de bogue",
+        "it": "Migrazione a ESLint9\nBugfix",
+        "es": "Migración a ESLint9\nBugfixes",
+        "pl": "Migracja do ESLint9\nKorekty błędów",
+        "uk": "Міграція в ESLint9\nПомилки",
+        "zh-cn": "迁移到ESLint9\n错误修正"
+      },
       "0.0.7": {
         "en": "HTML overview added",
         "de": "HTML Übersicht hinzugefügt",
@@ -80,19 +93,6 @@
         "pl": "Napraw tłumaczenie\nPopraw kolor tła wyłączyć Weekdays\nNapraw wysyłanie Do\nDodano jsonConfig\nDodano historię",
         "uk": "Виправлення перекладу\nВиправлення фонового кольору відключити робочі дні\nПеревірити відправлення до\nДодано jsonConfig\nІсторія",
         "zh-cn": "修正翻译\n修正背景颜色禁用周日\n修正发送 改为\n添加的 json 图形\n添加历史"
-      },
-      "0.0.1": {
-        "en": "initial release",
-        "de": "Erstveröffentlichung",
-        "ru": "Начальная версия",
-        "pt": "lançamento inicial",
-        "nl": "Eerste uitgave",
-        "fr": "Première version",
-        "it": "Versione iniziale",
-        "es": "Versión inicial",
-        "pl": "Pierwsze wydanie",
-        "uk": "Початкова версія",
-        "zh-cn": "首次出版"
       }
     },
     "titleLang": {
