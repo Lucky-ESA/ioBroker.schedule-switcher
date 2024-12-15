@@ -350,6 +350,7 @@ class IoBrokerValidationState {
    */
   async validationView(utils) {
     this.adapter.log.info("Start Widget control!");
+    this.adapter.log.debug(`Path: ${utils}`);
     const visFolder = [];
     const allVisViews = {};
     const newViews = {};

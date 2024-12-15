@@ -337,6 +337,7 @@ export class IoBrokerValidationState implements validationState {
      */
     async validationView(utils: string): Promise<void> {
         this.adapter.log.info("Start Widget control!");
+        this.adapter.log.debug(`Path: ${utils}`);
         const visFolder = [];
         const allVisViews: any = {};
         const newViews: any = {};
