@@ -340,6 +340,7 @@ export class IoBrokerValidationState implements validationState {
         this.adapter.log.info("Start Widget control!");
         this.adapter.log.debug(`Path: ${utils}`);
         this.adapter.log.debug(`RealPath: ${path.normalize(`${__dirname}/../../../../`)}`);
+        const docker_path = `${path.normalize(`${__dirname}/../../../../`)}iobroker-data/files/`;
         const visFolder = [];
         const allVisViews: any = {};
         const newViews: any = {};
@@ -363,7 +364,12 @@ export class IoBrokerValidationState implements validationState {
         }
         this.adapter.log.debug(`Folder: ${JSON.stringify(visFolder)}`);
         if (visFolder.length > 0) {
-            const path = `${utils}files/`;
+            let path = `${utils}files/`;
+            const check_path = fs.readdirSync(`${path}`);
+            if (check_path.length === 0) {
+                this.adapter.log.debug(`Cannot found ${path}!!! Change to path ${docker_path}`);
+                path = docker_path;
+            }
             for (const vis of visFolder) {
                 allVisViews[vis] = {};
                 if (fs.existsSync(`${path}${vis}/`)) {
@@ -670,7 +676,7 @@ export class IoBrokerValidationState implements validationState {
                             }),
                             ack: true,
                         });
-                        this.adapter.log.warn(
+                        this.adapter.log.debug(
                             `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`,
                         );
                     } else {
