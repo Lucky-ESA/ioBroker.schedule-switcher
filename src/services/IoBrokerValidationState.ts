@@ -668,7 +668,7 @@ export class IoBrokerValidationState implements validationState {
                             }),
                             ack: true,
                         });
-                        this.adapter.log.error(
+                        this.adapter.log.warn(
                             `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`,
                         );
                     } else {
