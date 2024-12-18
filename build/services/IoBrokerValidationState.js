@@ -372,12 +372,14 @@ class IoBrokerValidationState {
         visFolder.push(id.id.replace("system.adapter.", ""));
       }
     }
+    this.adapter.log.debug(`Folder: ${JSON.stringify(visFolder)}`);
     if (visFolder.length > 0) {
       const path = `${utils}files/`;
       for (const vis of visFolder) {
         allVisViews[vis] = {};
         if (fs.existsSync(`${path}${vis}/`)) {
           const folders = fs.readdirSync(`${path}${vis}/`);
+          this.adapter.log.debug(`Folders: ${JSON.stringify(folders)}`);
           for (const folder of folders) {
             if (fs.statSync(`${path}${vis}/${folder}`).isDirectory()) {
               if (fs.existsSync(`${path}${vis}/${folder}/vis-views.json`)) {
@@ -564,35 +566,31 @@ class IoBrokerValidationState {
         }
         const view = stateId.replace("data", "views");
         if ((val.onAction.idsOfStatesToSet.length > 0 || val.offAction.idsOfStatesToSet.length > 0) && val.triggers.length > 0) {
-          await this.adapter.setState(id, false, true);
           if (eneabled && eneabled.val) {
-            await this.adapter.setState(
-              view,
-              JSON.stringify({
+            await this.adapter.setState(view, {
+              val: JSON.stringify({
                 error: `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
               }),
-              true
-            );
-            this.adapter.log.error(
+              ack: true
+            });
+            this.adapter.log.warn(
               `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
             );
           } else {
-            await this.adapter.setState(
-              view,
-              JSON.stringify({
+            await this.adapter.setState(view, {
+              val: JSON.stringify({
                 error: `Trigger ${stateId} is active but there is no widget.`
               }),
-              true
-            );
+              ack: true
+            });
           }
         } else {
-          await this.adapter.setState(
-            view,
-            JSON.stringify({
+          await this.adapter.setState(view, {
+            val: JSON.stringify({
               error: `The trigger ${stateId} is not used.`
             }),
-            true
-          );
+            ack: true
+          });
         }
       }
     }
@@ -621,7 +619,7 @@ class IoBrokerValidationState {
               }
             }
             if (isChange) {
-              await this.adapter.setState(id, JSON.stringify(triggers), true);
+              await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
             }
           }
         }
@@ -716,7 +714,7 @@ class IoBrokerValidationState {
     }
     if (allData.length > 0) {
       const data = allData.sort((a, b) => a.timestamp - b.timestamp);
-      await this.adapter.setState("nextEvents", JSON.stringify(data), true);
+      await this.adapter.setState("nextEvents", { val: JSON.stringify(data), ack: true });
     }
   }
   async nextDateSwitch(now, trigger) {
