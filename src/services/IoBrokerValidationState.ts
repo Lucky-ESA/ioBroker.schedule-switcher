@@ -1,4 +1,5 @@
 import * as fs from "node:fs";
+import * as path from "node:path";
 import { getTimes } from "suncalc";
 import type { validationState } from "./ValidationState";
 
@@ -338,6 +339,7 @@ export class IoBrokerValidationState implements validationState {
     async validationView(utils: string): Promise<void> {
         this.adapter.log.info("Start Widget control!");
         this.adapter.log.debug(`Path: ${utils}`);
+        this.adapter.log.debug(`RealPath: ${path.normalize(`${__dirname}/../../../../`)}`);
         const visFolder = [];
         const allVisViews: any = {};
         const newViews: any = {};

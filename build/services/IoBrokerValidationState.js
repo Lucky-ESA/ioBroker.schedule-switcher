@@ -32,6 +32,7 @@ __export(IoBrokerValidationState_exports, {
 });
 module.exports = __toCommonJS(IoBrokerValidationState_exports);
 var fs = __toESM(require("node:fs"));
+var path = __toESM(require("node:path"));
 var import_suncalc = require("suncalc");
 class IoBrokerValidationState {
   adapter;
@@ -351,6 +352,7 @@ class IoBrokerValidationState {
   async validationView(utils) {
     this.adapter.log.info("Start Widget control!");
     this.adapter.log.debug(`Path: ${utils}`);
+    this.adapter.log.debug(`RealPath: ${path.normalize(`${__dirname}/../../../../`)}`);
     const visFolder = [];
     const allVisViews = {};
     const newViews = {};
@@ -374,16 +376,16 @@ class IoBrokerValidationState {
     }
     this.adapter.log.debug(`Folder: ${JSON.stringify(visFolder)}`);
     if (visFolder.length > 0) {
-      const path = `${utils}files/`;
+      const path2 = `${utils}files/`;
       for (const vis of visFolder) {
         allVisViews[vis] = {};
-        if (fs.existsSync(`${path}${vis}/`)) {
-          const folders = fs.readdirSync(`${path}${vis}/`);
+        if (fs.existsSync(`${path2}${vis}/`)) {
+          const folders = fs.readdirSync(`${path2}${vis}/`);
           this.adapter.log.debug(`Folders: ${JSON.stringify(folders)}`);
           for (const folder of folders) {
-            if (fs.statSync(`${path}${vis}/${folder}`).isDirectory()) {
-              if (fs.existsSync(`${path}${vis}/${folder}/vis-views.json`)) {
-                const valViews = fs.readFileSync(`${path}${vis}/${folder}/vis-views.json`, "utf-8");
+            if (fs.statSync(`${path2}${vis}/${folder}`).isDirectory()) {
+              if (fs.existsSync(`${path2}${vis}/${folder}/vis-views.json`)) {
+                const valViews = fs.readFileSync(`${path2}${vis}/${folder}/vis-views.json`, "utf-8");
                 if (valViews.indexOf("tplSchedule-switcherDevicePlan") !== -1) {
                   const templates = JSON.parse(valViews);
                   allVisViews[vis][folder] = {};
@@ -530,7 +532,7 @@ class IoBrokerValidationState {
             }
           }
         } else {
-          this.adapter.log.debug(`Cannot found ${path}${vis}/`);
+          this.adapter.log.debug(`Cannot found ${path2}${vis}/`);
         }
       }
     }
