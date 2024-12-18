@@ -383,6 +383,8 @@ class IoBrokerValidationState {
         this.adapter.log.debug(`Cannot found ${path2}!!! Change to path ${docker_path}`);
         path2 = docker_path;
       }
+      const dirs = await this.adapter.readDirAsync("vis-2.0", "");
+      this.adapter.log.debug(`Dir: ${JSON.stringify(dirs)}`);
       for (const vis of visFolder) {
         allVisViews[vis] = {};
         if (fs.existsSync(`${path2}${vis}/`)) {

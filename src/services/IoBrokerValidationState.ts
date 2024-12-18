@@ -370,6 +370,8 @@ export class IoBrokerValidationState implements validationState {
                 this.adapter.log.debug(`Cannot found ${path}!!! Change to path ${docker_path}`);
                 path = docker_path;
             }
+            const dirs = await this.adapter.readDirAsync("vis-2.0", "");
+            this.adapter.log.debug(`Dir: ${JSON.stringify(dirs)}`);
             for (const vis of visFolder) {
                 allVisViews[vis] = {};
                 if (fs.existsSync(`${path}${vis}/`)) {
