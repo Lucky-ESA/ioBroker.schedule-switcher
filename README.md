@@ -40,6 +40,11 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+- (Lucky-ESA) Fixed reading files from Redis database
+
 ### 0.0.8 (2024-12-07)
 
 - (Lucky-ESA) Migration to ESLint9
