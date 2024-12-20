@@ -106,6 +106,10 @@ class ScheduleSwitcher extends utils.Adapter {
                 this.log.info(`ID: ${id}`);
                 if (typeof state.val === "string" && state.val.startsWith("{")) {
                     const stateVal = JSON.parse(state.val);
+                    if (stateVal && stateVal.active == null) {
+                        stateVal.active = false;
+                        await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
+                    }
                     await this.validation.validation(id, stateVal, false);
                     if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
                         await this.onScheduleChange(id, JSON.stringify(stateVal));
@@ -361,6 +365,7 @@ class ScheduleSwitcher extends utils.Adapter {
                     case "change-switched-values":
                     case "change-switched-ids":
                     case "change-view-dataId":
+                    case "change-active":
                         if (this.messageService) {
                             if (obj.message && obj.message.parameter && obj.command === "add-trigger" && obj.callback) {
                                 void this.addNewTrigger(obj);
@@ -665,6 +670,7 @@ class ScheduleSwitcher extends utils.Adapter {
                 def: `{
                     "type": "OnOffSchedule",
                     "name": "New Schedule",
+                    "active": false,
                     "objectID": ${id},
                     "onAction": {
                         "type":"OnOffStateAction",

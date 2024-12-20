@@ -44,6 +44,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 ### **WORK IN PROGRESS**
 
 - (Lucky-ESA) Fixed reading files from Redis database
+- (Lucky-ESA) Added automatic deactivation control
 
 ### 0.0.8 (2024-12-07)
 

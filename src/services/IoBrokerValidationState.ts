@@ -643,22 +643,22 @@ export class IoBrokerValidationState implements validationState {
                     val.onAction.idsOfStatesToSet &&
                     val.onAction.idsOfStatesToSet[0] === "default.state"
                 ) {
-                    this.adapter.log.debug("Default state!");
+                    this.adapter.log.debug("Default state in onAction!");
                 }
                 if (
                     val.offAction &&
                     val.offAction.idsOfStatesToSet &&
                     val.offAction.idsOfStatesToSet[0] === "default.state"
                 ) {
-                    this.adapter.log.debug("Default state!");
+                    this.adapter.log.debug("Default state in offAction!");
                 }
                 const view = stateId.replace("data", "views");
                 if (
                     (val.onAction.idsOfStatesToSet.length > 0 || val.offAction.idsOfStatesToSet.length > 0) &&
                     val.triggers.length > 0
                 ) {
-                    // await this.adapter.setState(id, { val: false, ack: true });
-                    if (eneabled && eneabled.val) {
+                    if (eneabled && eneabled.val && !val.active) {
+                        await this.adapter.setState(id, { val: false, ack: true });
                         await this.adapter.setState(view, {
                             val: JSON.stringify({
                                 error: `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`,

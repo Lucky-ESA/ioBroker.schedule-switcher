@@ -76,6 +76,7 @@ class MessageService {
     this.adapter.log.debug(`Received ${message.command}`);
     this.adapter.log.debug(JSON.stringify(message.message));
     const schedule = this.scheduleIdToSchedule.get(data.dataId);
+    let active = false;
     if (!schedule) {
       this.adapter.log.error(`No schedule found for state ${data.dataId}`);
       this.currentMessage = null;
@@ -135,13 +136,22 @@ class MessageService {
         await this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
         await this.setCountTrigger();
         break;
+      case "change-active":
+        active = true;
+        break;
       default:
         this.adapter.log.error("Unknown command received");
         this.currentMessage = null;
         return;
     }
     if (schedule instanceof import_OnOffSchedule.OnOffSchedule) {
-      const saveTrigger = (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule);
+      let saveTrigger;
+      saveTrigger = (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule);
+      if (active) {
+        const actual_trigger = JSON.parse(saveTrigger);
+        actual_trigger.active = data.active;
+        saveTrigger = JSON.stringify(actual_trigger);
+      }
       await this.stateService.setState(data.dataId, saveTrigger);
       await this.html.changeTrigger(data.dataId, saveTrigger);
     } else {
