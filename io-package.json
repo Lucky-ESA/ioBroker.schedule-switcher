@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "news": {
+      "0.0.9": {
+        "en": "Fixed: Reading files from Redis database\nAdded: Automatic deactivation control\nFixed: Visibility\nFixed: Bug in type check",
+        "de": "Behoben: Dateien aus der Redis-Datenbank lesen\nHinzugefügt: Automatische Deaktivierungssteuerung\nBehoben: Sichtbarkeit\nBehoben: Fehler in der Typprüfung",
+        "ru": "Исправлено: чтение файлов из базы данных Redis\nДобавлено: Автоматическое управление деактивацией\nИсправлено: Видимость\nИсправлено: Bug в проверке типа",
+        "pt": "Corrigido: Leitura de arquivos do banco de dados Redis\nAdicionado: Automatic desativation control\nCorrigido: Visibilidade\nCorrigido: Bug na verificação do tipo",
+        "nl": "Fixed: Bestanden lezen uit Redis database\nToegevoegd: Automatische deactiveringscontrole\nVast: Zichtbaarheid\nVast: Bug in type controle",
+        "fr": "Correction : Lecture des fichiers de la base de données Redis\nAjouté : Contrôle automatique de désactivation\nCorrection : Visibilité\nCorrection : Bug dans la vérification de type",
+        "it": "Risolto: File di lettura dal database Redis\nAggiunto: Controllo automatico di disattivazione\nFisso: Visibilità\nRisolto: Bug nel controllo del tipo",
+        "es": "Fijo: lectura de archivos de la base de datos Redis\nAñadido: Control automático de desactivación\nFijo: Visibilidad\nCorregido: Error en el tipo de cheque",
+        "pl": "Naprawiono: czytanie plików z bazy danych Redis\nDodano: Automatyczne sterowanie dezaktywacją\nStała: Widoczność\nNaprawiono: Błąd w sprawdzaniu typu",
+        "uk": "Виправлено: Читання файлів з бази даних Redis\nДоданий: Автоматичний контроль деактивації\nВиправлено: Вимога\nВиправлено: Помилки в машині",
+        "zh-cn": "固定: 从 Redis 数据库读取文件\n添加:自动停用控制\n固定:可见度\n固定: 类型检查中的错误"
+      },
       "0.0.8": {
         "en": "Migration to ESLint9\nBugfixes",
         "de": "Migration auf ESLint9\nBugfixes",
@@ -80,19 +93,6 @@
         "pl": "Stałe tłumaczenie VIS\nDodano czas astro w wyzwalaczu\nNaprawiono OneTimeTrigger\nDodano datę dla OneTimeTrigger\nNaprawiono kilka błędów",
         "uk": "Виправлено VIS переклад\nДодано час астро в тригер\nФіксований OneTimeTrigger\nДодано дату для OneTimeTrigger\nВиправлено деякі помилки",
         "zh-cn": "固定VIS翻译\n触发时添加天体时间\n固定一次性调试器\n添加的一次性调试器日期\n修补一些错误"
-      },
-      "0.0.2": {
-        "en": "Fix translate\nFix background color disable Weekdays\nFix sendTo\nAdded jsonConfig\nAdded history",
-        "de": "Fehler übersetzen\nHintergrundfarbe deaktivieren Wochentage\nFehler senden Zu\nHinzugefügt jsonConfig\nGeschichte hinzufügen",
-        "ru": "Перевод\nЦвет фона недоступен\nFix send В\nДобавить jsonConfig\nДобавленная история",
-        "pt": "Corrigir tradução\nCorrigir a cor de fundo desativar os dias de semana\nEnviar Para\nAdicionado jsonConfig\nHistória adicionada",
-        "nl": "Vertalen herstellen\nFix achtergrond kleur uitschakelen Weekdagen\nFix send Aan\nToegevoegd jsonConfig\nGeschiedenis toegevoegd",
-        "fr": "Corriger traduire\nCorrection de la couleur de l'arrière-plan désactiver Weekdays\nCorrection de l'envoi Aux\nAjout de jsonConfig\nHistorique ajouté",
-        "it": "Risolvere il traduttore\nFissare il colore di sfondo disabilitare i giorni feriali\nRiparare l'invio A\nAggiunto jsonConfig\nAggiunto storia",
-        "es": "Corrección\nFijar el color de fondo deshabilitado\nEnviar fijo A\nJsonConfig\nHistoria agregada",
-        "pl": "Napraw tłumaczenie\nPopraw kolor tła wyłączyć Weekdays\nNapraw wysyłanie Do\nDodano jsonConfig\nDodano historię",
-        "uk": "Виправлення перекладу\nВиправлення фонового кольору відключити робочі дні\nПеревірити відправлення до\nДодано jsonConfig\nІсторія",
-        "zh-cn": "修正翻译\n修正背景颜色禁用周日\n修正发送 改为\n添加的 json 图形\n添加历史"
       }
     },
     "titleLang": {
