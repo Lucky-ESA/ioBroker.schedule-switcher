@@ -9,6 +9,7 @@ export default {
         "*.config.mjs",
         "build",
         "admin/build",
+        "widgets",
         ".dev-server",
         "admin/words.js",
         "admin/admin.d.ts",

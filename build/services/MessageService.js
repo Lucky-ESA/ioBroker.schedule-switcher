@@ -129,7 +129,7 @@ class MessageService {
         await this.setCountTrigger();
         break;
       case "change-switched-values":
-        this.changeOnOffSchedulesSwitchedValues(schedule, data);
+        await this.changeOnOffSchedulesSwitchedValues(schedule, data);
         break;
       case "change-switched-ids":
         await this.changeOnOffSchedulesSwitchedIds(schedule, data.stateIds);
@@ -300,10 +300,38 @@ class MessageService {
       }
     }
   }
-  changeOnOffSchedulesSwitchedValues(schedule, data) {
+  async changeOnOffSchedulesSwitchedValues(schedule, data) {
     if (!(schedule instanceof import_OnOffSchedule.OnOffSchedule)) {
       this.adapter.log.error(`Cannot change switched values when schedule type is not OnOffSchedule`);
       return;
+    }
+    const states = schedule.getOnAction().getIdsOfStatesToSet();
+    if (states && typeof states === "object") {
+      const type = data.valueType;
+      for (const stateId of states) {
+        if (!stateId) {
+          continue;
+        }
+        const check = await this.adapter.getForeignObjectAsync(stateId);
+        if (!check || check.type != "state") {
+          this.adapter.log.error(`StateId ${stateId} is null/undefined or not state`);
+          return;
+        }
+        if (!check.common || !check.common.type) {
+          this.adapter.log.error(`Missing type ${JSON.stringify(check)} of ${stateId} !!!}`);
+          return;
+        }
+        if (check.common && check.common.type == "mixed") {
+          continue;
+        }
+        if (check.common && check.common.type != type) {
+          this.adapter.log.warn(
+            `The type ${check.common.type} of ${stateId} is incorrect!!! Type in VIS settings - ${type}`
+          );
+        }
+      }
+    } else {
+      this.adapter.log.debug(`StateIds is not an object`);
     }
     if (schedule.getOnAction().getValueType() === data.valueType && data.valueType === "boolean") {
       this.adapter.log.debug("Catch no boolean change!!");
@@ -335,6 +363,7 @@ class MessageService {
     }
     schedule.setOnAction(this.changeSwitchedValueOfOnOffScheduleAction(schedule.getOnAction(), data));
     schedule.setOffAction(this.changeSwitchedValueOfOnOffScheduleAction(schedule.getOffAction(), data));
+    return;
   }
   async changeOnOffSchedulesSwitchedIds(schedule, stateIds) {
     if (!(schedule instanceof import_OnOffSchedule.OnOffSchedule)) {
@@ -344,19 +373,22 @@ class MessageService {
     if (typeof stateIds === "object") {
       const type = schedule.getOnAction().getValueType();
       for (const stateId of stateIds) {
+        if (!stateId) {
+          continue;
+        }
         const check = await this.adapter.getForeignObjectAsync(stateId);
-        if (!check) {
-          this.adapter.log.error(`StateId ${stateId} is null/undefined`);
+        if (!check || check.type != "state") {
+          this.adapter.log.error(`StateId ${stateId} is null/undefined or not state`);
           return;
         }
         if (!check.common || !check.common.type) {
-          this.adapter.log.error(`Missing type ${check.common.type} of ${stateId} !!!}`);
+          this.adapter.log.error(`Missing type ${JSON.stringify(check)} of ${stateId} !!!}`);
           return;
         }
-        if (check.common && check.common.type === "mixed") {
+        if (check.common && check.common.type == "mixed") {
           continue;
         }
-        if (check.common && check.common.type !== type) {
+        if (check.common && check.common.type != type) {
           this.adapter.log.warn(
             `The type ${check.common.type} of ${stateId} is incorrect!!! Type in VIS settings - ${type}`
           );
@@ -368,6 +400,7 @@ class MessageService {
     }
     schedule.getOnAction().setIdsOfStatesToSet(stateIds);
     schedule.getOffAction().setIdsOfStatesToSet(stateIds);
+    return;
   }
   changeSwitchedValueOfOnOffScheduleAction(action, data) {
     switch (data.valueType) {
