@@ -4,13 +4,14 @@ import prettierConfig from "@iobroker/eslint-config/prettier.config.mjs";
 export default {
     ...prettierConfig,
     ignores: [
+        ".dev-server/",
+        ".vscode/",
         "*.test.js",
         "test/**/*.js",
         "*.config.mjs",
         "build",
-        "admin/build",
         "widgets",
-        ".dev-server",
+        "admin/build",
         "admin/words.js",
         "admin/admin.d.ts",
         "**/adapter-config.d.ts",
