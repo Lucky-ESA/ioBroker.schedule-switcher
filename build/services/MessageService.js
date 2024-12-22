@@ -299,7 +299,7 @@ class MessageService {
               if (Object.keys(oldView[data.namespace]).length === 1) {
                 delete oldView[data.namespace];
               } else if (Object.keys(oldView[data.namespace][data.prefix]).length === 1) {
-                oldView[data.namespace][data.prefix];
+                delete oldView[data.namespace][data.prefix];
               } else {
                 delete oldView[data.namespace][data.prefix][data.widgetId];
               }

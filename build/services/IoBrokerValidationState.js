@@ -94,13 +94,11 @@ class IoBrokerValidationState {
             }
           } else {
             this.adapter.log.error(`Cannot found onAction type 'OnOffStateAction' in ${id}`);
-            val = {};
-            return;
+            return val = {};
           }
         } else {
           this.adapter.log.error(`Cannot found onAction in ${id}`);
-          val = {};
-          return;
+          return val = {};
         }
         if (val.offAction) {
           if (val.offAction.type == "OnOffStateAction") {
@@ -155,13 +153,11 @@ class IoBrokerValidationState {
             }
           } else {
             this.adapter.log.error(`Cannot found offAction type 'OnOffStateAction' in ${id}`);
-            val = {};
-            return;
+            return val = {};
           }
         } else {
           this.adapter.log.error(`Cannot found offAction in ${id}`);
-          val = {};
-          return;
+          return val = {};
         }
       }
       if (val.triggers && typeof val.triggers === "object" && val.triggers.length > 0) {
@@ -206,8 +202,7 @@ class IoBrokerValidationState {
             }
           } else {
             this.adapter.log.error(`Cannot found trigger type ${trigger.type} in ${id}`);
-            val = {};
-            return;
+            return val = {};
           }
           const objId = id.split(".");
           if (trigger.objectId.toString() != objId[3]) {
@@ -221,11 +216,10 @@ class IoBrokerValidationState {
           if (trigger.action.type !== "OnOffStateAction") {
             if (trigger.action.type === "ConditionAction") {
               if (!trigger.action.condition) {
-                val = {};
                 this.adapter.log.warn(
                   `Missing action condition ${JSON.stringify(trigger.action)} in ${id}`
                 );
-                return;
+                return val = {};
               }
               if (trigger.action.condition.type !== "StringStateAndConstantCondition") {
                 if (trigger.action.condition.constant !== "true") {
@@ -235,56 +229,50 @@ class IoBrokerValidationState {
                   );
                 }
                 if (!trigger.action.condition.stateId1 || !trigger.action.condition.stateId2) {
-                  val = {};
                   this.adapter.log.warn(
                     `Missing action condition states1 or states2 ${JSON.stringify(trigger.action)} in ${id}`
                   );
-                  return;
+                  return val = {};
                 }
                 const stateId1 = await this.adapter.getForeignObjectAsync(
                   trigger.action.condition.stateId1
                 );
                 if (!stateId1) {
-                  val = {};
                   this.adapter.log.warn(
                     `Wrong action condition states1 ${JSON.stringify(trigger.action)} in ${id}`
                   );
-                  return;
+                  return val = {};
                 }
                 const stateId2 = await this.adapter.getForeignObjectAsync(
                   trigger.action.condition.stateId2
                 );
                 if (!stateId2) {
-                  val = {};
                   this.adapter.log.warn(
                     `Wrong action condition states2 ${JSON.stringify(trigger.action)} in ${id}`
                   );
-                  return;
+                  return val = {};
                 }
               } else if (trigger.action.condition.type !== "StringStateAndStateCondition") {
                 if (!trigger.action.condition.stateId) {
-                  val = {};
                   this.adapter.log.warn(
                     `Missing action condition states ${JSON.stringify(trigger.action)} in ${id}`
                   );
-                  return;
+                  return val = {};
                 }
                 const stateId = await this.adapter.getForeignObjectAsync(
                   trigger.action.condition.stateId
                 );
                 if (!stateId) {
-                  val = {};
                   this.adapter.log.warn(
                     `Wrong action condition states ${JSON.stringify(trigger.action)} in ${id}`
                   );
-                  return;
+                  return val = {};
                 }
               } else {
-                val = {};
                 this.adapter.log.warn(
                   `Wrong action condition string ${JSON.stringify(trigger.action)} in ${id}`
                 );
-                return;
+                return val = {};
               }
               if (trigger.action.condition.sign !== "==" && trigger.action.condition.sign !== "!=") {
                 trigger.action.condition.sign = "==";
@@ -330,9 +318,9 @@ class IoBrokerValidationState {
       }
     } else {
       this.adapter.log.error(`Cannot found OnOffSchedule in ${id}`);
-      val = {};
-      return;
+      return val = {};
     }
+    return val;
   }
   /**
    * @param utils Utils

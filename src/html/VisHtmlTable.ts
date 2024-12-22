@@ -262,7 +262,7 @@ export class VisHtmlTable implements htmltable {
                 }
                 next_event[nextDateTime] = await this.nextAction(nextDateTime, nextName, nextaction);
             }
-            if (data.onAction && data.onAction && data.onAction.idsOfStatesToSet) {
+            if (data.onAction && data.onAction.idsOfStatesToSet) {
                 if (data.onAction.idsOfStatesToSet[0] !== "default.state") {
                     for (const dev of data.onAction.idsOfStatesToSet) {
                         if (devices == "") {
