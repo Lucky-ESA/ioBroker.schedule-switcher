@@ -613,9 +613,15 @@ export class IoBrokerValidationState implements validationState {
                         ack: true,
                     });
                 } else {
-                    this.adapter.log.error(
-                        `Missing object ${id} - Please delete Widgets: ${JSON.stringify(newViews[stateId])}`,
-                    );
+                    if (id === "undefined") {
+                        this.adapter.log.error(
+                            `Missing dataId - Please delete Widgets: ${JSON.stringify(newViews[stateId])}`,
+                        );
+                    } else {
+                        this.adapter.log.error(
+                            `Missing object ${id} - Please delete Widgets: ${JSON.stringify(newViews[stateId])}`,
+                        );
+                    }
                 }
             }
         }
