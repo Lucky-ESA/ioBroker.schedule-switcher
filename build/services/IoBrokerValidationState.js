@@ -479,17 +479,17 @@ class IoBrokerValidationState {
                         }
                         if (!templates[template].widgets[widget].data["oid-dataId"] || templates[template].widgets[widget].data["oid-dataId"] == "") {
                           this.adapter.log.warn(
-                            `Missing dataId for ${widget} - ${template} - ${folder} - ${vis}`
+                            `Missing dataId for ${widget} - ${template} - ${JSON.stringify(folder)} - ${vis}`
                           );
                         }
                         if (!templates[template].widgets[widget].data["oid-stateId1"] || templates[template].widgets[widget].data["oid-stateId1"] == "") {
                           this.adapter.log.warn(
-                            `Missing stateId for ${widget} - ${template} - ${folder} - ${vis}`
+                            `Missing stateId for ${widget} - ${template} - ${JSON.stringify(folder)} - ${vis}`
                           );
                         }
                         if (!templates[template].widgets[widget].data["oid-enabled"] || templates[template].widgets[widget].data["oid-enabled"] == "") {
                           this.adapter.log.warn(
-                            `Missing oid-enabledId for ${widget} - ${template} - ${folder} - ${vis}`
+                            `Missing oid-enabledId for ${widget} - ${template} - ${JSON.stringify(folder)} - ${vis}`
                           );
                         }
                         if (templates[template].widgets[widget].data["oid-dataId"] && templates[template].widgets[widget].data["oid-enabled"] && templates[template].widgets[widget].data["oid-dataId"] != "" && templates[template].widgets[widget].data["oid-enabled"] != "") {
@@ -501,17 +501,17 @@ class IoBrokerValidationState {
                           );
                           if (splitDataId.length != 5 || splitDataId[4] != "data") {
                             this.adapter.log.warn(
-                              `Wrong dataId ${templates[template].widgets[widget].data["oid-dataId"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                              `Wrong dataId ${templates[template].widgets[widget].data["oid-dataId"]} for ${widget} - ${template} - ${JSON.stringify(folder)} - ${vis}`
                             );
                           }
                           if (splitEnabledId.length != 5 || splitEnabledId[4] != "enabled") {
                             this.adapter.log.warn(
-                              `Wrong dataId ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                              `Wrong dataId ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${JSON.stringify(folder)} - ${vis}`
                             );
                           }
                           if (splitEnabledId[3] != splitDataId[3]) {
                             this.adapter.log.warn(
-                              `Wrong dataId and enabledID ${templates[template].widgets[widget].data["oid-dataId"]} - ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${folder} - ${vis}`
+                              `Wrong dataId and enabledID ${templates[template].widgets[widget].data["oid-dataId"]} - ${templates[template].widgets[widget].data["oid-enabled"]} for ${widget} - ${template} - ${JSON.stringify(folder)} - ${vis}`
                             );
                           }
                         }
