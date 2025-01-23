@@ -237,6 +237,7 @@ class VisHtmlTable {
           }
         }
       }
+      const val_enabled = data.enabled ? false : true;
       status = `${data.onAction.onValue}/${data.onAction.offValue}&ensp;${data.enabled ? id.icon_true : id.icon_false}`;
       const status_icon = data.enabled ? "green" : "red";
       text += `
@@ -251,7 +252,7 @@ class VisHtmlTable {
                 color:${status_icon}; 
                 font-size:${id.column_width_01}px; 
                 text-align:left" 
-                value="${data.enabled}" onclick="setState('${state.replace("data", "enabled")}', this.value)">${id.icon_switch_symbol}
+                value="${val_enabled}" onclick="setState('${state.replace("data", "enabled")}', this.value)">${id.icon_switch_symbol}
             </button>&ensp;&ensp;${iTag}${data.name}&ensp;(${count})${iTagEnd}</td>
             <td title="${devices}" style="text-align:${id.column_align_row_02}">${iTag}${devices}${iTagEnd}</td>
             <td title="${status}" style="text-align:${id.column_align_row_03}">${iTag}${status}${iTagEnd}</td>
