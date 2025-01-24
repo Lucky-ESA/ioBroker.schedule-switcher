@@ -610,7 +610,7 @@ class IoBrokerValidationState {
             let isChange = false;
             for (const trigger of triggers.triggers) {
               if (trigger && trigger.type === "AstroTrigger") {
-                trigger.todayTrigger.date = await this.nextDate(/* @__PURE__ */ new Date(), trigger, coordinate);
+                trigger.todayTrigger = await this.nextDate(/* @__PURE__ */ new Date(), trigger, coordinate);
                 trigger.todayTrigger.date = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
                 const actual = new Date(trigger.todayTrigger.date);
                 trigger.todayTrigger.hour = actual.getHours();
