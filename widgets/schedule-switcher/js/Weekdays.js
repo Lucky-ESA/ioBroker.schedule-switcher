@@ -3,10 +3,10 @@
         constructor() {
             super();
             this.sr = this.createShadowRoot();
-            this.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((s) =>
+            this.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(s =>
                 vis.binds["schedule-switcher"].translate(s),
             );
-            this.weekdaysShort = this.weekdays.map((s) => s.substr(0, 2).toUpperCase());
+            this.weekdaysShort = this.weekdays.map(s => s.substr(0, 2).toUpperCase());
             this.addWeekdayElements();
         }
 
@@ -109,13 +109,22 @@
 
         addWeekdayElements() {
             if (!this.sr.querySelector(".container.edit span")) {
-                this.weekdaysShort.forEach((day) => {
+                let count = 1;
+                const today_nr = new Date().getDay();
+                this.weekdaysShort.forEach(day => {
+                    const neuB = document.createElement("b");
                     const span = document.createElement("span");
                     span.textContent = ` ${day} `;
+                    span.id = `short${count}`;
+                    if (count === today_nr) {
+                        span.style.fontWeight = "bold";
+                    }
                     this.sr.querySelector(".container.view").appendChild(span);
+                    ++count;
                 });
 
-                this.weekdays.forEach((day) => {
+                count = 1;
+                this.weekdays.forEach(day => {
                     const label = document.createElement("label");
                     label.classList.add("pure-material-checkbox");
                     const input = document.createElement("input");
@@ -123,9 +132,14 @@
                     input.onclick = this.onWeekdayClick.bind(this);
                     const text = document.createElement("span");
                     text.textContent = `${day}`;
+                    text.id = `long${count}`;
+                    if (count === today_nr) {
+                        text.style.fontWeight = "bold";
+                    }
                     label.appendChild(input);
                     label.appendChild(text);
                     this.sr.querySelector(".container.edit").appendChild(label);
+                    ++count;
                 });
             }
         }

@@ -46,6 +46,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 - (Lucky-ESA) Dependencies updated
 - (Lucky-ESA) Fixed: In the HTML overview, enabled / disabled does not work
 - (Lucky-ESA) Fixed: Astrotime incorrectly
+- (Lucky-ESA) Added: Current day in font weight bold
 
 ### 0.0.9 (2024-12-20)
 

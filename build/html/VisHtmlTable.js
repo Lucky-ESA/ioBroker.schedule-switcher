@@ -104,6 +104,17 @@ class VisHtmlTable {
     let count = 0;
     let countall = 0;
     const now = /* @__PURE__ */ new Date();
+    const today_style = {
+      0: "",
+      1: "",
+      2: "",
+      3: "",
+      4: "",
+      5: "",
+      6: "",
+      7: ""
+    };
+    today_style[(/* @__PURE__ */ new Date()).getDay()] = " font-weight:bold;";
     for (const state in this.stateVal) {
       const data = this.stateVal[state];
       let devices = "";
@@ -210,13 +221,13 @@ class VisHtmlTable {
                 <input for="delete${countall}" type="button" value="delete" onclick="deleteTrigger('${this.adapter.namespace}', 'delete-trigger', '${trigger.id}', '${state}', '${countall}')" /></td>
                 <td title="${times}" style="text-align:${id.column_align_row_02}">${change_times}</td>
                 <td title="${times}" style="text-align:${id.column_align_row_03}">${iTag}${times}${iTagEnd}${action}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 1, '${trigger.type}')" style="text-align:${id.column_align_row_04}; color:${trigger.weekdays && trigger.weekdays.includes(1) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_04}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 2, '${trigger.type}')" style="text-align:${id.column_align_row_05}; color:${trigger.weekdays && trigger.weekdays.includes(2) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_05}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 3, '${trigger.type}')" style="text-align:${id.column_align_row_06}; color:${trigger.weekdays && trigger.weekdays.includes(3) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_06}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 4, '${trigger.type}')" style="text-align:${id.column_align_row_07}; color:${trigger.weekdays && trigger.weekdays.includes(4) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_07}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 5, '${trigger.type}')" style="text-align:${id.column_align_row_08}; color:${trigger.weekdays && trigger.weekdays.includes(5) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_08}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" style="text-align:${id.column_align_row_09}; color:${trigger.weekdays && trigger.weekdays.includes(6) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_09}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" style="text-align:${id.column_align_row_10}; color:${trigger.weekdays && trigger.weekdays.includes(0) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_10}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 1, '${trigger.type}')" style="text-align:${id.column_align_row_04}; ${today_style[1]} color:${trigger.weekdays && trigger.weekdays.includes(1) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_04}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 2, '${trigger.type}')" style="text-align:${id.column_align_row_05}; ${today_style[2]} color:${trigger.weekdays && trigger.weekdays.includes(2) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_05}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 3, '${trigger.type}')" style="text-align:${id.column_align_row_06}; ${today_style[3]} color:${trigger.weekdays && trigger.weekdays.includes(3) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_06}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 4, '${trigger.type}')" style="text-align:${id.column_align_row_07}; ${today_style[4]} color:${trigger.weekdays && trigger.weekdays.includes(4) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_07}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 5, '${trigger.type}')" style="text-align:${id.column_align_row_08}; ${today_style[5]} color:${trigger.weekdays && trigger.weekdays.includes(5) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_08}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" style="text-align:${id.column_align_row_09}; ${today_style[6]} color:${trigger.weekdays && trigger.weekdays.includes(6) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_09}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" style="text-align:${id.column_align_row_10}; ${today_style[0]} color:${trigger.weekdays && trigger.weekdays.includes(0) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_10}${iTagEnd}</td>
                 </tr>`;
         nextName.push(nextNameData);
       }
@@ -256,13 +267,13 @@ class VisHtmlTable {
             </button>&ensp;&ensp;${iTag}${data.name}&ensp;(${count})${iTagEnd}</td>
             <td title="${devices}" style="text-align:${id.column_align_row_02}">${iTag}${devices}${iTagEnd}</td>
             <td title="${status}" style="text-align:${id.column_align_row_03}">${iTag}${status}${iTagEnd}</td>
-            <td style="text-align:${id.column_align_row_04}">${next_event[1]}</td>
-            <td style="text-align:${id.column_align_row_05}">${next_event[2]}</td>
-            <td style="text-align:${id.column_align_row_06}">${next_event[3]}</td>
-            <td style="text-align:${id.column_align_row_07}">${next_event[4]}</td>
-            <td style="text-align:${id.column_align_row_08}">${next_event[5]}</td>
-            <td style="text-align:${id.column_align_row_09}">${next_event[6]}</td>
-            <td style="text-align:${id.column_align_row_10}">${next_event[0]}</td>
+            <td style="text-align:${id.column_align_row_04};">${next_event[1]}</td>
+            <td style="text-align:${id.column_align_row_05};">${next_event[2]}</td>
+            <td style="text-align:${id.column_align_row_06};">${next_event[3]}</td>
+            <td style="text-align:${id.column_align_row_07};">${next_event[4]}</td>
+            <td style="text-align:${id.column_align_row_08};">${next_event[5]}</td>
+            <td style="text-align:${id.column_align_row_09};">${next_event[6]}</td>
+            <td style="text-align:${id.column_align_row_10};">${next_event[0]}</td>
             </tr>`;
       text += triggers;
       ++count;

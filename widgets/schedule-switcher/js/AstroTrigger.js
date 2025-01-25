@@ -61,7 +61,13 @@
         }
 
         onDataChanged() {
-            if (this.data.todayTrigger && this.data.todayTrigger.hour != null && !this.edit) {
+            const today_nr = new Date().getDay();
+            if (
+                this.data.todayTrigger &&
+                this.data.todayTrigger.hour != null &&
+                !this.edit &&
+                this.data.weekdays.includes(today_nr)
+            ) {
                 this.sr.querySelector(".container.nextevent").style.display = null;
                 const nextFormatted = `${("0" + this.data.todayTrigger.hour).slice(-2)}:${("0" + this.data.todayTrigger.minute).slice(-2)}`;
                 this.sr.querySelector(".nextevent .next").textContent = nextFormatted;
