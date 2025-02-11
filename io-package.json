@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "news": {
+      "0.0.10": {
+        "en": "Dependencies updated\nFixed: In the HTML overview, enabled / disabled does not work\nFixed: Astrotime incorrectly\nAdded: Current day in font weight bold",
+        "de": "Ausgaben aktualisiert\nBehoben: In der HTML-Übersicht, aktiviert / deaktiviert funktioniert nicht\nBehoben: Astrotime falsch\nHinzugefügt: Aktueller Tag in Schriftgewicht fett",
+        "ru": "Обновленные данные о зависимостях\nИсправлено: В HTML-обзоре, включенный/выключенный не работает\nИсправлено: Астротайм неправильно\nДобавлено: Текущий день в весе шрифта смелый",
+        "pt": "Dependências atualizadas\nCorrigido: Na visão geral do HTML, habilitado / desativado não funciona\nCorrigido: Astrotime incorretamente\nAdicionado: Current day in font weight bold",
+        "nl": "Afhankelijkheden bijgewerkt\nVast: In het HTML-overzicht werkt ingeschakeld / uitgeschakeld niet\nVast: Astrotime onjuist\nToegevoegd: Huidige dag in lettertypegewicht vet",
+        "fr": "Dépendances actualisées\nCorrection : Dans l'aperçu HTML, activé / désactivé ne fonctionne pas\nCorrection : Astrotime incorrectement\nAjouté: Jour actuel en poids de police bold",
+        "it": "Dipendenze aggiornate\nFisso: Nella panoramica HTML, abilitato / disabilitato non funziona\nRisolto: Astrotime in modo errato\nAggiunto: Corrente giorno in carattere peso grassetto",
+        "es": "Actualización de las dependencias\nFijación: En el resumen HTML, habilitado / discapacitado no funciona\nCorregido: Astrotime incorrectamente\nAñadido: Día actual en letra de peso bold",
+        "pl": "Aktualizacja zależności\nNaprawiono: W przeglądzie HTML, włączone / wyłączone nie działa\nNaprawiono: Astrotime nieprawidłowy\nDodano: Aktualny dzień w wadze czcionki pogrubionej",
+        "uk": "Залежність оновлено\nВиправлено: У огляді HTML ввімкнено / вимкнено не працює\nВиправлено: Astrotime невірно\nДоданий: Поточний день у шрифті ваги сміливо",
+        "zh-cn": "更新的依赖关系\n固定: 在 HTML 概览中, 启用/ 禁用无效\n固定: 天体时间错误\n添加:当前字体重量粗体字"
+      },
       "0.0.9": {
         "en": "Fixed: Reading files from Redis database\nAdded: Automatic deactivation control\nFixed: Visibility\nFixed: Bug in type check",
         "de": "Behoben: Dateien aus der Redis-Datenbank lesen\nHinzugefügt: Automatische Deaktivierungssteuerung\nBehoben: Sichtbarkeit\nBehoben: Fehler in der Typprüfung",
@@ -80,19 +93,6 @@
         "pl": "Funkcja tymczasowa usunięta\nTworzenie skorygowanych obiektów\nKontrola walidacji stanów\nSprawdzanie walidacji dla 2 widżetów z jednym obiektem",
         "uk": "Видалення тимчасової функції\nСтворення об'єктів налаштовується\nПеревірка стану\nПеревірка вірності для 2 віджетів з одним об'єктом",
         "zh-cn": "暂时函数已删除\n创建调整对象\n各州的验证检查\n对 2 个对象的部件进行校验"
-      },
-      "0.0.3": {
-        "en": "Fixed VIS translate\nAdded astro time in trigger\nFixed OneTimeTrigger\nAdded date for OneTimeTrigger\nFixed some bugs",
-        "de": "Feste VIS übersetzen\nAstro-Zeit in Trigger hinzugefügt\nEin TimeTrigger wurde behoben\nDatum für OneTimeTrigger hinzugefügt\nEinige Fehler behoben",
-        "ru": "Фиксированный перевод VIS\nДобавлено время астро в триггер\nFixed OneTimeTrigger\nДобавленная дата для OneTimeTrigger\nИсправлены некоторые ошибки",
-        "pt": "VIS corrigido traduzir\nAdicionado tempo astro em gatilho\nFixo OneTimeTrigger\nAdicionado data para OneTimeTrigger\nCorrigido alguns bugs",
-        "nl": "Vaste VIS-vertaling\nToegevoegd astro tijd in trigger\nVaste OneTimeTrigger\nDatum toegevoegd voor OneTimeTrigger\nEnkele bugs hersteld",
-        "fr": "Traduction VIS fixe\nAjout du temps astro dans le déclencheur\nCorrection de OneTimeTrigger\nDate d'ajout pour OneTimeTrigger\nCorrection de certains bugs",
-        "it": "Traduttore VIS fisso\nAggiunto il tempo di astro in trigger\nOneTimeTrigger fisso\nData aggiunta per OneTimeTrigger\nRisolto alcuni bug",
-        "es": "Traducir VIS fijo\nTiempo de astro añadido en el gatillo\nFixed OneTimeTrigger\nFecha agregada para OneTimeTrigger\nArreglado algunos errores",
-        "pl": "Stałe tłumaczenie VIS\nDodano czas astro w wyzwalaczu\nNaprawiono OneTimeTrigger\nDodano datę dla OneTimeTrigger\nNaprawiono kilka błędów",
-        "uk": "Виправлено VIS переклад\nДодано час астро в тригер\nФіксований OneTimeTrigger\nДодано дату для OneTimeTrigger\nВиправлено деякі помилки",
-        "zh-cn": "固定VIS翻译\n触发时添加天体时间\n固定一次性调试器\n添加的一次性调试器日期\n修补一些错误"
       }
     },
     "titleLang": {

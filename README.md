@@ -40,8 +40,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.0.10 (2025-02-11)
 
 - (Lucky-ESA) Dependencies updated
 - (Lucky-ESA) Fixed: In the HTML overview, enabled / disabled does not work

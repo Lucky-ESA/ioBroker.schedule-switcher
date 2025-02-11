@@ -1,6 +1,6 @@
 {
   "name": "iobroker.schedule-switcher",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Switch states over scheduler",
   "author": {
     "name": "Lucky-ESA",
