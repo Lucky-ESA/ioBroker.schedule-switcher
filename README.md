@@ -22,7 +22,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 - Node 18
 - JS-Controller >= 6.0.11
-- Admin >= 7.0.23
+- Admin >= 7.4.10
 - VIS or VIS-2
 
 ## Description
@@ -40,6 +40,11 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+- (Lucky-ESA) Admin 7.4.10 required
+
 ### 0.0.10 (2025-02-11)
 
 - (Lucky-ESA) Dependencies updated
