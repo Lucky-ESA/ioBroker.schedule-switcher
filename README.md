@@ -44,6 +44,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 ### **WORK IN PROGRESS**
 
 - (Lucky-ESA) Admin 7.4.10 required
+- (Lucky-ESA) Node 20.x required
 
 ### 0.0.10 (2025-02-11)
 
