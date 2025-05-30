@@ -20,7 +20,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 ## Requirements
 
-- Node 18
+- Node 20
 - JS-Controller >= 6.0.11
 - Admin >= 7.4.10
 - VIS or VIS-2
@@ -44,7 +44,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 ### **WORK IN PROGRESS**
 
 - (Lucky-ESA) Admin 7.4.10 required
-- (Lucky-ESA) Node 20.x required
+- (Lucky-ESA) Node 20 required
 
 ### 0.0.10 (2025-02-11)
 
