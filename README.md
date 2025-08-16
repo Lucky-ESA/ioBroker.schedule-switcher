@@ -40,8 +40,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.0.11 (2025-08-16)
 
 - (Lucky-ESA) Admin 7.6.17 required
 - (Lucky-ESA) Node 20 required
@@ -68,13 +67,6 @@ It is possible to configure at which time and on which weekdays the trigger shou
 ### 0.0.7 (2024-11-26)
 
 - (Lucky_ESA) HTML overview added
-
-### 0.0.6 (2024-11-16)
-
-- (Lucky_ESA) Put value of state correctly
-- (Lucky_ESA) Added next triggers as JSON
-- (Lucky_ESA) Added counter trigger
-- (Lucky_ESA) Updating astro time fixed
 
 ## License
 

@@ -1,272 +1,287 @@
 {
-    "common": {
-        "name": "schedule-switcher",
-        "version": "0.0.10",
-        "news": {
-            "0.0.10": {
-                "en": "Dependencies updated\nFixed: In the HTML overview, enabled / disabled does not work\nFixed: Astrotime incorrectly\nAdded: Current day in font weight bold",
-                "de": "Ausgaben aktualisiert\nBehoben: In der HTML-Übersicht, aktiviert / deaktiviert funktioniert nicht\nBehoben: Astrotime falsch\nHinzugefügt: Aktueller Tag in Schriftgewicht fett",
-                "ru": "Обновленные данные о зависимостях\nИсправлено: В HTML-обзоре, включенный/выключенный не работает\nИсправлено: Астротайм неправильно\nДобавлено: Текущий день в весе шрифта смелый",
-                "pt": "Dependências atualizadas\nCorrigido: Na visão geral do HTML, habilitado / desativado não funciona\nCorrigido: Astrotime incorretamente\nAdicionado: Current day in font weight bold",
-                "nl": "Afhankelijkheden bijgewerkt\nVast: In het HTML-overzicht werkt ingeschakeld / uitgeschakeld niet\nVast: Astrotime onjuist\nToegevoegd: Huidige dag in lettertypegewicht vet",
-                "fr": "Dépendances actualisées\nCorrection : Dans l'aperçu HTML, activé / désactivé ne fonctionne pas\nCorrection : Astrotime incorrectement\nAjouté: Jour actuel en poids de police bold",
-                "it": "Dipendenze aggiornate\nFisso: Nella panoramica HTML, abilitato / disabilitato non funziona\nRisolto: Astrotime in modo errato\nAggiunto: Corrente giorno in carattere peso grassetto",
-                "es": "Actualización de las dependencias\nFijación: En el resumen HTML, habilitado / discapacitado no funciona\nCorregido: Astrotime incorrectamente\nAñadido: Día actual en letra de peso bold",
-                "pl": "Aktualizacja zależności\nNaprawiono: W przeglądzie HTML, włączone / wyłączone nie działa\nNaprawiono: Astrotime nieprawidłowy\nDodano: Aktualny dzień w wadze czcionki pogrubionej",
-                "uk": "Залежність оновлено\nВиправлено: У огляді HTML ввімкнено / вимкнено не працює\nВиправлено: Astrotime невірно\nДоданий: Поточний день у шрифті ваги сміливо",
-                "zh-cn": "更新的依赖关系\n固定: 在 HTML 概览中, 启用/ 禁用无效\n固定: 天体时间错误\n添加:当前字体重量粗体字"
-            },
-            "0.0.9": {
-                "en": "Fixed: Reading files from Redis database\nAdded: Automatic deactivation control\nFixed: Visibility\nFixed: Bug in type check",
-                "de": "Behoben: Dateien aus der Redis-Datenbank lesen\nHinzugefügt: Automatische Deaktivierungssteuerung\nBehoben: Sichtbarkeit\nBehoben: Fehler in der Typprüfung",
-                "ru": "Исправлено: чтение файлов из базы данных Redis\nДобавлено: Автоматическое управление деактивацией\nИсправлено: Видимость\nИсправлено: Bug в проверке типа",
-                "pt": "Corrigido: Leitura de arquivos do banco de dados Redis\nAdicionado: Automatic desativation control\nCorrigido: Visibilidade\nCorrigido: Bug na verificação do tipo",
-                "nl": "Fixed: Bestanden lezen uit Redis database\nToegevoegd: Automatische deactiveringscontrole\nVast: Zichtbaarheid\nVast: Bug in type controle",
-                "fr": "Correction : Lecture des fichiers de la base de données Redis\nAjouté : Contrôle automatique de désactivation\nCorrection : Visibilité\nCorrection : Bug dans la vérification de type",
-                "it": "Risolto: File di lettura dal database Redis\nAggiunto: Controllo automatico di disattivazione\nFisso: Visibilità\nRisolto: Bug nel controllo del tipo",
-                "es": "Fijo: lectura de archivos de la base de datos Redis\nAñadido: Control automático de desactivación\nFijo: Visibilidad\nCorregido: Error en el tipo de cheque",
-                "pl": "Naprawiono: czytanie plików z bazy danych Redis\nDodano: Automatyczne sterowanie dezaktywacją\nStała: Widoczność\nNaprawiono: Błąd w sprawdzaniu typu",
-                "uk": "Виправлено: Читання файлів з бази даних Redis\nДоданий: Автоматичний контроль деактивації\nВиправлено: Вимога\nВиправлено: Помилки в машині",
-                "zh-cn": "固定: 从 Redis 数据库读取文件\n添加:自动停用控制\n固定:可见度\n固定: 类型检查中的错误"
-            },
-            "0.0.8": {
-                "en": "Migration to ESLint9\nBugfixes",
-                "de": "Migration auf ESLint9\nBugfixes",
-                "ru": "Миграция в ESLint9\nBugfixs",
-                "pt": "Migração para ESLint9\nBugfixs",
-                "nl": "Migratie naar ESLint9\nBugfixes",
-                "fr": "Migration vers ESLint9\nFixes de bogue",
-                "it": "Migrazione a ESLint9\nBugfix",
-                "es": "Migración a ESLint9\nBugfixes",
-                "pl": "Migracja do ESLint9\nKorekty błędów",
-                "uk": "Міграція в ESLint9\nПомилки",
-                "zh-cn": "迁移到ESLint9\n错误修正"
-            },
-            "0.0.7": {
-                "en": "HTML overview added",
-                "de": "HTML Übersicht hinzugefügt",
-                "ru": "HTML обзор добавлен",
-                "pt": "Visão geral HTML adicionado",
-                "nl": "HTML-overzicht toegevoegd",
-                "fr": "Aperçu HTML ajouté",
-                "it": "Panoramica HTML aggiunto",
-                "es": "Resumen HTML añadido",
-                "pl": "Dodano przegląd HTML",
-                "uk": "HTML огляд додано",
-                "zh-cn": "添加了 HTML 概览"
-            },
-            "0.0.6": {
-                "en": "Put value of state correctly\nAdded next triggers as JSON\nAdded counter trigger\nUpdating astro time fixed",
-                "de": "Zustandswert richtig setzen\nNächste Trigger als JSON hinzugefügt\nHinzufügen von Zähler-Trigger\nAktualisierte Astrozeit",
-                "ru": "Правильно поставить значение состояния\nДобавлены следующие триггеры как JSON\nДобавить триггер\nУстановленное время астро",
-                "pt": "Colocar o valor do estado corretamente\nAdicionado próximo gatilhos como JSON\nAdicionado gatilho de contador\nTempo de astro atualizado fixo",
-                "nl": "Waarde van status correct instellen\nVolgende triggers toegevoegd als JSON\nTeller-starter toegevoegd\nBijwerken astrotijd vastgesteld",
-                "fr": "Mettre la valeur de l'état correctement\nAjout des déclencheurs suivants comme JSON\nDéclencheur du compteur ajouté\nMise à jour du temps astro fixé",
-                "it": "Mettere correttamente il valore dello stato\nAggiunto prossimo triggers come JSON\nAggiunto grilletto contatore\nTempo di avanzamento fisso",
-                "es": "Ponga el valor del estado correctamente\nAñadido el siguiente gatillo como JSON\nAgregado disparador de contador\nTiempo de actualización del astro fijo",
-                "pl": "Prawidłowa wartość stanu\nDodano kolejne wyzwalacze jako JSON\nDodano licznik\nAktualizacja czasu astro ustalona",
-                "uk": "Поставити значення держави правильно\nДодано наступні тригери як JSON\nДоданий лічильник тригер\nОновлення часу астро фіксованого",
-                "zh-cn": "正确设置状态值\n添加下一个触发器为 JSON\n添加计数器触发器\n更新固定的天体时间"
-            },
-            "0.0.5": {
-                "en": "Crash when updating astro time fixed",
-                "de": "Crash bei der Aktualisierung von Astrozeit behoben",
-                "ru": "Crash при обновлении времени астро фиксированного",
-                "pt": "Crash ao atualizar o tempo astro fixo",
-                "nl": "Crash bij het bijwerken van astrotijd vastgesteld",
-                "fr": "Crash lors de la mise à jour astro time fixe",
-                "it": "Crash quando si aggiorna il tempo di astro fisso",
-                "es": "Al actualizar el tiempo de astro fijo",
-                "pl": "Crash podczas aktualizacji czasu astro stałe",
-                "uk": "Краш при оновленні встановленого часу",
-                "zh-cn": "更新天体时发生崩溃"
-            },
-            "0.0.4": {
-                "en": "Temporary function removed\nCreation of objects adjusted\nValidation check of the states\nValidation check for 2 widgets with one object",
-                "de": "Temporäre Funktion entfernt\nErstellung von Objekten angepasst\nValidierungsprüfung der Staaten\nValidierungsprüfung für 2 Widgets mit einem Objekt",
-                "ru": "Временные функции удалены\nСоздание объектов с поправкой\nПроверка достоверности\nПроверка достоверности для 2 виджетов с одним объектом",
-                "pt": "Função temporária removida\nCriação de objetos ajustados\nVerificação de validação dos estados\nVerificação de validação para 2 widgets com um objeto",
-                "nl": "Tijdelijke functie verwijderd\nAanmaken van objecten aangepast\nValidatiecontrole van de staten\nValidatiecontrole voor 2 widgets met één object",
-                "fr": "Fonction temporaire supprimée\nCréation d'objets ajustés\nContrôle de validation des états\nVérification de validation de 2 widgets avec un objet",
-                "it": "Funzione temporanea rimossa\nCreazione di oggetti regolati\nControllo di convalida degli stati\nControllo di convalida per 2 widget con un oggetto",
-                "es": "Función temporal eliminada\nCreación de objetos ajustados\nVerificación de validación de los estados\nVerificación de validación para 2 widgets con un objeto",
-                "pl": "Funkcja tymczasowa usunięta\nTworzenie skorygowanych obiektów\nKontrola walidacji stanów\nSprawdzanie walidacji dla 2 widżetów z jednym obiektem",
-                "uk": "Видалення тимчасової функції\nСтворення об'єктів налаштовується\nПеревірка стану\nПеревірка вірності для 2 віджетів з одним об'єктом",
-                "zh-cn": "暂时函数已删除\n创建调整对象\n各州的验证检查\n对 2 个对象的部件进行校验"
-            }
-        },
-        "titleLang": {
-            "en": "schedule-switcher",
-            "de": "Zeitplan-Umschalter",
-            "ru": "переключатель расписания",
-            "pt": "alternador de horário",
-            "nl": "schema-switcher",
-            "fr": "sélecteur d'horaire",
-            "it": "commutatore di pianificazione",
-            "es": "cambiador de horario",
-            "pl": "przełącznik harmonogramu",
-            "uk": "перемикач розкладу",
-            "zh-cn": "日程切换器"
-        },
-        "desc": {
-            "en": "Switch states over scheduler",
-            "de": "Schalten Sie den Status über den Planer um",
-            "ru": "Переключение состояний через планировщик",
-            "pt": "Alternar estados pelo agendador",
-            "nl": "Schakel statussen in via de planner",
-            "fr": "Changer d'état via le planificateur",
-            "it": "Cambia gli stati tramite lo scheduler",
-            "es": "Cambiar estados sobre el programador",
-            "pl": "Przełącz stany przez harmonogram",
-            "uk": "Перемикання станів через планувальник",
-            "zh-cn": "通过调度程序切换状态"
-        },
-        "authors": ["Lucky-ESA <github@luckyskills.de>"],
-        "keywords": ["schedule", "time-switch", "control", "roller shutter", "Power outlet"],
-        "licenseInformation": {
-            "type": "free",
-            "license": "MIT"
-        },
-        "platform": "Javascript/Node.js",
-        "icon": "schedule-switcher.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/Lucky-ESA/ioBroker.schedule-switcher/main/admin/schedule-switcher.png",
-        "readme": "https://github.com/Lucky-ESA/ioBroker.schedule-switcher/blob/main/README.md",
-        "loglevel": "info",
-        "tier": 3,
-        "mode": "daemon",
-        "type": "date-and-time",
-        "compact": true,
-        "connectionType": "local",
-        "messagebox": true,
-        "dataSource": "push",
-        "docs": {
-            "en": ["docs/en/README.md"],
-            "de": ["docs/de/README.md"]
-        },
-        "restartAdapters": ["vis-2", "vis"],
-        "adminUI": {
-            "config": "json"
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=6.0.11"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=7.6.17"
-            }
-        ]
+  "common": {
+    "name": "schedule-switcher",
+    "version": "0.0.11",
+    "news": {
+      "0.0.11": {
+        "en": "Admin 7.6.17 required\nNode 20 required",
+        "de": "Admin 7.6.17 erforderlich\nNr. 20 erforderlich",
+        "ru": "Требуется администратор 7.6.17\nУзел 20 требуется",
+        "pt": "Administração 7.6.17 necessária\nNó 20 exigido",
+        "nl": "Beheerder 7.6.17 vereist\nNode 20 vereist",
+        "fr": "Admin 7.6.17 requis\nNode 20 requis",
+        "it": "Admin 7.6.17 richiesto\nNodo 20 richiesto",
+        "es": "Admin 7.6.17 requerido\nNodo 20 requerido",
+        "pl": "Wymagany admin 7.6.17\nWymagany węzeł 20",
+        "uk": "Admin 7.6.17 потрібно\nNode 20 потрібно",
+        "zh-cn": "所需行政经费\n需要20号节点"
+      },
+      "0.0.10": {
+        "en": "Dependencies updated\nFixed: In the HTML overview, enabled / disabled does not work\nFixed: Astrotime incorrectly\nAdded: Current day in font weight bold",
+        "de": "Ausgaben aktualisiert\nBehoben: In der HTML-Übersicht, aktiviert / deaktiviert funktioniert nicht\nBehoben: Astrotime falsch\nHinzugefügt: Aktueller Tag in Schriftgewicht fett",
+        "ru": "Обновленные данные о зависимостях\nИсправлено: В HTML-обзоре, включенный/выключенный не работает\nИсправлено: Астротайм неправильно\nДобавлено: Текущий день в весе шрифта смелый",
+        "pt": "Dependências atualizadas\nCorrigido: Na visão geral do HTML, habilitado / desativado não funciona\nCorrigido: Astrotime incorretamente\nAdicionado: Current day in font weight bold",
+        "nl": "Afhankelijkheden bijgewerkt\nVast: In het HTML-overzicht werkt ingeschakeld / uitgeschakeld niet\nVast: Astrotime onjuist\nToegevoegd: Huidige dag in lettertypegewicht vet",
+        "fr": "Dépendances actualisées\nCorrection : Dans l'aperçu HTML, activé / désactivé ne fonctionne pas\nCorrection : Astrotime incorrectement\nAjouté: Jour actuel en poids de police bold",
+        "it": "Dipendenze aggiornate\nFisso: Nella panoramica HTML, abilitato / disabilitato non funziona\nRisolto: Astrotime in modo errato\nAggiunto: Corrente giorno in carattere peso grassetto",
+        "es": "Actualización de las dependencias\nFijación: En el resumen HTML, habilitado / discapacitado no funciona\nCorregido: Astrotime incorrectamente\nAñadido: Día actual en letra de peso bold",
+        "pl": "Aktualizacja zależności\nNaprawiono: W przeglądzie HTML, włączone / wyłączone nie działa\nNaprawiono: Astrotime nieprawidłowy\nDodano: Aktualny dzień w wadze czcionki pogrubionej",
+        "uk": "Залежність оновлено\nВиправлено: У огляді HTML ввімкнено / вимкнено не працює\nВиправлено: Astrotime невірно\nДоданий: Поточний день у шрифті ваги сміливо",
+        "zh-cn": "更新的依赖关系\n固定: 在 HTML 概览中, 启用/ 禁用无效\n固定: 天体时间错误\n添加:当前字体重量粗体字"
+      },
+      "0.0.9": {
+        "en": "Fixed: Reading files from Redis database\nAdded: Automatic deactivation control\nFixed: Visibility\nFixed: Bug in type check",
+        "de": "Behoben: Dateien aus der Redis-Datenbank lesen\nHinzugefügt: Automatische Deaktivierungssteuerung\nBehoben: Sichtbarkeit\nBehoben: Fehler in der Typprüfung",
+        "ru": "Исправлено: чтение файлов из базы данных Redis\nДобавлено: Автоматическое управление деактивацией\nИсправлено: Видимость\nИсправлено: Bug в проверке типа",
+        "pt": "Corrigido: Leitura de arquivos do banco de dados Redis\nAdicionado: Automatic desativation control\nCorrigido: Visibilidade\nCorrigido: Bug na verificação do tipo",
+        "nl": "Fixed: Bestanden lezen uit Redis database\nToegevoegd: Automatische deactiveringscontrole\nVast: Zichtbaarheid\nVast: Bug in type controle",
+        "fr": "Correction : Lecture des fichiers de la base de données Redis\nAjouté : Contrôle automatique de désactivation\nCorrection : Visibilité\nCorrection : Bug dans la vérification de type",
+        "it": "Risolto: File di lettura dal database Redis\nAggiunto: Controllo automatico di disattivazione\nFisso: Visibilità\nRisolto: Bug nel controllo del tipo",
+        "es": "Fijo: lectura de archivos de la base de datos Redis\nAñadido: Control automático de desactivación\nFijo: Visibilidad\nCorregido: Error en el tipo de cheque",
+        "pl": "Naprawiono: czytanie plików z bazy danych Redis\nDodano: Automatyczne sterowanie dezaktywacją\nStała: Widoczność\nNaprawiono: Błąd w sprawdzaniu typu",
+        "uk": "Виправлено: Читання файлів з бази даних Redis\nДоданий: Автоматичний контроль деактивації\nВиправлено: Вимога\nВиправлено: Помилки в машині",
+        "zh-cn": "固定: 从 Redis 数据库读取文件\n添加:自动停用控制\n固定:可见度\n固定: 类型检查中的错误"
+      },
+      "0.0.8": {
+        "en": "Migration to ESLint9\nBugfixes",
+        "de": "Migration auf ESLint9\nBugfixes",
+        "ru": "Миграция в ESLint9\nBugfixs",
+        "pt": "Migração para ESLint9\nBugfixs",
+        "nl": "Migratie naar ESLint9\nBugfixes",
+        "fr": "Migration vers ESLint9\nFixes de bogue",
+        "it": "Migrazione a ESLint9\nBugfix",
+        "es": "Migración a ESLint9\nBugfixes",
+        "pl": "Migracja do ESLint9\nKorekty błędów",
+        "uk": "Міграція в ESLint9\nПомилки",
+        "zh-cn": "迁移到ESLint9\n错误修正"
+      },
+      "0.0.7": {
+        "en": "HTML overview added",
+        "de": "HTML Übersicht hinzugefügt",
+        "ru": "HTML обзор добавлен",
+        "pt": "Visão geral HTML adicionado",
+        "nl": "HTML-overzicht toegevoegd",
+        "fr": "Aperçu HTML ajouté",
+        "it": "Panoramica HTML aggiunto",
+        "es": "Resumen HTML añadido",
+        "pl": "Dodano przegląd HTML",
+        "uk": "HTML огляд додано",
+        "zh-cn": "添加了 HTML 概览"
+      },
+      "0.0.6": {
+        "en": "Put value of state correctly\nAdded next triggers as JSON\nAdded counter trigger\nUpdating astro time fixed",
+        "de": "Zustandswert richtig setzen\nNächste Trigger als JSON hinzugefügt\nHinzufügen von Zähler-Trigger\nAktualisierte Astrozeit",
+        "ru": "Правильно поставить значение состояния\nДобавлены следующие триггеры как JSON\nДобавить триггер\nУстановленное время астро",
+        "pt": "Colocar o valor do estado corretamente\nAdicionado próximo gatilhos como JSON\nAdicionado gatilho de contador\nTempo de astro atualizado fixo",
+        "nl": "Waarde van status correct instellen\nVolgende triggers toegevoegd als JSON\nTeller-starter toegevoegd\nBijwerken astrotijd vastgesteld",
+        "fr": "Mettre la valeur de l'état correctement\nAjout des déclencheurs suivants comme JSON\nDéclencheur du compteur ajouté\nMise à jour du temps astro fixé",
+        "it": "Mettere correttamente il valore dello stato\nAggiunto prossimo triggers come JSON\nAggiunto grilletto contatore\nTempo di avanzamento fisso",
+        "es": "Ponga el valor del estado correctamente\nAñadido el siguiente gatillo como JSON\nAgregado disparador de contador\nTiempo de actualización del astro fijo",
+        "pl": "Prawidłowa wartość stanu\nDodano kolejne wyzwalacze jako JSON\nDodano licznik\nAktualizacja czasu astro ustalona",
+        "uk": "Поставити значення держави правильно\nДодано наступні тригери як JSON\nДоданий лічильник тригер\nОновлення часу астро фіксованого",
+        "zh-cn": "正确设置状态值\n添加下一个触发器为 JSON\n添加计数器触发器\n更新固定的天体时间"
+      },
+      "0.0.5": {
+        "en": "Crash when updating astro time fixed",
+        "de": "Crash bei der Aktualisierung von Astrozeit behoben",
+        "ru": "Crash при обновлении времени астро фиксированного",
+        "pt": "Crash ao atualizar o tempo astro fixo",
+        "nl": "Crash bij het bijwerken van astrotijd vastgesteld",
+        "fr": "Crash lors de la mise à jour astro time fixe",
+        "it": "Crash quando si aggiorna il tempo di astro fisso",
+        "es": "Al actualizar el tiempo de astro fijo",
+        "pl": "Crash podczas aktualizacji czasu astro stałe",
+        "uk": "Краш при оновленні встановленого часу",
+        "zh-cn": "更新天体时发生崩溃"
+      }
     },
-    "native": {
-        "switch_delay": 500,
-        "usehtml": false,
-        "history": 10,
-        "schedules": {
-            "onOff": []
-        },
-        "schedulesData": [
-            {
-                "stateId": null,
-                "active": "false",
-                "count": "0",
-                "objectid": "schedule-switcher.0.onoff.<set after restart>.data",
-                "objectname": "New Schedule"
-            }
-        ]
+    "titleLang": {
+      "en": "schedule-switcher",
+      "de": "Zeitplan-Umschalter",
+      "ru": "переключатель расписания",
+      "pt": "alternador de horário",
+      "nl": "schema-switcher",
+      "fr": "sélecteur d'horaire",
+      "it": "commutatore di pianificazione",
+      "es": "cambiador de horario",
+      "pl": "przełącznik harmonogramu",
+      "uk": "перемикач розкладу",
+      "zh-cn": "日程切换器"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "sendto",
-            "type": "state",
-            "common": {
-                "role": "json",
-                "name": "SendTo Workaround",
-                "type": "string",
-                "read": true,
-                "write": true
-            },
-            "native": {}
-        },
-        {
-            "_id": "history",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "History",
-                    "de": "Historie",
-                    "ru": "История",
-                    "pt": "História",
-                    "nl": "Voorgeschiedenis",
-                    "fr": "Historique",
-                    "it": "Storia",
-                    "es": "Historia",
-                    "pl": "Historia",
-                    "uk": "Історія",
-                    "zh-cn": "历史"
-                },
-                "read": true,
-                "write": false,
-                "type": "string",
-                "role": "json",
-                "def": "[]",
-                "desc": "History all switching"
-            },
-            "native": {}
-        },
-        {
-            "_id": "nextEvents",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "Next time switch event",
-                    "de": "Nächster Zeitschalter Ereignis",
-                    "ru": "В следующий раз",
-                    "pt": "Evento de interruptor de próxima vez",
-                    "nl": "Volgende keer wisselen gebeurtenis",
-                    "fr": "Prochaine étape",
-                    "it": "Il prossimo evento di commutazione",
-                    "es": "Próximo evento de conmutación",
-                    "pl": "Następne zdarzenie przełącznika czasu",
-                    "uk": "Попередній запис",
-                    "zh-cn": "下次切换事件"
-                },
-                "read": true,
-                "write": false,
-                "type": "string",
-                "role": "json",
-                "def": "[]",
-                "desc": "Next time switch event"
-            },
-            "native": {}
-        },
-        {
-            "_id": "counterTrigger",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "Trigger counter",
-                    "de": "Triggerzähler",
-                    "ru": "Trigger counter",
-                    "pt": "Contador de gatilho",
-                    "nl": "Triggerteller",
-                    "fr": "Compteur de déclenchement",
-                    "it": "Trigger contatore",
-                    "es": "Contraataque",
-                    "pl": "Licznik dźwigni",
-                    "uk": "Тригерний лічильник",
-                    "zh-cn": "触发计数器"
-                },
-                "read": true,
-                "write": false,
-                "type": "number",
-                "role": "state",
-                "def": 0,
-                "desc": "Trigger counter"
-            },
-            "native": {}
-        }
+    "desc": {
+      "en": "Switch states over scheduler",
+      "de": "Schalten Sie den Status über den Planer um",
+      "ru": "Переключение состояний через планировщик",
+      "pt": "Alternar estados pelo agendador",
+      "nl": "Schakel statussen in via de planner",
+      "fr": "Changer d'état via le planificateur",
+      "it": "Cambia gli stati tramite lo scheduler",
+      "es": "Cambiar estados sobre el programador",
+      "pl": "Przełącz stany przez harmonogram",
+      "uk": "Перемикання станів через планувальник",
+      "zh-cn": "通过调度程序切换状态"
+    },
+    "authors": [
+      "Lucky-ESA <github@luckyskills.de>"
+    ],
+    "keywords": [
+      "schedule",
+      "time-switch",
+      "control",
+      "roller shutter",
+      "Power outlet"
+    ],
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
+    "platform": "Javascript/Node.js",
+    "icon": "schedule-switcher.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/Lucky-ESA/ioBroker.schedule-switcher/main/admin/schedule-switcher.png",
+    "readme": "https://github.com/Lucky-ESA/ioBroker.schedule-switcher/blob/main/README.md",
+    "loglevel": "info",
+    "tier": 3,
+    "mode": "daemon",
+    "type": "date-and-time",
+    "compact": true,
+    "connectionType": "local",
+    "messagebox": true,
+    "dataSource": "push",
+    "docs": {
+      "en": [
+        "docs/en/README.md"
+      ],
+      "de": [
+        "docs/de/README.md"
+      ]
+    },
+    "restartAdapters": [
+      "vis-2",
+      "vis"
+    ],
+    "adminUI": {
+      "config": "json"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=6.0.11"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=7.6.17"
+      }
     ]
+  },
+  "native": {
+    "switch_delay": 500,
+    "usehtml": false,
+    "history": 10,
+    "schedules": {
+      "onOff": []
+    },
+    "schedulesData": [
+      {
+        "stateId": null,
+        "active": "false",
+        "count": "0",
+        "objectid": "schedule-switcher.0.onoff.<set after restart>.data",
+        "objectname": "New Schedule"
+      }
+    ]
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "sendto",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "SendTo Workaround",
+        "type": "string",
+        "read": true,
+        "write": true
+      },
+      "native": {}
+    },
+    {
+      "_id": "history",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "History",
+          "de": "Historie",
+          "ru": "История",
+          "pt": "História",
+          "nl": "Voorgeschiedenis",
+          "fr": "Historique",
+          "it": "Storia",
+          "es": "Historia",
+          "pl": "Historia",
+          "uk": "Історія",
+          "zh-cn": "历史"
+        },
+        "read": true,
+        "write": false,
+        "type": "string",
+        "role": "json",
+        "def": "[]",
+        "desc": "History all switching"
+      },
+      "native": {}
+    },
+    {
+      "_id": "nextEvents",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Next time switch event",
+          "de": "Nächster Zeitschalter Ereignis",
+          "ru": "В следующий раз",
+          "pt": "Evento de interruptor de próxima vez",
+          "nl": "Volgende keer wisselen gebeurtenis",
+          "fr": "Prochaine étape",
+          "it": "Il prossimo evento di commutazione",
+          "es": "Próximo evento de conmutación",
+          "pl": "Następne zdarzenie przełącznika czasu",
+          "uk": "Попередній запис",
+          "zh-cn": "下次切换事件"
+        },
+        "read": true,
+        "write": false,
+        "type": "string",
+        "role": "json",
+        "def": "[]",
+        "desc": "Next time switch event"
+      },
+      "native": {}
+    },
+    {
+      "_id": "counterTrigger",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Trigger counter",
+          "de": "Triggerzähler",
+          "ru": "Trigger counter",
+          "pt": "Contador de gatilho",
+          "nl": "Triggerteller",
+          "fr": "Compteur de déclenchement",
+          "it": "Trigger contatore",
+          "es": "Contraataque",
+          "pl": "Licznik dźwigni",
+          "uk": "Тригерний лічильник",
+          "zh-cn": "触发计数器"
+        },
+        "read": true,
+        "write": false,
+        "type": "number",
+        "role": "state",
+        "def": 0,
+        "desc": "Trigger counter"
+      },
+      "native": {}
+    }
+  ]
 }
