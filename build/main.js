@@ -720,16 +720,16 @@ class ScheduleSwitcher extends utils.Adapter {
     });
   }
   async onScheduleChange(id, scheduleString) {
-    var _a;
+    var _a, _b;
     this.log.debug(`onScheduleChange: ${scheduleString} ${id}`);
     if (this.scheduleIdToSchedule.get(id)) {
-      this.log.debug(`schedule found: ${this.scheduleIdToSchedule.get(id)}`);
+      this.log.debug(`schedule found: ${(_a = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _a.getName()}`);
     }
     try {
       const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
       const enabledState = await this.getStateAsync(this.getEnabledIdFromScheduleId(id));
       if (enabledState) {
-        (_a = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _a.destroy();
+        (_b = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _b.destroy();
         schedule.setEnabled(enabledState.val);
         this.scheduleIdToSchedule.set(id, schedule);
       } else {

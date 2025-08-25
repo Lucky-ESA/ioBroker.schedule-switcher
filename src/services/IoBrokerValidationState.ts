@@ -703,10 +703,14 @@ export class IoBrokerValidationState implements validationState {
                                 trigger.todayTrigger.minute = actual.getMinutes();
                                 trigger.todayTrigger.weekday = actual.getDay();
                                 isChange = true;
+                                //this.adapter.sendTo(this.adapter.namespace, "update-trigger", {
+                                //    dataId: id,
+                                //    trigger: trigger,
+                                //});
                             }
                         }
                         if (isChange) {
-                            await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
+                            await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: false });
                         }
                     }
                 }

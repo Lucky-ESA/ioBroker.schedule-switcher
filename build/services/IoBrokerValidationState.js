@@ -620,7 +620,7 @@ class IoBrokerValidationState {
               }
             }
             if (isChange) {
-              await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
+              await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: false });
             }
           }
         }

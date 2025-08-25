@@ -749,7 +749,7 @@ class ScheduleSwitcher extends utils.Adapter {
     private async onScheduleChange(id: string, scheduleString: string): Promise<void> {
         this.log.debug(`onScheduleChange: ${scheduleString} ${id}`);
         if (this.scheduleIdToSchedule.get(id)) {
-            this.log.debug(`schedule found: ${this.scheduleIdToSchedule.get(id)}`);
+            this.log.debug(`schedule found: ${this.scheduleIdToSchedule.get(id)?.getName()}`);
         }
         try {
             const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
