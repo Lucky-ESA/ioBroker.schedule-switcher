@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "news": {
+      "0.0.12": {
+        "en": "Astro time in widget fixed",
+        "de": "Astrozeit in Widget fix",
+        "ru": "Время астро в фиксированном виджете",
+        "pt": "Astro tempo no elemento fixo",
+        "nl": "Astro tijd in widget vast",
+        "fr": "Astro time dans le widget fixe",
+        "it": "Tempo di astro in widget fisso",
+        "es": "Tiempo de astro en widget fijo",
+        "pl": "Czas Astro w widgecie ustalony",
+        "uk": "Astro час в віджет фіксований",
+        "zh-cn": "固定部件中的天体时间"
+      },
       "0.0.11": {
         "en": "Admin 7.6.17 required\nNode 20 required",
         "de": "Admin 7.6.17 erforderlich\nNr. 20 erforderlich",
@@ -80,19 +93,6 @@
         "pl": "Prawidłowa wartość stanu\nDodano kolejne wyzwalacze jako JSON\nDodano licznik\nAktualizacja czasu astro ustalona",
         "uk": "Поставити значення держави правильно\nДодано наступні тригери як JSON\nДоданий лічильник тригер\nОновлення часу астро фіксованого",
         "zh-cn": "正确设置状态值\n添加下一个触发器为 JSON\n添加计数器触发器\n更新固定的天体时间"
-      },
-      "0.0.5": {
-        "en": "Crash when updating astro time fixed",
-        "de": "Crash bei der Aktualisierung von Astrozeit behoben",
-        "ru": "Crash при обновлении времени астро фиксированного",
-        "pt": "Crash ao atualizar o tempo astro fixo",
-        "nl": "Crash bij het bijwerken van astrotijd vastgesteld",
-        "fr": "Crash lors de la mise à jour astro time fixe",
-        "it": "Crash quando si aggiorna il tempo di astro fisso",
-        "es": "Al actualizar el tiempo de astro fijo",
-        "pl": "Crash podczas aktualizacji czasu astro stałe",
-        "uk": "Краш при оновленні встановленого часу",
-        "zh-cn": "更新天体时发生崩溃"
       }
     },
     "titleLang": {

@@ -31,6 +31,10 @@
 ### 0.0.1 (2024-10-19)
 
 - (Lucky_ESA) initial release
+## 0.0.7 (2024-11-26)
+
+- (Lucky_ESA) HTML overview added
+
 ## 0.0.6 (2024-11-16)
 
 - (Lucky_ESA) Put value of state correctly
