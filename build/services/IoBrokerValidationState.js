@@ -341,12 +341,16 @@ class IoBrokerValidationState {
     });
     if (allVIS2 && allVIS2.rows) {
       for (const id of allVIS2.rows) {
-        visFolder.push(id.id.replace("system.adapter.", ""));
+        if (id.id.indexOf(".vis-2.") !== -1) {
+          visFolder.push(id.id.replace("system.adapter.", ""));
+        }
       }
     }
     if (allVIS && allVIS.rows) {
       for (const id of allVIS.rows) {
-        visFolder.push(id.id.replace("system.adapter.", ""));
+        if (id.id.indexOf(".vis.") !== -1) {
+          visFolder.push(id.id.replace("system.adapter.", ""));
+        }
       }
     }
     this.adapter.log.debug(`Folder: ${JSON.stringify(visFolder)}`);
