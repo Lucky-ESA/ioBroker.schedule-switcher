@@ -10,6 +10,7 @@
             this.setDate = null;
             this.interval = null;
             this.noInput = true;
+            this.checkValue = false;
             this.intervalTime = 500;
             this.checktime = new Date();
         }
@@ -33,6 +34,7 @@
 
             this.sr.querySelector("#radio-date").addEventListener("input", this.onDateInput.bind(this));
             this.sr.querySelector("#radio-time").addEventListener("input", this.onDateInput.bind(this));
+            this.sr.querySelector("#checking").addEventListener("click", this.onCheckClick.bind(this));
             if (this.trigger) {
                 const checktime = new Date(Date.parse(this.trigger.date));
                 if (this.checktime < new Date()) {
@@ -63,12 +65,16 @@
         }
 
         onEditClick() {
-            this.timedate = this.trigger.timedate;
+            const trigger = this.trigger;
+            console.log(JSON.stringify(trigger));
+            this.timedate = trigger.timedate;
+            this.checkValue = trigger.valueCheck;
+            this.withCheck = trigger.valueCheck;
             this.sr.querySelector(".container.edit").style.display = null;
             this.sr.querySelector(".container.view").style.display = "none";
             this.setViews();
-            if (this.trigger.timedate) {
-                const ms = new Date(this.trigger.date) - new Date();
+            if (trigger.timedate) {
+                const ms = new Date(trigger.date) - new Date();
                 this.sr.querySelector("input.seconds").value = Math.floor((ms / 1000) % 60);
                 this.sr.querySelector("input.minutes").value = Math.floor((ms / 1000 / 60) % 60);
                 this.sr.querySelector("input.hours").value = Math.floor((ms / 1000 / 3600) % 24);
@@ -106,6 +112,29 @@
 
         get action() {
             return JSON.parse(this.getAttribute("action"));
+        }
+
+        get withCheck() {
+            return this.sr.querySelector("#checking").classList.contains("checked");
+        }
+
+        set withCheck(withCheck) {
+            if (withCheck) {
+                this.sr.querySelector("#checking").classList.add("checked");
+                console.log("checked");
+            } else {
+                this.sr.querySelector("#checking").classList.remove("checked");
+                console.log("nochecked");
+            }
+        }
+
+        onCheckClick() {
+            const trigger = this.trigger;
+            const toggle = this.sr.querySelector("#checking");
+            toggle.classList.toggle("checked");
+            const val = toggle.classList.contains("checked");
+            this.checkValue = val;
+            this.withCheck = val;
         }
 
         onCancelClick() {
@@ -227,6 +256,7 @@
                                     id: this.trigger.id,
                                     type: "OneTimeTrigger",
                                     timedate: this.timedate,
+                                    valueCheck: this.checkValue,
                                     date: saveDate,
                                     action: JSON.parse(this.getActionElement(true).getAttribute("data")),
                                 },
@@ -242,6 +272,7 @@
                             trigger: {
                                 type: "OneTimeTrigger",
                                 timedate: this.timedate,
+                                valueCheck: this.checkValue,
                                 date: saveDate,
                                 action: JSON.parse(this.getActionElement(true).getAttribute("data")),
                             },
@@ -282,7 +313,7 @@
             while (validationErrorsList.firstChild) {
                 validationErrorsList.removeChild(validationErrorsList.firstChild);
             }
-            this.errors.forEach((e) => {
+            this.errors.forEach(e => {
                 const li = document.createElement("li");
                 li.textContent = e;
                 validationErrorsList.appendChild(li);
@@ -344,15 +375,19 @@
             shadowRoot.innerHTML = `
 				<link rel="stylesheet" href="widgets/schedule-switcher/css/OneTimeTrigger.css"/>
                 <link rel="stylesheet" href="widgets/schedule-switcher/css/material-radio-button.css"/>
+                <link rel="stylesheet" href="widgets/schedule-switcher/css/material-toggle-switch.css"/>
 				<div class="container view" style="display: none">
 					<div class="header">
 						<div class="action"></div>
                         <img class="date icon"/>
-                        <img class="button edit" src="widgets/schedule-switcher/img/edit-24px.svg" width="28px"
-								height="28px" title="${vis.binds["schedule-switcher"].translate("editTrigger")}"/>
-                        <img class="button delete" src="widgets/schedule-switcher/img/delete-24px.svg" width="28px"
-							height="28px" title="${vis.binds["schedule-switcher"].translate("removeTrigger")}"/>
 					</div>
+                    <div class="header">
+                        <img id="check_value" class="button check" width="28px" height="28px"/>
+                        <img class="button edit" src="widgets/schedule-switcher/img/edit-24px.svg" width="28px"
+                            height="28px" title="${vis.binds["schedule-switcher"].translate("editTrigger")}"/>
+                        <img class="button delete" src="widgets/schedule-switcher/img/delete-24px.svg" width="28px"
+                            height="28px" title="${vis.binds["schedule-switcher"].translate("removeTrigger")}"/>
+                    </div>
                     <div class="header">
 						<div class="trigger">
 							<div class="time"></div>
@@ -377,6 +412,13 @@
 						<img class="button add" src="widgets/schedule-switcher/img/add-24px.svg" width="28px"
 							height="28px" title="${vis.binds["schedule-switcher"].translate("addCondition")}"/>
 				    </div>
+                    <div class="manual-container single">
+                        <div id="checking" class="md-switch-container">
+                            <div class="md-switch-track"></div>
+                            <div class="md-switch-handle"></div>
+                            <div class="md-switch-label" id="checking_name">${vis.binds["schedule-switcher"].translate("checkValue")}</div>
+                        </div>
+                    </div>
                     <div class="md-radio md-radio-inline">
 						<input id="radio-time" type="radio" name="switched-value-date"/>
 						<label for="radio-time">${vis.binds["schedule-switcher"].translate("withTime")}</label>
@@ -402,6 +444,19 @@
             return shadowRoot;
         }
 
+        setValueCheckIcon() {
+            const iconElement = this.sr.querySelector("#check_value");
+            if (this.checkValue) {
+                iconElement.src = `widgets/schedule-switcher/img/valueCheck.svg`;
+                iconElement.alt = vis.binds["schedule-switcher"].translate("valueCheckOn");
+                iconElement.title = vis.binds["schedule-switcher"].translate("valueCheckOn");
+            } else {
+                iconElement.src = `widgets/schedule-switcher/img/valueNoCheck.svg`;
+                iconElement.alt = vis.binds["schedule-switcher"].translate("valueCheckOff");
+                iconElement.title = vis.binds["schedule-switcher"].translate("valueCheckOff");
+            }
+        }
+
         getActionElement(edit) {
             const newAction = this.action;
             const elementName = vis.binds["schedule-switcher"].getElementNameForActionType(newAction.type);
@@ -410,6 +465,8 @@
 
         onTriggerChange() {
             const newTrigger = this.trigger;
+            this.checkValue = newTrigger.valueCheck;
+            this.setValueCheckIcon();
             if (newTrigger) {
                 if (!this.trigger.timedate) {
                     this.intervalTime = 59500;
@@ -423,6 +480,7 @@
         }
 
         onActionChange() {
+            this.setValueCheckIcon();
             const newAction = this.action;
             const elementName = vis.binds["schedule-switcher"].getElementNameForActionType(newAction.type);
             const viewAction = this.sr.querySelector(".container.view .action");
@@ -472,8 +530,8 @@
             const hours = Math.floor((ms / 1000 / 3600) % 24);
 
             const humanized = [hours, minutes, seconds]
-                .map((v) => (v < 0 ? 0 : v))
-                .map((v) => v.toString().padStart(2, "0"))
+                .map(v => (v < 0 ? 0 : v))
+                .map(v => v.toString().padStart(2, "0"))
                 .join(":");
 
             return `T - ${humanized}`;

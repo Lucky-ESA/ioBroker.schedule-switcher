@@ -26,6 +26,7 @@ class OneTimeTriggerBuilder {
   action = null;
   id = "0";
   objectId = 0;
+  valueCheck = false;
   timedate = false;
   date = null;
   onDestroy = null;
@@ -62,6 +63,14 @@ class OneTimeTriggerBuilder {
     return this;
   }
   /**
+   * @param valueCheck value check true/false
+   * @returns this
+   */
+  setValueCheck(valueCheck) {
+    this.valueCheck = valueCheck;
+    return this;
+  }
+  /**
    * @param timedate Time
    * @returns this
    */
@@ -84,6 +93,7 @@ class OneTimeTriggerBuilder {
     return new import_OneTimeTrigger.OneTimeTrigger(
       this.id,
       this.objectId,
+      this.valueCheck,
       this.timedate,
       this.action,
       this.date,

@@ -12,6 +12,7 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
     private astroTime: AstroTime | null = null;
     private shift = 0;
     private objectId = 0;
+    private valueCheck = false;
     private todayTrigger = {};
 
     /**
@@ -36,6 +37,15 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
      */
     public setObjectId(objectId: number): AstroTriggerBuilder {
         this.objectId = objectId;
+        return this;
+    }
+
+    /**
+     * @param valueCheck check value true/false
+     * @returns this
+     */
+    public setValueCheck(valueCheck: boolean): AstroTriggerBuilder {
+        this.valueCheck = valueCheck;
         return this;
     }
 
@@ -86,6 +96,7 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
             this.getWeekdays(),
             this.getAction() as any as Action,
             this.objectId,
+            this.valueCheck,
             this.todayTrigger,
         );
     }

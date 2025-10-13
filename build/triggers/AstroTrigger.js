@@ -26,6 +26,7 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   astroTime;
   shiftInMinutes;
   objectId;
+  valueCheck;
   todayTrigger;
   /**
    *
@@ -35,13 +36,15 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
    * @param weekdays Weekdays
    * @param action Action
    * @param objectId ObjectId
+   * @param valueCheck check value true/false
    * @param todayTrigger Trigger
    */
-  constructor(id, astroTime, shiftInMinutes, weekdays, action, objectId, todayTrigger) {
+  constructor(id, astroTime, shiftInMinutes, weekdays, action, objectId, valueCheck, todayTrigger) {
     super(id, action, weekdays);
     this.astroTime = astroTime;
     this.shiftInMinutes = shiftInMinutes;
     this.objectId = objectId;
+    this.valueCheck = valueCheck;
     this.todayTrigger = todayTrigger;
   }
   /**
@@ -60,24 +63,31 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
       shift: this.getShiftInMinutes(),
       todayTriger: this.getTodayTrigger(),
       objectId: this.getObjectId(),
+      valueCheck: this.getValueCheck(),
       weekdays: this.getWeekdays(),
       trigger: "AstroTrigger"
     };
   }
   /**
-   * getObjectId
+   * @returns this
    */
   getObjectId() {
     return this.objectId;
   }
   /**
-   * getTodayTrigger
+   * @returns this
+   */
+  getValueCheck() {
+    return this.valueCheck;
+  }
+  /**
+   * @returns this
    */
   getTodayTrigger() {
     return this.todayTrigger;
   }
   /**
-   * getShiftInMinutes
+   * @returns this
    */
   getShiftInMinutes() {
     return this.shiftInMinutes;
@@ -86,7 +96,7 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
    * toString
    */
   toString() {
-    return `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;
+    return `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, valueCheck=${this.getValueCheck()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

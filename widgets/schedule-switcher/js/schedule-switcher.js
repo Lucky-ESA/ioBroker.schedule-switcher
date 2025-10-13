@@ -3,6 +3,7 @@
 
 	Copyright 2019-2024 walli545 walli5446@gmail.com
 */
+/* global vis, $, systemDictionary */
 "use strict";
 
 // add translations for edit mode
@@ -22,7 +23,7 @@ $.get("../schedule-switcher.admin/words.js", function (script) {
 
 // export vis binds for widget
 vis.binds["schedule-switcher"] = {
-    version: "0.0.9",
+    version: "0.0.13",
     showVersion: showVersion,
     createOnOffWidget: createOnOffWidget,
     onOffScheduleWidgets: {},

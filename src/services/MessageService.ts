@@ -206,12 +206,14 @@ export class MessageService {
                 .setHour(0)
                 .setMinute(0)
                 .setObjectId(parseInt(state[3]))
+                .setValueCheck(false)
                 .setTodayTrigger({});
         } else if (data.triggerType === "AstroTrigger") {
             this.adapter.log.debug("Wants AstroTrigger");
             triggerBuilder = new AstroTriggerBuilder()
                 .setAstroTime(AstroTime.Sunrise)
                 .setShift(0)
+                .setValueCheck(false)
                 .setObjectId(parseInt(state[3]))
                 .setTodayTrigger(await this.nextDate({ astroTime: "sunrise", shiftInMinutes: 0 }));
         } else {

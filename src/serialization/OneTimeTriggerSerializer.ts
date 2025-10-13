@@ -30,6 +30,7 @@ export class OneTimeTriggerSerializer implements Serializer<Trigger> {
             .setAction(this.actionSerializer.deserialize(JSON.stringify(json.action)))
             .setDate(new Date(Date.parse(json.date)))
             .setObjectId(json.objectId)
+            .setValueCheck(json.valueCheck)
             .setTimeDate(json.timedate)
             .setId(json.id)
             .setOnDestroy(() => {
@@ -52,6 +53,7 @@ export class OneTimeTriggerSerializer implements Serializer<Trigger> {
                 type: this.getType(),
                 date: objectToSerialize.getDate().toISOString(),
                 objectId: objectToSerialize.getObjectId(),
+                valueCheck: objectToSerialize.getValueCheck(),
                 timedate: objectToSerialize.getTimeDate(),
                 id: objectToSerialize.getId(),
                 action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getInternalAction())),

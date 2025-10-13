@@ -20,6 +20,7 @@
             this.sr.querySelector(".button.edit").addEventListener("click", this.toggleEdit.bind(this));
             this.sr.querySelector(".button.save").addEventListener("click", this.onSaveClick.bind(this));
             this.sr.querySelector(".button.add").addEventListener("click", this.onAddConditionClick.bind(this));
+            this.sr.querySelector("#checking").addEventListener("click", this.onCheckClick.bind(this));
         }
 
         attributeChangedCallback(attr) {
@@ -47,6 +48,38 @@
 
         set edit(value) {
             this.setAttribute("edit", value ? "true" : "false");
+        }
+
+        get valueCheck() {
+            return JSON.parse(this.getAttribute("trigger"));
+        }
+
+        set valueCheck(data) {
+            this.setAttribute("trigger", JSON.stringify(data));
+            this.sr.dispatchEvent(new CustomEvent("trigger", { composed: true }));
+        }
+
+        get withCheck() {
+            return this.sr.querySelector("#checking").classList.contains("checked");
+        }
+
+        set withCheck(withCheck) {
+            if (withCheck) {
+                this.sr.querySelector("#checking").classList.add("checked");
+                console.log("checked");
+            } else {
+                this.sr.querySelector("#checking").classList.remove("checked");
+                console.log("nochecked");
+            }
+        }
+
+        onCheckClick() {
+            const trigger = this.trigger;
+            const toggle = this.sr.querySelector("#checking");
+            toggle.classList.toggle("checked");
+            const val = toggle.classList.contains("checked");
+            trigger.valueCheck = val;
+            this.valueCheck = trigger;
         }
 
         onEditChange() {
@@ -105,7 +138,7 @@
             while (validationErrorsList.firstChild) {
                 validationErrorsList.removeChild(validationErrorsList.firstChild);
             }
-            this.validationErrors.forEach((e) => {
+            this.validationErrors.forEach(e => {
                 const li = document.createElement("li");
                 li.textContent = e;
                 validationErrorsList.appendChild(li);
@@ -154,16 +187,21 @@
             const shadowRoot = this.attachShadow({ mode: "open" });
             shadowRoot.innerHTML = `
 					<link rel="stylesheet" href="widgets/schedule-switcher/css/TriggerWithAction.css"/>
+                    <link rel="stylesheet" href="widgets/schedule-switcher/css/material-toggle-switch.css"/>
+                    <link rel="stylesheet" href="widgets/schedule-switcher/css/OnOffScheduleWidget.css"/>
 					<div class="container view">
 						<div class="header">
 							<div class="action"></div>
 							<div class="trigger"></div>
-							<img class="button edit" src="widgets/schedule-switcher/img/edit-24px.svg" width="28px"
-								height="28px" title="${vis.binds["schedule-switcher"].translate("editTrigger")}"/>
-							<img class="button delete" src="widgets/schedule-switcher/img/delete-24px.svg" width="28px"
-								height="28px" title="${vis.binds["schedule-switcher"].translate("removeTrigger")}"/>
 						</div>
 						<app-weekdays-schedule edit="false"></app-weekdays-schedule>
+                        <div class="header">
+                            <img id="check_value" class="button check" width="28px" height="28px"/>
+                            <img class="button edit" src="widgets/schedule-switcher/img/edit-24px.svg" width="28px"
+                                height="28px" title="${vis.binds["schedule-switcher"].translate("editTrigger")}"/>
+                            <img class="button delete" src="widgets/schedule-switcher/img/delete-24px.svg" width="28px"
+                                height="28px" title="${vis.binds["schedule-switcher"].translate("removeTrigger")}"/>
+                        </div>
 					</div>
 					<div class="container edit" style="display: none">
 						<div class="header">
@@ -182,6 +220,13 @@
 						 	<img class="button add" src="widgets/schedule-switcher/img/add-24px.svg" width="28px"
 								height="28px" title="${vis.binds["schedule-switcher"].translate("addCondition")}"/>
 						</div>
+                        <div class="manual-container single">
+                            <div id="checking" class="md-switch-container">
+                                <div class="md-switch-track"></div>
+                                <div class="md-switch-handle"></div>
+                                <div class="md-switch-label" id="checking_name">${vis.binds["schedule-switcher"].translate("checkValue")}</div>
+                            </div>
+                        </div>
 						<div>${vis.binds["schedule-switcher"].translate("trigger")}</div>
 						<div class="trigger"></div>
 						<app-weekdays-schedule edit="true"></app-weekdays-schedule>
@@ -208,6 +253,16 @@
 
         onTriggerChange() {
             const newTrigger = this.trigger;
+            const iconElement = this.sr.querySelector("#check_value");
+            if (this.trigger.valueCheck) {
+                iconElement.src = `widgets/schedule-switcher/img/valueCheck.svg`;
+                iconElement.alt = vis.binds["schedule-switcher"].translate("valueCheckOn");
+                iconElement.title = vis.binds["schedule-switcher"].translate("valueCheckOn");
+            } else {
+                iconElement.src = `widgets/schedule-switcher/img/valueNoCheck.svg`;
+                iconElement.alt = vis.binds["schedule-switcher"].translate("valueCheckOff");
+                iconElement.title = vis.binds["schedule-switcher"].translate("valueCheckOff");
+            }
             const elementName = vis.binds["schedule-switcher"].getElementNameForTriggerType(newTrigger.type);
             let triggerView = this.sr.querySelector(`.container.view .trigger ${elementName}`);
             if (!triggerView) {
@@ -225,13 +280,16 @@
             }
             triggerView.setAttribute("data", JSON.stringify(newTrigger));
             triggerEdit.setAttribute("data", JSON.stringify(newTrigger));
-            this.sr.querySelectorAll("app-weekdays-schedule").forEach((w) => {
+            this.withCheck = newTrigger.valueCheck != null ? newTrigger.valueCheck : false;
+            this.sr.querySelectorAll("app-weekdays-schedule").forEach(w => {
                 w.setAttribute("selected", JSON.stringify(newTrigger.weekdays));
             });
         }
 
         onActionChange() {
+            console.log("onActionChange");
             const newAction = this.action;
+            console.log(JSON.stringify(newAction));
             const elementName = vis.binds["schedule-switcher"].getElementNameForActionType(newAction.type);
             const viewAction = this.sr.querySelector(".container.view .action");
             if (viewAction.firstChild) {

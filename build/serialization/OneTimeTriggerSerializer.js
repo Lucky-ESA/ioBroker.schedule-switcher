@@ -40,7 +40,7 @@ class OneTimeTriggerSerializer {
     if (json.type !== this.getType()) {
       throw new Error(`Can not deserialize object of type ${json.type}`);
     }
-    return new import_OneTimeTriggerBuilder.OneTimeTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setDate(new Date(Date.parse(json.date))).setObjectId(json.objectId).setTimeDate(json.timedate).setId(json.id).setOnDestroy(() => {
+    return new import_OneTimeTriggerBuilder.OneTimeTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setDate(new Date(Date.parse(json.date))).setObjectId(json.objectId).setValueCheck(json.valueCheck).setTimeDate(json.timedate).setId(json.id).setOnDestroy(() => {
       if (this.deleteTrigger) {
         this.deleteTrigger(json.id);
       }
@@ -58,6 +58,7 @@ class OneTimeTriggerSerializer {
         type: this.getType(),
         date: objectToSerialize.getDate().toISOString(),
         objectId: objectToSerialize.getObjectId(),
+        valueCheck: objectToSerialize.getValueCheck(),
         timedate: objectToSerialize.getTimeDate(),
         id: objectToSerialize.getId(),
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getInternalAction()))

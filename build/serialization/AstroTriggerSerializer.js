@@ -38,7 +38,7 @@ class AstroTriggerSerializer {
     if (json.type !== this.getType()) {
       throw new Error(`Can not deserialize object of type ${json.type}`);
     }
-    return new import_AstroTriggerBuilder.AstroTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setAstroTime(json.astroTime).setShift(json.shiftInMinutes).setObjectId(json.objectId).setTodayTrigger(json.todayTrigger).setWeekdays(json.weekdays).setId(json.id).build();
+    return new import_AstroTriggerBuilder.AstroTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setAstroTime(json.astroTime).setShift(json.shiftInMinutes).setObjectId(json.objectId).setValueCheck(json.valueCheck).setTodayTrigger(json.todayTrigger).setWeekdays(json.weekdays).setId(json.id).build();
   }
   /**
    * @param objectToSerialize Trigger
@@ -54,6 +54,7 @@ class AstroTriggerSerializer {
         shiftInMinutes: objectToSerialize.getShiftInMinutes(),
         weekdays: objectToSerialize.getWeekdays(),
         objectId: objectToSerialize.getObjectId(),
+        valueCheck: objectToSerialize.getValueCheck(),
         id: objectToSerialize.getId(),
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
         todayTrigger: objectToSerialize.getTodayTrigger()

@@ -44,6 +44,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 ### **WORK IN PROGRESS**
 
 - (Lucky-ESA) Fixed warn log (Cannot read dir...)
+- (Lucky-ESA) Added state comparison enabled/disabled
 
 ### 0.0.12 (2025-08-27)
 

@@ -10,6 +10,7 @@ export class AstroTrigger extends BaseDailyTrigger {
     private readonly astroTime: AstroTime;
     private readonly shiftInMinutes: number;
     private readonly objectId: number;
+    private readonly valueCheck: boolean;
     private readonly todayTrigger: any;
 
     /**
@@ -20,6 +21,7 @@ export class AstroTrigger extends BaseDailyTrigger {
      * @param weekdays Weekdays
      * @param action Action
      * @param objectId ObjectId
+     * @param valueCheck check value true/false
      * @param todayTrigger Trigger
      */
     constructor(
@@ -29,12 +31,14 @@ export class AstroTrigger extends BaseDailyTrigger {
         weekdays: Weekday[],
         action: Action,
         objectId: number,
+        valueCheck: boolean,
         todayTrigger: any,
     ) {
         super(id, action, weekdays);
         this.astroTime = astroTime;
         this.shiftInMinutes = shiftInMinutes;
         this.objectId = objectId;
+        this.valueCheck = valueCheck;
         this.todayTrigger = todayTrigger;
     }
 
@@ -55,27 +59,35 @@ export class AstroTrigger extends BaseDailyTrigger {
             shift: this.getShiftInMinutes(),
             todayTriger: this.getTodayTrigger(),
             objectId: this.getObjectId(),
+            valueCheck: this.getValueCheck(),
             weekdays: this.getWeekdays(),
             trigger: "AstroTrigger",
         };
     }
 
     /**
-     * getObjectId
+     * @returns this
      */
     public getObjectId(): number {
         return this.objectId;
     }
 
     /**
-     * getTodayTrigger
+     * @returns this
+     */
+    public getValueCheck(): boolean {
+        return this.valueCheck;
+    }
+
+    /**
+     * @returns this
      */
     public getTodayTrigger(): any {
         return this.todayTrigger;
     }
 
     /**
-     * getShiftInMinutes
+     * @returns this
      */
     public getShiftInMinutes(): number {
         return this.shiftInMinutes;
@@ -86,7 +98,7 @@ export class AstroTrigger extends BaseDailyTrigger {
      */
     public toString(): string {
         return (
-            `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())},` +
+            `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, valueCheck=${this.getValueCheck()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())},` +
             ` astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`
         );
     }

@@ -81,7 +81,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
         "active": true, // enabled true or false
         "hour": 16, // Hour
         "minute": 22, // Minute
-        "day": 9, // Day
+        "day": 6, // Day
+        "valueCheck": false, // Compare states
         "dateISO": "2024-11-09T15:22:00.000Z", // Time without timezone
         "timestamp": 1731165720000, // Timestamp without timezone
         "objectId": 1 // ObejektId schedule-switcher.0.onoff.<objectid>.data
@@ -122,6 +123,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
             "astroTime": "sunrise",
             "shiftInMinutes": 0,
             "weekdays": [1, 2, 3, 4, 5, 6],
+            "valueCheck": false,
             "id": "0",
             "action": {
                 "type": "ConditionAction",
@@ -217,6 +219,7 @@ sendTo("schedule-switcher.0", "update-trigger", { // Set the action for the new 
         "hour":12,
         "minute":32,
         "weekdays":[1,2,3,4,5],
+        "valueCheck": false,
         "id":"0", // Known ID
         "action":{
             "type":"OnOffStateAction",
@@ -238,6 +241,7 @@ sendTo("schedule-switcher.0", "update-trigger", { // Set the action for the new 
         "astroTime":"sunrise", // sunrise, sunset or solarNoon
         "shiftInMinutes":0,
         "weekdays":[1,2,3,4,5],
+        "valueCheck": false,
         "id":"0", // ID abgleichen
         "action":{
             "type":"OnOffStateAction",
@@ -256,7 +260,7 @@ sendTo("schedule-switcher.0", "enable-schedule", { // activate trigger
 
 sendTo("schedule-switcher.0", "add-one-time-trigger", { // Create onetimetrigger
     "dataId":"schedule-switcher.0.onoff.6.data",
-    "trigger":"{\"type\":\"OneTimeTrigger\",\"date\":\"2024-10-17T06:14:22.660Z\",\"timedate\":false,\"action\":{\"type\":\"OnOffStateAction\",\"name\":\"On\"}}"
+    "trigger":"{\"type\":\"OneTimeTrigger\",\"date\":\"2024-10-17T06:14:22.660Z\",\"valueCheck\": false,\"timedate\":false,\"action\":{\"type\":\"OnOffStateAction\",\"name\":\"On\"}}"
 });
 
 sendTo("schedule-switcher.0", "delete-trigger", { // Delete trigger with known ID
@@ -284,7 +288,9 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
   {
     "setObjectId": "0_userdata.0.test4",
     "objectId": 0,
-    "value": "true",
+    "value": true,
+    "old_value": false,
+    "setValue": false,
     "object": "0_userdata.0.test4",
     "trigger": "TimeTrigger",
     "astroTime": "unknown",
@@ -308,7 +314,9 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
   {
     "setObjectId": "0_userdata.0.test4",
     "objectId": 0,
-    "value": "true",
+    "value": true,
+    "old_value": false,
+    "setValue": false,
     "object": "0_userdata.0.test4",
     "astroTime": "unknown",
     "shift": 0,
@@ -434,6 +442,7 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
 
 - Select switching state
 - Select a condition (optional)
+- Only set value if it is not equal
 - Enter time (hh:mm)
 
 ```:warning:
@@ -461,6 +470,7 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
 
 - Select switching state
 - Select a condition (optional)
+- Only set value if it is not equal
 - Select astro time (Sunrise, Sunset or Noon)
 
 ![create_widget_select_astro_add_1.png](img/create_widget_select_astro_add_1.png)
@@ -481,6 +491,7 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
 
 - Select switching state
 - Select a condition (optional)
+- Only set value if it is not equal
 - Enter time (hh:mm:ss)
 - Click save at the top right
 
@@ -492,6 +503,7 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
 
 - Select switching state
 - Select a condition (optional)
+- Only set value if it is not equal
 - Enter or select time/date (dd.mm.yyyy hh:mm:ss)
 - Click save at the top right
 
@@ -574,6 +586,8 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
 - `html.headline_weight` Header text weight - default normal
 - `html.html_code` HTML Code for VIS, VIS-2, Jarvis, IQontrol etc
 - `html.icon_false` Icon Trigger off - default ⚪
+- `html.icon_state_check_no` State comparison disabled 🔴
+- `html.icon_state_check_yes` State comparison activated 🟢
 - `html.icon_switch_symbol` Icon switch to activate/deactivate the timer - default ⏱
 - `html.icon_true` Icon Trigger on - default 🟡
 - `html.jarvis` Compatible with Jarvis - default false
@@ -603,8 +617,7 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
 - Click on the day of the week to activate/deactivate it
 - In the trigger name line, the next event on/off is displayed under days of the week
 
-![vis_view_1.png](img/vis_view_1.png)</br>
-![vis_view_2.png](img/vis_view_2.png)
+![vis_view_1.png](img/vis_view_1.png)
 
 ### Function for VIS-2 ONLY!!!
 
@@ -638,6 +651,17 @@ function changeweekdays(stateId, command, dataid, id, changeid, type) {
             "triggerid": id,
             "dataid": dataid
         }
+    };
+    vis.conn.setState(stateId + '.sendto', { val: JSON.stringify(data), ack: false });
+}
+function changeValueCheck(stateId, command, dataid, id, value) {
+    var data = {
+		"command": command,
+		"message": {
+            "changeval": value,
+            "triggerid": id,
+            "dataid": dataid
+		}
     };
     vis.conn.setState(stateId + '.sendto', { val: JSON.stringify(data), ack: false });
 }

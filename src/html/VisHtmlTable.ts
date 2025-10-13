@@ -217,6 +217,14 @@ export class VisHtmlTable implements htmltable {
                     }
                     nextNameData.action = icon;
                 }
+                let valueCheck = `&ensp;${trigger.valueCheck ? id.icon_state_check_yes : id.icon_state_check_no}`;
+                valueCheck = `<button 
+                title="${await this.loadTitle(trigger.valueCheck ? "activated" : "disabled")}";
+                style="border:none; cursor: pointer; 
+                background-color:transparent;" 
+                onClick="changValueCheck('${this.adapter.namespace}', 'valueCheck', '${state}', '${trigger.id}', '${trigger.valueCheck}')">${valueCheck}
+                </button>`;
+
                 triggers +=
                     `
                 <tr style="background-color:${isodd}; 
@@ -226,42 +234,43 @@ export class VisHtmlTable implements htmltable {
                 <td style="text-align:${id.column_align_row_01}">
                 <label for="delete${countall}">${iTag}${trigger.type}${iTagEnd}</label>&ensp;
                 <input type="checkbox" id="delete${countall}" name="delete${countall}" />
-                <input for="delete${countall}" type="button" value="delete" onclick="deleteTrigger('${this.adapter.namespace}', 'delete-trigger', '${trigger.id}', '${state}', '${countall}')" /></td>
+                <input for="delete${countall}" type="button" value="delete" onclick="deleteTrigger('${this.adapter.namespace}', 'delete-trigger', '${trigger.id}', '${state}', '${countall}')" />
+                ${valueCheck}</td>
                 <td title="${times}" style="text-align:${id.column_align_row_02}">${change_times}</td>
                 <td title="${times}" style="text-align:${id.column_align_row_03}">${iTag}${times}${iTagEnd}${action}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 1, '${trigger.type}')" ` +
-                    `style="text-align:${id.column_align_row_04}; ${today_style[1]} ` +
+                    `style="cursor: pointer; text-align:${id.column_align_row_04}; ${today_style[1]} ` +
                     `color:${trigger.weekdays && trigger.weekdays.includes(1) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
                     `${iTag}${id.column_text_04}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 2, '${trigger.type}')" ` +
-                    `style="text-align:${id.column_align_row_05}; ${today_style[2]} ` +
+                    `style="cursor: pointer; text-align:${id.column_align_row_05}; ${today_style[2]} ` +
                     `color:${trigger.weekdays && trigger.weekdays.includes(2) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
                     `${iTag}${id.column_text_05}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 3, '${trigger.type}')" ` +
-                    `style="text-align:${id.column_align_row_06}; ${today_style[3]} ` +
+                    `style="cursor: pointer; text-align:${id.column_align_row_06}; ${today_style[3]} ` +
                     `color:${trigger.weekdays && trigger.weekdays.includes(3) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
                     `${iTag}${id.column_text_06}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 4, '${trigger.type}')" ` +
-                    `style="text-align:${id.column_align_row_07}; ${today_style[4]} ` +
+                    `style="cursor: pointer; text-align:${id.column_align_row_07}; ${today_style[4]} ` +
                     `color:${trigger.weekdays && trigger.weekdays.includes(4) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
                     `${iTag}${id.column_text_07}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 5, '${trigger.type}')" ` +
-                    `style="text-align:${id.column_align_row_08}; ${today_style[5]} ` +
+                    `style="cursor: pointer; text-align:${id.column_align_row_08}; ${today_style[5]} ` +
                     `color:${trigger.weekdays && trigger.weekdays.includes(5) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
                     `${iTag}${id.column_text_08}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" ` +
-                    `style="text-align:${id.column_align_row_09}; ${today_style[6]} ` +
+                    `style="cursor: pointer; text-align:${id.column_align_row_09}; ${today_style[6]} ` +
                     `color:${trigger.weekdays && trigger.weekdays.includes(6) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
                     `${iTag}${id.column_text_09}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" ` +
-                    `style="text-align:${id.column_align_row_10}; ${today_style[0]} ` +
+                    `style="cursor: pointer; text-align:${id.column_align_row_10}; ${today_style[0]} ` +
                     `color:${trigger.weekdays && trigger.weekdays.includes(0) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
                     `${iTag}${id.column_text_10}${iTagEnd}</td>
                 </tr>`;
@@ -296,7 +305,7 @@ export class VisHtmlTable implements htmltable {
             font-size:${id.header_font_size}px;">
             <td style="text-align:${id.column_align_row_01}">
             <button 
-                style="border:none; 
+                style="border:none; cursor: pointer; 
                 background-color:transparent; 
                 color:${status_icon}; 
                 font-size:${id.column_width_01}px; 
@@ -374,6 +383,7 @@ export class VisHtmlTable implements htmltable {
     }
 
     private async mergeHTML(htmltext: string, countall: number, count: number): Promise<void> {
+        this.adapter.log.debug(`Save HTML code.`);
         const id = this.htmlVal;
         let div = '<div class="container">';
         let div_css = `
@@ -446,6 +456,14 @@ export class VisHtmlTable implements htmltable {
             if (type === "OneTimeTrigger") return;
             var data = {
                 "changeid": changeid,
+                "triggerid": id,
+                "dataid": dataid
+            };
+            this.servConn._socket.emit("sendTo", stateId, command, data);
+        }
+        function changValueCheck(stateId, command, dataid, id, value) {
+            var data = {
+                "changeval": value,
                 "triggerid": id,
                 "dataid": dataid
             };
@@ -1386,7 +1404,7 @@ export class VisHtmlTable implements htmltable {
                 "zh-cn": "更新",
             },
             desc: "Update",
-            read: true,
+            read: false,
             write: true,
             def: false,
         };
@@ -1463,7 +1481,78 @@ export class VisHtmlTable implements htmltable {
         await this.createDataPoint("html.font_color_weekdays_disabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_weekdays_disabled");
         this.htmlVal.font_color_weekdays_disabled = val?.val;
-        const states = ["🟡", "⚪", "✅", "❌", "⚪", "⚫", "⭕", "🔴", "🔵", "⏱", "💀", "👍", "👎", "📑", "💲", "👀"];
+        const states = [
+            "🟡",
+            "⚪",
+            "🟤",
+            "⚫",
+            "🔴",
+            "🔵",
+            "🟢",
+            "🟠",
+            "🔵",
+            "🟣",
+            "✅",
+            "❌",
+            "⭕",
+            "⏱",
+            "💀",
+            "👍",
+            "👎",
+            "📑",
+            "💲",
+            "👀",
+        ];
+        common = {
+            type: "string",
+            role: "state",
+            name: {
+                en: "State comparison activated",
+                de: "Zustandsvergleich aktiviert",
+                ru: "Сравнение состояний активировано",
+                pt: "Comparação de estados ativada",
+                nl: "Statusvergelijking geactiveerd",
+                fr: "Comparaison d'état activée",
+                it: "Confronto di stato attivato",
+                es: "Comparación de estados activada",
+                pl: "Porównanie stanów zostało aktywowane",
+                uk: "Порівняння станів активовано",
+                "zh-cn": "状态比较已激活",
+            },
+            desc: "State comparison activated",
+            read: true,
+            write: true,
+            def: "🟢",
+            states: states,
+        };
+        await this.createDataPoint("html.icon_state_check_yes", common, "state");
+        val = await this.adapter.getStateAsync("html.icon_state_check_yes");
+        this.htmlVal.icon_state_check_yes = val?.val;
+        common = {
+            type: "string",
+            role: "state",
+            name: {
+                en: "State comparison disabled",
+                de: "Statusvergleich deaktiviert",
+                ru: "Сравнение состояний отключено",
+                pt: "Comparação de estados desabilitada",
+                nl: "Staatsvergelijking uitgeschakeld",
+                fr: "Comparaison d'état désactivée",
+                it: "Confronto di stato disabilitato",
+                es: "Comparación de estados deshabilitada",
+                pl: "Porównanie stanów wyłączone",
+                uk: "Порівняння станів вимкнено",
+                "zh-cn": "状态比较已禁用",
+            },
+            desc: "State comparison disabled",
+            read: true,
+            write: true,
+            def: "🔴",
+            states: states,
+        };
+        await this.createDataPoint("html.icon_state_check_no", common, "state");
+        val = await this.adapter.getStateAsync("html.icon_state_check_no");
+        this.htmlVal.icon_state_check_no = val?.val;
         common = {
             type: "string",
             role: "state",
@@ -1808,6 +1897,38 @@ export class VisHtmlTable implements htmltable {
         await this.createDataPoint("html.html_code", common, "state");
         val = await this.adapter.getStateAsync("html.html_code");
         this.htmlVal.html_code = val?.val;
+    }
+
+    private async loadTitle(val: string): Promise<string> {
+        const lang: any = {
+            activated: {
+                en: "State comparison activated",
+                de: "Zustandsvergleich aktiviert",
+                ru: "Сравнение состояний активировано",
+                pt: "Comparação de estados ativada",
+                nl: "Statusvergelijking geactiveerd",
+                fr: "Comparaison d'état activée",
+                it: "Confronto di stato attivato",
+                es: "Comparación de estados activada",
+                pl: "Porównanie stanów zostało aktywowane",
+                uk: "Порівняння станів активовано",
+                "zh-cn": "状态比较已激活",
+            },
+            disabled: {
+                en: "State comparison disabled",
+                de: "Statusvergleich deaktiviert",
+                ru: "Сравнение состояний отключено",
+                pt: "Comparação de estados desabilitada",
+                nl: "Staatsvergelijking uitgeschakeld",
+                fr: "Comparaison d'état désactivée",
+                it: "Confronto di stato disabilitato",
+                es: "Comparación de estados deshabilitada",
+                pl: "Porównanie stanów wyłączone",
+                uk: "Порівняння станів вимкнено",
+                "zh-cn": "状态比较已禁用",
+            },
+        };
+        return lang[val][this.lang];
     }
 
     private async createDataPoint(ident: string, common: any, types: any, native: any = null): Promise<any> {

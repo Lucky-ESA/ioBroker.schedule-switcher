@@ -77,19 +77,35 @@ class IoBrokerStateService {
     } else {
       this.mergeTime = 0;
     }
+    const old_value = await this.adapter.getForeignStateAsync(id);
+    const old_val = old_value == null ? null : old_value.val;
+    let change_val = false;
+    this.adapter.log.debug(trigger.valueCheck);
+    if (trigger.valueCheck) {
+      if (JSON.stringify(value) === JSON.stringify(old_val)) {
+        this.adapter.log.debug(`Set not change!`);
+        change_val = true;
+      }
+    }
     if (this.adapter.config.history > 0) {
-      await this.setHistory(id, value, trigger);
+      await this.setHistory(id, value, trigger, old_val, change_val);
     }
     this.checkId(id);
-    this.adapter.log.debug(`Setting state ${id} with value ${value == null ? void 0 : value.toString()}`);
-    this.adapter.setForeignState(id, value, false);
+    if (!change_val) {
+      this.adapter.log.debug(`Set state ${id} with value ${value == null ? void 0 : value.toString()} - ${old_val == null ? void 0 : old_val.toString()}`);
+      this.adapter.setForeignState(id, value, false);
+    } else {
+      this.adapter.log.debug(`Set not state ${id} with value ${value == null ? void 0 : value.toString()} - ${old_val == null ? void 0 : old_val.toString()}`);
+    }
   }
   /**
    * @param id ID
    * @param value Values
    * @param trigger Trigger
+   * @param old_value Actual value
+   * @param setVal Set new value
    */
-  async setHistory(id, value, trigger) {
+  async setHistory(id, value, trigger, old_value, setVal) {
     if (!trigger || trigger.id != null) {
       let history_newvalue = [];
       const history_value = await this.getState(`history`);
@@ -107,15 +123,17 @@ class IoBrokerStateService {
       }
       const new_data = {
         setObjectId: id,
-        objectId: trigger.objectId ? trigger.objectId : "unknown",
-        value: value.toString(),
-        trigger: trigger.trigger ? trigger.trigger : "unknown",
-        astroTime: trigger.astroTime ? trigger.astroTime : "unknown",
-        shift: trigger.shift ? trigger.shift : 0,
-        date: trigger.date ? trigger.date : 0,
-        hour: trigger.hour ? trigger.hour : 0,
-        minute: trigger.minute ? trigger.minute : 0,
-        weekdays: trigger.weekdays ? trigger.weekdays : [],
+        objectId: trigger.objectId != null ? trigger.objectId : "unknown",
+        value,
+        old_value,
+        setValue: setVal,
+        trigger: trigger.trigger != null ? trigger.trigger : "unknown",
+        astroTime: trigger.astroTime != null ? trigger.astroTime : "unknown",
+        shift: trigger.shift != null ? trigger.shift : 0,
+        date: trigger.date != null ? trigger.date : 0,
+        hour: trigger.hour != null ? trigger.hour : 0,
+        minute: trigger.minute != null ? trigger.minute : 0,
+        weekdays: trigger.weekdays != null ? trigger.weekdays : [],
         time: Date.now()
       };
       history_newvalue.push(new_data);

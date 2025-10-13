@@ -28,6 +28,7 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
   minute = 0;
   objectId = 0;
   todayTrigger = {};
+  valueCheck = false;
   /**
    * @param hour Hour
    * @returns this
@@ -50,6 +51,14 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
    */
   setObjectId(objectId) {
     this.objectId = objectId;
+    return this;
+  }
+  /**
+   * @param valueCheck check value true/false
+   * @returns this
+   */
+  setValueCheck(valueCheck) {
+    this.valueCheck = valueCheck;
     return this;
   }
   /**
@@ -93,6 +102,7 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
       this.hour,
       this.minute,
       this.objectId,
+      this.valueCheck,
       this.getWeekdays(),
       this.getAction(),
       this.todayTrigger

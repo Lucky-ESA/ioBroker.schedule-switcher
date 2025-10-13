@@ -12,6 +12,7 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
     private minute = 0;
     private objectId = 0;
     private todayTrigger = {};
+    private valueCheck = false;
 
     /**
      * @param hour Hour
@@ -37,6 +38,15 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
      */
     public setObjectId(objectId: number): TimeTriggerBuilder {
         this.objectId = objectId;
+        return this;
+    }
+
+    /**
+     * @param valueCheck check value true/false
+     * @returns this
+     */
+    public setValueCheck(valueCheck: boolean): TimeTriggerBuilder {
+        this.valueCheck = valueCheck;
         return this;
     }
 
@@ -85,6 +95,7 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
             this.hour,
             this.minute,
             this.objectId,
+            this.valueCheck,
             this.getWeekdays(),
             this.getAction() as any as Action,
             this.todayTrigger,

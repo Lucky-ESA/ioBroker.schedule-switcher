@@ -27,6 +27,7 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
   astroTime = null;
   shift = 0;
   objectId = 0;
+  valueCheck = false;
   todayTrigger = {};
   /**
    * @param astroTime AstroTime
@@ -48,6 +49,14 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
    */
   setObjectId(objectId) {
     this.objectId = objectId;
+    return this;
+  }
+  /**
+   * @param valueCheck check value true/false
+   * @returns this
+   */
+  setValueCheck(valueCheck) {
+    this.valueCheck = valueCheck;
     return this;
   }
   /**
@@ -93,6 +102,7 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
       this.getWeekdays(),
       this.getAction(),
       this.objectId,
+      this.valueCheck,
       this.todayTrigger
     );
   }

@@ -9,6 +9,7 @@ export class TimeTrigger extends BaseDailyTrigger {
     private readonly hours: number;
     private readonly minutes: number;
     private readonly objectId: number;
+    private readonly valueCheck: boolean;
     private readonly todayTrigger: any;
 
     /**
@@ -16,6 +17,7 @@ export class TimeTrigger extends BaseDailyTrigger {
      * @param hour Hour
      * @param minute Minutes
      * @param objectId Object ID
+     * @param valueCheck check value true/false
      * @param weekdays Weekdays
      * @param action Action
      * @param todayTrigger Trigger
@@ -25,6 +27,7 @@ export class TimeTrigger extends BaseDailyTrigger {
         hour: number,
         minute: number,
         objectId: number,
+        valueCheck: boolean,
         weekdays: Weekday[],
         action: Action,
         todayTrigger: any,
@@ -33,6 +36,7 @@ export class TimeTrigger extends BaseDailyTrigger {
         this.hours = hour;
         this.minutes = minute;
         this.objectId = objectId;
+        this.valueCheck = valueCheck;
         this.todayTrigger = todayTrigger;
     }
 
@@ -60,6 +64,13 @@ export class TimeTrigger extends BaseDailyTrigger {
     /**
      * @returns this
      */
+    public getValueCheck(): boolean {
+        return this.valueCheck;
+    }
+
+    /**
+     * @returns this
+     */
     public getTodayTrigger(): any {
         return this.todayTrigger;
     }
@@ -73,6 +84,7 @@ export class TimeTrigger extends BaseDailyTrigger {
             hour: this.getHour(),
             minute: this.getMinute(),
             objectId: this.getObjectId(),
+            valueCheck: this.getValueCheck(),
             weekdays: this.getWeekdays(),
             trigger: "TimeTrigger",
             todayTrigger: this.getTodayTrigger(),

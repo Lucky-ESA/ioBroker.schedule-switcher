@@ -26,21 +26,24 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   hours;
   minutes;
   objectId;
+  valueCheck;
   todayTrigger;
   /**
    * @param id ID
    * @param hour Hour
    * @param minute Minutes
    * @param objectId Object ID
+   * @param valueCheck check value true/false
    * @param weekdays Weekdays
    * @param action Action
    * @param todayTrigger Trigger
    */
-  constructor(id, hour, minute, objectId, weekdays, action, todayTrigger) {
+  constructor(id, hour, minute, objectId, valueCheck, weekdays, action, todayTrigger) {
     super(id, action, weekdays);
     this.hours = hour;
     this.minutes = minute;
     this.objectId = objectId;
+    this.valueCheck = valueCheck;
     this.todayTrigger = todayTrigger;
   }
   /**
@@ -64,6 +67,12 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   /**
    * @returns this
    */
+  getValueCheck() {
+    return this.valueCheck;
+  }
+  /**
+   * @returns this
+   */
   getTodayTrigger() {
     return this.todayTrigger;
   }
@@ -76,6 +85,7 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
       hour: this.getHour(),
       minute: this.getMinute(),
       objectId: this.getObjectId(),
+      valueCheck: this.getValueCheck(),
       weekdays: this.getWeekdays(),
       trigger: "TimeTrigger",
       todayTrigger: this.getTodayTrigger()

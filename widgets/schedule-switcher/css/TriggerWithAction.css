@@ -85,3 +85,7 @@
 .button.cancel {
     margin-left: 10px;
 }
+
+.button.check {
+    margin-left: auto;
+}

@@ -39,6 +39,7 @@ class IoBrokerValidationState {
     const removeDuplicate = (arr) => {
       return arr.filter((item, index) => arr.indexOf(item) === index);
     };
+    this.adapter.log.debug(`Validation Trigger ${val.name}`);
     if (val.type && val.type == "OnOffSchedule" || check) {
       if (!check) {
         if (val.onAction) {
@@ -208,6 +209,10 @@ class IoBrokerValidationState {
           if (trigger.objectId.toString() != objId[3]) {
             this.adapter.log.warn(`Wrong ObjectId ${trigger.objectId} in ${id}`);
             trigger.objectId = parseInt(objId[3]);
+          }
+          if (trigger.valueCheck == null || typeof trigger.valueCheck !== "boolean") {
+            trigger.valueCheck = false;
+            this.adapter.log.warn(`Wrong valueCheck ${JSON.stringify(trigger)} in ${id}`);
           }
           if (!trigger.action) {
             trigger.action = {};

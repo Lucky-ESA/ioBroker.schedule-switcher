@@ -16,7 +16,7 @@
             if (this.connected) {
                 return;
             }
-            this.sr.querySelector("#btn-add-trigger-dropdown").addEventListener("click", (e) => {
+            this.sr.querySelector("#btn-add-trigger-dropdown").addEventListener("click", e => {
                 this.setAttribute("height", 0);
                 if (this.sr.querySelector(".widget").clientHeight < 300) {
                     this.setAttribute("height", 1);
@@ -111,10 +111,10 @@
                     oneTimeTriggersInCreation.push(t);
                 }
             }
-            oneTimeTriggersInCreation.forEach((t) => {
+            oneTimeTriggersInCreation.forEach(t => {
                 this.sr.querySelector(`.triggers`).appendChild(t);
             });
-            triggers.forEach((t) => {
+            triggers.forEach(t => {
                 const element = document.createElement(
                     t.type === "OneTimeTrigger" ? "app-one-time-trigger-schedule" : "app-trigger-with-action-schedule",
                 );
@@ -123,11 +123,11 @@
                 delete t.action;
                 element.setAttribute("trigger", JSON.stringify(t));
                 element.setAttribute("id", t.id);
-                element.addEventListener("delete", (e) => this.onTriggerDelete(e.detail.id));
-                element.addEventListener("update", (e) => this.onTriggerUpdate(e.detail.trigger));
-                element.addEventListener("delete-one-time-trigger", (e) => {
+                element.addEventListener("delete", e => this.onTriggerDelete(e.detail.id));
+                element.addEventListener("update", e => this.onTriggerUpdate(e.detail.trigger));
+                element.addEventListener("delete-one-time-trigger", e => {
                     const trigger = this.sr.querySelector(`.triggers`);
-                    if (Array.from(trigger.children).find((element) => element === e.target)) {
+                    if (Array.from(trigger.children).find(element => element === e.target)) {
                         trigger.removeChild(e.target);
                     }
                 });
@@ -261,7 +261,7 @@
             } else if (valueType === "boolean") {
                 val = isOnClick;
             }
-            stateIds.forEach((i) => vis.conn.setState(i, val));
+            stateIds.forEach(i => vis.conn.setState(i, val));
         }
 
         onTriggerDelete(triggerId) {
@@ -383,14 +383,14 @@
                     name: "On",
                 }),
             );
-            trigger.addEventListener("delete", (e) => this.onTriggerDelete(e.detail.id));
-            trigger.addEventListener("cancel-one-time-trigger-creation", (e) => {
+            trigger.addEventListener("delete", e => this.onTriggerDelete(e.detail.id));
+            trigger.addEventListener("cancel-one-time-trigger-creation", e => {
                 const triggers = this.sr.querySelector(`.triggers`);
-                if (Array.from(triggers.children).find((element) => element === e.target)) {
+                if (Array.from(triggers.children).find(element => element === e.target)) {
                     triggers.removeChild(e.target);
                 }
             });
-            trigger.addEventListener("create", (e) => {
+            trigger.addEventListener("create", e => {
                 console.log("got create, sending message");
                 vis.binds["schedule-switcher"].sendMessage("add-one-time-trigger", {
                     dataId: this.settings["oid-dataId"],

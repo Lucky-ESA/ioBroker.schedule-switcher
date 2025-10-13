@@ -20,6 +20,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         .setWeekdays(AllWeekdays)
         .setHour(2)
         .setMinute(0)
+        .setObjectId(1000)
+        .setValueCheck(false)
         .setTodayTrigger({})
         .setAction({
             execute: () => {
@@ -42,6 +44,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
      * @param coordinate Coodinate
      * @param logger Log service
      * @param stateService setState
+     * @param first boolean
      */
     constructor(
         private readonly timeTriggerScheduler: TimeTriggerScheduler,
@@ -49,9 +52,13 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         private readonly coordinate: Coordinate,
         private readonly logger: LoggingService,
         private readonly stateService: IoBrokerStateService,
+        private readonly first: boolean,
     ) {
         super();
-        this.timeTriggerScheduler.register(this.rescheduleTrigger);
+        if (!this.first) {
+            this.logger.logError(this.first.toString());
+            this.timeTriggerScheduler.register(this.rescheduleTrigger);
+        }
     }
 
     /**
@@ -128,12 +135,14 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
             const entry = this.registered.find(t => t.getId() === trigger.getId());
             const objectId = entry && typeof entry.getObjectId() === "number" ? entry.getObjectId() : 0;
+            const valueCheck = entry && typeof entry.getValueCheck() === "boolean" ? entry.getValueCheck() : false;
             this.removeScheduled(trigger);
             const timeTrigger = new TimeTriggerBuilder()
                 .setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`)
                 .setHour(next.getHours())
                 .setMinute(next.getMinutes())
                 .setObjectId(objectId)
+                .setValueCheck(valueCheck)
                 .setTodayTrigger({
                     hour: next.getHours(),
                     minute: next.getMinutes(),

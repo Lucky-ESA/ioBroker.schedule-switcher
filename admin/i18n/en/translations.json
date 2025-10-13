@@ -22,6 +22,7 @@
     "conditionStateAlias": "Condition state alias",
     "oid-conditionStateId": "Condition state id",
     "conditionStatesCount": "Count of condition states",
+    "checkValue": "Value check",
     "currentValue": "Current value",
     "oid-dataId": "Schedule data id",
     "editName": "Edit name",
@@ -147,5 +148,7 @@
     "errorMoreState": "Another widget has more states",
     "errorConditions": "Another widget uses conditions",
     "html_text": "Create HTML for VIS and VIS-2 (VIS-2 see description)",
-    "link to description": "Link to description"
+    "link to description": "Link to description",
+    "valueCheckOn": "State comparison activated",
+    "valueCheckOff": "State comparison disabled"
 }

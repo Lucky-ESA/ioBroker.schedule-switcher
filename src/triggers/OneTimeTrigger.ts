@@ -8,6 +8,7 @@ import type { Trigger } from "./Trigger";
 export class OneTimeTrigger implements Trigger, Destroyable {
     private readonly id: string;
     private readonly objectId: number;
+    private readonly valueCheck: boolean;
     private readonly timedate: boolean;
     private action: Action;
     private readonly date: Date;
@@ -16,6 +17,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
     /**
      * @param id ID
      * @param objectId Object ID
+     * @param valueCheck check value true/false
      * @param timedate Date
      * @param action Action
      * @param date Date
@@ -24,6 +26,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
     constructor(
         id: string,
         objectId: number,
+        valueCheck: boolean,
         timedate: boolean,
         action: Action,
         date: Date,
@@ -40,6 +43,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
         }
         this.id = id;
         this.objectId = objectId;
+        this.valueCheck = valueCheck;
         this.timedate = timedate;
         this.action = action;
         this.date = new Date(date);
@@ -90,6 +94,13 @@ export class OneTimeTrigger implements Trigger, Destroyable {
     }
 
     /**
+     * @returns valueCheck
+     */
+    public getValueCheck(): boolean {
+        return this.valueCheck;
+    }
+
+    /**
      * @returns time
      */
     public getTimeDate(): boolean {
@@ -103,6 +114,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
         return {
             id: this.getId(),
             objectId: this.getObjectId(),
+            valueCheck: this.getValueCheck(),
             timedate: this.getTimeDate(),
             date: this.getDate().toISOString(),
             trigger: "OneTimeTrigger",

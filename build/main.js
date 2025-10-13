@@ -55,6 +55,7 @@ class ScheduleSwitcher extends utils.Adapter {
   setCountTriggerStart;
   validation = new import_IoBrokerValidationState.IoBrokerValidationState(this);
   vishtmltable = new import_VisHtmlTable.VisHtmlTable(this);
+  first = false;
   constructor(options = {}) {
     super({
       ...options,
@@ -368,6 +369,7 @@ class ScheduleSwitcher extends utils.Adapter {
           case "astro":
           case "datetime":
           case "time":
+          case "valueCheck":
             void this.changeTrigger(obj);
             break;
           default:
@@ -517,6 +519,33 @@ class ScheduleSwitcher extends utils.Adapter {
                 dataId: obj.message.dataid,
                 trigger
               };
+              obj.command = "update-trigger";
+              obj.message = data;
+              await this.messageService.handleMessage(obj);
+              valueTrigger.val = JSON.stringify(triggers);
+              void this.vishtmltable.changeTrigger(obj.message.dataId, valueTrigger);
+            } else {
+              this.log.error("Message service not initialized");
+            }
+          } else {
+            this.log.warn(`Missing trigger ${JSON.stringify(obj.message)} - ${valueTrigger.val}`);
+          }
+        } else {
+          this.log.warn(`Missing dataId ${JSON.stringify(obj.message)}`);
+        }
+        break;
+      case "valueCheck":
+        if (valueTrigger && typeof valueTrigger.val === "string") {
+          const triggers = JSON.parse(valueTrigger.val);
+          const trigger = triggers.triggers.find((t) => t.id === obj.message.triggerid);
+          if (trigger) {
+            trigger.valueCheck = obj.message.changeval ? false : true;
+            if (this.messageService) {
+              const data = {
+                dataId: obj.message.dataid,
+                trigger
+              };
+              this.log.error(JSON.stringify(data));
               obj.command = "update-trigger";
               obj.message = data;
               await this.messageService.handleMessage(obj);
@@ -727,6 +756,7 @@ class ScheduleSwitcher extends utils.Adapter {
     }
     try {
       const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
+      this.first = true;
       const enabledState = await this.getStateAsync(this.getEnabledIdFromScheduleId(id));
       if (enabledState) {
         (_b = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _b.destroy();
@@ -798,7 +828,8 @@ class ScheduleSwitcher extends utils.Adapter {
             import_suncalc.getTimes,
             await this.getCoordinate(),
             this.loggingService,
-            this.stateService
+            this.stateService,
+            this.first
           ),
           new import_OneTimeTriggerScheduler.OneTimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService, this)
         ],

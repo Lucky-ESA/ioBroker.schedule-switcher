@@ -191,16 +191,16 @@
                     this.sr.querySelector("#inputConditionConstant").value = condition.constant;
                     this.selectOption("#selectConditionStateId1", condition.stateId);
                     viewDiv.textContent = `${
-                        this.conditionStateIdsAndAlias().find((s) => s.id === condition.stateId)?.alias
+                        this.conditionStateIdsAndAlias().find(s => s.id === condition.stateId)?.alias
                     } ${condition.sign} ${condition.constant}`;
                 } else {
                     this.withConstant = false;
                     this.selectOption("#selectConditionStateId1", condition.stateId1);
                     this.selectOption("#selectConditionStateId2", condition.stateId2);
                     viewDiv.textContent = `${
-                        this.conditionStateIdsAndAlias().find((s) => s.id === condition.stateId1)?.alias
+                        this.conditionStateIdsAndAlias().find(s => s.id === condition.stateId1)?.alias
                     } ${condition.sign} ${
-                        this.conditionStateIdsAndAlias().find((s) => s.id === condition.stateId2)?.alias
+                        this.conditionStateIdsAndAlias().find(s => s.id === condition.stateId2)?.alias
                     }`;
                 }
                 this.selectOption("#selectSign", condition.sign);
@@ -222,7 +222,7 @@
             while (selectConditionId.firstChild !== null) {
                 selectConditionId.removeChild(selectConditionId.firstChild);
             }
-            this.conditionStateIdsAndAlias().forEach((e) => {
+            this.conditionStateIdsAndAlias().forEach(e => {
                 const optionElement = document.createElement("option");
                 optionElement.text = `${e.alias} ${this.showConditionIds() ? `(${e.id})` : ``}`;
                 optionElement.value = e.id;

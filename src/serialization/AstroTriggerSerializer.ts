@@ -27,6 +27,7 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
             .setAstroTime(json.astroTime)
             .setShift(json.shiftInMinutes)
             .setObjectId(json.objectId)
+            .setValueCheck(json.valueCheck)
             .setTodayTrigger(json.todayTrigger)
             .setWeekdays(json.weekdays)
             .setId(json.id)
@@ -47,6 +48,7 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
                 shiftInMinutes: objectToSerialize.getShiftInMinutes(),
                 weekdays: objectToSerialize.getWeekdays(),
                 objectId: objectToSerialize.getObjectId(),
+                valueCheck: objectToSerialize.getValueCheck(),
                 id: objectToSerialize.getId(),
                 action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
                 todayTrigger: objectToSerialize.getTodayTrigger(),

@@ -210,6 +210,13 @@ class VisHtmlTable {
           }
           nextNameData.action = icon;
         }
+        let valueCheck = `&ensp;${trigger.valueCheck ? id.icon_state_check_yes : id.icon_state_check_no}`;
+        valueCheck = `<button 
+                title="${await this.loadTitle(trigger.valueCheck ? "activated" : "disabled")}";
+                style="border:none; cursor: pointer; 
+                background-color:transparent;" 
+                onClick="changValueCheck('${this.adapter.namespace}', 'valueCheck', '${state}', '${trigger.id}', '${trigger.valueCheck}')">${valueCheck}
+                </button>`;
         triggers += `
                 <tr style="background-color:${isodd}; 
                 color:${font_text_color};
@@ -218,16 +225,17 @@ class VisHtmlTable {
                 <td style="text-align:${id.column_align_row_01}">
                 <label for="delete${countall}">${iTag}${trigger.type}${iTagEnd}</label>&ensp;
                 <input type="checkbox" id="delete${countall}" name="delete${countall}" />
-                <input for="delete${countall}" type="button" value="delete" onclick="deleteTrigger('${this.adapter.namespace}', 'delete-trigger', '${trigger.id}', '${state}', '${countall}')" /></td>
+                <input for="delete${countall}" type="button" value="delete" onclick="deleteTrigger('${this.adapter.namespace}', 'delete-trigger', '${trigger.id}', '${state}', '${countall}')" />
+                ${valueCheck}</td>
                 <td title="${times}" style="text-align:${id.column_align_row_02}">${change_times}</td>
                 <td title="${times}" style="text-align:${id.column_align_row_03}">${iTag}${times}${iTagEnd}${action}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 1, '${trigger.type}')" style="text-align:${id.column_align_row_04}; ${today_style[1]} color:${trigger.weekdays && trigger.weekdays.includes(1) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_04}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 2, '${trigger.type}')" style="text-align:${id.column_align_row_05}; ${today_style[2]} color:${trigger.weekdays && trigger.weekdays.includes(2) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_05}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 3, '${trigger.type}')" style="text-align:${id.column_align_row_06}; ${today_style[3]} color:${trigger.weekdays && trigger.weekdays.includes(3) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_06}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 4, '${trigger.type}')" style="text-align:${id.column_align_row_07}; ${today_style[4]} color:${trigger.weekdays && trigger.weekdays.includes(4) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_07}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 5, '${trigger.type}')" style="text-align:${id.column_align_row_08}; ${today_style[5]} color:${trigger.weekdays && trigger.weekdays.includes(5) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_08}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" style="text-align:${id.column_align_row_09}; ${today_style[6]} color:${trigger.weekdays && trigger.weekdays.includes(6) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_09}${iTagEnd}</td>
-                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" style="text-align:${id.column_align_row_10}; ${today_style[0]} color:${trigger.weekdays && trigger.weekdays.includes(0) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_10}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 1, '${trigger.type}')" style="cursor: pointer; text-align:${id.column_align_row_04}; ${today_style[1]} color:${trigger.weekdays && trigger.weekdays.includes(1) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_04}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 2, '${trigger.type}')" style="cursor: pointer; text-align:${id.column_align_row_05}; ${today_style[2]} color:${trigger.weekdays && trigger.weekdays.includes(2) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_05}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 3, '${trigger.type}')" style="cursor: pointer; text-align:${id.column_align_row_06}; ${today_style[3]} color:${trigger.weekdays && trigger.weekdays.includes(3) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_06}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 4, '${trigger.type}')" style="cursor: pointer; text-align:${id.column_align_row_07}; ${today_style[4]} color:${trigger.weekdays && trigger.weekdays.includes(4) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_07}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 5, '${trigger.type}')" style="cursor: pointer; text-align:${id.column_align_row_08}; ${today_style[5]} color:${trigger.weekdays && trigger.weekdays.includes(5) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_08}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" style="cursor: pointer; text-align:${id.column_align_row_09}; ${today_style[6]} color:${trigger.weekdays && trigger.weekdays.includes(6) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_09}${iTagEnd}</td>
+                <td id="weekday" onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" style="cursor: pointer; text-align:${id.column_align_row_10}; ${today_style[0]} color:${trigger.weekdays && trigger.weekdays.includes(0) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">${iTag}${id.column_text_10}${iTagEnd}</td>
                 </tr>`;
         nextName.push(nextNameData);
       }
@@ -258,7 +266,7 @@ class VisHtmlTable {
             font-size:${id.header_font_size}px;">
             <td style="text-align:${id.column_align_row_01}">
             <button 
-                style="border:none; 
+                style="border:none; cursor: pointer; 
                 background-color:transparent; 
                 color:${status_icon}; 
                 font-size:${id.column_width_01}px; 
@@ -327,6 +335,7 @@ class VisHtmlTable {
     return Promise.resolve(next == void 0 ? 0 : next);
   }
   async mergeHTML(htmltext, countall, count) {
+    this.adapter.log.debug(`Save HTML code.`);
     const id = this.htmlVal;
     let div = '<div class="container">';
     let div_css = `
@@ -399,6 +408,14 @@ class VisHtmlTable {
             if (type === "OneTimeTrigger") return;
             var data = {
                 "changeid": changeid,
+                "triggerid": id,
+                "dataid": dataid
+            };
+            this.servConn._socket.emit("sendTo", stateId, command, data);
+        }
+        function changValueCheck(stateId, command, dataid, id, value) {
+            var data = {
+                "changeval": value,
                 "triggerid": id,
                 "dataid": dataid
             };
@@ -1337,7 +1354,7 @@ class VisHtmlTable {
         "zh-cn": "\u66F4\u65B0"
       },
       desc: "Update",
-      read: true,
+      read: false,
       write: true,
       def: false
     };
@@ -1414,7 +1431,78 @@ class VisHtmlTable {
     await this.createDataPoint("html.font_color_weekdays_disabled", common, "state");
     val = await this.adapter.getStateAsync("html.font_color_weekdays_disabled");
     this.htmlVal.font_color_weekdays_disabled = val == null ? void 0 : val.val;
-    const states = ["\u{1F7E1}", "\u26AA", "\u2705", "\u274C", "\u26AA", "\u26AB", "\u2B55", "\u{1F534}", "\u{1F535}", "\u23F1", "\u{1F480}", "\u{1F44D}", "\u{1F44E}", "\u{1F4D1}", "\u{1F4B2}", "\u{1F440}"];
+    const states = [
+      "\u{1F7E1}",
+      "\u26AA",
+      "\u{1F7E4}",
+      "\u26AB",
+      "\u{1F534}",
+      "\u{1F535}",
+      "\u{1F7E2}",
+      "\u{1F7E0}",
+      "\u{1F535}",
+      "\u{1F7E3}",
+      "\u2705",
+      "\u274C",
+      "\u2B55",
+      "\u23F1",
+      "\u{1F480}",
+      "\u{1F44D}",
+      "\u{1F44E}",
+      "\u{1F4D1}",
+      "\u{1F4B2}",
+      "\u{1F440}"
+    ];
+    common = {
+      type: "string",
+      role: "state",
+      name: {
+        en: "State comparison activated",
+        de: "Zustandsvergleich aktiviert",
+        ru: "\u0421\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u0435 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0439 \u0430\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u043D\u043E",
+        pt: "Compara\xE7\xE3o de estados ativada",
+        nl: "Statusvergelijking geactiveerd",
+        fr: "Comparaison d'\xE9tat activ\xE9e",
+        it: "Confronto di stato attivato",
+        es: "Comparaci\xF3n de estados activada",
+        pl: "Por\xF3wnanie stan\xF3w zosta\u0142o aktywowane",
+        uk: "\u041F\u043E\u0440\u0456\u0432\u043D\u044F\u043D\u043D\u044F \u0441\u0442\u0430\u043D\u0456\u0432 \u0430\u043A\u0442\u0438\u0432\u043E\u0432\u0430\u043D\u043E",
+        "zh-cn": "\u72B6\u6001\u6BD4\u8F83\u5DF2\u6FC0\u6D3B"
+      },
+      desc: "State comparison activated",
+      read: true,
+      write: true,
+      def: "\u{1F7E2}",
+      states
+    };
+    await this.createDataPoint("html.icon_state_check_yes", common, "state");
+    val = await this.adapter.getStateAsync("html.icon_state_check_yes");
+    this.htmlVal.icon_state_check_yes = val == null ? void 0 : val.val;
+    common = {
+      type: "string",
+      role: "state",
+      name: {
+        en: "State comparison disabled",
+        de: "Statusvergleich deaktiviert",
+        ru: "\u0421\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u0435 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0439 \u043E\u0442\u043A\u043B\u044E\u0447\u0435\u043D\u043E",
+        pt: "Compara\xE7\xE3o de estados desabilitada",
+        nl: "Staatsvergelijking uitgeschakeld",
+        fr: "Comparaison d'\xE9tat d\xE9sactiv\xE9e",
+        it: "Confronto di stato disabilitato",
+        es: "Comparaci\xF3n de estados deshabilitada",
+        pl: "Por\xF3wnanie stan\xF3w wy\u0142\u0105czone",
+        uk: "\u041F\u043E\u0440\u0456\u0432\u043D\u044F\u043D\u043D\u044F \u0441\u0442\u0430\u043D\u0456\u0432 \u0432\u0438\u043C\u043A\u043D\u0435\u043D\u043E",
+        "zh-cn": "\u72B6\u6001\u6BD4\u8F83\u5DF2\u7981\u7528"
+      },
+      desc: "State comparison disabled",
+      read: true,
+      write: true,
+      def: "\u{1F534}",
+      states
+    };
+    await this.createDataPoint("html.icon_state_check_no", common, "state");
+    val = await this.adapter.getStateAsync("html.icon_state_check_no");
+    this.htmlVal.icon_state_check_no = val == null ? void 0 : val.val;
     common = {
       type: "string",
       role: "state",
@@ -1759,6 +1847,37 @@ class VisHtmlTable {
     await this.createDataPoint("html.html_code", common, "state");
     val = await this.adapter.getStateAsync("html.html_code");
     this.htmlVal.html_code = val == null ? void 0 : val.val;
+  }
+  async loadTitle(val) {
+    const lang = {
+      activated: {
+        en: "State comparison activated",
+        de: "Zustandsvergleich aktiviert",
+        ru: "\u0421\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u0435 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0439 \u0430\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u043D\u043E",
+        pt: "Compara\xE7\xE3o de estados ativada",
+        nl: "Statusvergelijking geactiveerd",
+        fr: "Comparaison d'\xE9tat activ\xE9e",
+        it: "Confronto di stato attivato",
+        es: "Comparaci\xF3n de estados activada",
+        pl: "Por\xF3wnanie stan\xF3w zosta\u0142o aktywowane",
+        uk: "\u041F\u043E\u0440\u0456\u0432\u043D\u044F\u043D\u043D\u044F \u0441\u0442\u0430\u043D\u0456\u0432 \u0430\u043A\u0442\u0438\u0432\u043E\u0432\u0430\u043D\u043E",
+        "zh-cn": "\u72B6\u6001\u6BD4\u8F83\u5DF2\u6FC0\u6D3B"
+      },
+      disabled: {
+        en: "State comparison disabled",
+        de: "Statusvergleich deaktiviert",
+        ru: "\u0421\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u0435 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0439 \u043E\u0442\u043A\u043B\u044E\u0447\u0435\u043D\u043E",
+        pt: "Compara\xE7\xE3o de estados desabilitada",
+        nl: "Staatsvergelijking uitgeschakeld",
+        fr: "Comparaison d'\xE9tat d\xE9sactiv\xE9e",
+        it: "Confronto di stato disabilitato",
+        es: "Comparaci\xF3n de estados deshabilitada",
+        pl: "Por\xF3wnanie stan\xF3w wy\u0142\u0105czone",
+        uk: "\u041F\u043E\u0440\u0456\u0432\u043D\u044F\u043D\u043D\u044F \u0441\u0442\u0430\u043D\u0456\u0432 \u0432\u0438\u043C\u043A\u043D\u0435\u043D\u043E",
+        "zh-cn": "\u72B6\u6001\u6BD4\u8F83\u5DF2\u7981\u7528"
+      }
+    };
+    return lang[val][this.lang];
   }
   async createDataPoint(ident, common, types, native = null) {
     try {

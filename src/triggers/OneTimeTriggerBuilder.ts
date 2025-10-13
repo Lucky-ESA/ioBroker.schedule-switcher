@@ -9,6 +9,7 @@ export class OneTimeTriggerBuilder implements Builder<OneTimeTrigger> {
     private action: Action | null = null;
     private id = "0";
     private objectId = 0;
+    private valueCheck = false;
     private timedate = false;
     private date: Date | null = null;
     private onDestroy: (() => void) | null = null;
@@ -50,6 +51,15 @@ export class OneTimeTriggerBuilder implements Builder<OneTimeTrigger> {
     }
 
     /**
+     * @param valueCheck value check true/false
+     * @returns this
+     */
+    public setValueCheck(valueCheck: boolean): OneTimeTriggerBuilder {
+        this.valueCheck = valueCheck;
+        return this;
+    }
+
+    /**
      * @param timedate Time
      * @returns this
      */
@@ -74,6 +84,7 @@ export class OneTimeTriggerBuilder implements Builder<OneTimeTrigger> {
         return new OneTimeTrigger(
             this.id,
             this.objectId,
+            this.valueCheck,
             this.timedate,
             this.action as any,
             this.date as any,

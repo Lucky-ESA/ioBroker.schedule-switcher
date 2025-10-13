@@ -296,6 +296,45 @@ const systemDictionary = {
         "uk": "Підрахунок умовних станів",
         "zh-cn": "条件状态计数"
     },
+    "valueCheckOn": {
+        "en": "State comparison activated",
+        "de": "Zustandsvergleich aktiviert",
+        "ru": "Сравнение состояний активировано",
+        "pt": "Comparação de estados ativada",
+        "nl": "Statusvergelijking geactiveerd",
+        "fr": "Comparaison d'état activée",
+        "it": "Confronto di stato attivato",
+        "es": "Comparación de estados activada",
+        "pl": "Porównanie stanów zostało aktywowane",
+        "uk": "Порівняння станів активовано",
+        "zh-cn": "状态比较已激活"
+    },
+    "valueCheckOff": {
+        "en": "State comparison disabled",
+        "de": "Statusvergleich deaktiviert",
+        "ru": "Сравнение состояний отключено",
+        "pt": "Comparação de estados desabilitada",
+        "nl": "Staatsvergelijking uitgeschakeld",
+        "fr": "Comparaison d'état désactivée",
+        "it": "Confronto di stato disabilitato",
+        "es": "Comparación de estados deshabilitada",
+        "pl": "Porównanie stanów wyłączone",
+        "uk": "Порівняння станів вимкнено",
+        "zh-cn": "状态比较已禁用"
+    },
+    "checkValue": {
+        "en": "Value check",
+        "de": "Werteprüfung",
+        "ru": "Проверка стоимости",
+        "pt": "Verificação de valor",
+        "nl": "Waardecontrole",
+        "fr": "Vérification de la valeur",
+        "it": "Controllo del valore",
+        "es": "Comprobación de valores",
+        "pl": "Sprawdzenie wartości",
+        "uk": "Перевірка вартості",
+        "zh-cn": "价值检查"
+    },
     "currentValue": {
         "en": "Current value",
         "de": "Aktueller Wert",
