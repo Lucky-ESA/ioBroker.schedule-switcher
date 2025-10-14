@@ -212,7 +212,7 @@ class VisHtmlTable {
         }
         let valueCheck = `&ensp;${trigger.valueCheck ? id.icon_state_check_yes : id.icon_state_check_no}`;
         valueCheck = `<button 
-                title="${await this.loadTitle(trigger.valueCheck ? "activated" : "disabled")}";
+                title="${this.loadTitle(trigger.valueCheck ? "activated" : "disabled")}";
                 style="border:none; cursor: pointer; 
                 background-color:transparent;" 
                 onClick="changValueCheck('${this.adapter.namespace}', 'valueCheck', '${state}', '${trigger.id}', '${trigger.valueCheck}')">${valueCheck}
@@ -1848,7 +1848,7 @@ class VisHtmlTable {
     val = await this.adapter.getStateAsync("html.html_code");
     this.htmlVal.html_code = val == null ? void 0 : val.val;
   }
-  async loadTitle(val) {
+  loadTitle(val) {
     const lang = {
       activated: {
         en: "State comparison activated",

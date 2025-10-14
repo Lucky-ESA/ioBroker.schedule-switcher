@@ -43,7 +43,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     this.stateService = stateService;
     this.first = first;
     if (!this.first) {
-      this.logger.logError(this.first.toString());
       this.timeTriggerScheduler.register(this.rescheduleTrigger);
     }
   }

@@ -56,7 +56,6 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     ) {
         super();
         if (!this.first) {
-            this.logger.logError(this.first.toString());
             this.timeTriggerScheduler.register(this.rescheduleTrigger);
         }
     }
