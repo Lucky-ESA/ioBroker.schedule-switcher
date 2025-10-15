@@ -58,6 +58,7 @@ class MessageService {
    * @param message ioBroker.Message
    */
   async handleMessage(message) {
+    var _a, _b, _c, _d, _e;
     if (this.currentMessage) {
       this.triggerTimeout = this.adapter.setTimeout(async () => {
         await this.handleMessage(message);
@@ -85,28 +86,28 @@ class MessageService {
     switch (message.command) {
       case "add-trigger":
         await this.addTrigger(schedule, data);
-        await this.validation.setActionTime(this.coordinate);
+        await ((_a = this.validation) == null ? void 0 : _a.setActionTime());
         await this.setCountTrigger();
         break;
       case "add-one-time-trigger":
         await this.addOneTimeTrigger(schedule, data);
-        await this.validation.setActionTime(this.coordinate);
+        await ((_b = this.validation) == null ? void 0 : _b.setActionTime());
         await this.setCountTrigger();
         break;
       case "update-one-time-trigger":
         await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
-        await this.validation.setActionTime(this.coordinate);
+        await ((_c = this.validation) == null ? void 0 : _c.setActionTime());
         break;
       case "update-trigger":
         if (data.trigger && data.trigger.type === "AstroTrigger") {
           data.trigger.todayTrigger = await this.nextDate(data.trigger);
         }
         await this.updateTrigger(schedule, data.trigger, data.dataId);
-        await this.validation.setActionTime(this.coordinate);
+        await ((_d = this.validation) == null ? void 0 : _d.setActionTime());
         break;
       case "delete-trigger":
         schedule.removeTrigger(data.triggerId);
-        await this.validation.setActionTime(this.coordinate);
+        await ((_e = this.validation) == null ? void 0 : _e.setActionTime());
         await this.setCountTrigger();
         break;
       case "change-name":
@@ -256,8 +257,9 @@ class MessageService {
     schedule.addTrigger(trigger);
   }
   async updateTrigger(schedule, triggerString, dataId) {
+    var _a;
     let updated;
-    await this.validation.validation(dataId, triggerString, true);
+    await ((_a = this.validation) == null ? void 0 : _a.validation(dataId, triggerString, true));
     if (schedule instanceof import_OnOffSchedule.OnOffSchedule && typeof triggerString === "object" && Object.keys(triggerString).length > 0) {
       updated = (await this.createOnOffScheduleSerializer(dataId)).getTriggerSerializer(schedule).deserialize(JSON.stringify(triggerString));
     } else {

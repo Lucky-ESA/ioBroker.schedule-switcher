@@ -39,7 +39,7 @@ export class MessageService {
         private createOnOffScheduleSerializer: (dataId: string) => Promise<OnOffScheduleSerializer>,
         private adapter: ioBroker.Adapter,
         private readonly coordinate: Coordinate,
-        private readonly validation: IoBrokerValidationState,
+        private readonly validation: IoBrokerValidationState | undefined,
         private readonly html: VisHtmlTable,
     ) {
         this.adapter = adapter;
@@ -79,28 +79,28 @@ export class MessageService {
         switch (message.command) {
             case "add-trigger":
                 await this.addTrigger(schedule, data);
-                await this.validation.setActionTime(this.coordinate);
+                await this.validation?.setActionTime();
                 await this.setCountTrigger();
                 break;
             case "add-one-time-trigger":
                 await this.addOneTimeTrigger(schedule, data);
-                await this.validation.setActionTime(this.coordinate);
+                await this.validation?.setActionTime();
                 await this.setCountTrigger();
                 break;
             case "update-one-time-trigger":
                 await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
-                await this.validation.setActionTime(this.coordinate);
+                await this.validation?.setActionTime();
                 break;
             case "update-trigger":
                 if (data.trigger && data.trigger.type === "AstroTrigger") {
                     data.trigger.todayTrigger = await this.nextDate(data.trigger);
                 }
                 await this.updateTrigger(schedule, data.trigger, data.dataId);
-                await this.validation.setActionTime(this.coordinate);
+                await this.validation?.setActionTime();
                 break;
             case "delete-trigger":
                 schedule.removeTrigger(data.triggerId);
-                await this.validation.setActionTime(this.coordinate);
+                await this.validation?.setActionTime();
                 await this.setCountTrigger();
                 break;
             case "change-name":
@@ -275,7 +275,7 @@ export class MessageService {
 
     private async updateTrigger(schedule: Schedule, triggerString: any, dataId: string): Promise<void> {
         let updated;
-        await this.validation.validation(dataId, triggerString, true);
+        await this.validation?.validation(dataId, triggerString, true);
         if (
             schedule instanceof OnOffSchedule &&
             typeof triggerString === "object" &&

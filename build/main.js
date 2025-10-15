@@ -53,9 +53,9 @@ class ScheduleSwitcher extends utils.Adapter {
   nextAstroTime;
   nextActionTime;
   setCountTriggerStart;
-  validation = new import_IoBrokerValidationState.IoBrokerValidationState(this);
   vishtmltable = new import_VisHtmlTable.VisHtmlTable(this);
   first = false;
+  validation;
   constructor(options = {}) {
     super({
       ...options,
@@ -80,9 +80,11 @@ class ScheduleSwitcher extends utils.Adapter {
    * Is called when databases are connected and adapter received configuration.
    */
   async onReady() {
+    var _a, _b, _c, _d;
     if (!this.config.usehtml) {
       await this.delObjectAsync("html", { recursive: true });
     }
+    await this.checkValueAttribute();
     const obj = await this.getForeignObjectAsync("system.config");
     let lang = "de";
     if (obj && obj.common && obj.common.language) {
@@ -93,35 +95,38 @@ class ScheduleSwitcher extends utils.Adapter {
     }
     this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData);
     this.log.debug(`onoff: ${JSON.stringify(this.config.schedules.onOff)}`);
+    await this.initValidation();
     await this.initMessageService();
     await this.fixStateStructure(this.config.schedules);
-    await this.validation.validationView(utils.getAbsoluteDefaultDataDir());
-    await this.validation.setNextTime(await this.getCoordinate());
-    await this.validation.setActionTime(await this.getCoordinate());
-    const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.*.data`);
+    await ((_a = this.validation) == null ? void 0 : _a.validationView(utils.getAbsoluteDefaultDataDir()));
+    await ((_b = this.validation) == null ? void 0 : _b.setNextTime());
+    await ((_c = this.validation) == null ? void 0 : _c.setActionTime());
+    const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.*`);
     for (const id in record) {
-      const state = record[id];
-      await this.vishtmltable.changeTrigger(id, state, false);
-      this.log.debug(`got state: ${state ? JSON.stringify(state) : "null"} with id: ${id}`);
-      if (state) {
-        this.log.info(`ID: ${id}`);
-        if (typeof state.val === "string" && state.val.startsWith("{")) {
-          const stateVal = JSON.parse(state.val);
-          if (stateVal && stateVal.active == null) {
-            stateVal.active = false;
-            await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
-          }
-          await this.validation.validation(id, stateVal, false);
-          if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
-            await this.onScheduleChange(id, JSON.stringify(stateVal));
+      if (id.toString().indexOf(".data") !== -1) {
+        const state = record[id];
+        await this.vishtmltable.changeTrigger(id, state, false);
+        this.log.debug(`got state: ${state ? JSON.stringify(state) : "null"} with id: ${id}`);
+        if (state) {
+          this.log.info(`ID: ${id}`);
+          if (typeof state.val === "string" && state.val.startsWith("{")) {
+            const stateVal = JSON.parse(state.val);
+            if (stateVal && stateVal.active == null) {
+              stateVal.active = false;
+              await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
+            }
+            await ((_d = this.validation) == null ? void 0 : _d.validation(id, stateVal, false));
+            if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
+              await this.onScheduleChange(id, JSON.stringify(stateVal));
+            } else {
+              this.log.error(`Skip id ${id} - Wrong values!!`);
+            }
           } else {
-            this.log.error(`Skip id ${id} - Wrong values!!`);
+            this.log.error(`Could not retrieve state for ${id}`);
           }
         } else {
           this.log.error(`Could not retrieve state for ${id}`);
         }
-      } else {
-        this.log.error(`Could not retrieve state for ${id}`);
       }
     }
     await this.refreshAstroTime();
@@ -130,13 +135,14 @@ class ScheduleSwitcher extends utils.Adapter {
     this.subscribeStates(`*`);
     this.widgetControl = this.setInterval(
       async () => {
-        await this.validation.validationView(utils.getAbsoluteDefaultDataDir());
+        var _a2;
+        await ((_a2 = this.validation) == null ? void 0 : _a2.validationView(utils.getAbsoluteDefaultDataDir()));
       },
       24 * 60 * 1e3 * 60
     );
     this.setCountTriggerStart = this.setTimeout(async () => {
-      var _a;
-      await ((_a = this.messageService) == null ? void 0 : _a.setCountTrigger());
+      var _a2;
+      await ((_a2 = this.messageService) == null ? void 0 : _a2.setCountTrigger());
       this.setCountTriggerStart = void 0;
       this.moreLogs();
     }, 3e3);
@@ -172,8 +178,9 @@ class ScheduleSwitcher extends utils.Adapter {
     rule.hour = 2;
     rule.minute = 2;
     this.nextAstroTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
+      var _a;
       this.log.info("Start Update Astrotime!");
-      void this.validation.setNextTime(await this.getCoordinate());
+      await ((_a = this.validation) == null ? void 0 : _a.setNextTime());
     });
     this.moreLogs();
     return Promise.resolve();
@@ -184,8 +191,9 @@ class ScheduleSwitcher extends utils.Adapter {
     rule.hour = 0;
     rule.minute = 1;
     this.nextActionTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
+      var _a;
       this.log.info("Start Update next time switch!");
-      void this.validation.setActionTime(await this.getCoordinate());
+      await ((_a = this.validation) == null ? void 0 : _a.setActionTime());
     });
     this.moreLogs();
     return Promise.resolve();
@@ -384,7 +392,7 @@ class ScheduleSwitcher extends utils.Adapter {
   async updateHTML(id, state, command) {
     await this.vishtmltable.changeHTML(command, state);
     if (state) {
-      await this.setState(id, state.val, true);
+      await this.setState(id, { val: state.val, ack: true });
     }
   }
   async updateData(id, state) {
@@ -405,7 +413,8 @@ class ScheduleSwitcher extends utils.Adapter {
     this.log.debug("is enabled id end");
   }
   async updateValidation(id) {
-    await this.validation.setNextTime(await this.getCoordinate());
+    var _a;
+    await ((_a = this.validation) == null ? void 0 : _a.setNextTime());
     await this.vishtmltable.updateHTML();
     await this.setState(id, false, true);
   }
@@ -603,6 +612,34 @@ class ScheduleSwitcher extends utils.Adapter {
   //------------------------------------------------------------------------------------------------------------------
   // Private helper methods
   //------------------------------------------------------------------------------------------------------------------
+  async checkValueAttribute() {
+    const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.*`);
+    for (const id in record) {
+      if (id.toString().indexOf(".data") !== -1) {
+        const state = record[id];
+        if (state) {
+          if (typeof state.val === "string" && state.val.startsWith("{")) {
+            const triggers = JSON.parse(state.val);
+            if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+              let isSave = false;
+              for (const trigger of triggers.triggers) {
+                if (trigger.valueCheck == null) {
+                  trigger.valueCheck = false;
+                  isSave = true;
+                }
+              }
+              if (isSave) {
+                await this.setState(id, { val: JSON.stringify(triggers), ack: true });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  async initValidation() {
+    this.validation = new import_IoBrokerValidationState.IoBrokerValidationState(this, await this.getCoordinate());
+  }
   async initMessageService() {
     this.messageService = new import_MessageService.MessageService(
       this.stateService,
