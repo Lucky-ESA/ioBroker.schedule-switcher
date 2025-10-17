@@ -125,7 +125,10 @@ export class OneTimeTrigger implements Trigger, Destroyable {
      * @returns string
      */
     public toString(): string {
-        return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}, timedate=${this.getTimeDate()}}`;
+        return (
+            `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}, timedate=${this.getTimeDate()}, ` +
+            `valueCheck=${this.getValueCheck()}, objectId=${this.getObjectId()}}`
+        );
     }
 
     /**

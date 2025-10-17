@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/services/MessageServices.ts"],
+  "sourcesContent": ["/**\n * MessageServices\n */\nexport interface MessageServices {\n    /**\n     * handleMessage\n     */\n    handleMessage(message: ioBroker.Message): Promise<void>;\n    /**\n     * setCountTrigger\n     */\n    setCountTrigger(): Promise<void>;\n    /**\n     * setForeinState\n     */\n    destroy(): Promise<boolean>;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

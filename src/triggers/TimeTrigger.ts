@@ -97,7 +97,7 @@ export class TimeTrigger extends BaseDailyTrigger {
     public toString(): string {
         return (
             `TimeTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())},` +
-            ` hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`
+            ` valueCheck=${this.getValueCheck()}, hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`
         );
     }
 }

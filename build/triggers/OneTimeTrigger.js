@@ -123,7 +123,7 @@ class OneTimeTrigger {
    * @returns string
    */
   toString() {
-    return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}, timedate=${this.getTimeDate()}}`;
+    return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}, timedate=${this.getTimeDate()}, valueCheck=${this.getValueCheck()}, objectId=${this.getObjectId()}}`;
   }
   /**
    * @returns action

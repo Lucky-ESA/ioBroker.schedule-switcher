@@ -95,7 +95,7 @@ class TimeTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
    *@returns string
    */
   toString() {
-    return `TimeTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`;
+    return `TimeTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, valueCheck=${this.getValueCheck()}, hour=${this.getHour()}, minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`;
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

@@ -12,13 +12,14 @@ import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
 import type { Trigger } from "../triggers/Trigger";
 import { AllWeekdays } from "../triggers/Weekday";
 import type { IoBrokerValidationState } from "./IoBrokerValidationState";
+import type { MessageServices } from "./MessageServices";
 import type { StateService } from "./StateService";
 
 /**
  * @param currentMessage ioBroker.Message | null
  * @param triggerTimeout ioBroker.Timeout | undefined
  */
-export class MessageService {
+export class MessageService implements MessageServices {
     private currentMessage: ioBroker.Message | null = null;
     private triggerTimeout: ioBroker.Timeout | undefined;
 
