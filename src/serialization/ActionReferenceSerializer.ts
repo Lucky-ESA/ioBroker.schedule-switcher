@@ -1,4 +1,5 @@
 import type { Action } from "../actions/Action";
+import type { LoggingService } from "../services/LoggingService";
 import type { Serializer } from "./Serializer";
 
 /**
@@ -7,17 +8,20 @@ import type { Serializer } from "./Serializer";
 export class ActionReferenceSerializer implements Serializer<Action> {
     private readonly referencableActions: Map<string, Action>;
     private readonly typeToReference: string;
-    private readonly adapter: ioBroker.Adapter;
     /**
      *
      * @param typeToReference Reference
      * @param referencableActions Actions
-     * @param adapter ioBroker
+     * @param logger Logs
      */
-    constructor(typeToReference: string, referencableActions: Map<string, Action>, adapter: ioBroker.Adapter) {
+    constructor(
+        typeToReference: string,
+        referencableActions: Map<string, Action>,
+        private logger: LoggingService,
+    ) {
         this.typeToReference = typeToReference;
         this.referencableActions = referencableActions;
-        this.adapter = adapter;
+        this.logger = logger;
     }
 
     /**
@@ -49,7 +53,7 @@ export class ActionReferenceSerializer implements Serializer<Action> {
                 break;
             }
         }
-        this.adapter.log.debug(`Name: ${name}`);
+        this.logger.logDebug(`Name: ${name}`);
         if (name) {
             return JSON.stringify({
                 type: this.getType(),

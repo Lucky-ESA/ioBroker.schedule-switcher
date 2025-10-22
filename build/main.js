@@ -45,9 +45,8 @@ var import_IoBrokerValidationState = require("./services/IoBrokerValidationState
 var import_MessageService = require("./services/MessageService");
 class ScheduleSwitcher extends utils.Adapter {
   scheduleIdToSchedule = /* @__PURE__ */ new Map();
-  loggingService = new import_IoBrokerLoggingService.IoBrokerLoggingService(this);
+  loggingService = new import_IoBrokerLoggingService.IoBrokerLoggingService(this.log);
   stateService = new import_IoBrokerStateService.IoBrokerStateService(this);
-  coordinate;
   messageService;
   widgetControl;
   nextAstroTime;
@@ -295,7 +294,7 @@ class ScheduleSwitcher extends utils.Adapter {
           this.log.debug("is sendto id");
           void this.setSendTo(state.val);
         } else if (command === "update" && state.val) {
-          void this.updateValidation(id);
+          void this.updateHTMLCode(id);
           return;
         }
         const secsplit = id.split(".")[id.split(".").length - 2];
@@ -412,7 +411,7 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.onScheduleChange(dataId, scheduleData);
     this.log.debug("is enabled id end");
   }
-  async updateValidation(id) {
+  async updateHTMLCode(id) {
     var _a;
     await ((_a = this.validation) == null ? void 0 : _a.setNextTime());
     await this.vishtmltable.updateHTML();
@@ -835,7 +834,7 @@ class ScheduleSwitcher extends utils.Adapter {
           this.loggingService
         ),
         actionSerializer,
-        this
+        this.loggingService
       )
     );
     const triggerSerializer = new import_UniversalSerializer.UniversalSerializer(
@@ -859,13 +858,12 @@ class ScheduleSwitcher extends utils.Adapter {
     return new import_OnOffScheduleSerializer.OnOffScheduleSerializer(
       new import_UniversalTriggerScheduler.UniversalTriggerScheduler(
         [
-          new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
+          new import_TimeTriggerScheduler.TimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
           new import_AstroTriggerScheduler.AstroTriggerScheduler(
-            new import_TimeTriggerScheduler.TimeTriggerScheduler(this.stateService, import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
+            new import_TimeTriggerScheduler.TimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
             import_suncalc.getTimes,
             await this.getCoordinate(),
             this.loggingService,
-            this.stateService,
             this.first
           ),
           new import_OneTimeTriggerScheduler.OneTimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService, this)
@@ -874,7 +872,6 @@ class ScheduleSwitcher extends utils.Adapter {
       ),
       actionSerializer,
       triggerSerializer,
-      this,
       this.loggingService
     );
   }

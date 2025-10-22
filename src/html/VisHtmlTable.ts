@@ -31,7 +31,9 @@ export class VisHtmlTable implements htmltable {
         const value = typeof val === "boolean" ? val : val?.val;
         if (value != null) {
             this.stateVal[id.replace(".enabled", ".data")].enabled = value;
-            await this.createHTML();
+            if (typeof val !== "boolean") {
+                await this.createHTML();
+            }
         }
     }
 

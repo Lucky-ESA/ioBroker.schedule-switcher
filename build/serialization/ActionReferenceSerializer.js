@@ -22,20 +22,20 @@ __export(ActionReferenceSerializer_exports, {
 });
 module.exports = __toCommonJS(ActionReferenceSerializer_exports);
 class ActionReferenceSerializer {
-  referencableActions;
-  typeToReference;
-  adapter;
   /**
    *
    * @param typeToReference Reference
    * @param referencableActions Actions
-   * @param adapter ioBroker
+   * @param logger Logs
    */
-  constructor(typeToReference, referencableActions, adapter) {
+  constructor(typeToReference, referencableActions, logger) {
+    this.logger = logger;
     this.typeToReference = typeToReference;
     this.referencableActions = referencableActions;
-    this.adapter = adapter;
+    this.logger = logger;
   }
+  referencableActions;
+  typeToReference;
   /**
    * @param stringToDeserialize Action
    */
@@ -64,7 +64,7 @@ class ActionReferenceSerializer {
         break;
       }
     }
-    this.adapter.log.debug(`Name: ${name}`);
+    this.logger.logDebug(`Name: ${name}`);
     if (name) {
       return JSON.stringify({
         type: this.getType(),

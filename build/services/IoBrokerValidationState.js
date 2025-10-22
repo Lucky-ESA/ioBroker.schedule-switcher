@@ -562,47 +562,48 @@ class IoBrokerValidationState {
         }
       }
     }
-    const prefix = `schedule-switcher.${this.adapter.instance}.`;
-    const currentStates = await this.adapter.getStatesAsync(`${prefix}*.data`);
+    const currentStates = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*`);
     for (const stateId in currentStates) {
-      if (!newViews[stateId] && typeof currentStates[stateId].val === "string") {
-        const id = stateId.replace("data", "enabled");
-        const eneabled = await this.adapter.getStateAsync(id);
-        const val = JSON.parse(currentStates[stateId].val);
-        if (val.onAction && val.onAction.idsOfStatesToSet && val.onAction.idsOfStatesToSet[0] === "default.state") {
-          this.adapter.log.debug("Default state in onAction!");
-        }
-        if (val.offAction && val.offAction.idsOfStatesToSet && val.offAction.idsOfStatesToSet[0] === "default.state") {
-          this.adapter.log.debug("Default state in offAction!");
-        }
-        const view = stateId.replace("data", "views");
-        if ((val.onAction.idsOfStatesToSet.length > 0 || val.offAction.idsOfStatesToSet.length > 0) && val.triggers.length > 0) {
-          if (eneabled && eneabled.val && !val.active) {
-            await this.adapter.setState(id, { val: false, ack: true });
-            await this.adapter.setState(view, {
-              val: JSON.stringify({
-                error: `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
-              }),
-              ack: true
-            });
-            this.adapter.log.debug(
-              `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
-            );
+      if (stateId.toString().indexOf(".data") !== -1) {
+        if (!newViews[stateId] && typeof currentStates[stateId].val === "string") {
+          const id = stateId.replace("data", "enabled");
+          const eneabled = await this.adapter.getStateAsync(id);
+          const val = JSON.parse(currentStates[stateId].val);
+          if (val.onAction && val.onAction.idsOfStatesToSet && val.onAction.idsOfStatesToSet[0] === "default.state") {
+            this.adapter.log.debug("Default state in onAction!");
+          }
+          if (val.offAction && val.offAction.idsOfStatesToSet && val.offAction.idsOfStatesToSet[0] === "default.state") {
+            this.adapter.log.debug("Default state in offAction!");
+          }
+          const view = stateId.replace("data", "views");
+          if ((val.onAction.idsOfStatesToSet.length > 0 || val.offAction.idsOfStatesToSet.length > 0) && val.triggers.length > 0) {
+            if (eneabled && eneabled.val && !val.active) {
+              await this.adapter.setState(id, { val: false, ack: true });
+              await this.adapter.setState(view, {
+                val: JSON.stringify({
+                  error: `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
+                }),
+                ack: true
+              });
+              this.adapter.log.debug(
+                `Trigger ${stateId} is active but there is no widget. Set Enabled to false!!!`
+              );
+            } else {
+              await this.adapter.setState(view, {
+                val: JSON.stringify({
+                  error: `Trigger ${stateId} is active but there is no widget.`
+                }),
+                ack: true
+              });
+            }
           } else {
             await this.adapter.setState(view, {
               val: JSON.stringify({
-                error: `Trigger ${stateId} is active but there is no widget.`
+                error: `The trigger ${stateId} is not used.`
               }),
               ack: true
             });
           }
-        } else {
-          await this.adapter.setState(view, {
-            val: JSON.stringify({
-              error: `The trigger ${stateId} is not used.`
-            }),
-            ack: true
-          });
         }
       }
     }

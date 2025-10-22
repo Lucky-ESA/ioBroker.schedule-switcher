@@ -37,21 +37,15 @@ var import_TriggerScheduler = require("./TriggerScheduler");
 class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   /**
    *
-   * @param stateService setState
    * @param scheduleJob Schedule
    * @param cancelJob Schedule
    * @param logger Log service
    */
-  constructor(stateService, scheduleJob, cancelJob, logger) {
+  constructor(scheduleJob, cancelJob, logger) {
     super();
-    this.stateService = stateService;
     this.scheduleJob = scheduleJob;
     this.cancelJob = cancelJob;
     this.logger = logger;
-    if (stateService == null) {
-      throw new Error("StateService may not be null or undefined.");
-    }
-    this.stateService = stateService;
   }
   registered = [];
   /**

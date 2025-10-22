@@ -60,8 +60,8 @@ class MessageService {
   async handleMessage(message) {
     var _a, _b, _c, _d, _e;
     if (this.currentMessage) {
-      this.triggerTimeout = this.adapter.setTimeout(async () => {
-        await this.handleMessage(message);
+      this.triggerTimeout = this.adapter.setTimeout(() => {
+        void this.handleMessage(message);
         this.triggerTimeout = void 0;
       }, 50);
       return;

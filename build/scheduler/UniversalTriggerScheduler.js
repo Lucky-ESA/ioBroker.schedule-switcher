@@ -58,7 +58,7 @@ class UniversalTriggerScheduler extends import_TriggerScheduler.TriggerScheduler
    */
   loadregister() {
     for (const r of this.schedulers) {
-      this.logger.logDebug(`Start UniversalTriggerScheduler`);
+      this.logger.logDebug(`Start UniversalTriggerScheduler ${r.forType()}`);
       r.loadregister();
     }
   }

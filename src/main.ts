@@ -40,9 +40,8 @@ interface schedulesData {
 
 class ScheduleSwitcher extends utils.Adapter {
     private scheduleIdToSchedule: Map<string, Schedule> = new Map<string, Schedule>();
-    private loggingService = new IoBrokerLoggingService(this);
+    private loggingService = new IoBrokerLoggingService(this.log);
     private stateService = new IoBrokerStateService(this);
-    private coordinate: Coordinate | undefined;
     private messageService: MessageService | undefined;
     private widgetControl: ioBroker.Interval | undefined | null;
     private nextAstroTime: any;
@@ -300,7 +299,7 @@ class ScheduleSwitcher extends utils.Adapter {
                     this.log.debug("is sendto id");
                     void this.setSendTo(state.val);
                 } else if (command === "update" && state.val) {
-                    void this.updateValidation(id);
+                    void this.updateHTMLCode(id);
                     return;
                 }
                 const secsplit = id.split(".")[id.split(".").length - 2];
@@ -426,7 +425,7 @@ class ScheduleSwitcher extends utils.Adapter {
         this.log.debug("is enabled id end");
     }
 
-    private async updateValidation(id: string): Promise<void> {
+    private async updateHTMLCode(id: string): Promise<void> {
         await this.validation?.setNextTime();
         await this.vishtmltable.updateHTML();
         await this.setState(id, false, true);
@@ -861,7 +860,7 @@ class ScheduleSwitcher extends utils.Adapter {
                     this.loggingService,
                 ),
                 actionSerializer,
-                this,
+                this.loggingService,
             ),
         );
         const triggerSerializer = new UniversalSerializer<Trigger>(
@@ -884,13 +883,12 @@ class ScheduleSwitcher extends utils.Adapter {
         return new OnOffScheduleSerializer(
             new UniversalTriggerScheduler(
                 [
-                    new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),
+                    new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
                     new AstroTriggerScheduler(
-                        new TimeTriggerScheduler(this.stateService, scheduleJob, cancelJob, this.loggingService),
+                        new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
                         getTimes,
                         await this.getCoordinate(),
                         this.loggingService,
-                        this.stateService,
                         this.first,
                     ),
                     new OneTimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService, this),
@@ -899,7 +897,6 @@ class ScheduleSwitcher extends utils.Adapter {
             ),
             actionSerializer,
             triggerSerializer,
-            this,
             this.loggingService,
         );
     }

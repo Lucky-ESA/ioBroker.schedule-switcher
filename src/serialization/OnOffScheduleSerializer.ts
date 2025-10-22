@@ -16,14 +16,12 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
      * @param triggerScheduler Scheduler
      * @param actionSerializer Serializer
      * @param triggerSerializer Serializer
-     * @param adapter ioBroker
      * @param loggingService Log Service
      */
     constructor(
         private triggerScheduler: UniversalTriggerScheduler,
         private actionSerializer: UniversalSerializer<Action>,
         private triggerSerializer: UniversalSerializer<Trigger>,
-        private adapter: ioBroker.Adapter,
         private loggingService: LoggingService,
     ) {}
 
@@ -93,7 +91,7 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
                     ["On", schedule.getOnAction()],
                     ["Off", schedule.getOffAction()],
                 ]),
-                this.adapter,
+                this.loggingService,
             ),
         );
     }

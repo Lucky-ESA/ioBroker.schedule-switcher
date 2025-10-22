@@ -29,14 +29,12 @@ class OnOffScheduleSerializer {
    * @param triggerScheduler Scheduler
    * @param actionSerializer Serializer
    * @param triggerSerializer Serializer
-   * @param adapter ioBroker
    * @param loggingService Log Service
    */
-  constructor(triggerScheduler, actionSerializer, triggerSerializer, adapter, loggingService) {
+  constructor(triggerScheduler, actionSerializer, triggerSerializer, loggingService) {
     this.triggerScheduler = triggerScheduler;
     this.actionSerializer = actionSerializer;
     this.triggerSerializer = triggerSerializer;
-    this.adapter = adapter;
     this.loggingService = loggingService;
   }
   /**
@@ -98,7 +96,7 @@ class OnOffScheduleSerializer {
           ["On", schedule.getOnAction()],
           ["Off", schedule.getOffAction()]
         ]),
-        this.adapter
+        this.loggingService
       )
     );
   }

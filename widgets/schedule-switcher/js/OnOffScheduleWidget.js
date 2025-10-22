@@ -309,10 +309,11 @@
 
         detectSettingsChanges(oldSettings, newSettings) {
             const newStateIds = this.getStateIdsFromSettings(newSettings);
+            console.debug(`OLD: ${JSON.stringify(oldSettings)}`);
             if (
-                !oldSettings ||
-                newStateIds.length !== oldSettings.stateIds.length ||
-                newStateIds.some((value, index) => value !== oldSettings.stateIds[index])
+                oldSettings &&
+                (newStateIds.length !== oldSettings.stateIds.length ||
+                    newStateIds.some((value, index) => value !== oldSettings.stateIds[index]))
             ) {
                 console.debug("sending change switched oids: " + JSON.stringify(newStateIds));
                 vis.binds["schedule-switcher"].sendMessage("change-switched-ids", {
@@ -322,10 +323,10 @@
             }
             if (newSettings.onValue === undefined || newSettings.offValue === undefined) return;
             if (
-                !oldSettings ||
-                oldSettings.onValue !== newSettings.onValue ||
-                oldSettings.offValue !== newSettings.offValue ||
-                oldSettings.valueType !== newSettings.valueType
+                oldSettings &&
+                (oldSettings.onValue !== newSettings.onValue ||
+                    oldSettings.offValue !== newSettings.offValue ||
+                    oldSettings.valueType !== newSettings.valueType)
             ) {
                 console.debug("sending change switched values on: " + newSettings.onValue);
                 console.debug("sending change switched values off: " + newSettings.offValue);

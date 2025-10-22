@@ -1,6 +1,5 @@
 import * as schedule from "node-schedule";
 import type { LoggingService } from "../services/LoggingService";
-import type { StateService } from "../services/StateService";
 import { TimeTrigger } from "../triggers/TimeTrigger";
 import type { Trigger } from "../triggers/Trigger";
 import { TriggerScheduler } from "./TriggerScheduler";
@@ -13,22 +12,16 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 
     /**
      *
-     * @param stateService setState
      * @param scheduleJob Schedule
      * @param cancelJob Schedule
      * @param logger Log service
      */
     constructor(
-        private stateService: StateService,
         private scheduleJob: (rule: schedule.RecurrenceRule, callback: schedule.JobCallback) => schedule.Job,
         private cancelJob: (job: schedule.Job) => boolean,
         private logger: LoggingService,
     ) {
         super();
-        if (stateService == null) {
-            throw new Error("StateService may not be null or undefined.");
-        }
-        this.stateService = stateService;
     }
 
     /**

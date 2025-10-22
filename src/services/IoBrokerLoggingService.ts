@@ -7,7 +7,7 @@ export class IoBrokerLoggingService implements LoggingService {
     /**
      * @param adapter ioBroker
      */
-    constructor(private adapter: ioBroker.Adapter) {}
+    constructor(private adapter: ioBroker.Log) {}
 
     /**
      * @param message Text

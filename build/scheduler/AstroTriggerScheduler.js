@@ -31,16 +31,14 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
    * @param getTimes GetTimesResult
    * @param coordinate Coodinate
    * @param logger Log service
-   * @param stateService setState
    * @param first boolean
    */
-  constructor(timeTriggerScheduler, getTimes, coordinate, logger, stateService, first) {
+  constructor(timeTriggerScheduler, getTimes, coordinate, logger, first) {
     super();
     this.timeTriggerScheduler = timeTriggerScheduler;
     this.getTimes = getTimes;
     this.coordinate = coordinate;
     this.logger = logger;
-    this.stateService = stateService;
     this.first = first;
     if (!this.first) {
       this.timeTriggerScheduler.register(this.rescheduleTrigger);

@@ -54,8 +54,8 @@ export class MessageService implements MessageServices {
      */
     public async handleMessage(message: ioBroker.Message): Promise<void> {
         if (this.currentMessage) {
-            this.triggerTimeout = this.adapter.setTimeout(async () => {
-                await this.handleMessage(message);
+            this.triggerTimeout = this.adapter.setTimeout(() => {
+                void this.handleMessage(message);
                 this.triggerTimeout = undefined;
             }, 50);
             return;

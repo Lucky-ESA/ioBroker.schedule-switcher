@@ -26,12 +26,13 @@ class ConditionActionSerializer {
   /**
    * @param conditionSerializer Serializer
    * @param actionSerializer Action
-   * @param adapter ioBroker
+   * @param logger Logs
    */
-  constructor(conditionSerializer, actionSerializer, adapter) {
+  constructor(conditionSerializer, actionSerializer, logger) {
     this.conditionSerializer = conditionSerializer;
     this.actionSerializer = actionSerializer;
-    this.adapter = adapter;
+    this.logger = logger;
+    this.logger = logger;
   }
   /**
    * @param stringToDeserialize Action
@@ -39,12 +40,12 @@ class ConditionActionSerializer {
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
     if (json.type !== this.getType()) {
-      this.adapter.log.error(`Can not deserialize object of type ${json.type}`);
+      this.logger.logError(`Can not deserialize object of type ${json.type}`);
     }
     return new import_ConditionAction.ConditionAction(
       this.conditionSerializer.deserialize(JSON.stringify(json.condition)),
       this.actionSerializer.deserialize(JSON.stringify(json.action)),
-      this.adapter
+      this.logger
     );
   }
   /**
@@ -52,7 +53,7 @@ class ConditionActionSerializer {
    */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
-      this.adapter.log.error("objectToSerialize may not be null or undefined.");
+      this.logger.logError("objectToSerialize may not be null or undefined.");
       return JSON.stringify({});
     }
     if (objectToSerialize instanceof import_ConditionAction.ConditionAction) {
@@ -62,7 +63,7 @@ class ConditionActionSerializer {
         action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction()))
       });
     }
-    this.adapter.log.error("objectToSerialize must be of type ConditionAction.");
+    this.logger.logError("objectToSerialize must be of type ConditionAction.");
     return JSON.stringify({});
   }
   /**
