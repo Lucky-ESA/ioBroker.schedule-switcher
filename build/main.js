@@ -45,7 +45,7 @@ var import_IoBrokerValidationState = require("./services/IoBrokerValidationState
 var import_MessageService = require("./services/MessageService");
 class ScheduleSwitcher extends utils.Adapter {
   scheduleIdToSchedule = /* @__PURE__ */ new Map();
-  loggingService = new import_IoBrokerLoggingService.IoBrokerLoggingService(this.log);
+  loggingService = new import_IoBrokerLoggingService.IoBrokerLoggingService(this);
   stateService = new import_IoBrokerStateService.IoBrokerStateService(this);
   messageService;
   widgetControl;

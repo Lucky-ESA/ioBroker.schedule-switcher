@@ -40,7 +40,7 @@ interface schedulesData {
 
 class ScheduleSwitcher extends utils.Adapter {
     private scheduleIdToSchedule: Map<string, Schedule> = new Map<string, Schedule>();
-    private loggingService = new IoBrokerLoggingService(this.log);
+    private loggingService = new IoBrokerLoggingService(this);
     private stateService = new IoBrokerStateService(this);
     private messageService: MessageService | undefined;
     private widgetControl: ioBroker.Interval | undefined | null;
