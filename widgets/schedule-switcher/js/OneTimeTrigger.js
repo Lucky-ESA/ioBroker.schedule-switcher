@@ -26,6 +26,8 @@
             this.sr.querySelector(".button.save").addEventListener("click", this.onSaveClick.bind(this));
             this.sr.querySelector(".button.add").addEventListener("click", this.onAddConditionClick.bind(this));
             this.sr.querySelector(".button.edit").addEventListener("click", this.onEditClick.bind(this));
+            this.sr.querySelector(".button.cancel_bottom").addEventListener("click", this.onCancelClick.bind(this));
+            this.sr.querySelector(".button.save_bottom").addEventListener("click", this.onSaveClick.bind(this));
 
             this.sr.querySelector("input.hours").addEventListener("input", this.onTimeInput.bind(this));
             this.sr.querySelector("input.minutes").addEventListener("input", this.onTimeInput.bind(this));
@@ -438,7 +440,13 @@
                     <div id="trigger-date-header">${vis.binds["schedule-switcher"].translate("selectTimeDate")}</div>
                     <div class="trigger-date">
                         <input class="datetime" type="datetime-local" name="datetime" id="datetime" required />
-					</div>				
+					</div>
+                    <div class="header_bottom">
+                        <img class="button save_bottom" src="widgets/schedule-switcher/img/save-24px.svg" width="28px"
+                            height="28px" title="${vis.binds["schedule-switcher"].translate("saveChanges")}"/>
+                        <img class="button cancel_bottom" src="widgets/schedule-switcher/img/cancel-24px.svg" width="28px"
+                            height="28px" title="${vis.binds["schedule-switcher"].translate("cancelEdit")}"/>
+                    </div>
 				</div>
 			`;
             return shadowRoot;
@@ -465,7 +473,7 @@
 
         onTriggerChange() {
             const newTrigger = this.trigger;
-            this.checkValue = newTrigger.valueCheck;
+            this.checkValue = newTrigger ? newTrigger.valueCheck : false;
             this.setValueCheckIcon();
             if (newTrigger) {
                 if (!this.trigger.timedate) {

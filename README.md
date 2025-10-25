@@ -46,6 +46,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 - (Lucky-ESA) Fixed warn log (Cannot read dir...)
 - (Lucky-ESA) Added state comparison enabled/disabled
 - (Lucky-ESA) Fixed small some bugs
+- (Lucky-ESA) History JSON changed
 
 ### 0.0.12 (2025-08-27)
 

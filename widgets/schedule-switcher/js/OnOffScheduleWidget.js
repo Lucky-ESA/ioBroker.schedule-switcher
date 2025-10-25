@@ -198,11 +198,23 @@
             if (newSettings.showId && newSettings.statesCount === "1") {
                 this.sr.querySelector("#switched-oid").textContent = newSettings["oid-stateId1"];
             }
-            const oldSettings = vis.binds["schedule-switcher"].onOffScheduleWidgets[this.widgetId];
+            let oldSettings = vis.binds["schedule-switcher"].onOffScheduleWidgets[this.widgetId];
             this.settings = newSettings;
+            const dataId = JSON.parse(vis.states.attr(`${this.settings["oid-dataId"]}.val`));
+            if (!oldSettings && dataId) {
+                oldSettings = {
+                    onValue: dataId.onAction.onValue,
+                    offValue: dataId.onAction.offValue,
+                    stateIds: dataId.onAction.idsOfStatesToSet,
+                    valueType: dataId.onAction.valueType,
+                    on: newSettings.newOn,
+                    off: newSettings.newOff,
+                    allOn: newSettings.newAllOn,
+                    allOff: newSettings.newAllOff,
+                };
+            }
             this.detectSettingsChanges(oldSettings, newSettings);
             this.updateStoredSettings(newSettings);
-            const dataId = JSON.parse(vis.states.attr(`${this.settings["oid-dataId"]}.val`));
             const widgetElement = document.querySelector(`#${this.widgetId}`);
             if (!this.validateOnOffStatesWithWidgetSettings(widgetElement, newSettings, dataId)) {
                 return;

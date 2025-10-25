@@ -678,19 +678,20 @@ class ScheduleSwitcher extends utils.Adapter {
         if (!statesInSettings.onOff) {
             statesInSettings.onOff = [];
         }
-        const prefix = `schedule-switcher.${this.instance}.`;
-        const currentStates = await this.getStatesAsync(`${prefix}*.data`);
+        const currentStates = await this.getStatesAsync(`schedule-switcher.${this.instance}.*`);
         for (const fullId in currentStates) {
-            const split = fullId.split(".");
-            const type = split[2];
-            const id = Number.parseInt(split[3], 10);
-            if (type == "onoff") {
-                if (statesInSettings.onOff.includes(id)) {
-                    statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
-                    this.log.debug(`Found state ${fullId}`);
-                } else {
-                    this.log.debug(`Deleting state ${fullId}`);
-                    await this.deleteOnOffSchedule(id);
+            if (fullId.toString().indexOf(".data") !== -1) {
+                const split = fullId.split(".");
+                const type = split[2];
+                const id = Number.parseInt(split[3], 10);
+                if (type == "onoff") {
+                    if (statesInSettings.onOff.includes(id)) {
+                        statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
+                        this.log.debug(`Found state ${fullId}`);
+                    } else {
+                        this.log.debug(`Deleting state ${fullId}`);
+                        await this.deleteOnOffSchedule(id);
+                    }
                 }
             }
         }

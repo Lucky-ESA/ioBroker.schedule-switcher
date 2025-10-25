@@ -65,12 +65,14 @@ class ConditionAction {
   }
   /**
    * execute
+   *
+   * @param trigger OneTimeTrigger | AstroTrigger | TimeTrigger
    */
-  execute() {
+  execute(trigger) {
     this.condition.evaluate().then((result) => {
       if (result) {
         this.logger.logDebug(`Executing action because condition ${this.condition} evaluated to true`);
-        this.action.execute(false);
+        this.action.execute(trigger);
       } else {
         this.logger.logDebug(`Not executing action because condition ${this.condition} evaluated to false`);
       }

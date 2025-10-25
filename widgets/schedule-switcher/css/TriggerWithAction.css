@@ -62,6 +62,14 @@
     margin-right: 20px;
 }
 
+.header_bottom {
+    flex-direction: row;
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
 /* Buttons */
 
 .button {
@@ -84,6 +92,14 @@
 
 .button.cancel {
     margin-left: 10px;
+}
+
+.button.save_bottom {
+    margin-left: 70%;
+}
+
+.button.cancel_bottom {
+    margin-left: auto;
 }
 
 .button.check {

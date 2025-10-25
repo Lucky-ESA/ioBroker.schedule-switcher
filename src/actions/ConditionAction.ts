@@ -1,4 +1,7 @@
 import type { LoggingService } from "../services/LoggingService";
+import type { AstroTrigger } from "../triggers/AstroTrigger";
+import type { OneTimeTrigger } from "../triggers/OneTimeTrigger";
+import type { TimeTrigger } from "../triggers/TimeTrigger";
 import type { Action } from "./Action";
 import type { Condition } from "./conditions/Condition";
 
@@ -57,14 +60,16 @@ export class ConditionAction implements Action {
 
     /**
      * execute
+     *
+     * @param trigger OneTimeTrigger | AstroTrigger | TimeTrigger
      */
-    public execute(): void {
+    public execute(trigger: OneTimeTrigger | AstroTrigger | TimeTrigger): void {
         this.condition
             .evaluate()
             .then(result => {
                 if (result) {
                     this.logger.logDebug(`Executing action because condition ${this.condition} evaluated to true`);
-                    this.action.execute(false);
+                    this.action.execute(trigger);
                 } else {
                     this.logger.logDebug(`Not executing action because condition ${this.condition} evaluated to false`);
                 }

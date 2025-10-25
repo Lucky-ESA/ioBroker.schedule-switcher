@@ -111,6 +111,12 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
    * destroy
    */
   destroy() {
+    this.logger.logError(`STOP`);
+    this.timeTriggerScheduler.unregister(this.rescheduleTrigger);
+    for (const s of this.scheduled) {
+      this.logger.logError(`STOP1`);
+      this.timeTriggerScheduler.unregister(s[1]);
+    }
     this.timeTriggerScheduler.destroy();
     this.registered = [];
     this.scheduled = [];
@@ -136,9 +142,9 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
         weekday: next.getDay(),
         date: next
       }).setWeekdays([next.getDay()]).setAction({
-        execute: () => {
-          this.logger.logDebug(`Executing astrotrigger ${trigger}`);
-          trigger.getAction().execute(trigger.getData());
+        execute: (trigger2) => {
+          this.logger.logDebug(`Executing astrotrigger ${trigger2}`);
+          trigger2.getAction().execute(trigger2);
         }
       }).build();
       this.logger.logDebug(`Scheduled astro with ${timeTrigger}`);

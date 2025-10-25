@@ -88,6 +88,14 @@
     margin-left: 10px;
 }
 
+.header_bottom {
+    flex-direction: row;
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
 .condition div {
     margin-right: 20px;
 }
@@ -105,6 +113,14 @@
 }
 
 .button.edit {
+    margin-left: auto;
+}
+
+.button.save_bottom {
+    margin-left: 70%;
+}
+
+.button.cancel_bottom {
     margin-left: auto;
 }
 

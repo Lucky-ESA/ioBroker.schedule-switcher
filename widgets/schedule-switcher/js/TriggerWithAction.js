@@ -21,6 +21,8 @@
             this.sr.querySelector(".button.save").addEventListener("click", this.onSaveClick.bind(this));
             this.sr.querySelector(".button.add").addEventListener("click", this.onAddConditionClick.bind(this));
             this.sr.querySelector("#checking").addEventListener("click", this.onCheckClick.bind(this));
+            this.sr.querySelector(".button.cancel_bottom").addEventListener("click", this.toggleEdit.bind(this));
+            this.sr.querySelector(".button.save_bottom").addEventListener("click", this.onSaveClick.bind(this));
         }
 
         attributeChangedCallback(attr) {
@@ -230,6 +232,12 @@
 						<div>${vis.binds["schedule-switcher"].translate("trigger")}</div>
 						<div class="trigger"></div>
 						<app-weekdays-schedule edit="true"></app-weekdays-schedule>
+                        <div class="header_bottom">
+                            <img class="button save_bottom" src="widgets/schedule-switcher/img/save-24px.svg" width="28px"
+                                height="28px" title="${vis.binds["schedule-switcher"].translate("saveChanges")}"/>
+                            <img class="button cancel_bottom" src="widgets/schedule-switcher/img/cancel-24px.svg" width="28px"
+                                height="28px" title="${vis.binds["schedule-switcher"].translate("cancelEdit")}"/>
+                        </div>
 					</div>
 				`;
             return shadowRoot;

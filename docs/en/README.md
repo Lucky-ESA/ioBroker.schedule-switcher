@@ -288,9 +288,9 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
   {
     "setObjectId": "0_userdata.0.test4",
     "objectId": 0,
-    "value": true,
-    "old_value": false,
-    "setValue": false,
+    "actualValue": true,
+    "oldValue": false,
+    "checkValue": false,
     "object": "0_userdata.0.test4",
     "trigger": "TimeTrigger",
     "astroTime": "unknown",
@@ -309,14 +309,16 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
         0
       ]
     ],
-    "time": 1729622880040
+    "timestamp": 1761384780017,
+    "dateTime": "2025-10-25T09:33:00.017Z",
+    "dateTimeWithTimezone": "2025-10-25T11:33:00.017Z"
   },
   {
     "setObjectId": "0_userdata.0.test4",
     "objectId": 0,
-    "value": true,
-    "old_value": false,
-    "setValue": false,
+    "actualValue": true,
+    "oldValue": false,
+    "checkValue": false,
     "object": "0_userdata.0.test4",
     "astroTime": "unknown",
     "shift": 0,
@@ -334,7 +336,9 @@ sendTo("schedule-switcher.0", "change-active", { // Leave schedule active withou
         0
       ]
     ],
-    "time": 1729622820071
+    "timestamp": 1761383520527,
+    "dateTime": "2025-10-25T09:12:00.527Z",
+    "dateTimeWithTimezone": "2025-10-25T11:12:00.527Z"
   }
 ]
 ```

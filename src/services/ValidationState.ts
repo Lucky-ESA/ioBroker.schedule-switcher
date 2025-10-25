@@ -9,13 +9,13 @@ export interface validationState {
     /**
      * view
      */
-    validationView(utils: string): Promise<any>;
+    validationView(utils: string): Promise<void>;
     /**
      * Time
      */
-    setNextTime(coordinate: any): Promise<any>;
+    setNextTime(coordinate: any): Promise<void>;
     /**
      * Coodinates
      */
-    setActionTime(coordinate: any): Promise<any>;
+    setActionTime(coordinate: any): Promise<void>;
 }
