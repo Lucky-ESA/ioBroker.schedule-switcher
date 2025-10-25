@@ -87,7 +87,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                     return true;
                 });
             } else {
-                this.logger.logWarn(`AstroTrigger ${trigger} is not today.`);
+                this.logger.logDebug(`AstroTrigger ${trigger} is not today.`);
                 this.loadregister();
             }
         } else {

@@ -88,7 +88,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
           return true;
         });
       } else {
-        this.logger.logWarn(`AstroTrigger ${trigger} is not today.`);
+        this.logger.logDebug(`AstroTrigger ${trigger} is not today.`);
         this.loadregister();
       }
     } else {
@@ -111,10 +111,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
    * destroy
    */
   destroy() {
-    this.logger.logError(`STOP`);
-    this.timeTriggerScheduler.unregister(this.rescheduleTrigger);
     for (const s of this.scheduled) {
-      this.logger.logError(`STOP1`);
       this.timeTriggerScheduler.unregister(s[1]);
     }
     this.timeTriggerScheduler.destroy();
