@@ -112,7 +112,6 @@ export class AstroTriggerScheduler extends TriggerScheduler {
      * destroy
      */
     public destroy(): void {
-        this.timeTriggerScheduler.unregister(this.rescheduleTrigger);
         for (const s of this.scheduled) {
             this.timeTriggerScheduler.unregister(s[1]);
         }
