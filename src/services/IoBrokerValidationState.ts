@@ -227,10 +227,10 @@ export class IoBrokerValidationState implements validationState {
                                 return (val = {});
                             }
                             if (trigger.action.condition.type !== "StringStateAndConstantCondition") {
-                                if (trigger.action.condition.constant !== "true") {
+                                if (trigger.action.condition.constant == "") {
                                     trigger.action.condition.constant = "true";
                                     this.adapter.log.warn(
-                                        `Wrong condition constant ${JSON.stringify(trigger.action)} in ${id}`,
+                                        `Wrong condition constant ${JSON.stringify(trigger.action)} in ${id}! Set constant to TRUE!`,
                                     );
                                 }
                                 if (!trigger.action.condition.stateId1 || !trigger.action.condition.stateId2) {
