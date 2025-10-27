@@ -336,11 +336,13 @@
             if (newSettings.onValue === undefined || newSettings.offValue === undefined) return;
             console.debug("sending change switched values Oldon: " + oldSettings.onValue);
             console.debug("sending change switched values Oldoff: " + oldSettings.offValue);
-            console.debug("sending change switched type: " + oldSettings.valueType);
+            console.debug("sending change switched Oldon: " + typeof oldSettings.onValue);
+            console.debug("sending change switched Oldtype: " + newSettings.valueType);
+            console.debug("sending change switched values off: " + typeof newSettings.onValue);
             if (
                 oldSettings &&
-                (oldSettings.onValue != newSettings.onValue ||
-                    oldSettings.offValue != newSettings.offValue ||
+                (oldSettings.onValue.toString() != newSettings.onValue.toString() ||
+                    oldSettings.offValue.toString() != newSettings.offValue.toString() ||
                     oldSettings.valueType != newSettings.valueType)
             ) {
                 console.debug("sending change switched values on: " + newSettings.onValue);
