@@ -66,8 +66,7 @@ class IoBrokerStateService {
    * @param trigger Trigger
    */
   async setForeignState(id, value, trigger) {
-    this.adapter.log.debug(`TRIGGER SET: ${JSON.stringify(trigger.getData())}`);
-    const timeTrigger = trigger.getData();
+    this.adapter.log.debug(`TRIGGER SET: ${JSON.stringify(trigger)}`);
     const diffTime = Date.now() - this.checkTime;
     this.checkTime = Date.now();
     this.adapter.log.debug(`DIFF: ${diffTime}`);
@@ -81,15 +80,15 @@ class IoBrokerStateService {
     const old_value = await this.adapter.getForeignStateAsync(id);
     const old_val = old_value == null ? null : old_value.val;
     let change_val = false;
-    this.adapter.log.debug(timeTrigger.valueCheck);
-    if (timeTrigger.valueCheck) {
+    this.adapter.log.debug(trigger.valueCheck);
+    if (trigger.valueCheck) {
       if (JSON.stringify(value) === JSON.stringify(old_val)) {
         this.adapter.log.debug(`Set not change!`);
         change_val = true;
       }
     }
     if (this.adapter.config.history > 0) {
-      await this.setHistory(id, value, timeTrigger, old_val, change_val);
+      await this.setHistory(id, value, trigger, old_val, change_val);
     }
     this.checkId(id);
     if (!change_val) {

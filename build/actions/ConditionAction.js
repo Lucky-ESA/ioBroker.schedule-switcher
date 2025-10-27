@@ -65,8 +65,6 @@ class ConditionAction {
   }
   /**
    * execute
-   *
-   * @param trigger OneTimeTrigger | AstroTrigger | TimeTrigger
    */
   execute(trigger) {
     this.condition.evaluate().then((result) => {

@@ -334,14 +334,18 @@
                 });
             }
             if (newSettings.onValue === undefined || newSettings.offValue === undefined) return;
+            console.debug("sending change switched values Oldon: " + oldSettings.onValue);
+            console.debug("sending change switched values Oldoff: " + oldSettings.offValue);
+            console.debug("sending change switched type: " + oldSettings.valueType);
             if (
                 oldSettings &&
-                (oldSettings.onValue !== newSettings.onValue ||
-                    oldSettings.offValue !== newSettings.offValue ||
-                    oldSettings.valueType !== newSettings.valueType)
+                (oldSettings.onValue != newSettings.onValue ||
+                    oldSettings.offValue != newSettings.offValue ||
+                    oldSettings.valueType != newSettings.valueType)
             ) {
                 console.debug("sending change switched values on: " + newSettings.onValue);
                 console.debug("sending change switched values off: " + newSettings.offValue);
+                console.debug("sending change switched values off: " + newSettings.valueType);
                 if (newSettings.onValue == "") delete newSettings.onValue;
                 if (newSettings.offValue == "") delete newSettings.offValue;
                 vis.binds["schedule-switcher"].sendMessage("change-switched-values", {

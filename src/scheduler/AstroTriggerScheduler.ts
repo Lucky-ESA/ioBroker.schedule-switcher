@@ -28,9 +28,9 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 for (const s of this.scheduled) {
                     this.timeTriggerScheduler.unregister(s[1]);
                 }
-                for (const r of this.registered) {
-                    this.tryScheduleTriggerToday(r);
-                }
+                //for (const r of this.registered) {
+                //    this.tryScheduleTriggerToday(r);
+                //}
                 this.loadregister();
                 this.timeTriggerScheduler.loadregister();
             },
@@ -42,19 +42,15 @@ export class AstroTriggerScheduler extends TriggerScheduler {
      * @param getTimes GetTimesResult
      * @param coordinate Coodinate
      * @param logger Log service
-     * @param first boolean
      */
     constructor(
         private readonly timeTriggerScheduler: TimeTriggerScheduler,
         private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
         private readonly coordinate: Coordinate,
         private readonly logger: LoggingService,
-        private readonly first: boolean,
     ) {
         super();
-        if (!this.first) {
-            this.timeTriggerScheduler.register(this.rescheduleTrigger);
-        }
+        this.timeTriggerScheduler.register(this.rescheduleTrigger);
     }
 
     /**
@@ -112,9 +108,6 @@ export class AstroTriggerScheduler extends TriggerScheduler {
      * destroy
      */
     public destroy(): void {
-        for (const s of this.scheduled) {
-            this.timeTriggerScheduler.unregister(s[1]);
-        }
         this.timeTriggerScheduler.destroy();
         this.registered = [];
         this.scheduled = [];
@@ -150,9 +143,9 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 })
                 .setWeekdays([next.getDay()])
                 .setAction({
-                    execute: (trigger: AstroTrigger) => {
+                    execute: () => {
                         this.logger.logDebug(`Executing astrotrigger ${trigger}`);
-                        trigger.getAction().execute(trigger);
+                        trigger.getAction().execute(trigger.getData());
                     },
                 })
                 .build();

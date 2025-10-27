@@ -1,7 +1,4 @@
 import type { LoggingService } from "../services/LoggingService";
-import type { AstroTrigger } from "../triggers/AstroTrigger";
-import type { OneTimeTrigger } from "../triggers/OneTimeTrigger";
-import type { TimeTrigger } from "../triggers/TimeTrigger";
 import type { Action } from "./Action";
 import type { Condition } from "./conditions/Condition";
 
@@ -60,10 +57,8 @@ export class ConditionAction implements Action {
 
     /**
      * execute
-     *
-     * @param trigger OneTimeTrigger | AstroTrigger | TimeTrigger
      */
-    public execute(trigger: OneTimeTrigger | AstroTrigger | TimeTrigger): void {
+    public execute(trigger: any): void {
         this.condition
             .evaluate()
             .then(result => {

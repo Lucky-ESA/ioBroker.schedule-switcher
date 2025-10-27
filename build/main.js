@@ -53,7 +53,6 @@ class ScheduleSwitcher extends utils.Adapter {
   nextActionTime;
   setCountTriggerStart;
   vishtmltable = new import_VisHtmlTable.VisHtmlTable(this);
-  first = false;
   validation;
   constructor(options = {}) {
     super({
@@ -175,7 +174,8 @@ class ScheduleSwitcher extends utils.Adapter {
     const rule = new import_node_schedule.RecurrenceRule();
     rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
     rule.hour = 2;
-    rule.minute = 2;
+    rule.minute = 0;
+    rule.second = 20;
     this.nextAstroTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
       var _a;
       this.log.info("Start Update Astrotime!");
@@ -793,7 +793,6 @@ class ScheduleSwitcher extends utils.Adapter {
     }
     try {
       const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
-      this.first = true;
       const enabledState = await this.getStateAsync(this.getEnabledIdFromScheduleId(id));
       if (enabledState) {
         (_b = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _b.destroy();
@@ -864,8 +863,7 @@ class ScheduleSwitcher extends utils.Adapter {
             new import_TimeTriggerScheduler.TimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService),
             import_suncalc.getTimes,
             await this.getCoordinate(),
-            this.loggingService,
-            this.first
+            this.loggingService
           ),
           new import_OneTimeTriggerScheduler.OneTimeTriggerScheduler(import_node_schedule.scheduleJob, import_node_schedule.cancelJob, this.loggingService, this)
         ],

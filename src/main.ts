@@ -48,7 +48,6 @@ class ScheduleSwitcher extends utils.Adapter {
     private nextActionTime: any;
     private setCountTriggerStart: ioBroker.Timeout | undefined | null;
     private vishtmltable = new VisHtmlTable(this);
-    private first: boolean = false;
     public validation: IoBrokerValidationState | undefined;
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -173,7 +172,8 @@ class ScheduleSwitcher extends utils.Adapter {
         const rule = new RecurrenceRule();
         rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
         rule.hour = 2;
-        rule.minute = 2;
+        rule.minute = 0;
+        rule.second = 20;
         this.nextAstroTime = scheduleJob(rule, async () => {
             this.log.info("Start Update Astrotime!");
             await this.validation?.setNextTime();
@@ -816,7 +816,6 @@ class ScheduleSwitcher extends utils.Adapter {
         }
         try {
             const schedule = (await this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
-            this.first = true;
             const enabledState = await this.getStateAsync(this.getEnabledIdFromScheduleId(id));
             if (enabledState) {
                 this.scheduleIdToSchedule.get(id)?.destroy();
@@ -890,7 +889,6 @@ class ScheduleSwitcher extends utils.Adapter {
                         getTimes,
                         await this.getCoordinate(),
                         this.loggingService,
-                        this.first,
                     ),
                     new OneTimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService, this),
                 ],

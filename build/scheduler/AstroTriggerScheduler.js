@@ -31,18 +31,14 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
    * @param getTimes GetTimesResult
    * @param coordinate Coodinate
    * @param logger Log service
-   * @param first boolean
    */
-  constructor(timeTriggerScheduler, getTimes, coordinate, logger, first) {
+  constructor(timeTriggerScheduler, getTimes, coordinate, logger) {
     super();
     this.timeTriggerScheduler = timeTriggerScheduler;
     this.getTimes = getTimes;
     this.coordinate = coordinate;
     this.logger = logger;
-    this.first = first;
-    if (!this.first) {
-      this.timeTriggerScheduler.register(this.rescheduleTrigger);
-    }
+    this.timeTriggerScheduler.register(this.rescheduleTrigger);
   }
   registered = [];
   scheduled = [];
@@ -51,9 +47,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.logger.logDebug(`Rescheduling astro triggers`);
       for (const s of this.scheduled) {
         this.timeTriggerScheduler.unregister(s[1]);
-      }
-      for (const r of this.registered) {
-        this.tryScheduleTriggerToday(r);
       }
       this.loadregister();
       this.timeTriggerScheduler.loadregister();
@@ -111,9 +104,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
    * destroy
    */
   destroy() {
-    for (const s of this.scheduled) {
-      this.timeTriggerScheduler.unregister(s[1]);
-    }
     this.timeTriggerScheduler.destroy();
     this.registered = [];
     this.scheduled = [];
@@ -139,9 +129,9 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
         weekday: next.getDay(),
         date: next
       }).setWeekdays([next.getDay()]).setAction({
-        execute: (trigger2) => {
-          this.logger.logDebug(`Executing astrotrigger ${trigger2}`);
-          trigger2.getAction().execute(trigger2);
+        execute: () => {
+          this.logger.logDebug(`Executing astrotrigger ${trigger}`);
+          trigger.getAction().execute(trigger.getData());
         }
       }).build();
       this.logger.logDebug(`Scheduled astro with ${timeTrigger}`);
