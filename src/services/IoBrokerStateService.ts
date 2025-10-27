@@ -137,7 +137,7 @@ export class IoBrokerStateService implements StateService {
             };
             history_newvalue.push(new_data);
             history_newvalue.sort((a: any, b: any) => {
-                if (a.time > b.time) {
+                if (a.timestamp > b.timestamp) {
                     return -1;
                 }
             });

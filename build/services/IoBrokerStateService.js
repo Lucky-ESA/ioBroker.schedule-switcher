@@ -141,7 +141,7 @@ class IoBrokerStateService {
       };
       history_newvalue.push(new_data);
       history_newvalue.sort((a, b) => {
-        if (a.time > b.time) {
+        if (a.timestamp > b.timestamp) {
           return -1;
         }
       });
