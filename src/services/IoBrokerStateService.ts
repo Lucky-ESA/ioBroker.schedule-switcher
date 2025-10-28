@@ -1,3 +1,4 @@
+import type { htmltable } from "../html/htmlTable";
 import type { StateService } from "./StateService";
 
 /**
@@ -6,16 +7,14 @@ import type { StateService } from "./StateService";
 export class IoBrokerStateService implements StateService {
     private adapter: ioBroker.Adapter;
     private delayTimeout: ioBroker.Timeout | undefined;
+    private checkTime: number = 0;
+    private mergeTime: number = 0;
+    private html: htmltable;
     /**
      * @param adapter ioBroker
-     * @param checkTime check
-     * @param mergeTime merge
+     * @param vishtmltable htmltable
      */
-    constructor(
-        adapter: ioBroker.Adapter,
-        private checkTime: number = 0,
-        private mergeTime: number = 0,
-    ) {
+    constructor(adapter: ioBroker.Adapter, vishtmltable: htmltable) {
         if (!adapter) {
             throw new Error("adapter may not be null.");
         }
@@ -23,6 +22,7 @@ export class IoBrokerStateService implements StateService {
         this.checkTime = Date.now();
         this.mergeTime = 0;
         this.delayTimeout = undefined;
+        this.html = vishtmltable;
     }
 
     /**
@@ -81,6 +81,7 @@ export class IoBrokerStateService implements StateService {
         if (!change_val) {
             this.adapter.log.debug(`Set state ${id} with value ${value?.toString()} - ${old_val?.toString()}`);
             this.adapter.setForeignState(id, value, false);
+            void this.html.updateStateHTML();
         } else {
             this.adapter.log.debug(`Set not state ${id} with value ${value?.toString()} - ${old_val?.toString()}`);
         }
@@ -178,7 +179,7 @@ export class IoBrokerStateService implements StateService {
     /**
      * @param ms milliseconds
      */
-    public delay(ms: number): Promise<void> {
+    private delay(ms: number): Promise<void> {
         return new Promise(resolve => {
             this.delayTimeout = this.adapter.setTimeout(resolve, ms);
         });

@@ -46,7 +46,6 @@ var import_MessageService = require("./services/MessageService");
 class ScheduleSwitcher extends utils.Adapter {
   scheduleIdToSchedule = /* @__PURE__ */ new Map();
   loggingService = new import_IoBrokerLoggingService.IoBrokerLoggingService(this);
-  stateService = new import_IoBrokerStateService.IoBrokerStateService(this);
   messageService;
   widgetControl;
   nextAstroTime;
@@ -54,6 +53,7 @@ class ScheduleSwitcher extends utils.Adapter {
   setCountTriggerStart;
   vishtmltable = new import_VisHtmlTable.VisHtmlTable(this);
   validation;
+  stateService = new import_IoBrokerStateService.IoBrokerStateService(this, this.vishtmltable);
   constructor(options = {}) {
     super({
       ...options,
@@ -164,6 +164,7 @@ class ScheduleSwitcher extends utils.Adapter {
       this.logError(e);
       this.log.error(`scheduleIdToSchedule clear!`);
     }
+    await this.vishtmltable.destroy();
     await ((_b = this.nextAstroTime) == null ? void 0 : _b.cancel());
     await ((_c = this.nextActionTime) == null ? void 0 : _c.cancel());
     await ((_d = this.messageService) == null ? void 0 : _d.destroy());
@@ -633,6 +634,25 @@ class ScheduleSwitcher extends utils.Adapter {
             }
           }
         }
+      }
+    }
+    const history = await this.getStateAsync(`schedule-switcher.${this.instance}.history`);
+    if (history && history.val && typeof history.val === "string" && history.val.startsWith("[")) {
+      const history_array = JSON.parse(history.val);
+      const new_history = [];
+      let isOld = false;
+      for (const val of history_array) {
+        if (val && val.time == null) {
+          new_history.push(val);
+        } else {
+          isOld = true;
+        }
+      }
+      if (isOld) {
+        await this.setState(`schedule-switcher.${this.instance}.history`, {
+          val: JSON.stringify(new_history),
+          ack: true
+        });
       }
     }
   }

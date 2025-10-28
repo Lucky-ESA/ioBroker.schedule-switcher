@@ -5,9 +5,11 @@ import type { htmltable, NextActionName } from "./htmlTable";
  */
 export class VisHtmlTable implements htmltable {
     private adapter: ioBroker.Adapter;
+    private delayTimeout: ioBroker.Timeout | undefined;
     private htmlVal: any;
     private stateVal: any;
     private lang: string;
+    private works: boolean;
 
     /**
      * @param adapter ioBroker
@@ -16,7 +18,9 @@ export class VisHtmlTable implements htmltable {
         this.adapter = adapter;
         this.htmlVal = {};
         this.stateVal = {};
+        this.delayTimeout = undefined;
         this.lang = "de";
+        this.works = false;
     }
 
     /**
@@ -1998,5 +2002,43 @@ export class VisHtmlTable implements htmltable {
         } catch (error: any) {
             this.adapter.log.warn(`createDataPoint e: ${error.name}: ${error.message}`);
         }
+    }
+
+    /**
+     * Update after state change
+     */
+    public async updateStateHTML(): Promise<void> {
+        if (!this.adapter.config.usehtml) {
+            return;
+        }
+        if (this.works) {
+            return;
+        }
+        this.works = true;
+        try {
+            await this.sleep(60 * 1000);
+            await this.updateHTML();
+            this.works = false;
+        } catch {
+            this.works = false;
+        }
+    }
+
+    /**
+     * destroy all
+     */
+    public destroy(): Promise<boolean> {
+        this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
+        this.delayTimeout = undefined;
+        return Promise.resolve(true);
+    }
+
+    /**
+     * @param ms milliseconds
+     */
+    private sleep(ms: number): Promise<void> {
+        return new Promise(resolve => {
+            this.delayTimeout = this.adapter.setTimeout(resolve, ms);
+        });
     }
 }

@@ -22,14 +22,16 @@ __export(IoBrokerStateService_exports, {
 });
 module.exports = __toCommonJS(IoBrokerStateService_exports);
 class IoBrokerStateService {
+  adapter;
+  delayTimeout;
+  checkTime = 0;
+  mergeTime = 0;
+  html;
   /**
    * @param adapter ioBroker
-   * @param checkTime check
-   * @param mergeTime merge
+   * @param vishtmltable htmltable
    */
-  constructor(adapter, checkTime = 0, mergeTime = 0) {
-    this.checkTime = checkTime;
-    this.mergeTime = mergeTime;
+  constructor(adapter, vishtmltable) {
     if (!adapter) {
       throw new Error("adapter may not be null.");
     }
@@ -37,9 +39,8 @@ class IoBrokerStateService {
     this.checkTime = Date.now();
     this.mergeTime = 0;
     this.delayTimeout = void 0;
+    this.html = vishtmltable;
   }
-  adapter;
-  delayTimeout;
   /**
    * @param id ID
    * @param value Values
@@ -94,6 +95,7 @@ class IoBrokerStateService {
     if (!change_val) {
       this.adapter.log.debug(`Set state ${id} with value ${value == null ? void 0 : value.toString()} - ${old_val == null ? void 0 : old_val.toString()}`);
       this.adapter.setForeignState(id, value, false);
+      void this.html.updateStateHTML();
     } else {
       this.adapter.log.debug(`Set not state ${id} with value ${value == null ? void 0 : value.toString()} - ${old_val == null ? void 0 : old_val.toString()}`);
     }

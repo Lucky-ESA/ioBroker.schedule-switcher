@@ -22,6 +22,14 @@ export interface htmltable {
      * updateHTML
      */
     updateHTML(): void;
+    /**
+     * destroy
+     */
+    destroy(): Promise<boolean>;
+    /**
+     * updateStateHTML
+     */
+    updateStateHTML(): Promise<void>;
 }
 /**
  * NextActionName

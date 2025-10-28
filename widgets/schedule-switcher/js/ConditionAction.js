@@ -212,9 +212,8 @@
                 return "app-on-off-state-action-schedule";
             } else if (type === "ConditionAction") {
                 return "app-condition-action-schedule";
-            } else {
-                throw Error("No widget for action found");
             }
+            throw Error("No widget for action found");
         }
 
         createConditionStateSelectOptions(id) {

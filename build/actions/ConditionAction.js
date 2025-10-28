@@ -65,6 +65,8 @@ class ConditionAction {
   }
   /**
    * execute
+   *
+   * @param trigger trigger
    */
   execute(trigger) {
     this.condition.evaluate().then((result) => {

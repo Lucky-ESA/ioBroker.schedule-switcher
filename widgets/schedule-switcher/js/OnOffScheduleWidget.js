@@ -169,8 +169,10 @@
         }
 
         validateOnOffStatesWithWidgetSettings(widgetElement, newSettings, state) {
-            console.log("validateOnOffStatesWithWidgetSettings: " + JSON.stringify(state));
-            if (state == null) return true;
+            console.log(`validateOnOffStatesWithWidgetSettings: ${JSON.stringify(state)}`);
+            if (state == null) {
+                return true;
+            }
             if (
                 !state.onAction ||
                 typeof state.onAction.idsOfStatesToSet !== "object" ||
@@ -245,7 +247,9 @@
         }
 
         onScheduleDataChange(newData) {
-            if (newData == null) return;
+            if (newData == null) {
+                return;
+            }
             this.name = newData.name;
             this.triggers = newData.triggers;
         }
@@ -327,29 +331,30 @@
                 (newStateIds.length !== oldSettings.stateIds.length ||
                     newStateIds.some((value, index) => value !== oldSettings.stateIds[index]))
             ) {
-                console.debug("sending change switched oids: " + JSON.stringify(newStateIds));
+                console.debug(`sending change switched oids: ${JSON.stringify(newStateIds)}`);
                 vis.binds["schedule-switcher"].sendMessage("change-switched-ids", {
                     dataId: newSettings["oid-dataId"],
                     stateIds: newStateIds,
                 });
             }
-            if (newSettings.onValue === undefined || newSettings.offValue === undefined) return;
-            console.debug("sending change switched values Oldon: " + oldSettings.onValue);
-            console.debug("sending change switched values Oldoff: " + oldSettings.offValue);
-            console.debug("sending change switched Oldon: " + typeof oldSettings.onValue);
-            console.debug("sending change switched Oldtype: " + newSettings.valueType);
-            console.debug("sending change switched values off: " + typeof newSettings.onValue);
+            if (newSettings.onValue === undefined || newSettings.offValue === undefined) {
+                return;
+            }
             if (
                 oldSettings &&
                 (oldSettings.onValue.toString() != newSettings.onValue.toString() ||
                     oldSettings.offValue.toString() != newSettings.offValue.toString() ||
                     oldSettings.valueType != newSettings.valueType)
             ) {
-                console.debug("sending change switched values on: " + newSettings.onValue);
-                console.debug("sending change switched values off: " + newSettings.offValue);
-                console.debug("sending change switched values off: " + newSettings.valueType);
-                if (newSettings.onValue == "") delete newSettings.onValue;
-                if (newSettings.offValue == "") delete newSettings.offValue;
+                console.debug(`sending change switched values on: ${newSettings.onValue}`);
+                console.debug(`sending change switched values off: ${newSettings.offValue}`);
+                console.debug(`sending change switched values off: ${newSettings.valueType}`);
+                if (newSettings.onValue == "") {
+                    delete newSettings.onValue;
+                }
+                if (newSettings.offValue == "") {
+                    delete newSettings.offValue;
+                }
                 vis.binds["schedule-switcher"].sendMessage("change-switched-values", {
                     dataId: newSettings["oid-dataId"],
                     valueType: newSettings.valueType,

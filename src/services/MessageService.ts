@@ -1,7 +1,7 @@
 import { getTimes } from "suncalc";
 import type { Coordinate } from "../Coordinate";
 import type { OnOffStateAction } from "../actions/OnOffStateAction";
-import type { VisHtmlTable } from "../html/VisHtmlTable";
+import type { htmltable } from "../html/htmlTable";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
 import type { Schedule } from "../schedules/Schedule";
 import type { OnOffScheduleSerializer } from "../serialization/OnOffScheduleSerializer";
@@ -11,9 +11,9 @@ import type { DailyTriggerBuilder } from "../triggers/DailyTriggerBuilder";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
 import type { Trigger } from "../triggers/Trigger";
 import { AllWeekdays } from "../triggers/Weekday";
-import type { IoBrokerValidationState } from "./IoBrokerValidationState";
 import type { MessageServices } from "./MessageServices";
 import type { StateService } from "./StateService";
+import type { ValidationState } from "./ValidationState";
 
 /**
  * @param currentMessage ioBroker.Message | null
@@ -40,8 +40,8 @@ export class MessageService implements MessageServices {
         private createOnOffScheduleSerializer: (dataId: string) => Promise<OnOffScheduleSerializer>,
         private adapter: ioBroker.Adapter,
         private readonly coordinate: Coordinate,
-        private readonly validation: IoBrokerValidationState | undefined,
-        private readonly html: VisHtmlTable,
+        private readonly validation: ValidationState | undefined,
+        private readonly html: htmltable,
     ) {
         this.adapter = adapter;
         this.triggerTimeout = undefined;
@@ -113,14 +113,14 @@ export class MessageService implements MessageServices {
                 await this.changeName(data);
                 break;
             case "enable-schedule":
-                await this.html.changeEnabled(data.dataId, true);
+                this.html.changeEnabled(data.dataId, true);
                 schedule.setEnabled(true);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
                 await this.setCountTrigger();
                 break;
             case "disable-schedule":
                 schedule.setEnabled(false);
-                await this.html.changeEnabled(data.dataId, false);
+                this.html.changeEnabled(data.dataId, false);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
                 await this.setCountTrigger();
                 break;

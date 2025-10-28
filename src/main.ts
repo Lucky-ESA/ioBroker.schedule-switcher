@@ -29,6 +29,7 @@ import { IoBrokerLoggingService } from "./services/IoBrokerLoggingService";
 import { IoBrokerStateService } from "./services/IoBrokerStateService";
 import { IoBrokerValidationState } from "./services/IoBrokerValidationState";
 import { MessageService } from "./services/MessageService";
+import type { ValidationState } from "./services/ValidationState";
 import type { Trigger } from "./triggers/Trigger";
 interface schedulesData {
     stateId: number | null;
@@ -41,14 +42,14 @@ interface schedulesData {
 class ScheduleSwitcher extends utils.Adapter {
     private scheduleIdToSchedule: Map<string, Schedule> = new Map<string, Schedule>();
     private loggingService = new IoBrokerLoggingService(this);
-    private stateService = new IoBrokerStateService(this);
     private messageService: MessageService | undefined;
     private widgetControl: ioBroker.Interval | undefined | null;
     private nextAstroTime: any;
     private nextActionTime: any;
     private setCountTriggerStart: ioBroker.Timeout | undefined | null;
     private vishtmltable = new VisHtmlTable(this);
-    public validation: IoBrokerValidationState | undefined;
+    private validation: ValidationState | undefined;
+    private stateService = new IoBrokerStateService(this, this.vishtmltable);
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
@@ -161,6 +162,7 @@ class ScheduleSwitcher extends utils.Adapter {
             this.logError(e as Error);
             this.log.error(`scheduleIdToSchedule clear!`);
         }
+        await this.vishtmltable.destroy();
         await this.nextAstroTime?.cancel();
         await this.nextActionTime?.cancel();
         await this.messageService?.destroy();
@@ -651,6 +653,25 @@ class ScheduleSwitcher extends utils.Adapter {
                         }
                     }
                 }
+            }
+        }
+        const history = await this.getStateAsync(`schedule-switcher.${this.instance}.history`);
+        if (history && history.val && typeof history.val === "string" && history.val.startsWith("[")) {
+            const history_array = JSON.parse(history.val);
+            const new_history = [];
+            let isOld = false;
+            for (const val of history_array) {
+                if (val && val.time == null) {
+                    new_history.push(val);
+                } else {
+                    isOld = true;
+                }
+            }
+            if (isOld) {
+                await this.setState(`schedule-switcher.${this.instance}.history`, {
+                    val: JSON.stringify(new_history),
+                    ack: true,
+                });
             }
         }
     }

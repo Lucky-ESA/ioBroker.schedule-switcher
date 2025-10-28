@@ -119,14 +119,14 @@ class MessageService {
         await this.changeName(data);
         break;
       case "enable-schedule":
-        await this.html.changeEnabled(data.dataId, true);
+        this.html.changeEnabled(data.dataId, true);
         schedule.setEnabled(true);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
         await this.setCountTrigger();
         break;
       case "disable-schedule":
         schedule.setEnabled(false);
-        await this.html.changeEnabled(data.dataId, false);
+        this.html.changeEnabled(data.dataId, false);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
         await this.setCountTrigger();
         break;

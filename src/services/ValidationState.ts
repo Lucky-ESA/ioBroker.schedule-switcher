@@ -1,7 +1,7 @@
 /**
  * validation
  */
-export interface validationState {
+export interface ValidationState {
     /**
      * validation
      */
@@ -13,9 +13,9 @@ export interface validationState {
     /**
      * Time
      */
-    setNextTime(coordinate: any): Promise<void>;
+    setNextTime(): Promise<void>;
     /**
      * Coodinates
      */
-    setActionTime(coordinate: any): Promise<void>;
+    setActionTime(): Promise<void>;
 }

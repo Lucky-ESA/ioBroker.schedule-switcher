@@ -57,6 +57,8 @@ export class ConditionAction implements Action {
 
     /**
      * execute
+     *
+     * @param trigger trigger
      */
     public execute(trigger: any): void {
         this.condition

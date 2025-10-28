@@ -38,7 +38,7 @@
             this.sr.querySelector("#radio-time").addEventListener("input", this.onDateInput.bind(this));
             this.sr.querySelector("#checking").addEventListener("click", this.onCheckClick.bind(this));
             if (this.trigger) {
-                const checktime = new Date(Date.parse(this.trigger.date));
+                //const checktime = new Date(Date.parse(this.trigger.date));
                 if (this.checktime < new Date()) {
                     console.log("Expired - Delete trigger!");
                     this.interval && clearTimeout(this.interval);
@@ -131,7 +131,7 @@
         }
 
         onCheckClick() {
-            const trigger = this.trigger;
+            //const trigger = this.trigger;
             const toggle = this.sr.querySelector("#checking");
             toggle.classList.toggle("checked");
             const val = toggle.classList.contains("checked");
@@ -226,16 +226,8 @@
 
         formatDate(date, endYear) {
             return (
-                date.getFullYear() +
-                endYear +
-                "-" +
-                (date.getMonth() + 1).toString().padStart(2, "0") +
-                "-" +
-                date.getDate() +
-                "T" +
-                date.getHours().toString().padStart(2, "0") +
-                ":" +
-                date.getMinutes().toString().padStart(2, "0")
+                `${date.getFullYear()}${endYear}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate()}` +
+                `T${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`
             );
         }
 
@@ -547,15 +539,8 @@
 
         dateView(d) {
             return (
-                d.getFullYear() +
-                "-" +
-                ("0" + (d.getMonth() + 1)).slice(-2) +
-                "-" +
-                ("0" + d.getDate()).slice(-2) +
-                " " +
-                ("0" + d.getHours()).slice(-2) +
-                ":" +
-                ("0" + d.getMinutes()).slice(-2)
+                `${d.getFullYear()}-${`0${d.getMonth() + 1}`.slice(-2)}-${`0${d.getDate()}`.slice(-2)}` +
+                ` ${`0${d.getHours()}`.slice(-2)}:${`0${d.getMinutes()}`.slice(-2)}`
             );
         }
     }

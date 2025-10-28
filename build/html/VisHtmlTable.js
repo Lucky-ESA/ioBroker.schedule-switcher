@@ -23,9 +23,11 @@ __export(VisHtmlTable_exports, {
 module.exports = __toCommonJS(VisHtmlTable_exports);
 class VisHtmlTable {
   adapter;
+  delayTimeout;
   htmlVal;
   stateVal;
   lang;
+  works;
   /**
    * @param adapter ioBroker
    */
@@ -33,7 +35,9 @@ class VisHtmlTable {
     this.adapter = adapter;
     this.htmlVal = {};
     this.stateVal = {};
+    this.delayTimeout = void 0;
     this.lang = "de";
+    this.works = false;
   }
   /**
    * @param id ID
@@ -1944,6 +1948,41 @@ class VisHtmlTable {
     } catch (error) {
       this.adapter.log.warn(`createDataPoint e: ${error.name}: ${error.message}`);
     }
+  }
+  /**
+   * Update after state change
+   */
+  async updateStateHTML() {
+    if (!this.adapter.config.usehtml) {
+      return;
+    }
+    if (this.works) {
+      return;
+    }
+    this.works = true;
+    try {
+      await this.sleep(60 * 1e3);
+      await this.updateHTML();
+      this.works = false;
+    } catch {
+      this.works = false;
+    }
+  }
+  /**
+   * destroy all
+   */
+  destroy() {
+    this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
+    this.delayTimeout = void 0;
+    return Promise.resolve(true);
+  }
+  /**
+   * @param ms milliseconds
+   */
+  sleep(ms) {
+    return new Promise((resolve) => {
+      this.delayTimeout = this.adapter.setTimeout(resolve, ms);
+    });
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

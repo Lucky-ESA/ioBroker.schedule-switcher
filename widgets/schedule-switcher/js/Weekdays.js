@@ -16,7 +16,7 @@
 
         connectedCallback() {}
 
-        attributeChangedCallback(attr, oldValue, newValue) {
+        attributeChangedCallback(attr) {
             if (attr === "selected") {
                 this.onSelectedChange();
             } else if (attr === "edit") {
@@ -112,7 +112,7 @@
                 let count = 1;
                 const today_nr = new Date().getDay();
                 this.weekdaysShort.forEach(day => {
-                    const neuB = document.createElement("b");
+                    //const neuB = document.createElement("b");
                     const span = document.createElement("span");
                     span.textContent = ` ${day} `;
                     span.id = `short${count}`;

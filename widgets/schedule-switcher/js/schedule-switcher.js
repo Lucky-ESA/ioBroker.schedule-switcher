@@ -40,7 +40,7 @@ vis.binds["schedule-switcher"].showVersion();
 
 function showVersion() {
     if (vis.binds["schedule-switcher"].version) {
-        console.log("Version schedule-switcher: " + vis.binds["schedule-switcher"].version);
+        console.log(`Version schedule-switcher: ${vis.binds["schedule-switcher"].version}`);
     }
 }
 
@@ -49,20 +49,22 @@ function sendMessage(cmd, data) {
         command: cmd,
         message: data,
     };
-    console.debug("cmdsend: " + JSON.stringify(sendto));
+    console.debug(`cmdsend: ${JSON.stringify(sendto)}`);
     try {
         servConn._socket.emit("sendTo", "schedule-switcher", cmd, data);
-    } catch (e) {
+    } catch {
         vis.conn.setState("schedule-switcher.0.sendto", { val: JSON.stringify(sendto), ack: false });
     }
 }
 
-function translate(word, widgetid, func) {
+function translate(word, widgetid) {
     if (widgetid) {
         const newValue = vis.binds["schedule-switcher"].onOffScheduleWidgets[widgetid]
             ? vis.binds["schedule-switcher"].onOffScheduleWidgets[widgetid][word]
             : null;
-        if (newValue != null && newValue != "") return newValue;
+        if (newValue != null && newValue != "") {
+            return newValue;
+        }
     }
     return translateWord(word, systemLang, timeSwitchDic);
 }
@@ -88,83 +90,127 @@ function createOnOffWidget(widgetId, view, data, style) {
         element.style.setProperty("--ts-widget-state-action-width", data.widthActionValue);
     }
     if (data.useCSS) {
-        if (data.fTimeIcon && data.fTimeIcon != "none")
+        if (data.fTimeIcon && data.fTimeIcon != "none") {
             element.style.setProperty("--ts-widget-time-icon-display", data.fTimeIcon);
-        if (data.bgNextTime && data.bgNextTime != "rgba(255,255,255,1)")
+        }
+        if (data.bgNextTime && data.bgNextTime != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-astro-next-fg-color", data.bgNextTime);
-        if (data.fsNextTime && data.fsNextTime != "2em")
+        }
+        if (data.fsNextTime && data.fsNextTime != "2em") {
             element.style.setProperty("--ts-widget-astro-next-font-size", data.fsNextTime);
-        if (data.fsDateTime && data.fsDateTime != "230px")
+        }
+        if (data.fsDateTime && data.fsDateTime != "230px") {
             element.style.setProperty("--ts-widget-datetime-width", data.fsDateTime);
-        if (data.bgwidget && data.bgwidget != "rgba(66,66,66,1)")
+        }
+        if (data.bgwidget && data.bgwidget != "rgba(66,66,66,1)") {
             element.style.setProperty("--ts-widget-bg-color", data.bgwidget);
-        if (data.bgwidgetFont && data.bgwidgetFont != "rgba(255,255,255,1)")
+        }
+        if (data.bgwidgetFont && data.bgwidgetFont != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-fg-color", data.bgwidgetFont);
-        if (data.bgTriggerView && data.bgTriggerView != "rgba(39,39,39,1)")
+        }
+        if (data.bgTriggerView && data.bgTriggerView != "rgba(39,39,39,1)") {
             element.style.setProperty("--ts-widget-trigger-bg-color", data.bgTriggerView);
-        if (data.bgTrigger && data.bgTrigger != "rgba(241,241,241,1)")
+        }
+        if (data.bgTrigger && data.bgTrigger != "rgba(241,241,241,1)") {
             element.style.setProperty("--ts-widget-add-trigger-dropdown-bg-color", data.bgTrigger);
-        if (data.bgOn && data.bgOn != "rgba(51,122,183,1)")
+        }
+        if (data.bgOn && data.bgOn != "rgba(51,122,183,1)") {
             element.style.setProperty("--ts-widget-primary-color", data.bgOn);
-        if (data.bgOnCo && data.bgOnCo != "rgba(47,47,47,1)")
+        }
+        if (data.bgOnCo && data.bgOnCo != "rgba(47,47,47,1)") {
             element.style.setProperty("--ts-widget-primary-color-container", data.bgOnCo);
-        if (data.bgOff && data.bgOff != "rgba(192,192,192,1)")
+        }
+        if (data.bgOff && data.bgOff != "rgba(192,192,192,1)") {
             element.style.setProperty("--ts-widget-off-color", data.bgOff);
-        if (data.bgOffCo && data.bgOffCo != "rgba(128,128,128,1)")
+        }
+        if (data.bgOffCo && data.bgOffCo != "rgba(128,128,128,1)") {
             element.style.setProperty("--ts-widget-off-color-container", data.bgOffCo);
-        if (data.bgTriggerFont && data.bgTriggerFont != "rgba(0,0,0,1)")
+        }
+        if (data.bgTriggerFont && data.bgTriggerFont != "rgba(0,0,0,1)") {
             element.style.setProperty("--ts-widget-add-trigger-dropdown-fg-color", data.bgTriggerFont);
-        if (data.bgTriggerHover && data.bgTriggerHover != "rgba(221,221,221,1)")
+        }
+        if (data.bgTriggerHover && data.bgTriggerHover != "rgba(221,221,221,1)") {
             element.style.setProperty("--ts-widget-add-trigger-dropdown-hover-bg-color", data.bgTriggerHover);
-        if (data.fcSwitched && data.fcSwitched != "rgba(165,165,165,1)")
+        }
+        if (data.fcSwitched && data.fcSwitched != "rgba(165,165,165,1)") {
             element.style.setProperty("--ts-widget-oid-fg-color", data.fcSwitched);
-        if (data.fcbutton && data.fcbutton != "rgba(255,255,255,1)")
+        }
+        if (data.fcbutton && data.fcbutton != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-btn-fg-color", data.fcbutton);
-        if (data.fcDisWeekday && data.fcDisWeekday != "rgba(93,93,93,1)")
+        }
+        if (data.fcDisWeekday && data.fcDisWeekday != "rgba(93,93,93,1)") {
             element.style.setProperty("--ts-widget-weekdays-disabled-fg-color", data.fcDisWeekday);
-        if (data.fcAcWeekday && data.fcAcWeekday != "rgba(255,255,255,1)")
+        }
+        if (data.fcAcWeekday && data.fcAcWeekday != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-weekdays-enabled-fg-color", data.fcAcWeekday);
-        if (data.fcName && data.fcName != "rgba(255,255,255,1)")
+        }
+        if (data.fcName && data.fcName != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-name-fg-color", data.fcName);
-        if (data.fcTime && data.fcTime != "rgba(255,255,255,1)")
+        }
+        if (data.fcTime && data.fcTime != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-switched-time-fg-color", data.fcTime);
-        if (data.fcSwitch && data.fcSwitch != "rgba(255,255,255,1)")
+        }
+        if (data.fcSwitch && data.fcSwitch != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-switched-value-fg-color", data.fcSwitch);
-        if (data.fcAstro && data.fcAstro != "rgba(0,0,0,1)")
+        }
+        if (data.fcAstro && data.fcAstro != "rgba(0,0,0,1)") {
             element.style.setProperty("--ts-widget-astro-time-fg-color", data.fcAstro);
-        if (data.fcAstroShift && data.fcAstroShift != "rgba(93,93,93,1)")
+        }
+        if (data.fcAstroShift && data.fcAstroShift != "rgba(93,93,93,1)") {
             element.style.setProperty("--ts-widget-astro-shift-fg-color", data.fcAstroShift);
-        if (data.fcCondition && data.fcCondition != "rgba(255,255,255,1)")
+        }
+        if (data.fcCondition && data.fcCondition != "rgba(255,255,255,1)") {
             element.style.setProperty("--ts-widget-condition-fg-color", data.fcCondition);
-        if (data.fFamily && data.fFamily != "'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system")
+        }
+        if (data.fFamily && data.fFamily != "'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system") {
             element.style.setProperty("--ts-widget-font-family", data.fFamily);
-        if (data.fsName && data.fsName != "2em") element.style.setProperty("--ts-widget-name-font-size", data.fsName);
-        if (data.fsWeekdays && data.fsWeekdays != "15px")
+        }
+        if (data.fsName && data.fsName != "2em") {
+            element.style.setProperty("--ts-widget-name-font-size", data.fsName);
+        }
+        if (data.fsWeekdays && data.fsWeekdays != "15px") {
             element.style.setProperty("--ts-widget-oid-font-size", data.fsSwitched);
-        if (data.fDisplayEdit && data.fDisplayEdit != "block")
+        }
+        if (data.fDisplayEdit && data.fDisplayEdit != "block") {
             element.style.setProperty("--ts-widget-edit-name-button-display", data.fDisplayEdit);
-        if (data.fDisplayCondition && data.fDisplayCondition != "block")
+        }
+        if (data.fDisplayCondition && data.fDisplayCondition != "block") {
             element.style.setProperty("-ts-widget-condition-display", data.fDisplayCondition);
-        if (data.fIconFilter && data.fIconFilter != "1")
+        }
+        if (data.fIconFilter && data.fIconFilter != "1") {
             element.style.setProperty("--ts-widget-img-btn-filter", `invert(${data.fIconFilter})`);
-        if (data.fsWeekdays && data.fsWeekdays != "23px")
+        }
+        if (data.fsWeekdays && data.fsWeekdays != "23px") {
             element.style.setProperty("--ts-widget-weekdays-font-size", data.fsWeekdays);
-        if (data.fsSwitchedValue && data.fsSwitchedValue != "2em")
+        }
+        if (data.fsSwitchedValue && data.fsSwitchedValue != "2em") {
             element.style.setProperty("--ts-widget-switched-value-font-size", data.fsSwitchedValue);
-        if (data.fsSwitchedTime && data.fsSwitchedTime != "2em")
+        }
+        if (data.fsSwitchedTime && data.fsSwitchedTime != "2em") {
             element.style.setProperty("--ts-widget-switched-time-font-size", data.fsSwitchedTime);
-        if (data.fsSwitchedAstro && data.fsSwitchedAstro != "1.5em")
+        }
+        if (data.fsSwitchedAstro && data.fsSwitchedAstro != "1.5em") {
             element.style.setProperty("--ts-widget-astro-time-font-size", data.fsSwitchedAstro);
-        if (data.fsSwitchedAstroShift && data.fsSwitchedAstroShift != "1em")
+        }
+        if (data.fsSwitchedAstroShift && data.fsSwitchedAstroShift != "1em") {
             element.style.setProperty("--ts-widget-astro-shift-font-size", data.fsSwitchedAstroShift);
-        if (data.fsCondition && data.fsCondition != "1em")
+        }
+        if (data.fsCondition && data.fsCondition != "1em") {
             element.style.setProperty("--ts-widget-condition-font-size", data.fsCondition);
+        }
     }
     widgetElement.appendChild(element);
 }
 
 /**
  * Gets triggered by vis editor when dataId value changes.
+ *
+ * @param widgetId widgetId
+ * @param view view
+ * @param newId newId
+ * @param attr attr
+ * @param isCss isCss
+ * @param oldId oldId
  */
 function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
     console.debug(
@@ -182,12 +228,16 @@ function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
     if (newId) {
         const newIdSplit = newId.split(".");
         const id = parseInt(newIdSplit[3]);
-        if (isNaN(id)) addDataId.newId = id;
+        if (isNaN(id)) {
+            addDataId.newId = id;
+        }
     }
     if (oldId) {
         const newIdSplit = oldId.split(".");
         const id = parseInt(newIdSplit[3]);
-        if (isNaN(id)) addDataId.oldId = id;
+        if (isNaN(id)) {
+            addDataId.oldId = id;
+        }
     }
     this.sendMessage("change-view-dataId", addDataId);
     if (vis.conn.namespace.startsWith("vis.")) {
@@ -245,10 +295,12 @@ function showWarningInWidget(widgetElement, warning) {
 }
 
 function getConditionStateIdsAndAlias(widgetId) {
-    console.log("getConditionStateIdsAndAlias: " + widgetId);
+    console.log(`getConditionStateIdsAndAlias: ${widgetId}`);
     if (!vis.widgets[widgetId]) {
         const widgetElement = document.querySelector(`#${widgetId}`);
-        if (widgetElement) showWarningInWidget(widgetElement, "errorConditions");
+        if (widgetElement) {
+            showWarningInWidget(widgetElement, "errorConditions");
+        }
         return [];
     }
     const data = vis.widgets[widgetId].data;
@@ -285,9 +337,8 @@ function getElementNameForTriggerType(type) {
         return "app-time-trigger-schedule";
     } else if (type === "AstroTrigger") {
         return "app-astro-trigger-schedule";
-    } else {
-        throw Error("No widget for trigger found");
     }
+    throw Error("No widget for trigger found");
 }
 
 function getElementNameForActionType(type) {
@@ -295,7 +346,6 @@ function getElementNameForActionType(type) {
         return "app-on-off-state-action-schedule";
     } else if (type === "ConditionAction") {
         return "app-condition-action-schedule";
-    } else {
-        throw Error("No widget for action found");
     }
+    throw Error("No widget for action found");
 }

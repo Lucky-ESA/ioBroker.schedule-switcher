@@ -1,11 +1,11 @@
 import { getTimes } from "suncalc";
 import type { Coordinate } from "../Coordinate";
-import type { validationState } from "./ValidationState";
+import type { ValidationState } from "./ValidationState";
 
 /**
  * IoBrokerValidationState
  */
-export class IoBrokerValidationState implements validationState {
+export class IoBrokerValidationState implements ValidationState {
     /**
      * @param adapter iobroker
      * @param coordinate Coodinate

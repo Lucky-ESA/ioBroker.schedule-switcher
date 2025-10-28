@@ -69,7 +69,7 @@
                 this.data.weekdays.includes(today_nr)
             ) {
                 this.sr.querySelector(".container.nextevent").style.display = null;
-                const nextFormatted = `${("0" + this.data.todayTrigger.hour).slice(-2)}:${("0" + this.data.todayTrigger.minute).slice(-2)}`;
+                const nextFormatted = `${`0${this.data.todayTrigger.hour}`.slice(-2)}:${`0${this.data.todayTrigger.minute}`.slice(-2)}`;
                 this.sr.querySelector(".nextevent .next").textContent = nextFormatted;
             }
             if (this.data.astroTime !== this.astroTime || this.data.shiftInMinutes !== this.shiftInMinutes) {
@@ -87,7 +87,7 @@
                     shiftFormatted = "+";
                 }
                 if (this.shiftInMinutes !== 0) {
-                    shiftFormatted += this.shiftInMinutes + " min";
+                    shiftFormatted += `${this.shiftInMinutes} min`;
                 } else {
                     shiftFormatted = " ";
                 }
