@@ -374,7 +374,7 @@
             const count = Number.parseInt(settings.statesCount, 10);
             const ids = [];
             for (let i = 1; i <= count; i++) {
-                const id = settings["oid-stateId" + i];
+                const id = settings[`oid-stateId${i}`];
                 if (id !== undefined && id !== "") {
                     ids.push(id);
                 }
