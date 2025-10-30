@@ -367,7 +367,7 @@ class VisHtmlTable {
             background-color: ${id.background_color_body}; margin: 0 auto;
         }
         p {
-            padding-top: 10px; padding-bottom: 10px; text-align: ${id.p_tag_text_algin}
+            padding-top: 10px; padding-bottom: 10px; text-align: ${id.p_tag_text_algin};
         }
         #updatetime:hover {
             cursor: pointer;
@@ -1831,7 +1831,7 @@ class VisHtmlTable {
     this.htmlVal.background_color_weekdays_hover = val == null ? void 0 : val.val;
     common = {
       type: "string",
-      role: "state",
+      role: "html",
       name: {
         en: "HTML code",
         de: "HTML-Code",

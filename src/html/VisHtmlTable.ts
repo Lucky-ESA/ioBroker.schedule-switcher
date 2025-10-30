@@ -415,7 +415,7 @@ export class VisHtmlTable implements htmltable {
             background-color: ${id.background_color_body}; margin: 0 auto;
         }
         p {
-            padding-top: 10px; padding-bottom: 10px; text-align: ${id.p_tag_text_algin}
+            padding-top: 10px; padding-bottom: 10px; text-align: ${id.p_tag_text_algin};
         }
         #updatetime:hover {
             cursor: pointer;
@@ -1881,7 +1881,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.background_color_weekdays_hover = val?.val;
         common = {
             type: "string",
-            role: "state",
+            role: "html",
             name: {
                 en: "HTML code",
                 de: "HTML-Code",

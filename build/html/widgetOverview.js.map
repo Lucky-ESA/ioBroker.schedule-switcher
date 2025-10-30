@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/html/widgetOverview.ts"],
+  "sourcesContent": ["/**\n * htmltable\n */\nexport interface WidgetOverview {\n    /**\n     * createOverview\n     */\n    createOverview(): Promise<void>;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

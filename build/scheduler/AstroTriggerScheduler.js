@@ -38,7 +38,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     this.getTimes = getTimes;
     this.coordinate = coordinate;
     this.logger = logger;
-    this.timeTriggerScheduler.register(this.rescheduleTrigger);
   }
   registered = [];
   scheduled = [];
@@ -132,6 +131,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
         execute: () => {
           this.logger.logDebug(`Executing astrotrigger ${trigger}`);
           trigger.getAction().execute(trigger.getData());
+          this.timeTriggerScheduler.unregister(timeTrigger);
         }
       }).build();
       this.logger.logDebug(`Scheduled astro with ${timeTrigger}`);

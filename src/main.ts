@@ -11,6 +11,7 @@ import type { Action } from "./actions/Action";
 import type { Condition } from "./actions/conditions/Condition";
 import { Coordinate } from "./Coordinate";
 import { VisHtmlTable } from "./html/VisHtmlTable";
+import { VisWidgetOverview } from "./html/VisWidgetOverview";
 import { AstroTriggerScheduler } from "./scheduler/AstroTriggerScheduler";
 import { OneTimeTriggerScheduler } from "./scheduler/OneTimeTriggerScheduler";
 import { TimeTriggerScheduler } from "./scheduler/TimeTriggerScheduler";
@@ -48,6 +49,7 @@ class ScheduleSwitcher extends utils.Adapter {
     private nextActionTime: any;
     private setCountTriggerStart: ioBroker.Timeout | undefined | null;
     private vishtmltable = new VisHtmlTable(this);
+    private visWidgetOverview = new VisWidgetOverview(this);
     private validation: ValidationState | undefined;
     private stateService = new IoBrokerStateService(this, this.vishtmltable);
 
@@ -97,9 +99,9 @@ class ScheduleSwitcher extends utils.Adapter {
         await this.initMessageService();
         await this.fixStateStructure(this.config.schedules);
         await this.validation?.validationView(utils.getAbsoluteDefaultDataDir());
-        await this.validation?.setNextTime();
+        await this.validation?.setNextTime(false);
         await this.validation?.setActionTime();
-        const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.*`);
+        const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
         for (const id in record) {
             if (id.toString().indexOf(".data") !== -1) {
                 const state = record[id];
@@ -142,6 +144,7 @@ class ScheduleSwitcher extends utils.Adapter {
             this.setCountTriggerStart = undefined;
             this.moreLogs();
         }, 3000);
+        await this.visWidgetOverview.createOverview();
     }
 
     private async onUnload(callback: () => void): Promise<void> {
@@ -173,12 +176,12 @@ class ScheduleSwitcher extends utils.Adapter {
     private async refreshAstroTime(): Promise<void> {
         const rule = new RecurrenceRule();
         rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
-        rule.hour = 2;
-        rule.minute = 0;
-        rule.second = 20;
+        rule.hour = 8;
+        rule.minute = 25;
+        rule.second = 10;
         this.nextAstroTime = scheduleJob(rule, async () => {
             this.log.info("Start Update Astrotime!");
-            await this.validation?.setNextTime();
+            await this.validation?.setNextTime(true);
         });
         this.moreLogs();
         return Promise.resolve();
@@ -428,7 +431,7 @@ class ScheduleSwitcher extends utils.Adapter {
     }
 
     private async updateHTMLCode(id: string): Promise<void> {
-        await this.validation?.setNextTime();
+        await this.validation?.setNextTime(true);
         await this.vishtmltable.updateHTML();
         await this.setState(id, false, true);
     }
@@ -632,7 +635,7 @@ class ScheduleSwitcher extends utils.Adapter {
     //------------------------------------------------------------------------------------------------------------------
 
     private async checkValueAttribute(): Promise<void> {
-        const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.*`);
+        const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
         for (const id in record) {
             if (id.toString().indexOf(".data") !== -1) {
                 const state = record[id];
@@ -699,7 +702,7 @@ class ScheduleSwitcher extends utils.Adapter {
         if (!statesInSettings.onOff) {
             statesInSettings.onOff = [];
         }
-        const currentStates = await this.getStatesAsync(`schedule-switcher.${this.instance}.*`);
+        const currentStates = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
         for (const fullId in currentStates) {
             if (fullId.toString().indexOf(".data") !== -1) {
                 const split = fullId.split(".");

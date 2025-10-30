@@ -50,7 +50,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         private readonly logger: LoggingService,
     ) {
         super();
-        this.timeTriggerScheduler.register(this.rescheduleTrigger);
+        //this.timeTriggerScheduler.register(this.rescheduleTrigger);
     }
 
     /**
@@ -146,6 +146,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                     execute: () => {
                         this.logger.logDebug(`Executing astrotrigger ${trigger}`);
                         trigger.getAction().execute(trigger.getData());
+                        this.timeTriggerScheduler.unregister(timeTrigger);
                     },
                 })
                 .build();

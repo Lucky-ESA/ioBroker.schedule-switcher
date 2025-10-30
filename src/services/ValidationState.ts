@@ -13,7 +13,7 @@ export interface ValidationState {
     /**
      * Time
      */
-    setNextTime(): Promise<void>;
+    setNextTime(check: boolean): Promise<void>;
     /**
      * Coodinates
      */

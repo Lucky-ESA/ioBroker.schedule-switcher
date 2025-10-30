@@ -26,9 +26,9 @@ export class IoBrokerValidationState implements ValidationState {
         const removeDuplicate = (arr: number[]): number[] => {
             return arr.filter((item, index) => arr.indexOf(item) === index);
         };
-        this.adapter.log.debug(`Validation Trigger ${val.name}`);
         if ((val.type && val.type == "OnOffSchedule") || check) {
             if (!check) {
+                this.adapter.log.debug(`Validation Data ${val.name}`);
                 if (val.onAction) {
                     if (val.onAction.type == "OnOffStateAction") {
                         if (val.onAction.type.valueType == "boolean") {
@@ -149,6 +149,7 @@ export class IoBrokerValidationState implements ValidationState {
                 }
             }
             if (val.triggers && typeof val.triggers === "object" && val.triggers.length > 0) {
+                this.adapter.log.debug(`Validation all Triggers ${val.name}`);
                 const newTrigger = [];
                 for (const trigger of val.triggers) {
                     if (trigger.type === "TimeTrigger") {
@@ -317,6 +318,170 @@ export class IoBrokerValidationState implements ValidationState {
                     newTrigger.push(trigger);
                 }
                 val.triggers = newTrigger;
+            } else if (
+                val &&
+                (val.type === "TimeTrigger" || val.type === "AstroTrigger" || val.type === "OneTimeTrigger")
+            ) {
+                this.adapter.log.debug(`Validation Trigger ${val.name}`);
+                const trigger = val;
+                if (trigger.type === "TimeTrigger") {
+                    if (trigger.hour == undefined || trigger.hour < 0 || trigger.hour > 23) {
+                        this.adapter.log.warn(`Hour must be in range 0-23 - in ${id}`);
+                        trigger.hour = 0;
+                    }
+                    if (trigger.minute == undefined || trigger.minute < 0 || trigger.minute > 59) {
+                        this.adapter.log.warn(`Minute must be in range 0-59 - in ${id}`);
+                        trigger.minute = 0;
+                    }
+                    if (trigger.weekdays) {
+                        trigger.weekdays = removeDuplicate(trigger.weekdays);
+                    }
+                    if (
+                        typeof trigger.weekdays !== "object" ||
+                        trigger.weekdays.length === 0 ||
+                        trigger.weekdays.length > 7
+                    ) {
+                        this.adapter.log.error(`Empty weekday is not allowed in ${id}`);
+                        trigger.weekdays = [0];
+                    }
+                    if (trigger.todayTrigger == undefined) {
+                        trigger.todayTrigger = {};
+                    }
+                } else if (trigger.type === "AstroTrigger") {
+                    if (
+                        trigger.astroTime == null ||
+                        (trigger.astroTime !== "sunrise" &&
+                            trigger.astroTime !== "sunset" &&
+                            trigger.astroTime !== "solarNoon")
+                    ) {
+                        this.adapter.log.warn(`Astro time may not be null - in ${id}`);
+                        trigger.trigger.astroTime = "sunrise";
+                    }
+                    if (
+                        trigger.shiftInMinutes == null ||
+                        trigger.shiftInMinutes > 120 ||
+                        trigger.shiftInMinutes < -120
+                    ) {
+                        this.adapter.log.warn(`Shift in minutes must be in range -120 to 120 - in ${id}`);
+                        trigger.shiftInMinutes = 0;
+                    }
+                } else if (trigger.type === "OneTimeTrigger") {
+                    if (isNaN(new Date(trigger.date).getTime())) {
+                        this.adapter.log.warn(`Wrong OneTimeDate ${trigger.date} in ${id}`);
+                        trigger.date = new Date().toISOString();
+                    }
+                    if (trigger.timedate == null || typeof trigger.timedate !== "boolean") {
+                        this.adapter.log.warn(`Wrong timedate ${trigger.timedate} in ${id}`);
+                        trigger.timedate = true;
+                    }
+                } else {
+                    this.adapter.log.error(`Cannot found trigger type ${trigger.type} in ${id}`);
+                    return (val = {});
+                }
+                const objId = id.split(".");
+                if (trigger.objectId.toString() != objId[3]) {
+                    this.adapter.log.warn(`Wrong ObjectId ${trigger.objectId} in ${id}`);
+                    trigger.objectId = parseInt(objId[3]);
+                }
+                if (trigger.valueCheck == null || typeof trigger.valueCheck !== "boolean") {
+                    trigger.valueCheck = false;
+                    this.adapter.log.warn(`Wrong valueCheck ${JSON.stringify(trigger)} in ${id}`);
+                }
+                if (!trigger.action) {
+                    trigger.action = {};
+                    this.adapter.log.warn(`Wrong action ${JSON.stringify(trigger)} in ${id}`);
+                }
+                if (trigger.action.type !== "OnOffStateAction") {
+                    if (trigger.action.type === "ConditionAction") {
+                        if (!trigger.action.condition) {
+                            this.adapter.log.warn(
+                                `Missing action condition ${JSON.stringify(trigger.action)} in ${id}`,
+                            );
+                            return (val = {});
+                        }
+                        if (trigger.action.condition.type !== "StringStateAndConstantCondition") {
+                            if (trigger.action.condition.constant == "") {
+                                trigger.action.condition.constant = "true";
+                                this.adapter.log.warn(
+                                    `Wrong condition constant ${JSON.stringify(trigger.action)} in ${id}! Set constant to TRUE!`,
+                                );
+                            }
+                            if (!trigger.action.condition.stateId1 || !trigger.action.condition.stateId2) {
+                                this.adapter.log.warn(
+                                    `Missing action condition states1 or states2 ${JSON.stringify(trigger.action)} in ${id}`,
+                                );
+                                return (val = {});
+                            }
+                            const stateId1 = await this.adapter.getForeignObjectAsync(
+                                trigger.action.condition.stateId1,
+                            );
+                            if (!stateId1) {
+                                this.adapter.log.warn(
+                                    `Wrong action condition states1 ${JSON.stringify(trigger.action)} in ${id}`,
+                                );
+                                return (val = {});
+                            }
+                            const stateId2 = await this.adapter.getForeignObjectAsync(
+                                trigger.action.condition.stateId2,
+                            );
+                            if (!stateId2) {
+                                this.adapter.log.warn(
+                                    `Wrong action condition states2 ${JSON.stringify(trigger.action)} in ${id}`,
+                                );
+                                return (val = {});
+                            }
+                        } else if (trigger.action.condition.type !== "StringStateAndStateCondition") {
+                            if (!trigger.action.condition.stateId) {
+                                this.adapter.log.warn(
+                                    `Missing action condition states ${JSON.stringify(trigger.action)} in ${id}`,
+                                );
+                                return (val = {});
+                            }
+                            const stateId = await this.adapter.getForeignObjectAsync(trigger.action.condition.stateId);
+                            if (!stateId) {
+                                this.adapter.log.warn(
+                                    `Wrong action condition states ${JSON.stringify(trigger.action)} in ${id}`,
+                                );
+                                return (val = {});
+                            }
+                        } else {
+                            this.adapter.log.warn(
+                                `Wrong action condition string ${JSON.stringify(trigger.action)} in ${id}`,
+                            );
+                            return (val = {});
+                        }
+                        if (trigger.action.condition.sign !== "==" && trigger.action.condition.sign !== "!=") {
+                            trigger.action.condition.sign = "==";
+                            this.adapter.log.warn(`Wrong condition sign ${JSON.stringify(trigger.action)} in ${id}`);
+                        }
+                        if (!trigger.action.action) {
+                            trigger.action.action = {};
+                            this.adapter.log.warn(`Wrong action condition ${JSON.stringify(trigger.action)} in ${id}`);
+                        }
+                        if (trigger.action.action.type !== "OnOffStateAction") {
+                            trigger.action.action.type = "OnOffStateAction";
+                            this.adapter.log.warn(
+                                `Wrong action type ${JSON.stringify(trigger.action.action)} in ${id}`,
+                            );
+                        }
+                        if (trigger.action.action.name !== "Off" && trigger.action.action.name !== "On") {
+                            trigger.action.action.name = "Off";
+                            this.adapter.log.warn(
+                                `Wrong action name ${JSON.stringify(trigger.action)} in ${id} - set Off`,
+                            );
+                        }
+                    } else {
+                        trigger.action.type = "OnOffStateAction";
+                        this.adapter.log.warn(`Wrong action type ${JSON.stringify(trigger.action)} in ${id}`);
+                        if (trigger.action.name !== "Off" && trigger.action.name !== "On") {
+                            trigger.action.name = "Off";
+                            this.adapter.log.warn(
+                                `Wrong action name ${JSON.stringify(trigger.action)} in ${id} - set Off`,
+                            );
+                        }
+                    }
+                }
+                val = trigger;
             } else {
                 this.adapter.log.debug(`Cannot found triggers in ${id}`);
                 val.triggers = [];
@@ -471,6 +636,11 @@ export class IoBrokerValidationState implements ValidationState {
                                                         state: idsState,
                                                         conditionCount: countCondition,
                                                         condition: idsCondition,
+                                                        valueType: templates[template].widgets[widget].data.valueType,
+                                                        offValue: templates[template].widgets[widget].data.offValue,
+                                                        onValue: templates[template].widgets[widget].data.onValue,
+                                                        newOff: templates[template].widgets[widget].data.newOff,
+                                                        newOn: templates[template].widgets[widget].data.newOn,
                                                     };
                                                 } else if (
                                                     templates[template].widgets[widget].data["oid-dataId"] != ""
@@ -546,6 +716,11 @@ export class IoBrokerValidationState implements ValidationState {
                                                         state: idsState,
                                                         conditionCount: countCondition,
                                                         condition: idsCondition,
+                                                        valueType: templates[template].widgets[widget].data.valueType,
+                                                        offValue: templates[template].widgets[widget].data.offValue,
+                                                        onValue: templates[template].widgets[widget].data.onValue,
+                                                        newOff: templates[template].widgets[widget].data.newOff,
+                                                        newOn: templates[template].widgets[widget].data.newOn,
                                                     };
                                                 }
                                                 if (
@@ -638,7 +813,9 @@ export class IoBrokerValidationState implements ValidationState {
                 }
             }
         }
-        const currentStates: any = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*`);
+        const currentStates: any = await this.adapter.getStatesAsync(
+            `schedule-switcher.${this.adapter.instance}.onoff.*`,
+        );
         for (const stateId in currentStates) {
             if (stateId.toString().indexOf(".data") !== -1) {
                 if (!newViews[stateId] && typeof currentStates[stateId].val === "string") {
@@ -698,9 +875,11 @@ export class IoBrokerValidationState implements ValidationState {
 
     /**
      * Set next times
+     *
+     * @param check true/false
      */
-    public async setNextTime(): Promise<void> {
-        const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*`);
+    public async setNextTime(check: boolean): Promise<void> {
+        const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.onoff.*`);
         for (const id in states) {
             if (id.toString().indexOf(".data") !== -1) {
                 const state = states[id];
@@ -718,14 +897,16 @@ export class IoBrokerValidationState implements ValidationState {
                                     trigger.todayTrigger.minute = actual.getMinutes();
                                     trigger.todayTrigger.weekday = actual.getDay();
                                     isChange = true;
-                                    //this.adapter.sendTo(this.adapter.namespace, "update-trigger", {
-                                    //    dataId: id,
-                                    //    trigger: trigger,
-                                    //});
+                                    if (check) {
+                                        this.adapter.sendTo(this.adapter.namespace, "update-trigger", {
+                                            dataId: id,
+                                            trigger: trigger,
+                                        });
+                                    }
                                 }
                             }
                             if (isChange) {
-                                await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: false });
+                                await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
                             }
                         }
                     }
@@ -738,7 +919,7 @@ export class IoBrokerValidationState implements ValidationState {
      * Set action time
      */
     public async setActionTime(): Promise<void> {
-        const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.*`);
+        const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.onoff.*`);
         const allData: any = [];
         for (const id in states) {
             if (id.toString().indexOf(".data") !== -1) {
