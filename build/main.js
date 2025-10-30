@@ -177,8 +177,8 @@ class ScheduleSwitcher extends utils.Adapter {
   async refreshAstroTime() {
     const rule = new import_node_schedule.RecurrenceRule();
     rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
-    rule.hour = 8;
-    rule.minute = 25;
+    rule.hour = 2;
+    rule.minute = 0;
     rule.second = 10;
     this.nextAstroTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
       var _a;
