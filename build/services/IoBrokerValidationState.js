@@ -22,6 +22,7 @@ __export(IoBrokerValidationState_exports, {
 });
 module.exports = __toCommonJS(IoBrokerValidationState_exports);
 var import_suncalc = require("suncalc");
+var import_AstroTime = require("../triggers/AstroTime");
 class IoBrokerValidationState {
   /**
    * @param adapter iobroker
@@ -187,9 +188,9 @@ class IoBrokerValidationState {
               trigger.todayTrigger = {};
             }
           } else if (trigger.type === "AstroTrigger") {
-            if (trigger.astroTime == null || trigger.astroTime !== "sunrise" && trigger.astroTime !== "sunset" && trigger.astroTime !== "solarNoon") {
+            if (trigger.astroTime == null || trigger.astroTime !== "sunrise" && trigger.astroTime !== "sunset" && trigger.astroTime !== "solarNoon" && trigger.astroTime !== "sunriseEnd" && trigger.astroTime !== "goldenHourEnd" && trigger.astroTime !== "goldenHour" && trigger.astroTime !== "sunsetStart" && trigger.astroTime !== "dusk" && trigger.astroTime !== "nauticalDusk" && trigger.astroTime !== "night" && trigger.astroTime !== "nadir" && trigger.astroTime !== "nightEnd" && trigger.astroTime !== "nauticalDawn" && trigger.astroTime !== "dawn") {
               this.adapter.log.warn(`Astro time may not be null - in ${id}`);
-              trigger.trigger.astroTime = "sunrise";
+              trigger.astroTime = "sunrise";
             }
             if (trigger.shiftInMinutes == null || trigger.shiftInMinutes > 120 || trigger.shiftInMinutes < -120) {
               this.adapter.log.warn(`Shift in minutes must be in range -120 to 120 - in ${id}`);
@@ -343,9 +344,9 @@ class IoBrokerValidationState {
             trigger.todayTrigger = {};
           }
         } else if (trigger.type === "AstroTrigger") {
-          if (trigger.astroTime == null || trigger.astroTime !== "sunrise" && trigger.astroTime !== "sunset" && trigger.astroTime !== "solarNoon") {
+          if (trigger.astroTime == null || trigger.astroTime !== "sunrise" && trigger.astroTime !== "sunset" && trigger.astroTime !== "solarNoon" && trigger.astroTime !== "sunriseEnd" && trigger.astroTime !== "goldenHourEnd" && trigger.astroTime !== "goldenHour" && trigger.astroTime !== "sunsetStart" && trigger.astroTime !== "dusk" && trigger.astroTime !== "nauticalDusk" && trigger.astroTime !== "night" && trigger.astroTime !== "nadir" && trigger.astroTime !== "nightEnd" && trigger.astroTime !== "nauticalDawn" && trigger.astroTime !== "dawn") {
             this.adapter.log.warn(`Astro time may not be null - in ${id}`);
-            trigger.trigger.astroTime = "sunrise";
+            trigger.astroTime = "sunrise";
           }
           if (trigger.shiftInMinutes == null || trigger.shiftInMinutes > 120 || trigger.shiftInMinutes < -120) {
             this.adapter.log.warn(`Shift in minutes must be in range -120 to 120 - in ${id}`);
@@ -921,12 +922,51 @@ class IoBrokerValidationState {
   nextDate(date, data) {
     const next = (0, import_suncalc.getTimes)(date, this.coordinate.getLatitude(), this.coordinate.getLongitude());
     let astro;
-    if (data.astroTime === "sunset") {
-      astro = next.sunset;
-    } else if (data.astroTime === "sunrise") {
-      astro = next.sunrise;
-    } else {
-      astro = next.solarNoon;
+    switch (data.astroTime) {
+      case "sunrise":
+        astro = next[import_AstroTime.AstroTime.Sunrise];
+        break;
+      case "solarNoon":
+        astro = next[import_AstroTime.AstroTime.SolarNoon];
+        break;
+      case "sunset":
+        astro = next[import_AstroTime.AstroTime.Sunset];
+        break;
+      case "sunriseEnd":
+        astro = next[import_AstroTime.AstroTime.SunriseEnd];
+        break;
+      case "goldenHourEnd":
+        astro = next[import_AstroTime.AstroTime.GoldenHourEnd];
+        break;
+      case "goldenHour":
+        astro = next[import_AstroTime.AstroTime.GoldenHour];
+        break;
+      case "sunsetStart":
+        astro = next[import_AstroTime.AstroTime.SunsetStart];
+        break;
+      case "dusk":
+        astro = next[import_AstroTime.AstroTime.Dusk];
+        break;
+      case "nauticalDusk":
+        astro = next[import_AstroTime.AstroTime.NauticalDusk];
+        break;
+      case "night":
+        astro = next[import_AstroTime.AstroTime.Night];
+        break;
+      case "nadir":
+        astro = next[import_AstroTime.AstroTime.Nadir];
+        break;
+      case "nightEnd":
+        astro = next[import_AstroTime.AstroTime.NightEnd];
+        break;
+      case "nauticalDawn":
+        astro = next[import_AstroTime.AstroTime.NauticalDawn];
+        break;
+      case "dawn":
+        astro = next[import_AstroTime.AstroTime.Dawn];
+        break;
+      default:
+        astro = next[import_AstroTime.AstroTime.Sunset];
     }
     new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
     return Promise.resolve({

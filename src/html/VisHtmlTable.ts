@@ -183,6 +183,28 @@ export class VisHtmlTable implements htmltable {
                     ${await this.helper_translator("solarNoon")}</option>
                     <option value="sunset" ${trigger.astroTime === "sunset" ? 'selected="selected"' : ""}>
                     ${await this.helper_translator("sunset")}</option>
+                    <option value="sunriseEnd" ${trigger.astroTime === "sunriseEnd" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("sunriseEnd")}</option>
+                    <option value="sunsetStart" ${trigger.astroTime === "sunsetStart" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("sunsetStart")}</option>
+                    <option value="dusk" ${trigger.astroTime === "dusk" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("dusk")}</option>
+                    <option value="dawn" ${trigger.astroTime === "dawn" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("dawn")}</option>
+                    <option value="night" ${trigger.astroTime === "night" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("night")}</option>
+                    <option value="nadir" ${trigger.astroTime === "nadir" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("nadir")}</option>
+                    <option value="nightEnd" ${trigger.astroTime === "nightEnd" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("nightEnd")}</option>
+                    <option value="nauticalDusk" ${trigger.astroTime === "nauticalDusk" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("nauticalDusk")}</option>
+                    <option value="nauticalDawn" ${trigger.astroTime === "nauticalDawn" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("nauticalDawn")}</option>
+                    <option value="goldenHour" ${trigger.astroTime === "goldenHour" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("goldenHour")}</option>
+                    <option value="goldenHourEnd" ${trigger.astroTime === "goldenHourEnd" ? 'selected="selected"' : ""}>
+                    ${await this.helper_translator("goldenHourEnd")}</option>
                     </select>
                     <input size="2px" type="number" id="shift${countall}" min="-120" max="120" step="1" placeholder="00" required value="${trigger.shiftInMinutes}" />
                     <input for="timeselect${countall}" type="button" value="save" onclick="sendToAstro('${this.adapter.namespace}', 'astro', '${state}', '${trigger.id}', '${countall}')" />`;
@@ -659,6 +681,149 @@ export class VisHtmlTable implements htmltable {
                 pl: "Południe",
                 uk: "полудень",
                 "zh-cn": "中午",
+            },
+            sunriseEnd: {
+                en: "Sunrise end",
+                de: "Ende Sonnenaufgangs",
+                ru: "Конец восхода солнца",
+                pt: "Fim do nascer do sol",
+                nl: "Zonsopgang einde",
+                fr: "Fin du lever du soleil",
+                it: "Fine dell'alba",
+                es: "Fin del amanecer",
+                pl: "Koniec wschodu słońca",
+                uk: "Кінець сходу сонця",
+                "zh-cn": "日出结束",
+            },
+            goldenHourEnd: {
+                en: "End golden dusk",
+                de: "Ende goldenen Dämmerung",
+                ru: "Конец золотых сумерек",
+                pt: "Fim do crepúsculo dourado",
+                nl: "Einde gouden schemering",
+                fr: "crépuscule doré",
+                it: "Fine del crepuscolo dorato",
+                es: "Fin del crepúsculo dorado",
+                pl: "Koniec złotego zmierzchu",
+                uk: "Кінець золотих сутінків",
+                "zh-cn": "金色黄昏结束",
+            },
+            goldenHour: {
+                en: "Start golden dusk",
+                de: "Beginn goldenen Dämmerung",
+                ru: "Начать золотые сумерки",
+                pt: "Comece o crepúsculo dourado",
+                nl: "Begin gouden schemering",
+                fr: "Début du crépuscule doré",
+                it: "Inizia il crepuscolo dorato",
+                es: "Comienza el crepúsculo dorado",
+                pl: "Rozpocznij złoty zmierzch",
+                uk: "Початок золотих сутінків",
+                "zh-cn": "金色黄昏伊始",
+            },
+            sunsetStart: {
+                en: "Start sunset",
+                de: "Sonnenuntergang beginnt",
+                ru: "Начать закат",
+                pt: "Começar o pôr do sol",
+                nl: "Begin zonsondergang",
+                fr: "Début du coucher du soleil",
+                it: "Inizio tramonto",
+                es: "Comienza el atardecer",
+                pl: "Rozpocznij zachód słońca",
+                uk: "Початок заходу сонця",
+                "zh-cn": "日落开始",
+            },
+            dusk: {
+                en: "Dusk",
+                de: "Dämmerung",
+                ru: "Сумерки",
+                pt: "Crepúsculo",
+                nl: "Schemering",
+                fr: "Crépuscule",
+                it: "Crepuscolo",
+                es: "Oscuridad",
+                pl: "Zmierzch",
+                uk: "Сутінки",
+                "zh-cn": "黄昏",
+            },
+            nauticalDusk: {
+                en: "Nautical dusk",
+                de: "Nautische Dämmerung",
+                ru: "Морские сумерки",
+                pt: "Crepúsculo náutico",
+                nl: "Nautische schemering",
+                fr: "crépuscule nautique",
+                it: "Crepuscolo nautico",
+                es: "Atardecer náutico",
+                pl: "Zmierzch morski",
+                uk: "Морські сутінки",
+                "zh-cn": "航海黄昏",
+            },
+            night: {
+                en: "Night",
+                de: "Nacht",
+                ru: "Ночь",
+                pt: "Noite",
+                nl: "Nacht",
+                fr: "Nuit",
+                it: "Notte",
+                es: "Noche",
+                pl: "Noc",
+                uk: "Ніч",
+                "zh-cn": "夜晚",
+            },
+            nadir: {
+                en: "Midnight",
+                de: "Mitternacht",
+                ru: "Полночь",
+                pt: "Meia-noite",
+                nl: "Middernacht",
+                fr: "Minuit",
+                it: "Mezzanotte",
+                es: "Medianoche",
+                pl: "Północ",
+                uk: "Північ",
+                "zh-cn": "午夜",
+            },
+            nightEnd: {
+                en: "Night end",
+                de: "Ende der Nacht",
+                ru: "Конец ночи",
+                pt: "Fim da noite",
+                nl: "Nacht einde",
+                fr: "Fin de la nuit",
+                it: "Fine della notte",
+                es: "Fin de la noche",
+                pl: "Koniec nocy",
+                uk: "Кінець ночі",
+                "zh-cn": "夜幕降临",
+            },
+            nauticalDawn: {
+                en: "Nautical dawn",
+                de: "Nautische Morgendämmerung",
+                ru: "Морской рассвет",
+                pt: "amanhecer náutico",
+                nl: "Nautische dageraad",
+                fr: "Aube nautique",
+                it: "Alba nautica",
+                es: "Amanecer náutico",
+                pl: "Morski świt",
+                uk: "Морський світанок",
+                "zh-cn": "航海黎明",
+            },
+            dawn: {
+                en: "Dawn",
+                de: "Morgendämmerung",
+                ru: "Рассвет",
+                pt: "Alvorecer",
+                nl: "Ochtendgloren",
+                fr: "Aube",
+                it: "Alba",
+                es: "Amanecer",
+                pl: "Świt",
+                uk: "Світанок",
+                "zh-cn": "黎明",
             },
         };
         return all[word][this.lang];

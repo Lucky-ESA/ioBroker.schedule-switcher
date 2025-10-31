@@ -150,5 +150,16 @@
     "html_text": "Create HTML for VIS and VIS-2 (VIS-2 see description)",
     "link to description": "Link to description",
     "valueCheckOn": "State comparison activated",
-    "valueCheckOff": "State comparison disabled"
+    "valueCheckOff": "State comparison disabled",
+    "sunriseEnd": "Sunrise end",
+    "goldenHourEnd": "End golden dusk",
+    "goldenHour": "Start golden dusk",
+    "sunsetStart": "Start sunset",
+    "dusk": "Dusk",
+    "nauticalDusk": "Nautical dusk",
+    "night": "Night",
+    "nadir": "Midnight",
+    "nightEnd": "Night end",
+    "nauticalDawn": "Nautical dawn",
+    "dawn": "Dawn"
 }

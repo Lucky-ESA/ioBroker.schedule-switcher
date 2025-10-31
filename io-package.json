@@ -121,8 +121,16 @@
             "uk": "Перемикання станів через планувальник",
             "zh-cn": "通过调度程序切换状态"
         },
-        "authors": ["Lucky-ESA <github@luckyskills.de>"],
-        "keywords": ["schedule", "time-switch", "control", "roller shutter", "Power outlet"],
+        "authors": [
+            "Lucky-ESA <github@luckyskills.de>"
+        ],
+        "keywords": [
+            "schedule",
+            "time-switch",
+            "control",
+            "roller shutter",
+            "Power outlet"
+        ],
         "licenseInformation": {
             "type": "free",
             "license": "MIT"
@@ -141,10 +149,17 @@
         "messagebox": true,
         "dataSource": "push",
         "docs": {
-            "en": ["docs/en/README.md"],
-            "de": ["docs/de/README.md"]
+            "en": [
+                "docs/en/README.md"
+            ],
+            "de": [
+                "docs/de/README.md"
+            ]
         },
-        "restartAdapters": ["vis-2", "vis"],
+        "restartAdapters": [
+            "vis-2",
+            "vis"
+        ],
         "adminUI": {
             "config": "json"
         },

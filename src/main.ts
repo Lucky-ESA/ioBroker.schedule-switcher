@@ -859,10 +859,10 @@ class ScheduleSwitcher extends utils.Adapter {
             const lat = obj.common.latitude;
             const long = obj.common.longitude;
             this.log.debug(`Got coordinates lat=${lat} long=${long}`);
-            return new Coordinate(lat, long, this);
+            return new Coordinate(lat, long, this.loggingService);
         }
         this.log.error("Could not read coordinates from system.config, using Berlins coordinates as fallback");
-        return new Coordinate(52, 13, this);
+        return new Coordinate(52, 13, this.loggingService);
     }
 
     private logError(error: Error): void {

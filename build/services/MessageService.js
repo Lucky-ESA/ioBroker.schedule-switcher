@@ -189,12 +189,51 @@ class MessageService {
   nextDate(data) {
     const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
     let astro;
-    if (data.astroTime === "sunset") {
-      astro = next.sunset;
-    } else if (data.astroTime === "sunrise") {
-      astro = next.sunrise;
-    } else {
-      astro = next.solarNoon;
+    switch (data.astroTime) {
+      case "sunrise":
+        astro = next[import_AstroTime.AstroTime.Sunrise];
+        break;
+      case "solarNoon":
+        astro = next[import_AstroTime.AstroTime.SolarNoon];
+        break;
+      case "sunset":
+        astro = next[import_AstroTime.AstroTime.Sunset];
+        break;
+      case "sunriseEnd":
+        astro = next[import_AstroTime.AstroTime.SunriseEnd];
+        break;
+      case "goldenHourEnd":
+        astro = next[import_AstroTime.AstroTime.GoldenHourEnd];
+        break;
+      case "goldenHour":
+        astro = next[import_AstroTime.AstroTime.GoldenHour];
+        break;
+      case "sunsetStart":
+        astro = next[import_AstroTime.AstroTime.SunsetStart];
+        break;
+      case "dusk":
+        astro = next[import_AstroTime.AstroTime.Dusk];
+        break;
+      case "nauticalDusk":
+        astro = next[import_AstroTime.AstroTime.NauticalDusk];
+        break;
+      case "night":
+        astro = next[import_AstroTime.AstroTime.Night];
+        break;
+      case "nadir":
+        astro = next[import_AstroTime.AstroTime.Nadir];
+        break;
+      case "nightEnd":
+        astro = next[import_AstroTime.AstroTime.NightEnd];
+        break;
+      case "nauticalDawn":
+        astro = next[import_AstroTime.AstroTime.NauticalDawn];
+        break;
+      case "dawn":
+        astro = next[import_AstroTime.AstroTime.Dawn];
+        break;
+      default:
+        astro = next[import_AstroTime.AstroTime.Sunset];
     }
     new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
     return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };

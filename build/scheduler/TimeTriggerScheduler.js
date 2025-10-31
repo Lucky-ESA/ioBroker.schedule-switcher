@@ -83,7 +83,11 @@ class TimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.removeTrigger(trigger);
     } else {
       this.loadregister();
-      throw new Error(`TimeTriggerScheduler Trigger ${trigger} is not registered.`);
+      if (trigger.toString().toString().indexOf("TimeTriggerForAstroTrigger") !== -1) {
+        this.logger.logDebug(`TimeTriggerScheduler trigger not found!`);
+      } else {
+        throw new Error(`TimeTriggerScheduler Trigger ${trigger} is not registered.`);
+      }
     }
   }
   /**

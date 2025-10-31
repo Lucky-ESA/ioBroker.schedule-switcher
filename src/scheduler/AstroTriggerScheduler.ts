@@ -1,5 +1,5 @@
 import type { GetTimesResult } from "suncalc";
-import type { Coordinate } from "../Coordinate";
+import type { CoordinateTypes } from "../CoordinateTypes";
 import type { LoggingService } from "../services/LoggingService";
 import { AstroTrigger } from "../triggers/AstroTrigger";
 import type { TimeTrigger } from "../triggers/TimeTrigger";
@@ -46,7 +46,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
     constructor(
         private readonly timeTriggerScheduler: TimeTriggerScheduler,
         private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
-        private readonly coordinate: Coordinate,
+        private readonly coordinate: CoordinateTypes,
         private readonly logger: LoggingService,
     ) {
         super();

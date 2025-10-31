@@ -1,5 +1,5 @@
 import { getTimes } from "suncalc";
-import type { Coordinate } from "../Coordinate";
+import type { CoordinateTypes } from "../CoordinateTypes";
 import type { OnOffStateAction } from "../actions/OnOffStateAction";
 import type { htmltable } from "../html/htmlTable";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
@@ -39,7 +39,7 @@ export class MessageService implements MessageServices {
         private scheduleIdToSchedule: Map<string, Schedule>,
         private createOnOffScheduleSerializer: (dataId: string) => Promise<OnOffScheduleSerializer>,
         private adapter: ioBroker.Adapter,
-        private readonly coordinate: Coordinate,
+        private readonly coordinate: CoordinateTypes,
         private readonly validation: ValidationState | undefined,
         private readonly html: htmltable,
     ) {
@@ -186,12 +186,51 @@ export class MessageService implements MessageServices {
     private nextDate(data: any): any {
         const next = getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
         let astro: Date;
-        if (data.astroTime === "sunset") {
-            astro = next.sunset;
-        } else if (data.astroTime === "sunrise") {
-            astro = next.sunrise;
-        } else {
-            astro = next.solarNoon;
+        switch (data.astroTime) {
+            case "sunrise":
+                astro = next[AstroTime.Sunrise];
+                break;
+            case "solarNoon":
+                astro = next[AstroTime.SolarNoon];
+                break;
+            case "sunset":
+                astro = next[AstroTime.Sunset];
+                break;
+            case "sunriseEnd":
+                astro = next[AstroTime.SunriseEnd];
+                break;
+            case "goldenHourEnd":
+                astro = next[AstroTime.GoldenHourEnd];
+                break;
+            case "goldenHour":
+                astro = next[AstroTime.GoldenHour];
+                break;
+            case "sunsetStart":
+                astro = next[AstroTime.SunsetStart];
+                break;
+            case "dusk":
+                astro = next[AstroTime.Dusk];
+                break;
+            case "nauticalDusk":
+                astro = next[AstroTime.NauticalDusk];
+                break;
+            case "night":
+                astro = next[AstroTime.Night];
+                break;
+            case "nadir":
+                astro = next[AstroTime.Nadir];
+                break;
+            case "nightEnd":
+                astro = next[AstroTime.NightEnd];
+                break;
+            case "nauticalDawn":
+                astro = next[AstroTime.NauticalDawn];
+                break;
+            case "dawn":
+                astro = next[AstroTime.Dawn];
+                break;
+            default:
+                astro = next[AstroTime.Sunset];
         }
         new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
         return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };

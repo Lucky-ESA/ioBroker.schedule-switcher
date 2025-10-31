@@ -1,5 +1,6 @@
 import { getTimes } from "suncalc";
-import type { Coordinate } from "../Coordinate";
+import type { CoordinateTypes } from "../CoordinateTypes";
+import { AstroTime } from "../triggers/AstroTime";
 import type { ValidationState } from "./ValidationState";
 
 /**
@@ -12,7 +13,7 @@ export class IoBrokerValidationState implements ValidationState {
      */
     constructor(
         private readonly adapter: ioBroker.Adapter,
-        private readonly coordinate: Coordinate,
+        private readonly coordinate: CoordinateTypes,
     ) {
         this.adapter = adapter;
     }
@@ -180,10 +181,21 @@ export class IoBrokerValidationState implements ValidationState {
                             trigger.astroTime == null ||
                             (trigger.astroTime !== "sunrise" &&
                                 trigger.astroTime !== "sunset" &&
-                                trigger.astroTime !== "solarNoon")
+                                trigger.astroTime !== "solarNoon" &&
+                                trigger.astroTime !== "sunriseEnd" &&
+                                trigger.astroTime !== "goldenHourEnd" &&
+                                trigger.astroTime !== "goldenHour" &&
+                                trigger.astroTime !== "sunsetStart" &&
+                                trigger.astroTime !== "dusk" &&
+                                trigger.astroTime !== "nauticalDusk" &&
+                                trigger.astroTime !== "night" &&
+                                trigger.astroTime !== "nadir" &&
+                                trigger.astroTime !== "nightEnd" &&
+                                trigger.astroTime !== "nauticalDawn" &&
+                                trigger.astroTime !== "dawn")
                         ) {
                             this.adapter.log.warn(`Astro time may not be null - in ${id}`);
-                            trigger.trigger.astroTime = "sunrise";
+                            trigger.astroTime = "sunrise";
                         }
                         if (
                             trigger.shiftInMinutes == null ||
@@ -352,10 +364,21 @@ export class IoBrokerValidationState implements ValidationState {
                         trigger.astroTime == null ||
                         (trigger.astroTime !== "sunrise" &&
                             trigger.astroTime !== "sunset" &&
-                            trigger.astroTime !== "solarNoon")
+                            trigger.astroTime !== "solarNoon" &&
+                            trigger.astroTime !== "sunriseEnd" &&
+                            trigger.astroTime !== "goldenHourEnd" &&
+                            trigger.astroTime !== "goldenHour" &&
+                            trigger.astroTime !== "sunsetStart" &&
+                            trigger.astroTime !== "dusk" &&
+                            trigger.astroTime !== "nauticalDusk" &&
+                            trigger.astroTime !== "night" &&
+                            trigger.astroTime !== "nadir" &&
+                            trigger.astroTime !== "nightEnd" &&
+                            trigger.astroTime !== "nauticalDawn" &&
+                            trigger.astroTime !== "dawn")
                     ) {
                         this.adapter.log.warn(`Astro time may not be null - in ${id}`);
-                        trigger.trigger.astroTime = "sunrise";
+                        trigger.astroTime = "sunrise";
                     }
                     if (
                         trigger.shiftInMinutes == null ||
@@ -1031,12 +1054,51 @@ export class IoBrokerValidationState implements ValidationState {
     private nextDate(date: Date, data: any): Promise<any> {
         const next = getTimes(date, this.coordinate.getLatitude(), this.coordinate.getLongitude());
         let astro: Date;
-        if (data.astroTime === "sunset") {
-            astro = next.sunset;
-        } else if (data.astroTime === "sunrise") {
-            astro = next.sunrise;
-        } else {
-            astro = next.solarNoon;
+        switch (data.astroTime) {
+            case "sunrise":
+                astro = next[AstroTime.Sunrise];
+                break;
+            case "solarNoon":
+                astro = next[AstroTime.SolarNoon];
+                break;
+            case "sunset":
+                astro = next[AstroTime.Sunset];
+                break;
+            case "sunriseEnd":
+                astro = next[AstroTime.SunriseEnd];
+                break;
+            case "goldenHourEnd":
+                astro = next[AstroTime.GoldenHourEnd];
+                break;
+            case "goldenHour":
+                astro = next[AstroTime.GoldenHour];
+                break;
+            case "sunsetStart":
+                astro = next[AstroTime.SunsetStart];
+                break;
+            case "dusk":
+                astro = next[AstroTime.Dusk];
+                break;
+            case "nauticalDusk":
+                astro = next[AstroTime.NauticalDusk];
+                break;
+            case "night":
+                astro = next[AstroTime.Night];
+                break;
+            case "nadir":
+                astro = next[AstroTime.Nadir];
+                break;
+            case "nightEnd":
+                astro = next[AstroTime.NightEnd];
+                break;
+            case "nauticalDawn":
+                astro = next[AstroTime.NauticalDawn];
+                break;
+            case "dawn":
+                astro = next[AstroTime.Dawn];
+                break;
+            default:
+                astro = next[AstroTime.Sunset];
         }
         new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
         return Promise.resolve({

@@ -12,5 +12,5 @@ export enum AstroTime {
     Nadir = "nadir",
     NightEnd = "nightEnd",
     NauticalDawn = "nauticalDawn",
-    Sawn = "dawn",
+    Dawn = "dawn",
 }

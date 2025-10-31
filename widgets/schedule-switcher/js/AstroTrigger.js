@@ -146,6 +146,17 @@
                     	<option value="sunrise" selected>${vis.binds["schedule-switcher"].translate("sunrise")}</option>
                     	<option value="solarNoon">${vis.binds["schedule-switcher"].translate("solarNoon")}</option>
                     	<option value="sunset">${vis.binds["schedule-switcher"].translate("sunset")}</option>
+                        <option value="sunriseEnd">${vis.binds["schedule-switcher"].translate("sunriseEnd")}</option>
+                        <option value="sunsetStart">${vis.binds["schedule-switcher"].translate("sunsetStart")}</option>
+                        <option value="dusk">${vis.binds["schedule-switcher"].translate("dusk")}</option>
+                        <option value="dawn">${vis.binds["schedule-switcher"].translate("dawn")}</option>
+                        <option value="night">${vis.binds["schedule-switcher"].translate("night")}</option>
+                        <option value="nadir">${vis.binds["schedule-switcher"].translate("nadir")}</option>
+                        <option value="nightEnd">${vis.binds["schedule-switcher"].translate("nightEnd")}</option>
+                        <option value="nauticalDusk">${vis.binds["schedule-switcher"].translate("nauticalDusk")}</option>
+                        <option value="nauticalDawn">${vis.binds["schedule-switcher"].translate("nauticalDawn")}</option>
+                        <option value="goldenHour">${vis.binds["schedule-switcher"].translate("goldenHour")}</option>
+                        <option value="goldenHourEnd">${vis.binds["schedule-switcher"].translate("goldenHourEnd")}</option>
 					</select>
 					<label for="shift">${vis.binds["schedule-switcher"].translate("inputShiftInMinutes")}</label>
                     <input id="shift" type="number" min="-120" max="120" step="1" required/>
