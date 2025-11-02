@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "sources": ["../../src/services/StateService.ts"],
+  "sources": ["../../src/types/StateService.ts"],
   "sourcesContent": ["/**\n * StateService\n */\nexport interface StateService {\n    /**\n     * setState\n     */\n    setState(id: string, value: string | number | boolean): Promise<any>;\n    /**\n     * getState\n     */\n    getState(id: string): Promise<any>;\n    /**\n     * setForeinState\n     */\n    setForeignState(id: string, value: string | number | boolean, trigger: any): void;\n    /**\n     * getForeinState\n     */\n    getForeignState(id: string): Promise<any>;\n    /**\n     * extendObject\n     */\n    extendObject(id: string, value: any): Promise<any>;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []

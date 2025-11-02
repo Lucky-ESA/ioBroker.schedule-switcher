@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "sources": ["../../src/triggers/AstroTime.ts"],
+  "sources": ["../../src/types/AstroTime.ts"],
   "sourcesContent": ["export enum AstroTime {\n    Sunrise = \"sunrise\",\n    SolarNoon = \"solarNoon\",\n    Sunset = \"sunset\",\n    SunriseEnd = \"sunriseEnd\",\n    GoldenHourEnd = \"goldenHourEnd\",\n    GoldenHour = \"goldenHour\",\n    SunsetStart = \"sunsetStart\",\n    Dusk = \"dusk\",\n    NauticalDusk = \"nauticalDusk\",\n    Night = \"night\",\n    Nadir = \"nadir\",\n    NightEnd = \"nightEnd\",\n    NauticalDawn = \"nauticalDawn\",\n    Dawn = \"dawn\",\n}\n"],
   "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,IAAK,YAAL,kBAAKA,eAAL;AACH,EAAAA,WAAA,aAAU;AACV,EAAAA,WAAA,eAAY;AACZ,EAAAA,WAAA,YAAS;AACT,EAAAA,WAAA,gBAAa;AACb,EAAAA,WAAA,mBAAgB;AAChB,EAAAA,WAAA,gBAAa;AACb,EAAAA,WAAA,iBAAc;AACd,EAAAA,WAAA,UAAO;AACP,EAAAA,WAAA,kBAAe;AACf,EAAAA,WAAA,WAAQ;AACR,EAAAA,WAAA,WAAQ;AACR,EAAAA,WAAA,cAAW;AACX,EAAAA,WAAA,kBAAe;AACf,EAAAA,WAAA,UAAO;AAdC,SAAAA;AAAA,GAAA;",
   "names": ["AstroTime"]

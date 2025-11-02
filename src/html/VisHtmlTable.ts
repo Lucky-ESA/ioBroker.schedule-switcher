@@ -1,4 +1,5 @@
-import type { htmltable, NextActionName } from "./htmlTable";
+import type { AllTriggers } from "../types/AllTrigger";
+import type { htmltable, NextActionName } from "../types/htmlTable";
 
 /**
  * VisHtmlTable
@@ -382,7 +383,7 @@ export class VisHtmlTable implements htmltable {
         return Promise.resolve(next);
     }
 
-    private async nextDateSwitch(now: Date, trigger: any): Promise<string> {
+    private async nextDateSwitch(now: Date, trigger: AllTriggers): Promise<string> {
         let diffDays = 0;
         const nextDay: number =
             trigger.weekdays.length === 1

@@ -1,5 +1,5 @@
-import type { Builder } from "../Builder";
-import type { StateService } from "../services/StateService";
+import type { Builder } from "../types/Builder";
+import type { StateService } from "../types/StateService";
 import type { BaseStateAction } from "./BaseStateAction";
 
 /**
@@ -10,6 +10,7 @@ export abstract class BaseStateActionBuilder implements Builder<BaseStateAction>
 
     /**
      * @param stateService setState
+     * @returns this
      */
     public setStateService(stateService: StateService): BaseStateActionBuilder {
         this.stateService = stateService;

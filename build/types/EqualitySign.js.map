@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "sources": ["../../../src/actions/conditions/EqualitySign.ts"],
+  "sources": ["../../src/types/EqualitySign.ts"],
   "sourcesContent": ["export enum EqualitySign {\n    Equal = \"==\",\n    NotEqual = \"!=\",\n}\n"],
   "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,IAAK,eAAL,kBAAKA,kBAAL;AACH,EAAAA,cAAA,WAAQ;AACR,EAAAA,cAAA,cAAW;AAFH,SAAAA;AAAA,GAAA;",
   "names": ["EqualitySign"]

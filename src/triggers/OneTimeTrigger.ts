@@ -1,6 +1,6 @@
-import type { Action } from "../actions/Action";
-import type { Destroyable } from "../Destroyable";
-import type { Trigger } from "./Trigger";
+import type { Action } from "../types/Action";
+import type { Destroyable } from "../types/Destroyable";
+import type { Trigger } from "../types/Trigger";
 
 /**
  * OneTimeTrigger

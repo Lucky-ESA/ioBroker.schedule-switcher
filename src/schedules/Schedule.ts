@@ -1,7 +1,7 @@
-import type { Destroyable } from "../Destroyable";
 import type { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
-import type { LoggingService } from "../services/LoggingService";
-import type { Trigger } from "../triggers/Trigger";
+import type { Destroyable } from "../types/Destroyable";
+import type { LoggingService } from "../types/LoggingService";
+import type { Trigger } from "../types/Trigger";
 
 /**
  * Schedule

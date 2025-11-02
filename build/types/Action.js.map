@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/types/Action.ts"],
+  "sourcesContent": ["import type { AllTriggers } from \"./AllTrigger\";\n/**\n * Action\n */\nexport interface Action {\n    /**\n     * execute\n     */\n    execute(trigger: AllTriggers): void;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

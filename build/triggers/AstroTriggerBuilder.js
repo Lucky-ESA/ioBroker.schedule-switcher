@@ -25,7 +25,7 @@ var import_AstroTrigger = require("./AstroTrigger");
 var import_DailyTriggerBuilder = require("./DailyTriggerBuilder");
 class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder {
   astroTime = null;
-  shift = 0;
+  shiftInMinutes = 0;
   objectId = 0;
   valueCheck = false;
   todayTrigger = {};
@@ -37,10 +37,10 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
     return this;
   }
   /**
-   * @param shift shiftminutes
+   * @param shiftInMinutes shiftminutes
    */
-  setShift(shift) {
-    this.shift = shift;
+  setShift(shiftInMinutes) {
+    this.shiftInMinutes = shiftInMinutes;
     return this;
   }
   /**
@@ -98,7 +98,7 @@ class AstroTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder
     return new import_AstroTrigger.AstroTrigger(
       this.getId(),
       this.astroTime,
-      this.shift,
+      this.shiftInMinutes,
       this.getWeekdays(),
       this.getAction(),
       this.objectId,

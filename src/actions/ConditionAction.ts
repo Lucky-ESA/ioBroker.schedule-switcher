@@ -1,6 +1,7 @@
-import type { LoggingService } from "../services/LoggingService";
-import type { Action } from "./Action";
-import type { Condition } from "./conditions/Condition";
+import type { LoggingService } from "../types//LoggingService";
+import type { Action } from "../types/Action";
+import type { AllTriggers } from "../types/AllTrigger";
+import type { Condition } from "../types/Condition";
 
 /**
  * ConditionAction
@@ -60,7 +61,7 @@ export class ConditionAction implements Action {
      *
      * @param trigger trigger
      */
-    public execute(trigger: any): void {
+    public execute(trigger: AllTriggers): void {
         this.condition
             .evaluate()
             .then(result => {

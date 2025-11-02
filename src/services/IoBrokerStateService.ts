@@ -1,5 +1,6 @@
-import type { htmltable } from "../html/htmlTable";
-import type { StateService } from "./StateService";
+import type { AllTriggers } from "../types/AllTrigger";
+import type { htmltable } from "../types/htmlTable";
+import type { StateService } from "../types/StateService";
 
 /**
  * IoBrokerStateService
@@ -52,7 +53,7 @@ export class IoBrokerStateService implements StateService {
      * @param value Values
      * @param trigger Trigger
      */
-    async setForeignState(id: string, value: string | number | boolean, trigger: any): Promise<any> {
+    async setForeignState(id: string, value: string | number | boolean, trigger: AllTriggers): Promise<any> {
         this.adapter.log.debug(`TRIGGER SET: ${JSON.stringify(trigger)}`);
         const diffTime = Date.now() - this.checkTime;
         this.checkTime = Date.now();
@@ -67,7 +68,7 @@ export class IoBrokerStateService implements StateService {
         const old_value = await this.adapter.getForeignStateAsync(id);
         const old_val = old_value == null ? null : old_value.val;
         let change_val = false;
-        this.adapter.log.debug(trigger.valueCheck);
+        this.adapter.log.debug(trigger.valueCheck.toString());
         if (trigger.valueCheck) {
             if (JSON.stringify(value) === JSON.stringify(old_val)) {
                 this.adapter.log.debug(`Set not change!`);
@@ -97,7 +98,7 @@ export class IoBrokerStateService implements StateService {
     async setHistory(
         id: string,
         value: string | number | boolean | null,
-        trigger: any,
+        trigger: AllTriggers,
         old_value: string | number | boolean | null,
         setVal: boolean,
     ): Promise<any> {
@@ -125,7 +126,7 @@ export class IoBrokerStateService implements StateService {
                 checkValue: setVal,
                 trigger: trigger.trigger != null ? trigger.trigger : "unknown",
                 astroTime: trigger.astroTime != null ? trigger.astroTime : "unknown",
-                shift: trigger.shift != null ? trigger.shift : 0,
+                shiftInMinutes: trigger.shiftInMinutes != null ? trigger.shiftInMinutes : 0,
                 date: trigger.date != null ? trigger.date : 0,
                 hour: trigger.hour != null ? trigger.hour : 0,
                 minute: trigger.minute != null ? trigger.minute : 0,

@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "sources": ["../../src/serialization/Serializer.ts"],
+  "sources": ["../../src/types/Serializer.ts"],
   "sourcesContent": ["/**\n * Serializer\n */\nexport interface Serializer<T> {\n    /**\n     * getType\n     */\n    getType(): string;\n\n    /**\n     * deserialize\n     */\n    deserialize(stringToDeserialize: string): T;\n\n    /**\n     * serialize\n     */\n    serialize(objectToSerialize: T): string;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []

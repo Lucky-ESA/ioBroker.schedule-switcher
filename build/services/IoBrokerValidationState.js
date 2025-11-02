@@ -22,7 +22,7 @@ __export(IoBrokerValidationState_exports, {
 });
 module.exports = __toCommonJS(IoBrokerValidationState_exports);
 var import_suncalc = require("suncalc");
-var import_AstroTime = require("../triggers/AstroTime");
+var import_AstroTime = require("../types/AstroTime");
 class IoBrokerValidationState {
   /**
    * @param adapter iobroker
@@ -322,7 +322,7 @@ class IoBrokerValidationState {
         }
         val.triggers = newTrigger;
       } else if (val && (val.type === "TimeTrigger" || val.type === "AstroTrigger" || val.type === "OneTimeTrigger")) {
-        this.adapter.log.debug(`Validation Trigger ${val.name}`);
+        this.adapter.log.debug(`Validation Trigger ${val.type}`);
         const trigger = val;
         if (trigger.type === "TimeTrigger") {
           if (trigger.hour == void 0 || trigger.hour < 0 || trigger.hour > 23) {
@@ -968,7 +968,9 @@ class IoBrokerValidationState {
       default:
         astro = next[import_AstroTime.AstroTime.Sunset];
     }
-    new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+    new Date(astro.getTime()).setMinutes(
+      new Date(astro.getTime()).getMinutes() + (data.shiftInMinutes != null ? data.shiftInMinutes : 0)
+    );
     return Promise.resolve({
       hour: astro.getHours(),
       minute: astro.getMinutes(),

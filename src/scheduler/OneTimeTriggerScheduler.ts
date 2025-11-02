@@ -1,6 +1,6 @@
 import type { Job, JobCallback } from "node-schedule";
-import type { LoggingService } from "../services/LoggingService";
 import { OneTimeTrigger } from "../triggers/OneTimeTrigger";
+import type { LoggingService } from "../types/LoggingService";
 import { TriggerScheduler } from "./TriggerScheduler";
 
 /**
@@ -51,7 +51,8 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
             } else {
                 const newJob = this.scheduleJob(trigger.getDate(), () => {
                     this.logger.logDebug(`Executing trigger ${trigger}`);
-                    trigger.getAction().execute(trigger.getData());
+                    const trigger_data = JSON.parse(JSON.stringify(trigger.getData()));
+                    trigger.getAction().execute(trigger_data);
                 });
                 this.registered.push([trigger, newJob]);
             }

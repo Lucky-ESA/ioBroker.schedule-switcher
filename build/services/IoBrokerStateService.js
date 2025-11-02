@@ -81,7 +81,7 @@ class IoBrokerStateService {
     const old_value = await this.adapter.getForeignStateAsync(id);
     const old_val = old_value == null ? null : old_value.val;
     let change_val = false;
-    this.adapter.log.debug(trigger.valueCheck);
+    this.adapter.log.debug(trigger.valueCheck.toString());
     if (trigger.valueCheck) {
       if (JSON.stringify(value) === JSON.stringify(old_val)) {
         this.adapter.log.debug(`Set not change!`);
@@ -132,7 +132,7 @@ class IoBrokerStateService {
         checkValue: setVal,
         trigger: trigger.trigger != null ? trigger.trigger : "unknown",
         astroTime: trigger.astroTime != null ? trigger.astroTime : "unknown",
-        shift: trigger.shift != null ? trigger.shift : 0,
+        shiftInMinutes: trigger.shiftInMinutes != null ? trigger.shiftInMinutes : 0,
         date: trigger.date != null ? trigger.date : 0,
         hour: trigger.hour != null ? trigger.hour : 0,
         minute: trigger.minute != null ? trigger.minute : 0,

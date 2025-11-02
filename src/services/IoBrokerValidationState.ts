@@ -1,7 +1,8 @@
 import { getTimes } from "suncalc";
-import type { CoordinateTypes } from "../CoordinateTypes";
-import { AstroTime } from "../triggers/AstroTime";
-import type { ValidationState } from "./ValidationState";
+import type { AllTriggers } from "../types/AllTrigger";
+import { AstroTime } from "../types/AstroTime";
+import type { CoordinateTypes } from "../types/Coordinate";
+import type { ValidationState } from "../types/ValidationState";
 
 /**
  * IoBrokerValidationState
@@ -334,7 +335,7 @@ export class IoBrokerValidationState implements ValidationState {
                 val &&
                 (val.type === "TimeTrigger" || val.type === "AstroTrigger" || val.type === "OneTimeTrigger")
             ) {
-                this.adapter.log.debug(`Validation Trigger ${val.name}`);
+                this.adapter.log.debug(`Validation Trigger ${val.type}`);
                 const trigger = val;
                 if (trigger.type === "TimeTrigger") {
                     if (trigger.hour == undefined || trigger.hour < 0 || trigger.hour > 23) {
@@ -1032,7 +1033,7 @@ export class IoBrokerValidationState implements ValidationState {
         }
     }
 
-    private async nextDateSwitch(now: Date, trigger: any): Promise<string> {
+    private async nextDateSwitch(now: Date, trigger: AllTriggers): Promise<string> {
         let diffDays = 0;
         const nextDay: number =
             trigger.weekdays.length === 1
@@ -1051,7 +1052,7 @@ export class IoBrokerValidationState implements ValidationState {
         ).toISOString();
     }
 
-    private nextDate(date: Date, data: any): Promise<any> {
+    private nextDate(date: Date, data: AllTriggers): Promise<any> {
         const next = getTimes(date, this.coordinate.getLatitude(), this.coordinate.getLongitude());
         let astro: Date;
         switch (data.astroTime) {
@@ -1100,7 +1101,9 @@ export class IoBrokerValidationState implements ValidationState {
             default:
                 astro = next[AstroTime.Sunset];
         }
-        new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+        new Date(astro.getTime()).setMinutes(
+            new Date(astro.getTime()).getMinutes() + (data.shiftInMinutes != null ? data.shiftInMinutes : 0),
+        );
         return Promise.resolve({
             hour: astro.getHours(),
             minute: astro.getMinutes(),

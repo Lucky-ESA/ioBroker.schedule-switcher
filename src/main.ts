@@ -7,8 +7,6 @@
 import * as utils from "@iobroker/adapter-core";
 import { cancelJob, RecurrenceRule, scheduleJob } from "node-schedule";
 import { getTimes } from "suncalc";
-import type { Action } from "./actions/Action";
-import type { Condition } from "./actions/conditions/Condition";
 import { Coordinate } from "./Coordinate";
 import { VisHtmlTable } from "./html/VisHtmlTable";
 import { VisWidgetOverview } from "./html/VisWidgetOverview";
@@ -30,8 +28,10 @@ import { IoBrokerLoggingService } from "./services/IoBrokerLoggingService";
 import { IoBrokerStateService } from "./services/IoBrokerStateService";
 import { IoBrokerValidationState } from "./services/IoBrokerValidationState";
 import { MessageService } from "./services/MessageService";
-import type { ValidationState } from "./services/ValidationState";
-import type { Trigger } from "./triggers/Trigger";
+import type { Action } from "./types/Action";
+import type { Condition } from "./types/Condition";
+import type { Trigger } from "./types/Trigger";
+import type { ValidationState } from "./types/ValidationState";
 interface schedulesData {
     stateId: number | null;
     active: string | null;

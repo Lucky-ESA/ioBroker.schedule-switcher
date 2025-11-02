@@ -1,4 +1,4 @@
-import type { Action } from "../actions/Action";
+import type { Action } from "./Action";
 
 /**
  * Trigger

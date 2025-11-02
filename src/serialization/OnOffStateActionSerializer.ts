@@ -1,8 +1,8 @@
-import type { Action } from "../actions/Action";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
 import { OnOffStateActionBuilder } from "../actions/OnOffStateActionBuilder";
-import type { StateService } from "../services/StateService";
-import type { Serializer } from "./Serializer";
+import type { Action } from "../types/Action";
+import type { Serializer } from "../types/Serializer";
+import type { StateService } from "../types/StateService";
 
 /**
  * OnOffStateActionSerializer

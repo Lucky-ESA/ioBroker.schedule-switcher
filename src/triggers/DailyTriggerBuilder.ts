@@ -1,7 +1,7 @@
-import type { Action } from "../actions/Action";
-import type { Builder } from "../Builder";
-import type { DailyTrigger } from "./DailyTrigger";
-import type { Weekday } from "./Weekday";
+import type { Action } from "../types/Action";
+import type { Builder } from "../types/Builder";
+import type { DailyTrigger } from "../types/DailyTrigger";
+import type { Weekday } from "../types/Weekday";
 
 /**
  * DailyTriggerBuilder

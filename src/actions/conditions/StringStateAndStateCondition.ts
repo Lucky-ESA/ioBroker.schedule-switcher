@@ -1,6 +1,6 @@
-import type { StateService } from "../../services/StateService";
-import type { Condition } from "./Condition";
-import { EqualitySign } from "./EqualitySign";
+import type { Condition } from "../../types/Condition";
+import { EqualitySign } from "../../types/EqualitySign";
+import type { StateService } from "../../types/StateService";
 
 /**
  * StringStateAndStateCondition

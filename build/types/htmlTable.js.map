@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "sources": ["../../src/html/htmlTable.ts"],
+  "sources": ["../../src/types/htmlTable.ts"],
   "sourcesContent": ["/**\n * htmltable\n */\nexport interface htmltable {\n    /**\n     * changeHTML\n     */\n    changeHTML(id: string, val: ioBroker.State | null | undefined): void;\n    /**\n     * changeTrigger\n     */\n    changeTrigger(id: string, val: ioBroker.State | null | undefined | string): Promise<void>;\n    /**\n     * changeEnabled\n     */\n    changeEnabled(id: string, val: ioBroker.State | null | undefined | boolean): void;\n    /**\n     * createStates\n     */\n    createStates(lang: string): Promise<any>;\n    /**\n     * updateHTML\n     */\n    updateHTML(): void;\n    /**\n     * destroy\n     */\n    destroy(): Promise<boolean>;\n    /**\n     * updateStateHTML\n     */\n    updateStateHTML(): Promise<void>;\n}\n/**\n * NextActionName\n */\nexport interface NextActionName {\n    /**\n     * getDate\n     */\n    getDate: number;\n    /**\n     * date\n     */\n    date: Date;\n    /**\n     * action\n     */\n    action: string;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []

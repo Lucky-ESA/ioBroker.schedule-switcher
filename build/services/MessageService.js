@@ -23,10 +23,10 @@ __export(MessageService_exports, {
 module.exports = __toCommonJS(MessageService_exports);
 var import_suncalc = require("suncalc");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
-var import_AstroTime = require("../triggers/AstroTime");
 var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
-var import_Weekday = require("../triggers/Weekday");
+var import_AstroTime = require("../types/AstroTime");
+var import_Weekday = require("../types/Weekday");
 class MessageService {
   /**
    * Messages

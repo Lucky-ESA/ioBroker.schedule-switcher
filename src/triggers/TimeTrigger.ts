@@ -1,6 +1,7 @@
-import type { Action } from "../actions/Action";
+import type { Action } from "../types/Action";
+import type { AllTriggers, TodayTrigger } from "../types/AllTrigger";
+import type { Weekday } from "../types/Weekday";
 import { BaseDailyTrigger } from "./BaseDailyTrigger";
-import type { Weekday } from "./Weekday";
 
 /**
  * TimeTrigger
@@ -10,7 +11,7 @@ export class TimeTrigger extends BaseDailyTrigger {
     private readonly minutes: number;
     private readonly objectId: number;
     private readonly valueCheck: boolean;
-    private readonly todayTrigger: any;
+    private readonly todayTrigger: TodayTrigger;
 
     /**
      * @param id ID
@@ -30,7 +31,7 @@ export class TimeTrigger extends BaseDailyTrigger {
         valueCheck: boolean,
         weekdays: Weekday[],
         action: Action,
-        todayTrigger: any,
+        todayTrigger: TodayTrigger,
     ) {
         super(id, action, weekdays);
         this.hours = hour;
@@ -71,14 +72,14 @@ export class TimeTrigger extends BaseDailyTrigger {
     /**
      * @returns this
      */
-    public getTodayTrigger(): any {
+    public getTodayTrigger(): TodayTrigger {
         return this.todayTrigger;
     }
 
     /**
      * @returns all data
      */
-    public getData(): any {
+    public getData(): AllTriggers {
         return {
             id: this.getId(),
             hour: this.getHour(),

@@ -1,5 +1,5 @@
-import type { LoggingService } from "../services/LoggingService";
-import type { Trigger } from "../triggers/Trigger";
+import type { LoggingService } from "../types/LoggingService";
+import type { Trigger } from "../types/Trigger";
 import { TriggerScheduler } from "./TriggerScheduler";
 
 /**

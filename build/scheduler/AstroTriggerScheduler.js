@@ -23,9 +23,30 @@ __export(AstroTriggerScheduler_exports, {
 module.exports = __toCommonJS(AstroTriggerScheduler_exports);
 var import_AstroTrigger = require("../triggers/AstroTrigger");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
-var import_Weekday = require("../triggers/Weekday");
 var import_TriggerScheduler = require("./TriggerScheduler");
 class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
+  //private readonly rescheduleTrigger = new TimeTriggerBuilder()
+  //    .setId(`AstroTriggerScheduler-Rescheduler`)
+  //    .setWeekdays(AllWeekdays)
+  //    .setHour(2)
+  //    .setMinute(0)
+  //    .setObjectId(1000)
+  //    .setValueCheck(false)
+  //    .setTodayTrigger({})
+  //    .setAction({
+  //        execute: () => {
+  //            this.logger.logDebug(`Rescheduling astro triggers`);
+  //            for (const s of this.scheduled) {
+  //                this.timeTriggerScheduler.unregister(s[1]);
+  //            }
+  //            //for (const r of this.registered) {
+  //            //    this.tryScheduleTriggerToday(r);
+  //            //}
+  //            this.loadregister();
+  //            this.timeTriggerScheduler.loadregister();
+  //        },
+  //    })
+  //    .build();
   /**
    * @param timeTriggerScheduler Scheduler
    * @param getTimes GetTimesResult
@@ -41,16 +62,6 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   registered = [];
   scheduled = [];
-  rescheduleTrigger = new import_TimeTriggerBuilder.TimeTriggerBuilder().setId(`AstroTriggerScheduler-Rescheduler`).setWeekdays(import_Weekday.AllWeekdays).setHour(2).setMinute(0).setObjectId(1e3).setValueCheck(false).setTodayTrigger({}).setAction({
-    execute: () => {
-      this.logger.logDebug(`Rescheduling astro triggers`);
-      for (const s of this.scheduled) {
-        this.timeTriggerScheduler.unregister(s[1]);
-      }
-      this.loadregister();
-      this.timeTriggerScheduler.loadregister();
-    }
-  }).build();
   /**
    * @param trigger Trigger
    */
@@ -130,7 +141,8 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       }).setWeekdays([next.getDay()]).setAction({
         execute: () => {
           this.logger.logDebug(`Executing astrotrigger ${trigger}`);
-          trigger.getAction().execute(trigger.getData());
+          const trigger_data = JSON.parse(JSON.stringify(trigger.getData()));
+          trigger.getAction().execute(trigger_data);
           this.timeTriggerScheduler.unregister(timeTrigger);
         }
       }).build();

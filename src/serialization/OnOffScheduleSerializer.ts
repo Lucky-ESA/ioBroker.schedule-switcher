@@ -1,11 +1,11 @@
-import type { Action } from "../actions/Action";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
 import type { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
-import type { LoggingService } from "../services/LoggingService";
-import type { Trigger } from "../triggers/Trigger";
+import type { Action } from "../types/Action";
+import type { LoggingService } from "../types/LoggingService";
+import type { Serializer } from "../types/Serializer";
+import type { Trigger } from "../types/Trigger";
 import { ActionReferenceSerializer } from "./ActionReferenceSerializer";
-import type { Serializer } from "./Serializer";
 import type { UniversalSerializer } from "./UniversalSerializer";
 
 /**

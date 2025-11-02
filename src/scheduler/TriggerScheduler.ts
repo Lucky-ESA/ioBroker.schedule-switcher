@@ -1,5 +1,5 @@
-import type { Destroyable } from "../Destroyable";
-import type { Trigger } from "../triggers/Trigger";
+import type { Destroyable } from "../types/Destroyable";
+import type { Trigger } from "../types/Trigger";
 
 /**
  * TriggerScheduler

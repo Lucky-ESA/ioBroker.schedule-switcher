@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "sources": ["../../src/triggers/Weekday.ts"],
+  "sources": ["../../src/types/Weekday.ts"],
   "sourcesContent": ["export enum Weekday {\n    Sunday,\n    Monday,\n    Tuesday,\n    Wednesday,\n    Thursday,\n    Friday,\n    Saturday,\n}\n\nexport const AllWeekdays = [\n    Weekday.Monday,\n    Weekday.Tuesday,\n    Weekday.Wednesday,\n    Weekday.Thursday,\n    Weekday.Friday,\n    Weekday.Saturday,\n    Weekday.Sunday,\n];\n"],
   "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,IAAK,UAAL,kBAAKA,aAAL;AACH,EAAAA,kBAAA;AACA,EAAAA,kBAAA;AACA,EAAAA,kBAAA;AACA,EAAAA,kBAAA;AACA,EAAAA,kBAAA;AACA,EAAAA,kBAAA;AACA,EAAAA,kBAAA;AAPQ,SAAAA;AAAA,GAAA;AAUL,MAAM,cAAc;AAAA,EACvB;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AACJ;",
   "names": ["Weekday"]

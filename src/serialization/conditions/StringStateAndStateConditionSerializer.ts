@@ -1,8 +1,8 @@
-import type { Condition } from "../../actions/conditions/Condition";
-import { EqualitySign } from "../../actions/conditions/EqualitySign";
 import { StringStateAndStateCondition } from "../../actions/conditions/StringStateAndStateCondition";
-import type { StateService } from "../../services/StateService";
-import type { Serializer } from "../Serializer";
+import type { Condition } from "../../types/Condition";
+import { EqualitySign } from "../../types/EqualitySign";
+import type { Serializer } from "../../types/Serializer";
+import type { StateService } from "../../types/StateService";
 
 /**
  * StringStateAndStateConditionSerializer

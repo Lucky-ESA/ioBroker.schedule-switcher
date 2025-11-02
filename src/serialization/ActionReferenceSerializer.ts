@@ -1,6 +1,6 @@
-import type { Action } from "../actions/Action";
-import type { LoggingService } from "../services/LoggingService";
-import type { Serializer } from "./Serializer";
+import type { Action } from "../types/Action";
+import type { LoggingService } from "../types/LoggingService";
+import type { Serializer } from "../types/Serializer";
 
 /**
  * ActionReferenceSerializer

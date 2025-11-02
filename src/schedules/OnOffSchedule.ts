@@ -1,7 +1,7 @@
 import { ConditionAction } from "../actions/ConditionAction";
 import { OnOffStateAction } from "../actions/OnOffStateAction";
 import type { UniversalTriggerScheduler } from "../scheduler/UniversalTriggerScheduler";
-import type { LoggingService } from "../services/LoggingService";
+import type { LoggingService } from "../types/LoggingService";
 import { Schedule } from "./Schedule";
 
 /**

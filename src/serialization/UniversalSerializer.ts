@@ -1,5 +1,5 @@
-import type { LoggingService } from "../services/LoggingService";
-import type { Serializer } from "./Serializer";
+import type { LoggingService } from "../types/LoggingService";
+import type { Serializer } from "../types/Serializer";
 
 /**
  * UniversalSerializer

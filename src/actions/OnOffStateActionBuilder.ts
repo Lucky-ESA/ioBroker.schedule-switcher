@@ -1,4 +1,4 @@
-import type { StateService } from "../services/StateService";
+import type { StateService } from "../types/StateService";
 import { BaseStateActionBuilder } from "./BaseStateActionBuilder";
 import { OnOffStateAction } from "./OnOffStateAction";
 
@@ -66,10 +66,10 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
     public build(): OnOffStateAction<T> {
         return new OnOffStateAction<T>(
             this.idsOfStatesToSet,
-            this.onValue as any,
-            this.offValue as any,
+            this.onValue as T,
+            this.offValue as T,
             this.booleanValue,
-            this.stateService as any,
+            this.stateService as StateService,
             this.valueType,
         );
     }

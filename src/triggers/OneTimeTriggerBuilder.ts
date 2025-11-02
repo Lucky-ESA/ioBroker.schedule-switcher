@@ -1,5 +1,5 @@
-import type { Action } from "../actions/Action";
-import type { Builder } from "../Builder";
+import type { Action } from "../types/Action";
+import type { Builder } from "../types/Builder";
 import { OneTimeTrigger } from "./OneTimeTrigger";
 
 /**
@@ -86,8 +86,8 @@ export class OneTimeTriggerBuilder implements Builder<OneTimeTrigger> {
             this.objectId,
             this.valueCheck,
             this.timedate,
-            this.action as any,
-            this.date as any,
+            this.action as Action,
+            this.date as Date,
             this.onDestroy,
         );
     }

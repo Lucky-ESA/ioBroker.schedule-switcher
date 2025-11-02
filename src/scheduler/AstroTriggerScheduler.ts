@@ -1,10 +1,9 @@
 import type { GetTimesResult } from "suncalc";
-import type { CoordinateTypes } from "../CoordinateTypes";
-import type { LoggingService } from "../services/LoggingService";
 import { AstroTrigger } from "../triggers/AstroTrigger";
 import type { TimeTrigger } from "../triggers/TimeTrigger";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
-import { AllWeekdays } from "../triggers/Weekday";
+import type { CoordinateTypes } from "../types/Coordinate";
+import type { LoggingService } from "../types/LoggingService";
 import type { TimeTriggerScheduler } from "./TimeTriggerScheduler";
 import { TriggerScheduler } from "./TriggerScheduler";
 
@@ -14,28 +13,28 @@ import { TriggerScheduler } from "./TriggerScheduler";
 export class AstroTriggerScheduler extends TriggerScheduler {
     private registered: AstroTrigger[] = [];
     private scheduled: [string, TimeTrigger][] = [];
-    private readonly rescheduleTrigger = new TimeTriggerBuilder()
-        .setId(`AstroTriggerScheduler-Rescheduler`)
-        .setWeekdays(AllWeekdays)
-        .setHour(2)
-        .setMinute(0)
-        .setObjectId(1000)
-        .setValueCheck(false)
-        .setTodayTrigger({})
-        .setAction({
-            execute: () => {
-                this.logger.logDebug(`Rescheduling astro triggers`);
-                for (const s of this.scheduled) {
-                    this.timeTriggerScheduler.unregister(s[1]);
-                }
-                //for (const r of this.registered) {
-                //    this.tryScheduleTriggerToday(r);
-                //}
-                this.loadregister();
-                this.timeTriggerScheduler.loadregister();
-            },
-        })
-        .build();
+    //private readonly rescheduleTrigger = new TimeTriggerBuilder()
+    //    .setId(`AstroTriggerScheduler-Rescheduler`)
+    //    .setWeekdays(AllWeekdays)
+    //    .setHour(2)
+    //    .setMinute(0)
+    //    .setObjectId(1000)
+    //    .setValueCheck(false)
+    //    .setTodayTrigger({})
+    //    .setAction({
+    //        execute: () => {
+    //            this.logger.logDebug(`Rescheduling astro triggers`);
+    //            for (const s of this.scheduled) {
+    //                this.timeTriggerScheduler.unregister(s[1]);
+    //            }
+    //            //for (const r of this.registered) {
+    //            //    this.tryScheduleTriggerToday(r);
+    //            //}
+    //            this.loadregister();
+    //            this.timeTriggerScheduler.loadregister();
+    //        },
+    //    })
+    //    .build();
 
     /**
      * @param timeTriggerScheduler Scheduler
@@ -145,7 +144,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
                 .setAction({
                     execute: () => {
                         this.logger.logDebug(`Executing astrotrigger ${trigger}`);
-                        trigger.getAction().execute(trigger.getData());
+                        const trigger_data = JSON.parse(JSON.stringify(trigger.getData()));
+                        trigger.getAction().execute(trigger_data);
                         this.timeTriggerScheduler.unregister(timeTrigger);
                     },
                 })

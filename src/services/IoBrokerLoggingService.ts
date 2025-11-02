@@ -1,4 +1,4 @@
-import type { LoggingService } from "./LoggingService";
+import type { LoggingService } from "../types/LoggingService";
 
 /**
  * IoBrokerLoggingService

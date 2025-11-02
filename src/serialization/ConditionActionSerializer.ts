@@ -1,8 +1,8 @@
-import type { Action } from "../actions/Action";
 import { ConditionAction } from "../actions/ConditionAction";
-import type { Condition } from "../actions/conditions/Condition";
-import type { LoggingService } from "../services/LoggingService";
-import type { Serializer } from "./Serializer";
+import type { Action } from "../types/Action";
+import type { Condition } from "../types/Condition";
+import type { LoggingService } from "../types/LoggingService";
+import type { Serializer } from "../types/Serializer";
 import type { UniversalSerializer } from "./UniversalSerializer";
 
 /**

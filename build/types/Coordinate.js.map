@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "sources": ["../src/CoordinateTypes.ts"],
+  "sources": ["../../src/types/Coordinate.ts"],
   "sourcesContent": ["/**\n * CoordinateTypes\n */\nexport interface CoordinateTypes {\n    /**\n     * getLatitude\n     */\n    getLatitude(): number;\n    /**\n     * getLongitude\n     */\n    getLongitude(): number;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []

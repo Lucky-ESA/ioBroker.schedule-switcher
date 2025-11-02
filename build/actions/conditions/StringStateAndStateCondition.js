@@ -21,7 +21,7 @@ __export(StringStateAndStateCondition_exports, {
   StringStateAndStateCondition: () => StringStateAndStateCondition
 });
 module.exports = __toCommonJS(StringStateAndStateCondition_exports);
-var import_EqualitySign = require("./EqualitySign");
+var import_EqualitySign = require("../../types/EqualitySign");
 class StringStateAndStateCondition {
   stateId1;
   stateId2;

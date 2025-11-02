@@ -1,8 +1,8 @@
-import type { Action } from "../actions/Action";
 import { AstroTrigger } from "../triggers/AstroTrigger";
 import { AstroTriggerBuilder } from "../triggers/AstroTriggerBuilder";
-import type { Trigger } from "../triggers/Trigger";
-import type { Serializer } from "./Serializer";
+import type { Action } from "../types/Action";
+import type { Serializer } from "../types/Serializer";
+import type { Trigger } from "../types/Trigger";
 import type { UniversalSerializer } from "./UniversalSerializer";
 
 /**

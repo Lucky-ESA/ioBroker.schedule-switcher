@@ -1,5 +1,5 @@
-import type { CoordinateTypes } from "./CoordinateTypes";
-import type { LoggingService } from "./services/LoggingService";
+import type { CoordinateTypes } from "./types/Coordinate";
+import type { LoggingService } from "./types/LoggingService";
 
 /**
  * @param latitude number

@@ -1,4 +1,4 @@
-import type { WidgetOverview } from "./widgetOverview";
+import type { WidgetOverview } from "../types/widgetOverview";
 
 /**
  * VisWidgetOverview

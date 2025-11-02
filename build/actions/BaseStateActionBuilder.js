@@ -25,6 +25,7 @@ class BaseStateActionBuilder {
   stateService = null;
   /**
    * @param stateService setState
+   * @returns this
    */
   setStateService(stateService) {
     this.stateService = stateService;

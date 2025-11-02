@@ -1,8 +1,8 @@
-import type { Action } from "../actions/Action";
 import { OneTimeTrigger } from "../triggers/OneTimeTrigger";
 import { OneTimeTriggerBuilder } from "../triggers/OneTimeTriggerBuilder";
-import type { Trigger } from "../triggers/Trigger";
-import type { Serializer } from "./Serializer";
+import type { Action } from "../types/Action";
+import type { Serializer } from "../types/Serializer";
+import type { Trigger } from "../types/Trigger";
 import type { UniversalSerializer } from "./UniversalSerializer";
 
 /**

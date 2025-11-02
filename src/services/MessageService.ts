@@ -1,19 +1,19 @@
 import { getTimes } from "suncalc";
-import type { CoordinateTypes } from "../CoordinateTypes";
 import type { OnOffStateAction } from "../actions/OnOffStateAction";
-import type { htmltable } from "../html/htmlTable";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
 import type { Schedule } from "../schedules/Schedule";
 import type { OnOffScheduleSerializer } from "../serialization/OnOffScheduleSerializer";
-import { AstroTime } from "../triggers/AstroTime";
 import { AstroTriggerBuilder } from "../triggers/AstroTriggerBuilder";
 import type { DailyTriggerBuilder } from "../triggers/DailyTriggerBuilder";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
-import type { Trigger } from "../triggers/Trigger";
-import { AllWeekdays } from "../triggers/Weekday";
-import type { MessageServices } from "./MessageServices";
-import type { StateService } from "./StateService";
-import type { ValidationState } from "./ValidationState";
+import { AstroTime } from "../types/AstroTime";
+import type { CoordinateTypes } from "../types/Coordinate";
+import type { htmltable } from "../types/htmlTable";
+import type { MessageServices } from "../types/MessageServices";
+import type { StateService } from "../types/StateService";
+import type { Trigger } from "../types/Trigger";
+import type { ValidationState } from "../types/ValidationState";
+import { AllWeekdays } from "../types/Weekday";
 
 /**
  * @param currentMessage ioBroker.Message | null

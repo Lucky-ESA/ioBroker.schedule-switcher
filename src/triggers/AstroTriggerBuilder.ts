@@ -1,16 +1,17 @@
-import type { Action } from "../actions/Action";
-import type { Builder } from "../Builder";
-import type { AstroTime } from "./AstroTime";
+import type { Action } from "../types/Action";
+import type { TodayTrigger } from "../types/AllTrigger";
+import type { AstroTime } from "../types/AstroTime";
+import type { Builder } from "../types/Builder";
+import type { Weekday } from "../types/Weekday";
 import { AstroTrigger } from "./AstroTrigger";
 import { DailyTriggerBuilder } from "./DailyTriggerBuilder";
-import type { Weekday } from "./Weekday";
 
 /**
  * DailyTriggerBuilder
  */
 export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<AstroTrigger> {
     private astroTime: AstroTime | null = null;
-    private shift = 0;
+    private shiftInMinutes = 0;
     private objectId = 0;
     private valueCheck = false;
     private todayTrigger = {};
@@ -24,10 +25,10 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
     }
 
     /**
-     * @param shift shiftminutes
+     * @param shiftInMinutes shiftminutes
      */
-    public setShift(shift: number): AstroTriggerBuilder {
-        this.shift = shift;
+    public setShift(shiftInMinutes: number): AstroTriggerBuilder {
+        this.shiftInMinutes = shiftInMinutes;
         return this;
     }
 
@@ -53,7 +54,7 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
      * @param todayTrigger trigger
      * @returns this
      */
-    public setTodayTrigger(todayTrigger: any): AstroTriggerBuilder {
+    public setTodayTrigger(todayTrigger: TodayTrigger): AstroTriggerBuilder {
         this.todayTrigger = todayTrigger;
         return this;
     }
@@ -91,10 +92,10 @@ export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<
     public build(): AstroTrigger {
         return new AstroTrigger(
             this.getId(),
-            this.astroTime as any as AstroTime,
-            this.shift,
+            this.astroTime as AstroTime,
+            this.shiftInMinutes,
             this.getWeekdays(),
-            this.getAction() as any as Action,
+            this.getAction() as Action,
             this.objectId,
             this.valueCheck,
             this.todayTrigger,

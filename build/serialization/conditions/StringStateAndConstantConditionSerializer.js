@@ -21,8 +21,8 @@ __export(StringStateAndConstantConditionSerializer_exports, {
   StringStateAndConstantConditionSerializer: () => StringStateAndConstantConditionSerializer
 });
 module.exports = __toCommonJS(StringStateAndConstantConditionSerializer_exports);
-var import_EqualitySign = require("../../actions/conditions/EqualitySign");
 var import_StringStateAndConstantCondition = require("../../actions/conditions/StringStateAndConstantCondition");
+var import_EqualitySign = require("../../types/EqualitySign");
 class StringStateAndConstantConditionSerializer {
   /**
    * @param stateService StateService

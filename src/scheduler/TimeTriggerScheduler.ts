@@ -1,7 +1,7 @@
 import * as schedule from "node-schedule";
-import type { LoggingService } from "../services/LoggingService";
 import { TimeTrigger } from "../triggers/TimeTrigger";
-import type { Trigger } from "../triggers/Trigger";
+import type { LoggingService } from "../types/LoggingService";
+import type { Trigger } from "../types/Trigger";
 import { TriggerScheduler } from "./TriggerScheduler";
 
 /**
@@ -35,7 +35,8 @@ export class TimeTriggerScheduler extends TriggerScheduler {
         } else {
             const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
                 this.logger.logDebug(`Executing TimeTriggerScheduler trigger ${trigger}`);
-                trigger.getAction().execute(trigger.getData());
+                const trigger_data = JSON.parse(JSON.stringify(trigger.getData()));
+                trigger.getAction().execute(trigger_data);
             });
             this.registered.push([trigger, newJob]);
         }

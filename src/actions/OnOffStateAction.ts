@@ -1,4 +1,5 @@
-import type { StateService } from "../services/StateService";
+import type { AllTriggers } from "../types/AllTrigger";
+import type { StateService } from "../types/StateService";
 import { BaseStateAction } from "./BaseStateAction";
 
 /**
@@ -93,7 +94,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
     /**
      * @param trigger Trigger
      */
-    public execute(trigger: any): void {
+    public execute(trigger: AllTriggers): void {
         const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
         this.getIdsOfStatesToSet().forEach(id => {
             this.getStateService().setForeignState(id, valueToUse, trigger);

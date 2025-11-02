@@ -1,4 +1,4 @@
-import type { Trigger } from "./Trigger";
+import type { Trigger } from ".//Trigger";
 import type { Weekday } from "./Weekday";
 
 /**

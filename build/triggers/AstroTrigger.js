@@ -60,8 +60,8 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
     return {
       id: this.getId(),
       astroTime: this.getAstroTime(),
-      shift: this.getShiftInMinutes(),
-      todayTriger: this.getTodayTrigger(),
+      shiftInMinutes: this.getShiftInMinutes(),
+      todayTrigger: this.getTodayTrigger(),
       objectId: this.getObjectId(),
       valueCheck: this.getValueCheck(),
       weekdays: this.getWeekdays(),
@@ -96,7 +96,7 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
    * toString
    */
   toString() {
-    return `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, valueCheck=${this.getValueCheck()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;
+    return `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, valueCheck=${this.getValueCheck()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, astroTime=${this.getAstroTime()}, shiftInMinutes=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

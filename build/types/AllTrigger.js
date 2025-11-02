@@ -12,6 +12,6 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var CoordinateTypes_exports = {};
-module.exports = __toCommonJS(CoordinateTypes_exports);
-//# sourceMappingURL=CoordinateTypes.js.map
+var AllTrigger_exports = {};
+module.exports = __toCommonJS(AllTrigger_exports);
+//# sourceMappingURL=AllTrigger.js.map

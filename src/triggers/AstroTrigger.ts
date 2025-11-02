@@ -1,7 +1,8 @@
-import type { Action } from "../actions/Action";
-import type { AstroTime } from "./AstroTime";
+import type { Action } from "../types/Action";
+import type { AllTriggers, TodayTrigger } from "../types/AllTrigger";
+import type { AstroTime } from "../types/AstroTime";
+import type { Weekday } from "../types/Weekday";
 import { BaseDailyTrigger } from "./BaseDailyTrigger";
-import type { Weekday } from "./Weekday";
 
 /**
  * BaseDailyTrigger
@@ -11,7 +12,7 @@ export class AstroTrigger extends BaseDailyTrigger {
     private readonly shiftInMinutes: number;
     private readonly objectId: number;
     private readonly valueCheck: boolean;
-    private readonly todayTrigger: any;
+    private readonly todayTrigger: TodayTrigger;
 
     /**
      *
@@ -32,7 +33,7 @@ export class AstroTrigger extends BaseDailyTrigger {
         action: Action,
         objectId: number,
         valueCheck: boolean,
-        todayTrigger: any,
+        todayTrigger: TodayTrigger,
     ) {
         super(id, action, weekdays);
         this.astroTime = astroTime;
@@ -52,12 +53,12 @@ export class AstroTrigger extends BaseDailyTrigger {
     /**
      * getData
      */
-    public getData(): any {
+    public getData(): AllTriggers {
         return {
             id: this.getId(),
             astroTime: this.getAstroTime(),
-            shift: this.getShiftInMinutes(),
-            todayTriger: this.getTodayTrigger(),
+            shiftInMinutes: this.getShiftInMinutes(),
+            todayTrigger: this.getTodayTrigger(),
             objectId: this.getObjectId(),
             valueCheck: this.getValueCheck(),
             weekdays: this.getWeekdays(),
@@ -82,7 +83,7 @@ export class AstroTrigger extends BaseDailyTrigger {
     /**
      * @returns this
      */
-    public getTodayTrigger(): any {
+    public getTodayTrigger(): TodayTrigger {
         return this.todayTrigger;
     }
 
@@ -99,7 +100,7 @@ export class AstroTrigger extends BaseDailyTrigger {
     public toString(): string {
         return (
             `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, valueCheck=${this.getValueCheck()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())},` +
-            ` astroTime=${this.getAstroTime()}, shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`
+            ` astroTime=${this.getAstroTime()}, shiftInMinutes=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`
         );
     }
 }

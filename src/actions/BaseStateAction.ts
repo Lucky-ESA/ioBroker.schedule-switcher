@@ -1,5 +1,6 @@
-import type { StateService } from "../services/StateService";
-import type { Action } from "./Action";
+import type { Action } from "../types/Action";
+import type { AllTriggers } from "../types/AllTrigger";
+import type { StateService } from "../types/StateService";
 
 /**
  * BaseStateAction
@@ -12,7 +13,7 @@ export abstract class BaseStateAction implements Action {
         }
         this.stateService = stateService;
     }
-    abstract execute(trigger: any): void;
+    abstract execute(trigger: AllTriggers): void;
     protected getStateService(): StateService {
         return this.stateService;
     }

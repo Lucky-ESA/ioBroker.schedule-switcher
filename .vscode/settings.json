@@ -1,7 +1,10 @@
 {
     "typescript.tsdk": "node_modules/typescript/lib",
     "eslint.enable": true,
+    "eslint.lintTask.enable": true,
     "editor.formatOnSave": true,
+    "typescript.validate.enable": true,
+    "typescript.tsserver.experimental.enableProjectDiagnostics": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[typescript]": {
         "editor.codeActionsOnSave": {

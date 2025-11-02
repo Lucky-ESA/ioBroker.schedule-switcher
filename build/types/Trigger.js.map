@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/types/Trigger.ts"],
+  "sourcesContent": ["import type { Action } from \"./Action\";\n\n/**\n * Trigger\n */\nexport interface Trigger {\n    /**\n     * getAction\n     */\n    getAction(): Action;\n    /**\n     * setAction\n     */\n    setAction(action: Action): void;\n    /**\n     * getId\n     */\n    getId(): string;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}
