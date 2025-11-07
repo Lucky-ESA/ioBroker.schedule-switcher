@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/types/ValidationState.ts"],
-  "sourcesContent": ["/**\n * validation\n */\nexport interface ValidationState {\n    /**\n     * validation\n     */\n    validation(id: string, val: any, check: boolean): Promise<any>;\n    /**\n     * view\n     */\n    validationView(utils: string): Promise<void>;\n    /**\n     * Time\n     */\n    setNextTime(check: boolean): Promise<void>;\n    /**\n     * Coodinates\n     */\n    setActionTime(): Promise<void>;\n}\n"],
+  "sourcesContent": ["import type { AllTriggers } from \"../types/AllTrigger\";\n\n/**\n * validation\n */\nexport interface ValidationState {\n    /**\n     * validation\n     */\n    validation(id: string, val: any, check: boolean): Promise<any>;\n    /**\n     * view\n     */\n    validationView(utils: string): Promise<void>;\n    /**\n     * Time\n     */\n    setNextAstroTime(check: boolean): Promise<void>;\n    /**\n     * Coodinates\n     */\n    setActionTime(): Promise<void>;\n    /**\n     * Next switch time\n     */\n    nextDateSwitch(now: Date, trigger: AllTriggers): Promise<string>;\n}\n"],
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

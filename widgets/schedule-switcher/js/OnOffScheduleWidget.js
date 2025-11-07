@@ -340,6 +340,11 @@
             if (newSettings.onValue === undefined || newSettings.offValue === undefined) {
                 return;
             }
+            if (oldSettings) {
+                console.debug(`sending change switched values Old_on: ${oldSettings.onValue}`);
+                console.debug(`sending change switched values Old_off: ${oldSettings.offValue}`);
+                console.debug(`sending change switched Old_type: ${oldSettings.valueType}`);
+            }
             if (
                 oldSettings &&
                 (oldSettings.onValue.toString() != newSettings.onValue.toString() ||
@@ -348,7 +353,7 @@
             ) {
                 console.debug(`sending change switched values on: ${newSettings.onValue}`);
                 console.debug(`sending change switched values off: ${newSettings.offValue}`);
-                console.debug(`sending change switched values off: ${newSettings.valueType}`);
+                console.debug(`sending change switched type: ${newSettings.valueType}`);
                 if (newSettings.onValue == "") {
                     delete newSettings.onValue;
                 }

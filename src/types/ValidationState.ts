@@ -1,3 +1,5 @@
+import type { AllTriggers } from "../types/AllTrigger";
+
 /**
  * validation
  */
@@ -13,9 +15,13 @@ export interface ValidationState {
     /**
      * Time
      */
-    setNextTime(check: boolean): Promise<void>;
+    setNextAstroTime(check: boolean): Promise<void>;
     /**
      * Coodinates
      */
     setActionTime(): Promise<void>;
+    /**
+     * Next switch time
+     */
+    nextDateSwitch(now: Date, trigger: AllTriggers): Promise<string>;
 }

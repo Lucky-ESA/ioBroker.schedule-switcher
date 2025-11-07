@@ -51,7 +51,7 @@ class ScheduleSwitcher extends utils.Adapter {
     private vishtmltable = new VisHtmlTable(this);
     private visWidgetOverview = new VisWidgetOverview(this);
     private validation: ValidationState | undefined;
-    private stateService = new IoBrokerStateService(this, this.vishtmltable);
+    private stateService = new IoBrokerStateService(this);
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
@@ -99,7 +99,7 @@ class ScheduleSwitcher extends utils.Adapter {
         await this.initMessageService();
         await this.fixStateStructure(this.config.schedules);
         await this.validation?.validationView(utils.getAbsoluteDefaultDataDir());
-        await this.validation?.setNextTime(false);
+        await this.validation?.setNextAstroTime(false);
         await this.validation?.setActionTime();
         const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
         for (const id in record) {
@@ -116,6 +116,7 @@ class ScheduleSwitcher extends utils.Adapter {
                             await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
                         }
                         await this.validation?.validation(id, stateVal, false);
+                        this.log.debug(`Start: ${id} - ${JSON.stringify(stateVal)}`);
                         if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
                             await this.onScheduleChange(id, JSON.stringify(stateVal));
                         } else {
@@ -181,7 +182,7 @@ class ScheduleSwitcher extends utils.Adapter {
         rule.second = 10;
         this.nextAstroTime = scheduleJob(rule, async () => {
             this.log.info("Start Update Astrotime!");
-            await this.validation?.setNextTime(true);
+            await this.validation?.setNextAstroTime(true);
         });
         this.moreLogs();
         return Promise.resolve();
@@ -195,6 +196,7 @@ class ScheduleSwitcher extends utils.Adapter {
         this.nextActionTime = scheduleJob(rule, async () => {
             this.log.info("Start Update next time switch!");
             await this.validation?.setActionTime();
+            await this.visWidgetOverview.createOverview();
         });
         this.moreLogs();
         return Promise.resolve();
@@ -330,6 +332,18 @@ class ScheduleSwitcher extends utils.Adapter {
             try {
                 this.log.debug(`obj: ${JSON.stringify(obj)}`);
                 switch (obj.command) {
+                    case "update-actionTime":
+                        void this.validation?.setActionTime();
+                        this.log.debug(`Finished onMessage actionTime`);
+                        break;
+                    case "update-nextTime":
+                        void this.validation?.setNextAstroTime(true);
+                        this.log.debug(`Finished onMessage nextTime`);
+                        break;
+                    case "update-html":
+                        void this.vishtmltable.updateStateHTML();
+                        this.log.debug(`Finished onMessage update HTML`);
+                        break;
                     case "getActiv":
                         if (obj && obj.message && obj.message.schedule != null) {
                             void this.loadData(obj, 1);
@@ -431,7 +445,7 @@ class ScheduleSwitcher extends utils.Adapter {
     }
 
     private async updateHTMLCode(id: string): Promise<void> {
-        await this.validation?.setNextTime(true);
+        await this.validation?.setNextAstroTime(true);
         await this.vishtmltable.updateHTML();
         await this.setState(id, false, true);
     }

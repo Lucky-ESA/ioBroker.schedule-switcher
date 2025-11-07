@@ -166,6 +166,14 @@ export class IoBrokerValidationState implements ValidationState {
                         if (trigger.weekdays) {
                             trigger.weekdays = removeDuplicate(trigger.weekdays);
                         }
+                        const t: string = await this.nextDateSwitch(new Date(), trigger);
+                        const nextDate: number = t != undefined ? new Date(t).getDay() : 0;
+                        trigger.todayTrigger = {
+                            hour: trigger.hour,
+                            minute: trigger.minute,
+                            weekday: nextDate,
+                            date: t,
+                        };
                         if (
                             typeof trigger.weekdays !== "object" ||
                             trigger.weekdays.length === 0 ||
@@ -349,6 +357,14 @@ export class IoBrokerValidationState implements ValidationState {
                     if (trigger.weekdays) {
                         trigger.weekdays = removeDuplicate(trigger.weekdays);
                     }
+                    const t: string = await this.nextDateSwitch(new Date(), trigger);
+                    const nextDate: number = t != undefined ? new Date(t).getDay() : 0;
+                    trigger.todayTrigger = {
+                        hour: trigger.hour,
+                        minute: trigger.minute,
+                        weekday: nextDate,
+                        date: t,
+                    };
                     if (
                         typeof trigger.weekdays !== "object" ||
                         trigger.weekdays.length === 0 ||
@@ -902,7 +918,7 @@ export class IoBrokerValidationState implements ValidationState {
      *
      * @param check true/false
      */
-    public async setNextTime(check: boolean): Promise<void> {
+    public async setNextAstroTime(check: boolean): Promise<void> {
         const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.onoff.*`);
         for (const id in states) {
             if (id.toString().indexOf(".data") !== -1) {
@@ -914,7 +930,7 @@ export class IoBrokerValidationState implements ValidationState {
                             let isChange = false;
                             for (const trigger of triggers.triggers) {
                                 if (trigger && trigger.type === "AstroTrigger") {
-                                    trigger.todayTrigger = await this.nextDate(new Date(), trigger);
+                                    trigger.todayTrigger = await this.nextAstroDate(new Date(), trigger);
                                     trigger.todayTrigger.date = await this.nextDateSwitch(new Date(), trigger);
                                     const actual = new Date(trigger.todayTrigger.date);
                                     trigger.todayTrigger.hour = actual.getHours();
@@ -993,7 +1009,7 @@ export class IoBrokerValidationState implements ValidationState {
                                     }
                                 } else if (trigger && trigger.type === "AstroTrigger") {
                                     if (trigger.weekdays.includes(now.getDay())) {
-                                        trigger.todayTrigger = await this.nextDate(new Date(), trigger);
+                                        trigger.todayTrigger = await this.nextAstroDate(new Date(), trigger);
                                         switching.hour = trigger.todayTrigger.hour;
                                         switching.minute = trigger.todayTrigger.minute;
                                         switching.day = now.getDate();
@@ -1001,7 +1017,7 @@ export class IoBrokerValidationState implements ValidationState {
                                         switching.timestamp = new Date(trigger.date).getTime();
                                     } else {
                                         const t: string = await this.nextDateSwitch(new Date(), trigger);
-                                        trigger.todayTrigger = await this.nextDate(new Date(t), trigger);
+                                        trigger.todayTrigger = await this.nextAstroDate(new Date(t), trigger);
                                         switching.hour = trigger.todayTrigger.hour;
                                         switching.minute = trigger.todayTrigger.minute;
                                         switching.day = new Date(trigger.todayTrigger.date).getDate();
@@ -1033,7 +1049,19 @@ export class IoBrokerValidationState implements ValidationState {
         }
     }
 
-    private async nextDateSwitch(now: Date, trigger: AllTriggers): Promise<string> {
+    /**
+     * @param now Date
+     * @param trigger AllTriggers
+     */
+    public async nextDateSwitch(now: Date, trigger: AllTriggers): Promise<string> {
+        const hour = trigger.hour != null ? trigger.hour : trigger.todayTrigger.hour;
+        const minute = trigger.minute != null ? trigger.minute : trigger.todayTrigger.minute;
+        const oldNow = new Date(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} ${hour}:${minute}`);
+        if (oldNow > now) {
+            return new Date(
+                `${oldNow.getFullYear()}-${oldNow.getMonth() + 1}-${oldNow.getDate()} ${hour}:${minute}`,
+            ).toISOString();
+        }
         let diffDays = 0;
         const nextDay: number =
             trigger.weekdays.length === 1
@@ -1045,14 +1073,12 @@ export class IoBrokerValidationState implements ValidationState {
             diffDays = nextDay + 7 - now.getDay();
         }
         const next: Date = new Date(now.setDate(now.getDate() + diffDays));
-        const hour = trigger.hour != null ? trigger.hour : trigger.todayTrigger.hour;
-        const minute = trigger.minute != null ? trigger.minute : trigger.todayTrigger.minute;
         return new Date(
             `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${hour}:${minute}`,
         ).toISOString();
     }
 
-    private nextDate(date: Date, data: AllTriggers): Promise<any> {
+    private nextAstroDate(date: Date, data: AllTriggers): Promise<any> {
         const next = getTimes(date, this.coordinate.getLatitude(), this.coordinate.getLongitude());
         let astro: Date;
         switch (data.astroTime) {

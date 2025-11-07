@@ -58,7 +58,7 @@ class MessageService {
    * @param message ioBroker.Message
    */
   async handleMessage(message) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     if (this.currentMessage) {
       this.triggerTimeout = this.adapter.setTimeout(() => {
         void this.handleMessage(message);
@@ -99,15 +99,24 @@ class MessageService {
         await ((_c = this.validation) == null ? void 0 : _c.setActionTime());
         break;
       case "update-trigger":
-        if (data.trigger && data.trigger.type === "AstroTrigger") {
+        if (data.trigger && data.trigger.type === "TimeTrigger") {
+          const t = await ((_d = this.validation) == null ? void 0 : _d.nextDateSwitch(/* @__PURE__ */ new Date(), data.trigger));
+          const nextDate = t != void 0 ? new Date(t).getDay() : 0;
+          data.trigger.todayTrigger = {
+            hour: data.trigger.hour,
+            minute: data.trigger.minute,
+            weekday: nextDate,
+            date: t
+          };
+        } else if (data.trigger && data.trigger.type === "AstroTrigger") {
           data.trigger.todayTrigger = await this.nextDate(data.trigger);
         }
         await this.updateTrigger(schedule, data.trigger, data.dataId);
-        await ((_d = this.validation) == null ? void 0 : _d.setActionTime());
+        await ((_e = this.validation) == null ? void 0 : _e.setActionTime());
         break;
       case "delete-trigger":
         schedule.removeTrigger(data.triggerId);
-        await ((_e = this.validation) == null ? void 0 : _e.setActionTime());
+        await ((_f = this.validation) == null ? void 0 : _f.setActionTime());
         await this.setCountTrigger();
         break;
       case "change-name":

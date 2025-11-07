@@ -1,5 +1,4 @@
 import type { AllTriggers } from "../types/AllTrigger";
-import type { htmltable } from "../types/htmlTable";
 import type { StateService } from "../types/StateService";
 
 /**
@@ -10,12 +9,10 @@ export class IoBrokerStateService implements StateService {
     private delayTimeout: ioBroker.Timeout | undefined;
     private checkTime: number = 0;
     private mergeTime: number = 0;
-    private html: htmltable;
     /**
      * @param adapter ioBroker
-     * @param vishtmltable htmltable
      */
-    constructor(adapter: ioBroker.Adapter, vishtmltable: htmltable) {
+    constructor(adapter: ioBroker.Adapter) {
         if (!adapter) {
             throw new Error("adapter may not be null.");
         }
@@ -23,7 +20,6 @@ export class IoBrokerStateService implements StateService {
         this.checkTime = Date.now();
         this.mergeTime = 0;
         this.delayTimeout = undefined;
-        this.html = vishtmltable;
     }
 
     /**
@@ -82,10 +78,16 @@ export class IoBrokerStateService implements StateService {
         if (!change_val) {
             this.adapter.log.debug(`Set state ${id} with value ${value?.toString()} - ${old_val?.toString()}`);
             this.adapter.setForeignState(id, value, false);
-            void this.html.updateStateHTML();
+            this.adapter.sendTo(this.adapter.namespace, "update-html", {
+                dataId: id,
+            });
         } else {
             this.adapter.log.debug(`Set not state ${id} with value ${value?.toString()} - ${old_val?.toString()}`);
         }
+        this.adapter.sendTo(this.adapter.namespace, "update-actionTime", {
+            dataId: id,
+            trigger: trigger,
+        });
     }
 
     /**
@@ -118,6 +120,18 @@ export class IoBrokerStateService implements StateService {
                 history_newvalue.pop();
             }
             const nowTime = new Date();
+            let minute = 0;
+            let hour = 0;
+            if (trigger && trigger.trigger == "TimeTrigger") {
+                minute = trigger.minute != null ? trigger.minute : 0;
+                hour = trigger.hour != null ? trigger.hour : 0;
+            } else if (trigger && trigger.trigger == "AstroTrigger") {
+                minute = trigger.todayTrigger.minute != null ? trigger.todayTrigger.minute : 0;
+                hour = trigger.todayTrigger.hour != null ? trigger.todayTrigger.hour : 0;
+            } else {
+                minute = new Date(trigger.date ? trigger.date : "").getMinutes();
+                hour = new Date(trigger.date ? trigger.date : "").getHours();
+            }
             const new_data = {
                 setObjectId: id,
                 objectId: trigger.objectId != null ? trigger.objectId : "unknown",
@@ -127,9 +141,9 @@ export class IoBrokerStateService implements StateService {
                 trigger: trigger.trigger != null ? trigger.trigger : "unknown",
                 astroTime: trigger.astroTime != null ? trigger.astroTime : "unknown",
                 shiftInMinutes: trigger.shiftInMinutes != null ? trigger.shiftInMinutes : 0,
-                date: trigger.date != null ? trigger.date : 0,
-                hour: trigger.hour != null ? trigger.hour : 0,
-                minute: trigger.minute != null ? trigger.minute : 0,
+                date: nowTime.getDay(),
+                hour: hour,
+                minute: minute,
                 weekdays: trigger.weekdays != null ? trigger.weekdays : [],
                 timestamp: Date.now(),
                 dateTime: nowTime.toISOString(),

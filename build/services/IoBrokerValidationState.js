@@ -180,6 +180,14 @@ class IoBrokerValidationState {
             if (trigger.weekdays) {
               trigger.weekdays = removeDuplicate(trigger.weekdays);
             }
+            const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
+            const nextDate = t != void 0 ? new Date(t).getDay() : 0;
+            trigger.todayTrigger = {
+              hour: trigger.hour,
+              minute: trigger.minute,
+              weekday: nextDate,
+              date: t
+            };
             if (typeof trigger.weekdays !== "object" || trigger.weekdays.length === 0 || trigger.weekdays.length > 7) {
               this.adapter.log.error(`Empty weekday is not allowed in ${id}`);
               trigger.weekdays = [0];
@@ -336,6 +344,14 @@ class IoBrokerValidationState {
           if (trigger.weekdays) {
             trigger.weekdays = removeDuplicate(trigger.weekdays);
           }
+          const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
+          const nextDate = t != void 0 ? new Date(t).getDay() : 0;
+          trigger.todayTrigger = {
+            hour: trigger.hour,
+            minute: trigger.minute,
+            weekday: nextDate,
+            date: t
+          };
           if (typeof trigger.weekdays !== "object" || trigger.weekdays.length === 0 || trigger.weekdays.length > 7) {
             this.adapter.log.error(`Empty weekday is not allowed in ${id}`);
             trigger.weekdays = [0];
@@ -775,7 +791,7 @@ class IoBrokerValidationState {
    *
    * @param check true/false
    */
-  async setNextTime(check) {
+  async setNextAstroTime(check) {
     const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.onoff.*`);
     for (const id in states) {
       if (id.toString().indexOf(".data") !== -1) {
@@ -787,7 +803,7 @@ class IoBrokerValidationState {
               let isChange = false;
               for (const trigger of triggers.triggers) {
                 if (trigger && trigger.type === "AstroTrigger") {
-                  trigger.todayTrigger = await this.nextDate(/* @__PURE__ */ new Date(), trigger);
+                  trigger.todayTrigger = await this.nextAstroDate(/* @__PURE__ */ new Date(), trigger);
                   trigger.todayTrigger.date = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
                   const actual = new Date(trigger.todayTrigger.date);
                   trigger.todayTrigger.hour = actual.getHours();
@@ -865,7 +881,7 @@ class IoBrokerValidationState {
                   }
                 } else if (trigger && trigger.type === "AstroTrigger") {
                   if (trigger.weekdays.includes(now.getDay())) {
-                    trigger.todayTrigger = await this.nextDate(/* @__PURE__ */ new Date(), trigger);
+                    trigger.todayTrigger = await this.nextAstroDate(/* @__PURE__ */ new Date(), trigger);
                     switching.hour = trigger.todayTrigger.hour;
                     switching.minute = trigger.todayTrigger.minute;
                     switching.day = now.getDate();
@@ -873,7 +889,7 @@ class IoBrokerValidationState {
                     switching.timestamp = new Date(trigger.date).getTime();
                   } else {
                     const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
-                    trigger.todayTrigger = await this.nextDate(new Date(t), trigger);
+                    trigger.todayTrigger = await this.nextAstroDate(new Date(t), trigger);
                     switching.hour = trigger.todayTrigger.hour;
                     switching.minute = trigger.todayTrigger.minute;
                     switching.day = new Date(trigger.todayTrigger.date).getDate();
@@ -904,7 +920,19 @@ class IoBrokerValidationState {
       await this.adapter.setState("nextEvents", { val: JSON.stringify(data), ack: true });
     }
   }
+  /**
+   * @param now Date
+   * @param trigger AllTriggers
+   */
   async nextDateSwitch(now, trigger) {
+    const hour = trigger.hour != null ? trigger.hour : trigger.todayTrigger.hour;
+    const minute = trigger.minute != null ? trigger.minute : trigger.todayTrigger.minute;
+    const oldNow = /* @__PURE__ */ new Date(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} ${hour}:${minute}`);
+    if (oldNow > now) {
+      return (/* @__PURE__ */ new Date(
+        `${oldNow.getFullYear()}-${oldNow.getMonth() + 1}-${oldNow.getDate()} ${hour}:${minute}`
+      )).toISOString();
+    }
     let diffDays = 0;
     const nextDay = trigger.weekdays.length === 1 ? trigger.weekdays[0] : await this.nextActiveDay(trigger.weekdays, now.getDay());
     if (nextDay > now.getDay()) {
@@ -913,13 +941,11 @@ class IoBrokerValidationState {
       diffDays = nextDay + 7 - now.getDay();
     }
     const next = new Date(now.setDate(now.getDate() + diffDays));
-    const hour = trigger.hour != null ? trigger.hour : trigger.todayTrigger.hour;
-    const minute = trigger.minute != null ? trigger.minute : trigger.todayTrigger.minute;
     return (/* @__PURE__ */ new Date(
       `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${hour}:${minute}`
     )).toISOString();
   }
-  nextDate(date, data) {
+  nextAstroDate(date, data) {
     const next = (0, import_suncalc.getTimes)(date, this.coordinate.getLatitude(), this.coordinate.getLongitude());
     let astro;
     switch (data.astroTime) {

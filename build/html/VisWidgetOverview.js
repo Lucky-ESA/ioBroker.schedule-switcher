@@ -43,6 +43,12 @@ class VisWidgetOverview {
       if (stateId.toString().indexOf(".view") !== -1 && currentStates[stateId].val.startsWith("{")) {
         html_code += this.createHeader(stateId);
         const val = JSON.parse(currentStates[stateId].val);
+        if (val && val.error) {
+          ++counter;
+          const isodd = counter % 2 != 0 ? "#1E1E1E" : "#18171C";
+          html_code += this.createErrorRow(isodd, val);
+          continue;
+        }
         for (const vis in val) {
           for (const views in val[vis]) {
             for (const widget in val[vis][views]) {
@@ -204,7 +210,7 @@ class VisWidgetOverview {
    */
   createRow(isodd, json, vis, view, widget) {
     let count = 0;
-    const countCondition = json.condition.length;
+    const countCondition = json.condition ? json.condition.length : 0;
     let stateCondition = "";
     for (const id of json.condition) {
       for (const val in id) {
@@ -217,15 +223,15 @@ class VisWidgetOverview {
       }
     }
     count = 0;
-    const countStateId = json.condition.length;
-    let stateStateId = "";
+    const countStateId = json.state ? json.state.length : 0;
+    let stateId = "";
     for (const id of json.state) {
       for (const val in id) {
         ++count;
         if (count == countStateId) {
-          stateStateId += `${id[val]}`;
+          stateId += `${id[val]}`;
         } else {
-          stateStateId += `${id[val]}<br/>`;
+          stateId += `${id[val]}<br/>`;
         }
       }
     }
@@ -249,9 +255,24 @@ class VisWidgetOverview {
             <td title="${newOn}" style="text-align:center">${newOn}</td>
             <td title="${enabled}" style="text-align:center">${enabled}</td>
             <td title="${json.stateCount}" style="text-align:center">${json.stateCount}</td>
-            <td title="${stateStateId}" style="text-align:center">${stateStateId}</td>
+            <td title="${stateId}" style="text-align:center">${stateId}</td>
             <td title="${json.conditionCount}" style="text-align:center">${json.conditionCount}</td>
             <td title="${stateCondition}" style="text-align:center">${stateCondition}</td>
+        </tr>`;
+  }
+  /**
+   * createRow
+   *
+   * @param isodd bg color
+   * @param val error message
+   */
+  createErrorRow(isodd, val) {
+    return `
+        <tr colspan="13" style="background-color:${isodd}; 
+        color:yellow;
+        font-weight:"bold";
+        font-size:15px;">
+            <td colspan="13" title="${val.error}" style="text-align:center">${val.error}</td>
         </tr>`;
   }
 }

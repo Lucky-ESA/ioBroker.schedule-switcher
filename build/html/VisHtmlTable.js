@@ -363,7 +363,7 @@ class VisHtmlTable {
     return Promise.resolve(next == void 0 ? 0 : next);
   }
   async mergeHTML(htmltext, countall, count) {
-    this.adapter.log.debug(`Save HTML code.`);
+    this.adapter.log.debug(`Start merge HTML code.`);
     const id = this.htmlVal;
     let div = '<div class="container">';
     let div_css = `
@@ -552,6 +552,7 @@ class VisHtmlTable {
       val: htmlStart,
       ack: true
     });
+    this.adapter.log.debug(`Save HTML code.`);
   }
   helper_translator(word) {
     const all = {
@@ -2107,7 +2108,7 @@ class VisHtmlTable {
           delete objs.common;
           objs.common = common;
           objs.type = types;
-          await this.adapter.setObjectAsync(ident, objs);
+          await this.adapter.setObject(ident, objs);
         }
       }
     } catch (error) {
@@ -2119,7 +2120,8 @@ class VisHtmlTable {
    */
   async updateStateHTML() {
     if (!this.adapter.config.usehtml) {
-      return;
+      this.adapter.log.debug(`Catch HTLM update.`);
+      return Promise.resolve();
     }
     if (this.works) {
       return;
@@ -2132,6 +2134,8 @@ class VisHtmlTable {
     } catch {
       this.works = false;
     }
+    this.adapter.log.debug(`Finished updateStateHTML.`);
+    return Promise.resolve();
   }
   /**
    * destroy all

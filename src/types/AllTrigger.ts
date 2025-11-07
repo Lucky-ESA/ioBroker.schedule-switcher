@@ -17,15 +17,15 @@ export interface AllTriggers {
      */
     valueCheck: boolean;
     /**
-     * @param {TodayTrigger | null | undefined} todayTrigger
+     * @param {TodayTrigger} todayTrigger
      */
     todayTrigger: TodayTrigger;
     /**
-     * A@param {AstroTime | null | undefined} astroTime
+     * A@param {AstroTime} astroTime
      */
-    astroTime?: AstroTime | null | undefined;
+    astroTime?: AstroTime;
     /**
-     * @param {number | null | undefined} shift
+     * @param {number} shift
      */
     shiftInMinutes?: number;
     /**
@@ -35,34 +35,34 @@ export interface AllTriggers {
     /**
      * @param {Date} date
      */
-    date?: Date | null | undefined;
+    date?: Date | string | number;
     /**
      * @param {boolean} timedate
      */
-    timedate?: boolean | null | undefined;
+    timedate?: boolean;
     /**
-     * @param {number | null | undefined} hour
+     * @param {number} hour
      */
-    hour?: number | null | undefined;
+    hour?: number;
     /**
-     * @param {number | null | undefined} minute
+     * @param {number} minute
      */
-    minute?: number | null | undefined;
+    minute?: number;
     /**
-     * @param {string | null | undefined} minute
+     * @param {string} minute
      */
-    trigger?: string | null | undefined;
+    trigger?: string;
 }
 /**
  * TodayTrigger
  */
 export interface TodayTrigger {
     /**
-     * @param {number | null | undefined} hour
+     * @param {number} hour
      */
     hour?: number;
     /**
-     * @param {number | null | undefined} minute
+     * @param {number} minute
      */
     minute?: number;
     /**

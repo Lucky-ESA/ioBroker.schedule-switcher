@@ -93,7 +93,16 @@ export class MessageService implements MessageServices {
                 await this.validation?.setActionTime();
                 break;
             case "update-trigger":
-                if (data.trigger && data.trigger.type === "AstroTrigger") {
+                if (data.trigger && data.trigger.type === "TimeTrigger") {
+                    const t: string | undefined = await this.validation?.nextDateSwitch(new Date(), data.trigger);
+                    const nextDate: number = t != undefined ? new Date(t).getDay() : 0;
+                    data.trigger.todayTrigger = {
+                        hour: data.trigger.hour,
+                        minute: data.trigger.minute,
+                        weekday: nextDate,
+                        date: t,
+                    };
+                } else if (data.trigger && data.trigger.type === "AstroTrigger") {
                     data.trigger.todayTrigger = await this.nextDate(data.trigger);
                 }
                 await this.updateTrigger(schedule, data.trigger, data.dataId);

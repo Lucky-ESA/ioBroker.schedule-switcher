@@ -55,7 +55,7 @@ class ScheduleSwitcher extends utils.Adapter {
   vishtmltable = new import_VisHtmlTable.VisHtmlTable(this);
   visWidgetOverview = new import_VisWidgetOverview.VisWidgetOverview(this);
   validation;
-  stateService = new import_IoBrokerStateService.IoBrokerStateService(this, this.vishtmltable);
+  stateService = new import_IoBrokerStateService.IoBrokerStateService(this);
   constructor(options = {}) {
     super({
       ...options,
@@ -99,7 +99,7 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.initMessageService();
     await this.fixStateStructure(this.config.schedules);
     await ((_a = this.validation) == null ? void 0 : _a.validationView(utils.getAbsoluteDefaultDataDir()));
-    await ((_b = this.validation) == null ? void 0 : _b.setNextTime(false));
+    await ((_b = this.validation) == null ? void 0 : _b.setNextAstroTime(false));
     await ((_c = this.validation) == null ? void 0 : _c.setActionTime());
     const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
     for (const id in record) {
@@ -116,6 +116,7 @@ class ScheduleSwitcher extends utils.Adapter {
               await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
             }
             await ((_d = this.validation) == null ? void 0 : _d.validation(id, stateVal, false));
+            this.log.debug(`Start: ${id} - ${JSON.stringify(stateVal)}`);
             if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
               await this.onScheduleChange(id, JSON.stringify(stateVal));
             } else {
@@ -183,7 +184,7 @@ class ScheduleSwitcher extends utils.Adapter {
     this.nextAstroTime = (0, import_node_schedule.scheduleJob)(rule, async () => {
       var _a;
       this.log.info("Start Update Astrotime!");
-      await ((_a = this.validation) == null ? void 0 : _a.setNextTime(true));
+      await ((_a = this.validation) == null ? void 0 : _a.setNextAstroTime(true));
     });
     this.moreLogs();
     return Promise.resolve();
@@ -197,6 +198,7 @@ class ScheduleSwitcher extends utils.Adapter {
       var _a;
       this.log.info("Start Update next time switch!");
       await ((_a = this.validation) == null ? void 0 : _a.setActionTime());
+      await this.visWidgetOverview.createOverview();
     });
     this.moreLogs();
     return Promise.resolve();
@@ -314,10 +316,23 @@ class ScheduleSwitcher extends utils.Adapter {
    * @param obj If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
    */
   async onMessage(obj) {
+    var _a, _b;
     if (typeof obj === "object" && obj.message) {
       try {
         this.log.debug(`obj: ${JSON.stringify(obj)}`);
         switch (obj.command) {
+          case "update-actionTime":
+            void ((_a = this.validation) == null ? void 0 : _a.setActionTime());
+            this.log.debug(`Finished onMessage actionTime`);
+            break;
+          case "update-nextTime":
+            void ((_b = this.validation) == null ? void 0 : _b.setNextAstroTime(true));
+            this.log.debug(`Finished onMessage nextTime`);
+            break;
+          case "update-html":
+            void this.vishtmltable.updateStateHTML();
+            this.log.debug(`Finished onMessage update HTML`);
+            break;
           case "getActiv":
             if (obj && obj.message && obj.message.schedule != null) {
               void this.loadData(obj, 1);
@@ -417,7 +432,7 @@ class ScheduleSwitcher extends utils.Adapter {
   }
   async updateHTMLCode(id) {
     var _a;
-    await ((_a = this.validation) == null ? void 0 : _a.setNextTime(true));
+    await ((_a = this.validation) == null ? void 0 : _a.setNextAstroTime(true));
     await this.vishtmltable.updateHTML();
     await this.setState(id, false, true);
   }

@@ -26,12 +26,10 @@ class IoBrokerStateService {
   delayTimeout;
   checkTime = 0;
   mergeTime = 0;
-  html;
   /**
    * @param adapter ioBroker
-   * @param vishtmltable htmltable
    */
-  constructor(adapter, vishtmltable) {
+  constructor(adapter) {
     if (!adapter) {
       throw new Error("adapter may not be null.");
     }
@@ -39,7 +37,6 @@ class IoBrokerStateService {
     this.checkTime = Date.now();
     this.mergeTime = 0;
     this.delayTimeout = void 0;
-    this.html = vishtmltable;
   }
   /**
    * @param id ID
@@ -95,10 +92,16 @@ class IoBrokerStateService {
     if (!change_val) {
       this.adapter.log.debug(`Set state ${id} with value ${value == null ? void 0 : value.toString()} - ${old_val == null ? void 0 : old_val.toString()}`);
       this.adapter.setForeignState(id, value, false);
-      void this.html.updateStateHTML();
+      this.adapter.sendTo(this.adapter.namespace, "update-html", {
+        dataId: id
+      });
     } else {
       this.adapter.log.debug(`Set not state ${id} with value ${value == null ? void 0 : value.toString()} - ${old_val == null ? void 0 : old_val.toString()}`);
     }
+    this.adapter.sendTo(this.adapter.namespace, "update-actionTime", {
+      dataId: id,
+      trigger
+    });
   }
   /**
    * @param id ID
@@ -124,6 +127,18 @@ class IoBrokerStateService {
         history_newvalue.pop();
       }
       const nowTime = /* @__PURE__ */ new Date();
+      let minute = 0;
+      let hour = 0;
+      if (trigger && trigger.trigger == "TimeTrigger") {
+        minute = trigger.minute != null ? trigger.minute : 0;
+        hour = trigger.hour != null ? trigger.hour : 0;
+      } else if (trigger && trigger.trigger == "AstroTrigger") {
+        minute = trigger.todayTrigger.minute != null ? trigger.todayTrigger.minute : 0;
+        hour = trigger.todayTrigger.hour != null ? trigger.todayTrigger.hour : 0;
+      } else {
+        minute = new Date(trigger.date ? trigger.date : "").getMinutes();
+        hour = new Date(trigger.date ? trigger.date : "").getHours();
+      }
       const new_data = {
         setObjectId: id,
         objectId: trigger.objectId != null ? trigger.objectId : "unknown",
@@ -133,9 +148,9 @@ class IoBrokerStateService {
         trigger: trigger.trigger != null ? trigger.trigger : "unknown",
         astroTime: trigger.astroTime != null ? trigger.astroTime : "unknown",
         shiftInMinutes: trigger.shiftInMinutes != null ? trigger.shiftInMinutes : 0,
-        date: trigger.date != null ? trigger.date : 0,
-        hour: trigger.hour != null ? trigger.hour : 0,
-        minute: trigger.minute != null ? trigger.minute : 0,
+        date: nowTime.getDay(),
+        hour,
+        minute,
         weekdays: trigger.weekdays != null ? trigger.weekdays : [],
         timestamp: Date.now(),
         dateTime: nowTime.toISOString(),
