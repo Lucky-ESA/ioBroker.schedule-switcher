@@ -86,6 +86,8 @@ export class OnOffSchedule extends Schedule {
 
     /**
      * getOnAction
+     *
+     * @returns action on
      */
     public getOnAction(): OnOffStateAction<string | boolean | number> {
         return this.onAction;
@@ -93,6 +95,8 @@ export class OnOffSchedule extends Schedule {
 
     /**
      * getOffAction
+     *
+     * @returns action off
      */
     public getOffAction(): OnOffStateAction<string | boolean | number> {
         return this.offAction;

@@ -38,14 +38,23 @@ export abstract class DailyTriggerBuilder implements Builder<DailyTrigger> {
         return this;
     }
 
+    /**
+     * @returns this
+     */
     protected getAction(): Action | null {
         return this.action;
     }
 
+    /**
+     * @returns this
+     */
     protected getWeekdays(): Weekday[] {
         return this.weekdays;
     }
 
+    /**
+     * @returns this
+     */
     protected getId(): string {
         return this.id;
     }

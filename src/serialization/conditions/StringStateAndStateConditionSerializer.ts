@@ -14,6 +14,8 @@ export class StringStateAndStateConditionSerializer implements Serializer<Condit
     constructor(private stateService: StateService) {}
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize Condition
      */
     deserialize(stringToDeserialize: string): Condition {
@@ -28,6 +30,8 @@ export class StringStateAndStateConditionSerializer implements Serializer<Condit
     }
 
     /**
+     * Serialize
+     *
      * @param objectToSerialize Condition
      */
     serialize(objectToSerialize: Condition): string {
@@ -47,6 +51,8 @@ export class StringStateAndStateConditionSerializer implements Serializer<Condit
 
     /**
      * getType
+     *
+     * @returns Constructor name
      */
     getType(): string {
         return StringStateAndStateCondition.prototype.constructor.name;

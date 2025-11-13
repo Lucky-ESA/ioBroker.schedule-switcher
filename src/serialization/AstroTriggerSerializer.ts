@@ -15,7 +15,10 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
     constructor(private readonly actionSerializer: UniversalSerializer<Action>) {}
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize Trigger
+     * @returns AstroTrigger
      */
     public deserialize(stringToDeserialize: string): Trigger {
         const json = JSON.parse(stringToDeserialize);
@@ -35,7 +38,10 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
     }
 
     /**
+     * Serialize
+     *
      * @param objectToSerialize Trigger
+     * @returns astro trigger or crash adapter
      */
     public serialize(objectToSerialize: Trigger): string {
         if (objectToSerialize == null) {
@@ -56,8 +62,11 @@ export class AstroTriggerSerializer implements Serializer<Trigger> {
         }
         throw new Error("objectToSerialize must be of type AstroTrigger.");
     }
+
     /**
      * getType
+     *
+     * @returns action on/off
      */
     getType(): string {
         return AstroTrigger.prototype.constructor.name;

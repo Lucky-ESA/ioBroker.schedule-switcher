@@ -60,6 +60,8 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
 
     /**
      * forType
+     *
+     * @returns string
      */
     public forType(): string {
         return "Universal";

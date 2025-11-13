@@ -39,12 +39,16 @@ class BaseDailyTrigger {
   }
   /**
    * getWeekdays
+   *
+   * @returns weekdays
    */
   getWeekdays() {
     return this.weekdays;
   }
   /**
    * getAction
+   *
+   * @returns action
    */
   getAction() {
     return this.action;
@@ -60,10 +64,17 @@ class BaseDailyTrigger {
   }
   /**
    * getId
+   *
+   * @returns ID
    */
   getId() {
     return this.id;
   }
+  /**
+   * checkWeekdays
+   *
+   * @param weekdays check array or crash adapter
+   */
   checkWeekdays(weekdays) {
     if (weekdays == null) {
       throw new Error("Weekdays may not be null or undefined.");
@@ -75,6 +86,12 @@ class BaseDailyTrigger {
       throw new Error("Weekdays may not contain duplicates.");
     }
   }
+  /**
+   * hasDuplicates
+   *
+   * @param weekdays array
+   * @returns array weekdays
+   */
   hasDuplicates(weekdays) {
     return new Set(weekdays).size !== weekdays.length;
   }

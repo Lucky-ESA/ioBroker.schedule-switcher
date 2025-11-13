@@ -31,7 +31,10 @@ class AstroTriggerSerializer {
     this.actionSerializer = actionSerializer;
   }
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize Trigger
+   * @returns AstroTrigger
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -41,7 +44,10 @@ class AstroTriggerSerializer {
     return new import_AstroTriggerBuilder.AstroTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setAstroTime(json.astroTime).setShift(json.shiftInMinutes).setObjectId(json.objectId).setValueCheck(json.valueCheck).setTodayTrigger(json.todayTrigger).setWeekdays(json.weekdays).setId(json.id).build();
   }
   /**
+   * Serialize
+   *
    * @param objectToSerialize Trigger
+   * @returns astro trigger or crash adapter
    */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
@@ -64,6 +70,8 @@ class AstroTriggerSerializer {
   }
   /**
    * getType
+   *
+   * @returns action on/off
    */
   getType() {
     return import_AstroTrigger.AstroTrigger.prototype.constructor.name;

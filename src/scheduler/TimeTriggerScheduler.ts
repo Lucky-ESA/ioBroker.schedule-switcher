@@ -1,4 +1,5 @@
-import * as schedule from "node-schedule";
+import type { Job, JobCallback } from "node-schedule";
+import { RecurrenceRule } from "node-schedule";
 import { TimeTrigger } from "../triggers/TimeTrigger";
 import type { LoggingService } from "../types/LoggingService";
 import type { Trigger } from "../types/Trigger";
@@ -8,7 +9,7 @@ import { TriggerScheduler } from "./TriggerScheduler";
  * TimeTriggerScheduler
  */
 export class TimeTriggerScheduler extends TriggerScheduler {
-    private registered: [TimeTrigger, schedule.Job][] = [];
+    private registered: [TimeTrigger, Job][] = [];
 
     /**
      *
@@ -17,8 +18,8 @@ export class TimeTriggerScheduler extends TriggerScheduler {
      * @param logger Log service
      */
     constructor(
-        private scheduleJob: (rule: schedule.RecurrenceRule, callback: schedule.JobCallback) => schedule.Job,
-        private cancelJob: (job: schedule.Job) => boolean,
+        private scheduleJob: (rule: RecurrenceRule, callback: JobCallback) => Job,
+        private cancelJob: (job: Job) => boolean,
         private logger: LoggingService,
     ) {
         super();
@@ -79,12 +80,17 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 
     /**
      * forType
+     *
+     * @returns trigger action on/off
      */
     public forType(): string {
         return TimeTrigger.prototype.constructor.name;
     }
 
-    private getAssociatedJob(trigger: TimeTrigger): schedule.Job | null {
+    /**
+     * @param trigger OneTimeTrigger
+     */
+    private getAssociatedJob(trigger: TimeTrigger): Job | null {
         const entry = this.registered.find(r => r[0] === trigger);
         if (entry) {
             return entry[1];
@@ -93,12 +99,20 @@ export class TimeTriggerScheduler extends TriggerScheduler {
         return null;
     }
 
+    /**
+     * @param trigger OneTimeTrigger
+     */
     private removeTrigger(trigger: Trigger): void {
         this.registered = this.registered.filter(r => r[0] !== trigger);
     }
 
-    private createRecurrenceRule(trigger: TimeTrigger): schedule.RecurrenceRule {
-        const rule = new schedule.RecurrenceRule();
+    /**
+     * Create scheduler
+     *
+     * @param trigger OneTimeTrigger
+     */
+    private createRecurrenceRule(trigger: TimeTrigger): RecurrenceRule {
+        const rule = new RecurrenceRule();
         rule.dayOfWeek = trigger.getWeekdays();
         rule.hour = trigger.getHour();
         rule.minute = trigger.getMinute();

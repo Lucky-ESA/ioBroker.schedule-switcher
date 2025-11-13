@@ -100,12 +100,16 @@ class VisHtmlTable {
       }
     }
   }
+  /**
+   * Create HTML
+   */
   async createHTML() {
-    this.adapter.log.debug(`Start update HTML!`);
+    this.adapter.log.debug(`Start update HTML! ${JSON.stringify(this.stateVal)}`);
     if (typeof this.stateVal === "object" && Object.keys(this.stateVal).length === 0) {
       return;
     }
     const id = this.htmlVal;
+    this.adapter.log.debug(`HTML: ${JSON.stringify(id)}`);
     let text = "";
     let count = 0;
     let countall = 0;
@@ -316,6 +320,14 @@ class VisHtmlTable {
     }
     await this.mergeHTML(text, countall, count);
   }
+  /**
+   * Next switch
+   *
+   * @param nextDateTime number
+   * @param nextName array
+   * @param nextaction string
+   * @returns next time
+   */
   nextAction(nextDateTime, nextName, nextaction) {
     const action = nextName.filter((t) => t.getDate === nextDateTime);
     if (action && action.length > 0) {
@@ -324,12 +336,25 @@ class VisHtmlTable {
     }
     return Promise.resolve(nextaction);
   }
+  /**
+   * get week
+   *
+   * @param times Date
+   * @returns week numbers
+   */
   getWeek(times) {
     const onejan = new Date(times.getFullYear(), 0, 1);
     const today = new Date(times.getFullYear(), times.getMonth(), times.getDate());
     const dayOfYear = (today - onejan + 864e5) / 864e5;
     return Promise.resolve(Math.ceil(dayOfYear / 7));
   }
+  /**
+   * Next event
+   *
+   * @param actual number
+   * @param next number
+   * @returns next event
+   */
   nextEvent(actual, next) {
     if (actual === 0) {
       actual = 7;
@@ -339,6 +364,13 @@ class VisHtmlTable {
     }
     return Promise.resolve(next);
   }
+  /**
+   * Next date
+   *
+   * @param now Date
+   * @param trigger json
+   * @returns Date as string
+   */
   async nextDateSwitch(now, trigger) {
     let diffDays = 0;
     const nextDay = trigger.weekdays.length === 1 ? trigger.weekdays[0] : await this.nextActiveDay(trigger.weekdays, now.getDay());
@@ -354,6 +386,13 @@ class VisHtmlTable {
       `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()} ${hour}:${minute}`
     )).toISOString();
   }
+  /**
+   * Next switch
+   *
+   * @param array number
+   * @param day getDay()
+   * @returns next getDay
+   */
   nextActiveDay(array, day) {
     array = array.map((val) => {
       return val === 0 ? 7 : val;
@@ -362,6 +401,13 @@ class VisHtmlTable {
     const next = numChecker(day);
     return Promise.resolve(next == void 0 ? 0 : next);
   }
+  /**
+   * Merge rows with header
+   *
+   * @param htmltext string
+   * @param countall number
+   * @param count number
+   */
   async mergeHTML(htmltext, countall, count) {
     this.adapter.log.debug(`Start merge HTML code.`);
     const id = this.htmlVal;
@@ -554,6 +600,12 @@ class VisHtmlTable {
     });
     this.adapter.log.debug(`Save HTML code.`);
   }
+  /**
+   * Translate
+   *
+   * @param word string
+   * @returns word
+   */
   helper_translator(word) {
     const all = {
       top_last_update: {
@@ -2017,8 +2069,6 @@ class VisHtmlTable {
       def: ""
     };
     await this.createDataPoint("html.html_code", common, "state");
-    val = await this.adapter.getStateAsync("html.html_code");
-    this.htmlVal.html_code = val == null ? void 0 : val.val;
   }
   loadTitle(val) {
     const lang = {
@@ -2051,6 +2101,14 @@ class VisHtmlTable {
     };
     return lang[val][this.lang];
   }
+  /**
+   * Create objects
+   *
+   * @param ident string
+   * @param common object
+   * @param types object
+   * @param native object | null
+   */
   async createDataPoint(ident, common, types, native = null) {
     try {
       const nativvalue = !native ? { native: {} } : { native };
@@ -2120,25 +2178,26 @@ class VisHtmlTable {
    */
   async updateStateHTML() {
     if (!this.adapter.config.usehtml) {
-      this.adapter.log.debug(`Catch HTLM update.`);
-      return Promise.resolve();
+      return;
     }
     if (this.works) {
+      this.adapter.log.debug(`Catch HTML update.`);
       return;
     }
     this.works = true;
     try {
       await this.sleep(60 * 1e3);
       await this.updateHTML();
-      this.works = false;
-    } catch {
-      this.works = false;
+    } catch (e) {
+      this.adapter.log.error(`HTML error ${e}`);
     }
     this.adapter.log.debug(`Finished updateStateHTML.`);
-    return Promise.resolve();
+    this.works = false;
   }
   /**
    * destroy all
+   *
+   * @returns boolean
    */
   destroy() {
     this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
@@ -2146,6 +2205,8 @@ class VisHtmlTable {
     return Promise.resolve(true);
   }
   /**
+   * Sleep
+   *
    * @param ms milliseconds
    */
   sleep(ms) {

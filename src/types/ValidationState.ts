@@ -9,10 +9,6 @@ export interface ValidationState {
      */
     validation(id: string, val: any, check: boolean): Promise<any>;
     /**
-     * view
-     */
-    validationView(utils: string): Promise<void>;
-    /**
      * Time
      */
     setNextAstroTime(check: boolean): Promise<void>;

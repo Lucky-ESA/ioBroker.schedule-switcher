@@ -70,6 +70,8 @@ class UniversalTriggerScheduler extends import_TriggerScheduler.TriggerScheduler
   }
   /**
    * forType
+   *
+   * @returns string
    */
   forType() {
     return "Universal";

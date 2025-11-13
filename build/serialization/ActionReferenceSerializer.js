@@ -37,7 +37,10 @@ class ActionReferenceSerializer {
   referencableActions;
   typeToReference;
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize Action
+   * @returns action or crash adapter
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -51,7 +54,10 @@ class ActionReferenceSerializer {
     throw new Error(`No existing action found with name ${json.name} to reference`);
   }
   /**
+   * Serialize
+   *
    * @param objectToSerialize Action
+   * @returns action or crash adapter
    */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
@@ -75,6 +81,8 @@ class ActionReferenceSerializer {
   }
   /**
    * getType
+   *
+   * @returns reference
    */
   getType() {
     return this.typeToReference;

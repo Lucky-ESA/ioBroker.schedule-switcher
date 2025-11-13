@@ -94,6 +94,8 @@ class AstroTrigger extends import_BaseDailyTrigger.BaseDailyTrigger {
   }
   /**
    * toString
+   *
+   * @returns trigger string
    */
   toString() {
     return `AstroTrigger {id=${this.getId()}, objectId=${this.getObjectId()}, valueCheck=${this.getValueCheck()}, todayTrigger=${JSON.stringify(this.getTodayTrigger())}, astroTime=${this.getAstroTime()}, shiftInMinutes=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`;

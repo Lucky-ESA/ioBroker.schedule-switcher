@@ -53,6 +53,8 @@ class StringStateAndConstantCondition {
   }
   /**
    * evaluate
+   *
+   * @returns result
    */
   async evaluate() {
     const stateValue = String(await this.stateService.getForeignState(this.stateId));
@@ -66,24 +68,32 @@ class StringStateAndConstantCondition {
   }
   /**
    * getConstant
+   *
+   * @returns constant
    */
   getConstant() {
     return this.constant;
   }
   /**
    * getStateId
+   *
+   * @returns stateId
    */
   getStateId() {
     return this.stateId;
   }
   /**
    * getSign
+   *
+   * @returns sign
    */
   getSign() {
     return this.sign;
   }
   /**
    * toString
+   *
+   * @returns string
    */
   toString() {
     return `${this.constant} ${this.sign} ${this.stateId}`;

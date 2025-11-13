@@ -35,7 +35,10 @@ class ConditionActionSerializer {
     this.logger = logger;
   }
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize Action
+   * @returns Condition with action
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -49,7 +52,10 @@ class ConditionActionSerializer {
     );
   }
   /**
+   * Serialize
+   *
    * @param objectToSerialize Action
+   * @returns Condition
    */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
@@ -68,6 +74,8 @@ class ConditionActionSerializer {
   }
   /**
    * getType
+   *
+   * @returns action on/off
    */
   getType() {
     return import_ConditionAction.ConditionAction.prototype.constructor.name;

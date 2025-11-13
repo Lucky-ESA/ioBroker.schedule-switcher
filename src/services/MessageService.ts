@@ -1,4 +1,4 @@
-import { getTimes } from "suncalc";
+import type { GetTimesResult } from "suncalc";
 import type { OnOffStateAction } from "../actions/OnOffStateAction";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
 import type { Schedule } from "../schedules/Schedule";
@@ -33,6 +33,7 @@ export class MessageService implements MessageServices {
      * @param coordinate Nothing
      * @param validation Nothing
      * @param html Nothing
+     * @param getTimes TimesData
      */
     constructor(
         private stateService: StateService,
@@ -42,6 +43,7 @@ export class MessageService implements MessageServices {
         private readonly coordinate: CoordinateTypes,
         private readonly validation: ValidationState | undefined,
         private readonly html: htmltable,
+        private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
     ) {
         this.adapter = adapter;
         this.triggerTimeout = undefined;
@@ -166,12 +168,19 @@ export class MessageService implements MessageServices {
         this.currentMessage = null;
     }
 
+    /**
+     * @param data json schedule
+     */
     private async changeName(data: any): Promise<void> {
         const state = data?.dataId.split(".");
         await this.stateService.extendObject(`onoff.${state[3]}`, { common: { name: data?.name } });
         await this.stateService.extendObject(`onoff.${state[3]}.data`, { common: { name: data?.name } });
     }
 
+    /**
+     * @param scheduleId objectId
+     * @returns enabled objectId
+     */
     private getEnabledIdFromScheduleId(scheduleId: string): string {
         return scheduleId.replace("data", "enabled");
     }
@@ -192,8 +201,12 @@ export class MessageService implements MessageServices {
         await this.adapter.setState("counterTrigger", count, true);
     }
 
+    /**
+     * @param data json schedule
+     * @returns times json
+     */
     private nextDate(data: any): any {
-        const next = getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
+        const next = this.getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
         let astro: Date;
         switch (data.astroTime) {
             case "sunrise":
@@ -245,6 +258,10 @@ export class MessageService implements MessageServices {
         return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
     }
 
+    /**
+     * @param schedule schedule json
+     * @param data json schedule
+     */
     private async addTrigger(schedule: Schedule, data: any): Promise<void> {
         const state = data?.dataId.split(".");
         let triggerBuilder: DailyTriggerBuilder;
@@ -282,6 +299,11 @@ export class MessageService implements MessageServices {
         schedule.addTrigger(triggerBuilder.build());
     }
 
+    /**
+     * @param schedule schedule json
+     * @param triggerString json trigger
+     * @param dataId objectId
+     */
     private async updateOneTimeTrigger(schedule: Schedule, triggerString: any, dataId: string): Promise<void> {
         let updated;
         if (isNaN(new Date(triggerString.date).getTime())) {
@@ -303,6 +325,10 @@ export class MessageService implements MessageServices {
         schedule.updateTrigger(updated);
     }
 
+    /**
+     * @param schedule schedule json
+     * @param data json schedule
+     */
     private async addOneTimeTrigger(schedule: Schedule, data: any): Promise<void> {
         const t = JSON.parse(data.trigger);
         const id = data.dataId.split(".");
@@ -322,6 +348,11 @@ export class MessageService implements MessageServices {
         schedule.addTrigger(trigger);
     }
 
+    /**
+     * @param schedule schedule json
+     * @param triggerString json trigger
+     * @param dataId objectId
+     */
     private async updateTrigger(schedule: Schedule, triggerString: any, dataId: string): Promise<void> {
         let updated;
         await this.validation?.validation(dataId, triggerString, true);
@@ -340,6 +371,9 @@ export class MessageService implements MessageServices {
         schedule.updateTrigger(updated);
     }
 
+    /**
+     * @param data json schedule
+     */
     private async updateViews(data: any): Promise<void> {
         if (data) {
             if (data.newId && data.newId.endsWith(".data")) {
@@ -390,6 +424,10 @@ export class MessageService implements MessageServices {
         }
     }
 
+    /**
+     * @param schedule schedule json
+     * @param data json schedule
+     */
     private async changeOnOffSchedulesSwitchedValues(schedule: Schedule, data: any): Promise<void> {
         if (!(schedule instanceof OnOffSchedule)) {
             this.adapter.log.error(`Cannot change switched values when schedule type is not OnOffSchedule`);
@@ -457,6 +495,10 @@ export class MessageService implements MessageServices {
         return;
     }
 
+    /**
+     * @param schedule schedule json
+     * @param stateIds objectId
+     */
     private async changeOnOffSchedulesSwitchedIds(schedule: Schedule, stateIds: string[]): Promise<void> {
         if (!(schedule instanceof OnOffSchedule)) {
             this.adapter.log.error(`Cannot change switched ids when schedule type is not OnOffSchedule`);
@@ -495,6 +537,11 @@ export class MessageService implements MessageServices {
         return;
     }
 
+    /**
+     * @param action action
+     * @param data json schedule
+     * @returns type
+     */
     private changeSwitchedValueOfOnOffScheduleAction(
         action: OnOffStateAction<string | number | boolean>,
         data: any,
@@ -523,6 +570,10 @@ export class MessageService implements MessageServices {
         return Promise.resolve(true);
     }
 
+    /**
+     * @param current array trigger
+     * @returns next array id
+     */
     private getNextTriggerId(current: Trigger[]): string {
         const numbers = current
             .map(t => t.getId())

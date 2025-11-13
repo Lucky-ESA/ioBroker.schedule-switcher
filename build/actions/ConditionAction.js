@@ -43,6 +43,8 @@ class ConditionAction {
   action;
   /**
    * getAction
+   *
+   * @returns action
    */
   getAction() {
     return this.action;
@@ -59,6 +61,8 @@ class ConditionAction {
   }
   /**
    * getCondition
+   *
+   * @returns condition
    */
   getCondition() {
     return this.condition;

@@ -94,12 +94,16 @@ class OnOffSchedule extends import_Schedule.Schedule {
   }
   /**
    * getOnAction
+   *
+   * @returns action on
    */
   getOnAction() {
     return this.onAction;
   }
   /**
    * getOffAction
+   *
+   * @returns action off
    */
   getOffAction() {
     return this.offAction;

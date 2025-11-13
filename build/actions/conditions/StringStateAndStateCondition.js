@@ -53,6 +53,8 @@ class StringStateAndStateCondition {
   }
   /**
    * evaluate
+   *
+   * @returns result
    */
   async evaluate() {
     const firstStateValue = String(await this.stateService.getForeignState(this.stateId1));
@@ -67,24 +69,32 @@ class StringStateAndStateCondition {
   }
   /**
    * getStateId1
+   *
+   * @returns stateId1
    */
   getStateId1() {
     return this.stateId1;
   }
   /**
    * getStateId2
+   *
+   * @returns stateId2
    */
   getStateId2() {
     return this.stateId2;
   }
   /**
    * getSign
+   *
+   * @returns sign
    */
   getSign() {
     return this.sign;
   }
   /**
    * toString
+   *
+   * @returns string
    */
   toString() {
     return `${this.stateId1} ${this.sign} ${this.stateId2}`;

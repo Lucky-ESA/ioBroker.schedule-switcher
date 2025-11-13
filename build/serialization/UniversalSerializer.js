@@ -32,6 +32,8 @@ class UniversalSerializer {
     this.logger = logger;
   }
   /**
+   * UseSerializer
+   *
    * @param serializer Serializer
    */
   useSerializer(serializer) {
@@ -42,18 +44,10 @@ class UniversalSerializer {
     this.serializers.push(serializer);
   }
   /**
-   * @param object constructor
-   */
-  serialize(object) {
-    this.logger.logDebug(`object.constructor.name: ${object.constructor.name}`);
-    const serializer = this.serializers.find((s) => s.getType() === object.constructor.name);
-    if (serializer) {
-      return serializer.serialize(object);
-    }
-    throw new Error(`No serializer for object of type ${object.constructor.name} found`);
-  }
-  /**
+   * Deserialize
+   *
    * @param stringToDeserialize Deserialize
+   * @returns action or crash adapter
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -64,7 +58,23 @@ class UniversalSerializer {
     throw new Error(`No serializer for object of type ${json.type} found`);
   }
   /**
+   * Serialize
+   *
+   * @param object constructor
+   * @returns action or crash adapter
+   */
+  serialize(object) {
+    this.logger.logDebug(`object.constructor.name: ${object.constructor.name}`);
+    const serializer = this.serializers.find((s) => s.getType() === object.constructor.name);
+    if (serializer) {
+      return serializer.serialize(object);
+    }
+    throw new Error(`No serializer for object of type ${object.constructor.name} found`);
+  }
+  /**
    * getType
+   *
+   * @returns string
    */
   getType() {
     return "Universal";

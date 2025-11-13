@@ -59,18 +59,24 @@ class Schedule {
   }
   /**
    * isEnabled
+   *
+   * @returns status
    */
   isEnabled() {
     return this.enabled;
   }
   /**
    * getName
+   *
+   * @returns namr
    */
   getName() {
     return this.name;
   }
   /**
    * getTriggers
+   *
+   * @returns trigger
    */
   getTriggers() {
     return this.triggers;
@@ -132,12 +138,19 @@ class Schedule {
     }
     this.triggers = [];
   }
+  /**
+   * @param trigger Trigger
+   */
   removeTriggerAndUnregister(trigger) {
     if (this.isEnabled()) {
       this.triggerScheduler.unregister(trigger);
     }
     this.triggers = this.triggers.filter((t) => t.getId() !== trigger.getId());
   }
+  /**
+   * @param id id Trigger
+   * @returns trigger
+   */
   findTriggerById(id) {
     return this.getTriggers().find((t) => t.getId() === id);
   }

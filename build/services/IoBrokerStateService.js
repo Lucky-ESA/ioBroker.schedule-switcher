@@ -55,6 +55,9 @@ class IoBrokerStateService {
    * @param ack Ack flag
    */
   async setState(id, value, ack = true) {
+    if (value == null) {
+      return;
+    }
     this.checkId(id);
     await this.adapter.setState(id, { val: value, ack });
   }
@@ -167,6 +170,7 @@ class IoBrokerStateService {
   }
   /**
    * @param id ID
+   * @returns iobroker.state
    */
   async getForeignState(id) {
     return new Promise((resolve, _) => {
@@ -181,6 +185,7 @@ class IoBrokerStateService {
   }
   /**
    * @param id ID
+   * @returns iobroker.state
    */
   async getState(id) {
     return new Promise((resolve, _) => {
@@ -195,6 +200,7 @@ class IoBrokerStateService {
   }
   /**
    * @param ms milliseconds
+   * @returns sleep
    */
   delay(ms) {
     return new Promise((resolve) => {
@@ -203,12 +209,19 @@ class IoBrokerStateService {
   }
   /**
    * destroy all
+   *
+   * @returns boolean
    */
   destroy() {
     this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
     this.delayTimeout = void 0;
     return Promise.resolve(true);
   }
+  /**
+   * destroy all
+   *
+   * @param id check string or crash adapter
+   */
   checkId(id) {
     if (id == null || id.length === 0) {
       throw new Error("id may not be null or empty.");

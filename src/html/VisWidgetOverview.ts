@@ -52,6 +52,7 @@ export class VisWidgetOverview implements WidgetOverview {
      * createHeader
      *
      * @param dataId Data Id
+     * @returns html header
      */
     private createHeader(dataId: string): string {
         return `
@@ -194,6 +195,7 @@ export class VisWidgetOverview implements WidgetOverview {
      * @param vis vis-2 or vis
      * @param view view name
      * @param widget widget id
+     * @returns html rows
      */
     private createRow(isodd: string, json: any, vis: string, view: string, widget: string): string {
         let count = 0;
@@ -253,6 +255,7 @@ export class VisWidgetOverview implements WidgetOverview {
      *
      * @param isodd bg color
      * @param val error message
+     * @returns error row
      */
     private createErrorRow(isodd: string, val: any): string {
         return `

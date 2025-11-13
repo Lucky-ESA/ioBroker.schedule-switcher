@@ -26,7 +26,10 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
     ) {}
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize OnOffSchedule
+     * @returns schedule or crash adapter
      */
     deserialize(stringToDeserialize: string): OnOffSchedule {
         const json = JSON.parse(stringToDeserialize);
@@ -51,7 +54,10 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
     }
 
     /**
+     * Serialize
+     *
      * @param schedule OnOffSchedule
+     * @returns all action
      */
     serialize(schedule: OnOffSchedule): string {
         const json: any = {
@@ -67,13 +73,18 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
 
     /**
      * getType
+     *
+     * @returns action on/off
      */
     getType(): string {
         return "OnOffSchedule";
     }
 
     /**
+     * getTriggerSerializer
+     *
      * @param schedule OnOffSchedule
+     * @returns trigger or crash adapter
      */
     public getTriggerSerializer(schedule: OnOffSchedule): UniversalSerializer<Trigger> {
         if (schedule == null) {
@@ -83,6 +94,11 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
         return this.triggerSerializer;
     }
 
+    /**
+     * useActionReferenceSerializer
+     *
+     * @param schedule OnOffSchedule
+     */
     private useActionReferenceSerializer(schedule: OnOffSchedule): void {
         this.actionSerializer.useSerializer(
             new ActionReferenceSerializer(

@@ -21,7 +21,6 @@ __export(MessageService_exports, {
   MessageService: () => MessageService
 });
 module.exports = __toCommonJS(MessageService_exports);
-var import_suncalc = require("suncalc");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
 var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
@@ -38,8 +37,9 @@ class MessageService {
    * @param coordinate Nothing
    * @param validation Nothing
    * @param html Nothing
+   * @param getTimes TimesData
    */
-  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate, validation, html) {
+  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate, validation, html, getTimes) {
     this.stateService = stateService;
     this.scheduleIdToSchedule = scheduleIdToSchedule;
     this.createOnOffScheduleSerializer = createOnOffScheduleSerializer;
@@ -47,6 +47,7 @@ class MessageService {
     this.coordinate = coordinate;
     this.validation = validation;
     this.html = html;
+    this.getTimes = getTimes;
     this.adapter = adapter;
     this.triggerTimeout = void 0;
     this.validation = validation;
@@ -171,11 +172,18 @@ class MessageService {
     this.adapter.log.debug(`Finished message ${message.command}`);
     this.currentMessage = null;
   }
+  /**
+   * @param data json schedule
+   */
   async changeName(data) {
     const state = data == null ? void 0 : data.dataId.split(".");
     await this.stateService.extendObject(`onoff.${state[3]}`, { common: { name: data == null ? void 0 : data.name } });
     await this.stateService.extendObject(`onoff.${state[3]}.data`, { common: { name: data == null ? void 0 : data.name } });
   }
+  /**
+   * @param scheduleId objectId
+   * @returns enabled objectId
+   */
   getEnabledIdFromScheduleId(scheduleId) {
     return scheduleId.replace("data", "enabled");
   }
@@ -195,8 +203,12 @@ class MessageService {
     }
     await this.adapter.setState("counterTrigger", count, true);
   }
+  /**
+   * @param data json schedule
+   * @returns times json
+   */
   nextDate(data) {
-    const next = (0, import_suncalc.getTimes)(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
+    const next = this.getTimes(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
     let astro;
     switch (data.astroTime) {
       case "sunrise":
@@ -247,6 +259,10 @@ class MessageService {
     new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
     return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
   }
+  /**
+   * @param schedule schedule json
+   * @param data json schedule
+   */
   async addTrigger(schedule, data) {
     const state = data == null ? void 0 : data.dataId.split(".");
     let triggerBuilder;
@@ -270,6 +286,11 @@ class MessageService {
     }
     schedule.addTrigger(triggerBuilder.build());
   }
+  /**
+   * @param schedule schedule json
+   * @param triggerString json trigger
+   * @param dataId objectId
+   */
   async updateOneTimeTrigger(schedule, triggerString, dataId) {
     let updated;
     if (isNaN(new Date(triggerString.date).getTime())) {
@@ -288,6 +309,10 @@ class MessageService {
     }
     schedule.updateTrigger(updated);
   }
+  /**
+   * @param schedule schedule json
+   * @param data json schedule
+   */
   async addOneTimeTrigger(schedule, data) {
     const t = JSON.parse(data.trigger);
     const id = data.dataId.split(".");
@@ -304,6 +329,11 @@ class MessageService {
     const trigger = (await this.createOnOffScheduleSerializer(data.dataId)).getTriggerSerializer(schedule).deserialize(JSON.stringify(t));
     schedule.addTrigger(trigger);
   }
+  /**
+   * @param schedule schedule json
+   * @param triggerString json trigger
+   * @param dataId objectId
+   */
   async updateTrigger(schedule, triggerString, dataId) {
     var _a;
     let updated;
@@ -316,6 +346,9 @@ class MessageService {
     }
     schedule.updateTrigger(updated);
   }
+  /**
+   * @param data json schedule
+   */
   async updateViews(data) {
     if (data) {
       if (data.newId && data.newId.endsWith(".data")) {
@@ -360,6 +393,10 @@ class MessageService {
       }
     }
   }
+  /**
+   * @param schedule schedule json
+   * @param data json schedule
+   */
   async changeOnOffSchedulesSwitchedValues(schedule, data) {
     if (!(schedule instanceof import_OnOffSchedule.OnOffSchedule)) {
       this.adapter.log.error(`Cannot change switched values when schedule type is not OnOffSchedule`);
@@ -425,6 +462,10 @@ class MessageService {
     schedule.setOffAction(this.changeSwitchedValueOfOnOffScheduleAction(schedule.getOffAction(), data));
     return;
   }
+  /**
+   * @param schedule schedule json
+   * @param stateIds objectId
+   */
   async changeOnOffSchedulesSwitchedIds(schedule, stateIds) {
     if (!(schedule instanceof import_OnOffSchedule.OnOffSchedule)) {
       this.adapter.log.error(`Cannot change switched ids when schedule type is not OnOffSchedule`);
@@ -462,6 +503,11 @@ class MessageService {
     schedule.getOffAction().setIdsOfStatesToSet(stateIds);
     return;
   }
+  /**
+   * @param action action
+   * @param data json schedule
+   * @returns type
+   */
   changeSwitchedValueOfOnOffScheduleAction(action, data) {
     switch (data.valueType) {
       case "boolean":
@@ -485,6 +531,10 @@ class MessageService {
     this.triggerTimeout = null;
     return Promise.resolve(true);
   }
+  /**
+   * @param current array trigger
+   * @returns next array id
+   */
   getNextTriggerId(current) {
     const numbers = current.map((t) => t.getId()).map((id) => Number.parseInt(id, 10)).filter((id) => !Number.isNaN(id)).sort((a, b) => a - b);
     let newId = 0;

@@ -19,7 +19,10 @@ export class OneTimeTriggerSerializer implements Serializer<Trigger> {
     ) {}
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize Deserialize
+     * @returns OneTimeTracker
      */
     public deserialize(stringToDeserialize: string): Trigger {
         const json = JSON.parse(stringToDeserialize);
@@ -42,7 +45,10 @@ export class OneTimeTriggerSerializer implements Serializer<Trigger> {
     }
 
     /**
+     * Serialize
+     *
      * @param objectToSerialize Serialize
+     * @returns trigger or adapter crash
      */
     public serialize(objectToSerialize: Trigger): string {
         if (objectToSerialize == null) {
@@ -64,6 +70,8 @@ export class OneTimeTriggerSerializer implements Serializer<Trigger> {
 
     /**
      * getType
+     *
+     * @returns action on/off
      */
     getType(): string {
         return OneTimeTrigger.prototype.constructor.name;

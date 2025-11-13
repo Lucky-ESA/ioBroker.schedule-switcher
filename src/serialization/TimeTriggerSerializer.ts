@@ -15,7 +15,10 @@ export class TimeTriggerSerializer implements Serializer<Trigger> {
     constructor(private readonly actionSerializer: UniversalSerializer<Action>) {}
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize Trigger
+     * @returns action or crash adapter
      */
     public deserialize(stringToDeserialize: string): Trigger {
         const json = JSON.parse(stringToDeserialize);
@@ -35,7 +38,10 @@ export class TimeTriggerSerializer implements Serializer<Trigger> {
     }
 
     /**
+     * Serialize
+     *
      * @param objectToSerialize Trigger
+     * @returns action or crash adapter
      */
     public serialize(objectToSerialize: Trigger): string {
         if (objectToSerialize == null) {
@@ -59,6 +65,8 @@ export class TimeTriggerSerializer implements Serializer<Trigger> {
 
     /**
      * getType
+     *
+     * @returns action on/off
      */
     getType(): string {
         return TimeTrigger.prototype.constructor.name;

@@ -25,7 +25,10 @@ export class ActionReferenceSerializer implements Serializer<Action> {
     }
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize Action
+     * @returns action or crash adapter
      */
     deserialize(stringToDeserialize: string): Action {
         const json = JSON.parse(stringToDeserialize);
@@ -40,7 +43,10 @@ export class ActionReferenceSerializer implements Serializer<Action> {
     }
 
     /**
+     * Serialize
+     *
      * @param objectToSerialize Action
+     * @returns action or crash adapter
      */
     serialize(objectToSerialize: Action): string {
         if (objectToSerialize == null) {
@@ -65,6 +71,8 @@ export class ActionReferenceSerializer implements Serializer<Action> {
 
     /**
      * getType
+     *
+     * @returns reference
      */
     getType(): string {
         return this.typeToReference;

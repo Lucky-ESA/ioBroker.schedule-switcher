@@ -58,6 +58,8 @@ class OneTimeTrigger {
   }
   /**
    * getAction
+   *
+   * @returns execute
    */
   getAction() {
     return {
@@ -107,7 +109,7 @@ class OneTimeTrigger {
     return this.timedate;
   }
   /**
-   * getData
+   * @returns schedule
    */
   getData() {
     return {

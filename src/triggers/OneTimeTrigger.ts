@@ -52,6 +52,8 @@ export class OneTimeTrigger implements Trigger, Destroyable {
 
     /**
      * getAction
+     *
+     * @returns execute
      */
     public getAction(): Action {
         return {
@@ -108,7 +110,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
     }
 
     /**
-     * getData
+     * @returns schedule
      */
     public getData(): any {
         return {

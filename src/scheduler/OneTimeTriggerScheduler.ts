@@ -29,6 +29,8 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
 
     /**
      * forType
+     *
+     * @returns trigger action on/off
      */
     public forType(): string {
         return OneTimeTrigger.prototype.constructor.name;
@@ -91,6 +93,12 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
         this.registered.forEach(r => this.unregister(r[0]));
     }
 
+    /**
+     * create next astro schedule
+     *
+     * @param trigger trigger
+     * @returns trigger or null
+     */
     private getAssociatedJob(trigger: OneTimeTrigger): Job | null {
         const entry = this.registered.find(r => r[0] === trigger);
         if (entry) {
@@ -100,6 +108,11 @@ export class OneTimeTriggerScheduler extends TriggerScheduler {
         return null;
     }
 
+    /**
+     * Remove trigger
+     *
+     * @param trigger trigger
+     */
     private removeTrigger(trigger: OneTimeTrigger): void {
         this.registered = this.registered.filter(r => r[0] !== trigger);
     }

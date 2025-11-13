@@ -43,6 +43,7 @@ var import_UniversalSerializer = require("./serialization/UniversalSerializer");
 var import_IoBrokerLoggingService = require("./services/IoBrokerLoggingService");
 var import_IoBrokerStateService = require("./services/IoBrokerStateService");
 var import_IoBrokerValidationState = require("./services/IoBrokerValidationState");
+var import_IoBrokerValidationView = require("./services/IoBrokerValidationView");
 var import_MessageService = require("./services/MessageService");
 class ScheduleSwitcher extends utils.Adapter {
   scheduleIdToSchedule = /* @__PURE__ */ new Map();
@@ -56,6 +57,7 @@ class ScheduleSwitcher extends utils.Adapter {
   visWidgetOverview = new import_VisWidgetOverview.VisWidgetOverview(this);
   validation;
   stateService = new import_IoBrokerStateService.IoBrokerStateService(this);
+  validationView = new import_IoBrokerValidationView.IoBrokerValidationView(this);
   constructor(options = {}) {
     super({
       ...options,
@@ -65,9 +67,6 @@ class ScheduleSwitcher extends utils.Adapter {
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
-    this.widgetControl = null;
-    this.nextAstroTime = null;
-    this.nextActionTime = null;
     this.setCountTriggerStart = null;
   }
   getEnabledIdFromScheduleId(scheduleId) {
@@ -80,7 +79,7 @@ class ScheduleSwitcher extends utils.Adapter {
    * Is called when databases are connected and adapter received configuration.
    */
   async onReady() {
-    var _a, _b, _c, _d;
+    var _a, _b, _c;
     if (!this.config.usehtml) {
       await this.delObjectAsync("html", { recursive: true });
     }
@@ -98,9 +97,9 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.initValidation();
     await this.initMessageService();
     await this.fixStateStructure(this.config.schedules);
-    await ((_a = this.validation) == null ? void 0 : _a.validationView(utils.getAbsoluteDefaultDataDir()));
-    await ((_b = this.validation) == null ? void 0 : _b.setNextAstroTime(false));
-    await ((_c = this.validation) == null ? void 0 : _c.setActionTime());
+    await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
+    await ((_a = this.validation) == null ? void 0 : _a.setNextAstroTime(false));
+    await ((_b = this.validation) == null ? void 0 : _b.setActionTime());
     const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
     for (const id in record) {
       if (id.toString().indexOf(".data") !== -1) {
@@ -115,7 +114,7 @@ class ScheduleSwitcher extends utils.Adapter {
               stateVal.active = false;
               await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
             }
-            await ((_d = this.validation) == null ? void 0 : _d.validation(id, stateVal, false));
+            await ((_c = this.validation) == null ? void 0 : _c.validation(id, stateVal, false));
             this.log.debug(`Start: ${id} - ${JSON.stringify(stateVal)}`);
             if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
               await this.onScheduleChange(id, JSON.stringify(stateVal));
@@ -130,29 +129,22 @@ class ScheduleSwitcher extends utils.Adapter {
         }
       }
     }
-    await this.refreshAstroTime();
-    await this.refreshActionTime();
+    this.refreshAstroTime();
+    this.refreshActionTime();
     await this.vishtmltable.updateHTML();
     this.subscribeStates(`*`);
-    this.widgetControl = this.setInterval(
-      async () => {
-        var _a2;
-        await ((_a2 = this.validation) == null ? void 0 : _a2.validationView(utils.getAbsoluteDefaultDataDir()));
-      },
-      24 * 60 * 1e3 * 60
-    );
+    await this.visWidgetOverview.createOverview();
+    this.refreshValiditionView();
     this.setCountTriggerStart = this.setTimeout(async () => {
       var _a2;
       await ((_a2 = this.messageService) == null ? void 0 : _a2.setCountTrigger());
       this.setCountTriggerStart = void 0;
       this.moreLogs();
-    }, 3e3);
-    await this.visWidgetOverview.createOverview();
+    }, 5 * 1e3);
   }
   async onUnload(callback) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     this.log.info("cleaning everything up...");
-    this.widgetControl && this.clearInterval(this.widgetControl);
     this.setCountTriggerStart && this.clearTimeout(this.setCountTriggerStart);
     for (const id of this.scheduleIdToSchedule.keys()) {
       try {
@@ -171,11 +163,12 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.vishtmltable.destroy();
     await ((_b = this.nextAstroTime) == null ? void 0 : _b.cancel());
     await ((_c = this.nextActionTime) == null ? void 0 : _c.cancel());
-    await ((_d = this.messageService) == null ? void 0 : _d.destroy());
+    await ((_d = this.widgetControl) == null ? void 0 : _d.cancel());
+    await ((_e = this.messageService) == null ? void 0 : _e.destroy());
     await this.stateService.destroy();
     callback();
   }
-  async refreshAstroTime() {
+  refreshAstroTime() {
     const rule = new import_node_schedule.RecurrenceRule();
     rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
     rule.hour = 2;
@@ -186,10 +179,8 @@ class ScheduleSwitcher extends utils.Adapter {
       this.log.info("Start Update Astrotime!");
       await ((_a = this.validation) == null ? void 0 : _a.setNextAstroTime(true));
     });
-    this.moreLogs();
-    return Promise.resolve();
   }
-  async refreshActionTime() {
+  refreshActionTime() {
     const rule = new import_node_schedule.RecurrenceRule();
     rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
     rule.hour = 0;
@@ -200,8 +191,17 @@ class ScheduleSwitcher extends utils.Adapter {
       await ((_a = this.validation) == null ? void 0 : _a.setActionTime());
       await this.visWidgetOverview.createOverview();
     });
-    this.moreLogs();
-    return Promise.resolve();
+  }
+  refreshValiditionView() {
+    const rule = new import_node_schedule.RecurrenceRule();
+    rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
+    rule.hour = 3;
+    rule.minute = 4;
+    rule.second = 22;
+    this.widgetControl = (0, import_node_schedule.scheduleJob)(rule, async () => {
+      this.log.info("Start Update View!");
+      await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
+    });
   }
   moreLogs() {
     var _a;
@@ -332,6 +332,10 @@ class ScheduleSwitcher extends utils.Adapter {
           case "update-html":
             void this.vishtmltable.updateStateHTML();
             this.log.debug(`Finished onMessage update HTML`);
+            break;
+          case "update-view":
+            void this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
+            this.log.debug(`Finished onMessage update view`);
             break;
           case "getActiv":
             if (obj && obj.message && obj.message.schedule != null) {
@@ -685,7 +689,8 @@ class ScheduleSwitcher extends utils.Adapter {
       this,
       await this.getCoordinate(),
       this.validation,
-      this.vishtmltable
+      this.vishtmltable,
+      import_suncalc.getTimes
     );
   }
   async fixStateStructure(statesInSettings) {

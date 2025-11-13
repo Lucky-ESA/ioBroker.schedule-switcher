@@ -17,6 +17,8 @@ export class UniversalSerializer<T extends Record<string, any>> implements Seria
     }
 
     /**
+     * UseSerializer
+     *
      * @param serializer Serializer
      */
     public useSerializer(serializer: Serializer<T>): void {
@@ -28,19 +30,10 @@ export class UniversalSerializer<T extends Record<string, any>> implements Seria
     }
 
     /**
-     * @param object constructor
-     */
-    public serialize(object: T): string {
-        this.logger.logDebug(`object.constructor.name: ${object.constructor.name}`);
-        const serializer = this.serializers.find(s => s.getType() === object.constructor.name);
-        if (serializer) {
-            return serializer.serialize(object);
-        }
-        throw new Error(`No serializer for object of type ${object.constructor.name} found`);
-    }
-
-    /**
+     * Deserialize
+     *
      * @param stringToDeserialize Deserialize
+     * @returns action or crash adapter
      */
     public deserialize(stringToDeserialize: string): T {
         const json = JSON.parse(stringToDeserialize);
@@ -52,7 +45,24 @@ export class UniversalSerializer<T extends Record<string, any>> implements Seria
     }
 
     /**
+     * Serialize
+     *
+     * @param object constructor
+     * @returns action or crash adapter
+     */
+    public serialize(object: T): string {
+        this.logger.logDebug(`object.constructor.name: ${object.constructor.name}`);
+        const serializer = this.serializers.find(s => s.getType() === object.constructor.name);
+        if (serializer) {
+            return serializer.serialize(object);
+        }
+        throw new Error(`No serializer for object of type ${object.constructor.name} found`);
+    }
+
+    /**
      * getType
+     *
+     * @returns string
      */
     getType(): string {
         return "Universal";

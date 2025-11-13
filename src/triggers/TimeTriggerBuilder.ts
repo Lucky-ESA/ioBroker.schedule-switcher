@@ -88,6 +88,8 @@ export class TimeTriggerBuilder extends DailyTriggerBuilder implements Builder<T
 
     /**
      * TimeTrigger
+     *
+     * @returns trigger
      */
     public build(): TimeTrigger {
         return new TimeTrigger(

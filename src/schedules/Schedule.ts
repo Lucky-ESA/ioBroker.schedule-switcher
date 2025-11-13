@@ -48,6 +48,8 @@ export abstract class Schedule implements Destroyable {
 
     /**
      * isEnabled
+     *
+     * @returns status
      */
     public isEnabled(): boolean {
         return this.enabled;
@@ -55,6 +57,8 @@ export abstract class Schedule implements Destroyable {
 
     /**
      * getName
+     *
+     * @returns namr
      */
     public getName(): string {
         return this.name;
@@ -62,6 +66,8 @@ export abstract class Schedule implements Destroyable {
 
     /**
      * getTriggers
+     *
+     * @returns trigger
      */
     public getTriggers(): Trigger[] {
         return this.triggers;
@@ -129,6 +135,9 @@ export abstract class Schedule implements Destroyable {
         this.triggers = [];
     }
 
+    /**
+     * @param trigger Trigger
+     */
     private removeTriggerAndUnregister(trigger: Trigger): void {
         if (this.isEnabled()) {
             this.triggerScheduler.unregister(trigger);
@@ -136,6 +145,10 @@ export abstract class Schedule implements Destroyable {
         this.triggers = this.triggers.filter(t => t.getId() !== trigger.getId());
     }
 
+    /**
+     * @param id id Trigger
+     * @returns trigger
+     */
     private findTriggerById(id: string): Trigger | undefined {
         return this.getTriggers().find(t => t.getId() === id);
     }

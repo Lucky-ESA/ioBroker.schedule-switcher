@@ -50,6 +50,8 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 
     /**
      * getIdsOfStatesToSet
+     *
+     * @returns idsOfStatesToSet
      */
     public getIdsOfStatesToSet(): string[] {
         return this.idsOfStatesToSet;
@@ -65,6 +67,8 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 
     /**
      * getOnValue
+     *
+     * @returns onValue
      */
     public getOnValue(): T {
         return this.onValue;
@@ -72,6 +76,8 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 
     /**
      * getOffValue
+     *
+     * @returns offValue
      */
     public getOffValue(): T {
         return this.offValue;
@@ -79,6 +85,8 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 
     /**
      * getBooleanValue
+     *
+     * @returns booleanValue
      */
     public getBooleanValue(): boolean {
         return this.booleanValue;
@@ -86,6 +94,8 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 
     /**
      * getValueType
+     *
+     * @returns valuetype
      */
     public getValueType(): string {
         return this.valueType;
@@ -103,6 +113,8 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 
     /**
      * toBooleanValueType
+     *
+     * @returns OnOffStateAction
      */
     public toBooleanValueType(): OnOffStateAction<boolean> {
         return new OnOffStateAction(

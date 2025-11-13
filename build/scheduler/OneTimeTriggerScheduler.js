@@ -43,6 +43,8 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   triggerTimeout;
   /**
    * forType
+   *
+   * @returns trigger action on/off
    */
   forType() {
     return import_OneTimeTrigger.OneTimeTrigger.prototype.constructor.name;
@@ -100,6 +102,12 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     this.triggerTimeout && this.adapter.clearTimeout(this.triggerTimeout);
     this.registered.forEach((r) => this.unregister(r[0]));
   }
+  /**
+   * create next astro schedule
+   *
+   * @param trigger trigger
+   * @returns trigger or null
+   */
   getAssociatedJob(trigger) {
     const entry = this.registered.find((r) => r[0] === trigger);
     if (entry) {
@@ -108,6 +116,11 @@ class OneTimeTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
     this.loadregister();
     return null;
   }
+  /**
+   * Remove trigger
+   *
+   * @param trigger trigger
+   */
   removeTrigger(trigger) {
     this.registered = this.registered.filter((r) => r[0] !== trigger);
   }

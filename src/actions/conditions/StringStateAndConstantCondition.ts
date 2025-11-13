@@ -38,6 +38,8 @@ export class StringStateAndConstantCondition implements Condition {
 
     /**
      * evaluate
+     *
+     * @returns result
      */
     public async evaluate(): Promise<boolean> {
         const stateValue = String(await this.stateService.getForeignState(this.stateId));
@@ -52,6 +54,8 @@ export class StringStateAndConstantCondition implements Condition {
 
     /**
      * getConstant
+     *
+     * @returns constant
      */
     public getConstant(): string {
         return this.constant;
@@ -59,6 +63,8 @@ export class StringStateAndConstantCondition implements Condition {
 
     /**
      * getStateId
+     *
+     * @returns stateId
      */
     public getStateId(): string {
         return this.stateId;
@@ -66,6 +72,8 @@ export class StringStateAndConstantCondition implements Condition {
 
     /**
      * getSign
+     *
+     * @returns sign
      */
     public getSign(): EqualitySign {
         return this.sign;
@@ -73,6 +81,8 @@ export class StringStateAndConstantCondition implements Condition {
 
     /**
      * toString
+     *
+     * @returns string
      */
     public toString(): string {
         return `${this.constant} ${this.sign} ${this.stateId}`;

@@ -56,6 +56,8 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
   }
   /**
    * getIdsOfStatesToSet
+   *
+   * @returns idsOfStatesToSet
    */
   getIdsOfStatesToSet() {
     return this.idsOfStatesToSet;
@@ -69,24 +71,32 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
   }
   /**
    * getOnValue
+   *
+   * @returns onValue
    */
   getOnValue() {
     return this.onValue;
   }
   /**
    * getOffValue
+   *
+   * @returns offValue
    */
   getOffValue() {
     return this.offValue;
   }
   /**
    * getBooleanValue
+   *
+   * @returns booleanValue
    */
   getBooleanValue() {
     return this.booleanValue;
   }
   /**
    * getValueType
+   *
+   * @returns valuetype
    */
   getValueType() {
     return this.valueType;
@@ -102,6 +112,8 @@ class OnOffStateAction extends import_BaseStateAction.BaseStateAction {
   }
   /**
    * toBooleanValueType
+   *
+   * @returns OnOffStateAction
    */
   toBooleanValueType() {
     return new OnOffStateAction(

@@ -23,7 +23,10 @@ export class ConditionActionSerializer implements Serializer<Action> {
     }
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize Action
+     * @returns Condition with action
      */
     deserialize(stringToDeserialize: string): Action {
         const json = JSON.parse(stringToDeserialize);
@@ -38,7 +41,10 @@ export class ConditionActionSerializer implements Serializer<Action> {
     }
 
     /**
+     * Serialize
+     *
      * @param objectToSerialize Action
+     * @returns Condition
      */
     serialize(objectToSerialize: Action): string {
         if (objectToSerialize == null) {
@@ -58,6 +64,8 @@ export class ConditionActionSerializer implements Serializer<Action> {
 
     /**
      * getType
+     *
+     * @returns action on/off
      */
     public getType(): string {
         return ConditionAction.prototype.constructor.name;

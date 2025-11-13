@@ -95,6 +95,8 @@ class TimeTriggerBuilder extends import_DailyTriggerBuilder.DailyTriggerBuilder 
   }
   /**
    * TimeTrigger
+   *
+   * @returns trigger
    */
   build() {
     return new import_TimeTrigger.TimeTrigger(

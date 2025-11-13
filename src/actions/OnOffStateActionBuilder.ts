@@ -14,6 +14,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
     /**
      * @param idsOfStatesToSet States
+     * @returns this
      */
     public setIdsOfStatesToSet(idsOfStatesToSet: string[]): OnOffStateActionBuilder<T> {
         this.idsOfStatesToSet = idsOfStatesToSet;
@@ -22,6 +23,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
     /**
      * @param onValue on
+     * @returns this
      */
     public setOnValue(onValue: T): OnOffStateActionBuilder<T> {
         this.onValue = onValue;
@@ -30,6 +32,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
     /**
      * @param offValue off
+     * @returns this
      */
     public setOffValue(offValue: T): OnOffStateActionBuilder<T> {
         this.offValue = offValue;
@@ -38,6 +41,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
     /**
      * @param booleanValue value
+     * @returns this
      */
     public setBooleanValue(booleanValue: boolean): OnOffStateActionBuilder<T> {
         this.booleanValue = booleanValue;
@@ -46,6 +50,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
     /**
      * @param valueType set type
+     * @returns this
      */
     public setValueType(valueType: string): OnOffStateActionBuilder<T> {
         this.valueType = valueType;
@@ -54,6 +59,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
     /**
      * @param stateService setState
+     * @returns this
      */
     public setStateService(stateService: StateService): OnOffStateActionBuilder<T> {
         super.setStateService(stateService);
@@ -62,6 +68,8 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
     /**
      * OnOffStateAction
+     *
+     * @returns OnOffStateAction
      */
     public build(): OnOffStateAction<T> {
         return new OnOffStateAction<T>(

@@ -120,10 +120,17 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
   }
   /**
    * forType
+   *
+   * @returns trigger action on/off
    */
   forType() {
     return import_AstroTrigger.AstroTrigger.prototype.constructor.name;
   }
+  /**
+   * create next astro schedule
+   *
+   * @param trigger trigger
+   */
   tryScheduleTriggerToday(trigger) {
     const now = /* @__PURE__ */ new Date();
     const next = this.nextDate(trigger);
@@ -152,16 +159,39 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
       this.logger.logDebug(`Didn't schedule ${trigger}`);
     }
   }
+  /**
+   * is registered check
+   *
+   * @param trigger trigger
+   * @returns boolean
+   */
   isRegistered(trigger) {
     return this.registered.find((r) => r.getId() === trigger.getId()) != void 0;
   }
+  /**
+   * is schedule today
+   *
+   * @param trigger trigger
+   * @returns boolean
+   */
   isScheduledToday(trigger) {
     return this.scheduled.find((s) => s[0] === trigger.getId()) != void 0;
   }
+  /**
+   * remove trigger
+   *
+   * @param trigger trigger
+   */
   removeScheduled(trigger) {
     this.logger.logDebug(`Scheduled remove ${trigger}`);
     this.scheduled = this.scheduled.filter((s) => s[0] !== trigger.getId());
   }
+  /**
+   * Next date
+   *
+   * @param trigger trigger
+   * @returns Date
+   */
   nextDate(trigger) {
     const next = this.getTimes(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude())[trigger.getAstroTime()];
     next.setMinutes(next.getMinutes() + trigger.getShiftInMinutes());

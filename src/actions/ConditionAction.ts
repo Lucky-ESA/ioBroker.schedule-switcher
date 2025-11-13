@@ -33,6 +33,8 @@ export class ConditionAction implements Action {
 
     /**
      * getAction
+     *
+     * @returns action
      */
     public getAction(): Action {
         return this.action;
@@ -51,6 +53,8 @@ export class ConditionAction implements Action {
 
     /**
      * getCondition
+     *
+     * @returns condition
      */
     public getCondition(): Condition {
         return this.condition;

@@ -31,6 +31,8 @@ class StringStateAndStateConditionSerializer {
     this.stateService = stateService;
   }
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize Condition
    */
   deserialize(stringToDeserialize) {
@@ -44,6 +46,8 @@ class StringStateAndStateConditionSerializer {
     return new import_StringStateAndStateCondition.StringStateAndStateCondition(json.stateId1, json.stateId2, json.sign, this.stateService);
   }
   /**
+   * Serialize
+   *
    * @param objectToSerialize Condition
    */
   serialize(objectToSerialize) {
@@ -62,6 +66,8 @@ class StringStateAndStateConditionSerializer {
   }
   /**
    * getType
+   *
+   * @returns Constructor name
    */
   getType() {
     return import_StringStateAndStateCondition.StringStateAndStateCondition.prototype.constructor.name;

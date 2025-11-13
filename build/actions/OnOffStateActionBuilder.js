@@ -31,6 +31,7 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   valueType = "";
   /**
    * @param idsOfStatesToSet States
+   * @returns this
    */
   setIdsOfStatesToSet(idsOfStatesToSet) {
     this.idsOfStatesToSet = idsOfStatesToSet;
@@ -38,6 +39,7 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   }
   /**
    * @param onValue on
+   * @returns this
    */
   setOnValue(onValue) {
     this.onValue = onValue;
@@ -45,6 +47,7 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   }
   /**
    * @param offValue off
+   * @returns this
    */
   setOffValue(offValue) {
     this.offValue = offValue;
@@ -52,6 +55,7 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   }
   /**
    * @param booleanValue value
+   * @returns this
    */
   setBooleanValue(booleanValue) {
     this.booleanValue = booleanValue;
@@ -59,6 +63,7 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   }
   /**
    * @param valueType set type
+   * @returns this
    */
   setValueType(valueType) {
     this.valueType = valueType;
@@ -66,6 +71,7 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   }
   /**
    * @param stateService setState
+   * @returns this
    */
   setStateService(stateService) {
     super.setStateService(stateService);
@@ -73,6 +79,8 @@ class OnOffStateActionBuilder extends import_BaseStateActionBuilder.BaseStateAct
   }
   /**
    * OnOffStateAction
+   *
+   * @returns OnOffStateAction
    */
   build() {
     return new import_OnOffStateAction.OnOffStateAction(

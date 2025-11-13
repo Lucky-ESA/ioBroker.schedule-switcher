@@ -114,11 +114,18 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 
     /**
      * forType
+     *
+     * @returns trigger action on/off
      */
     public forType(): string {
         return AstroTrigger.prototype.constructor.name;
     }
 
+    /**
+     * create next astro schedule
+     *
+     * @param trigger trigger
+     */
     private tryScheduleTriggerToday(trigger: AstroTrigger): void {
         const now = new Date();
         const next = this.nextDate(trigger);
@@ -158,19 +165,42 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         }
     }
 
+    /**
+     * is registered check
+     *
+     * @param trigger trigger
+     * @returns boolean
+     */
     private isRegistered(trigger: AstroTrigger): boolean {
         return this.registered.find(r => r.getId() === trigger.getId()) != undefined;
     }
 
+    /**
+     * is schedule today
+     *
+     * @param trigger trigger
+     * @returns boolean
+     */
     private isScheduledToday(trigger: AstroTrigger): boolean {
         return this.scheduled.find(s => s[0] === trigger.getId()) != undefined;
     }
 
+    /**
+     * remove trigger
+     *
+     * @param trigger trigger
+     */
     private removeScheduled(trigger: AstroTrigger): void {
         this.logger.logDebug(`Scheduled remove ${trigger}`);
         this.scheduled = this.scheduled.filter(s => s[0] !== trigger.getId());
     }
 
+    /**
+     * Next date
+     *
+     * @param trigger trigger
+     * @returns Date
+     */
     private nextDate(trigger: AstroTrigger): Date {
         const next = this.getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude())[
             trigger.getAstroTime()

@@ -31,7 +31,10 @@ class TimeTriggerSerializer {
     this.actionSerializer = actionSerializer;
   }
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize Trigger
+   * @returns action or crash adapter
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -41,7 +44,10 @@ class TimeTriggerSerializer {
     return new import_TimeTriggerBuilder.TimeTriggerBuilder().setAction(this.actionSerializer.deserialize(JSON.stringify(json.action))).setHour(json.hour).setMinute(json.minute).setObjectId(json.objectId).setValueCheck(json.valueCheck).setWeekdays(json.weekdays).setTodayTrigger(json.todayTrigger).setId(json.id).build();
   }
   /**
+   * Serialize
+   *
    * @param objectToSerialize Trigger
+   * @returns action or crash adapter
    */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
@@ -64,6 +70,8 @@ class TimeTriggerSerializer {
   }
   /**
    * getType
+   *
+   * @returns action on/off
    */
   getType() {
     return import_TimeTrigger.TimeTrigger.prototype.constructor.name;

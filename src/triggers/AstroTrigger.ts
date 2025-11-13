@@ -96,6 +96,8 @@ export class AstroTrigger extends BaseDailyTrigger {
 
     /**
      * toString
+     *
+     * @returns trigger string
      */
     public toString(): string {
         return (

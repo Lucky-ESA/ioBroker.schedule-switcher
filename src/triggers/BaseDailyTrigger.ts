@@ -25,6 +25,8 @@ export abstract class BaseDailyTrigger implements DailyTrigger {
 
     /**
      * getWeekdays
+     *
+     * @returns weekdays
      */
     public getWeekdays(): Weekday[] {
         return this.weekdays;
@@ -32,6 +34,8 @@ export abstract class BaseDailyTrigger implements DailyTrigger {
 
     /**
      * getAction
+     *
+     * @returns action
      */
     public getAction(): Action {
         return this.action;
@@ -49,11 +53,18 @@ export abstract class BaseDailyTrigger implements DailyTrigger {
 
     /**
      * getId
+     *
+     * @returns ID
      */
     public getId(): string {
         return this.id;
     }
 
+    /**
+     * checkWeekdays
+     *
+     * @param weekdays check array or crash adapter
+     */
     private checkWeekdays(weekdays: Weekday[]): void {
         if (weekdays == null) {
             throw new Error("Weekdays may not be null or undefined.");
@@ -66,6 +77,12 @@ export abstract class BaseDailyTrigger implements DailyTrigger {
         }
     }
 
+    /**
+     * hasDuplicates
+     *
+     * @param weekdays array
+     * @returns array weekdays
+     */
     private hasDuplicates(weekdays: Weekday[]): boolean {
         return new Set(weekdays).size !== weekdays.length;
     }

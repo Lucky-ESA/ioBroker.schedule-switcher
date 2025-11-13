@@ -93,12 +93,16 @@ export class VisHtmlTable implements htmltable {
         }
     }
 
+    /**
+     * Create HTML
+     */
     private async createHTML(): Promise<void> {
-        this.adapter.log.debug(`Start update HTML!`);
+        this.adapter.log.debug(`Start update HTML! ${JSON.stringify(this.stateVal)}`);
         if (typeof this.stateVal === "object" && Object.keys(this.stateVal).length === 0) {
             return;
         }
         const id = this.htmlVal;
+        this.adapter.log.debug(`HTML: ${JSON.stringify(id)}`);
         let text = "";
         let count = 0;
         let countall = 0;
@@ -357,6 +361,14 @@ export class VisHtmlTable implements htmltable {
         await this.mergeHTML(text, countall, count);
     }
 
+    /**
+     * Next switch
+     *
+     * @param nextDateTime number
+     * @param nextName array
+     * @param nextaction string
+     * @returns next time
+     */
     private nextAction(nextDateTime: number, nextName: NextActionName[], nextaction: string): Promise<string> {
         const action: any = nextName.filter((t: any) => t.getDate === nextDateTime);
         if (action && action.length > 0) {
@@ -366,6 +378,12 @@ export class VisHtmlTable implements htmltable {
         return Promise.resolve(nextaction);
     }
 
+    /**
+     * get week
+     *
+     * @param times Date
+     * @returns week numbers
+     */
     private getWeek(times: Date): Promise<number> {
         const onejan: any = new Date(times.getFullYear(), 0, 1);
         const today: any = new Date(times.getFullYear(), times.getMonth(), times.getDate());
@@ -373,6 +391,13 @@ export class VisHtmlTable implements htmltable {
         return Promise.resolve(Math.ceil(dayOfYear / 7));
     }
 
+    /**
+     * Next event
+     *
+     * @param actual number
+     * @param next number
+     * @returns next event
+     */
     private nextEvent(actual: number, next: number): Promise<number> {
         if (actual === 0) {
             actual = 7;
@@ -383,6 +408,13 @@ export class VisHtmlTable implements htmltable {
         return Promise.resolve(next);
     }
 
+    /**
+     * Next date
+     *
+     * @param now Date
+     * @param trigger json
+     * @returns Date as string
+     */
     private async nextDateSwitch(now: Date, trigger: AllTriggers): Promise<string> {
         let diffDays = 0;
         const nextDay: number =
@@ -402,6 +434,13 @@ export class VisHtmlTable implements htmltable {
         ).toISOString();
     }
 
+    /**
+     * Next switch
+     *
+     * @param array number
+     * @param day getDay()
+     * @returns next getDay
+     */
     private nextActiveDay(array: number[], day: number): Promise<number> {
         array = array.map(val => {
             return val === 0 ? 7 : val;
@@ -411,6 +450,13 @@ export class VisHtmlTable implements htmltable {
         return Promise.resolve(next == undefined ? 0 : next);
     }
 
+    /**
+     * Merge rows with header
+     *
+     * @param htmltext string
+     * @param countall number
+     * @param count number
+     */
     private async mergeHTML(htmltext: string, countall: number, count: number): Promise<void> {
         this.adapter.log.debug(`Start merge HTML code.`);
         const id = this.htmlVal;
@@ -604,6 +650,12 @@ export class VisHtmlTable implements htmltable {
         this.adapter.log.debug(`Save HTML code.`);
     }
 
+    /**
+     * Translate
+     *
+     * @param word string
+     * @returns word
+     */
     private helper_translator(word: string): Promise<string> {
         const all: any = {
             top_last_update: {
@@ -2068,8 +2120,6 @@ export class VisHtmlTable implements htmltable {
             def: "",
         };
         await this.createDataPoint("html.html_code", common, "state");
-        val = await this.adapter.getStateAsync("html.html_code");
-        this.htmlVal.html_code = val?.val;
     }
 
     private loadTitle(val: string): Promise<string> {
@@ -2104,6 +2154,14 @@ export class VisHtmlTable implements htmltable {
         return lang[val][this.lang];
     }
 
+    /**
+     * Create objects
+     *
+     * @param ident string
+     * @param common object
+     * @param types object
+     * @param native object | null
+     */
     private async createDataPoint(ident: string, common: any, types: any, native: any = null): Promise<any> {
         try {
             const nativvalue = !native ? { native: {} } : { native: native };
@@ -2176,26 +2234,27 @@ export class VisHtmlTable implements htmltable {
      */
     public async updateStateHTML(): Promise<void> {
         if (!this.adapter.config.usehtml) {
-            this.adapter.log.debug(`Catch HTLM update.`);
-            return Promise.resolve();
+            return;
         }
         if (this.works) {
+            this.adapter.log.debug(`Catch HTML update.`);
             return;
         }
         this.works = true;
         try {
             await this.sleep(60 * 1000);
             await this.updateHTML();
-            this.works = false;
-        } catch {
-            this.works = false;
+        } catch (e) {
+            this.adapter.log.error(`HTML error ${e}`);
         }
         this.adapter.log.debug(`Finished updateStateHTML.`);
-        return Promise.resolve();
+        this.works = false;
     }
 
     /**
      * destroy all
+     *
+     * @returns boolean
      */
     public destroy(): Promise<boolean> {
         this.delayTimeout && this.adapter.clearTimeout(this.delayTimeout);
@@ -2204,6 +2263,8 @@ export class VisHtmlTable implements htmltable {
     }
 
     /**
+     * Sleep
+     *
      * @param ms milliseconds
      */
     private sleep(ms: number): Promise<void> {

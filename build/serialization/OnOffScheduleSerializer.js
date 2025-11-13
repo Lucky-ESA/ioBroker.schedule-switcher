@@ -38,7 +38,10 @@ class OnOffScheduleSerializer {
     this.loggingService = loggingService;
   }
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize OnOffSchedule
+   * @returns schedule or crash adapter
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -59,7 +62,10 @@ class OnOffScheduleSerializer {
     throw new Error("Actions are not OnOffStateActions");
   }
   /**
+   * Serialize
+   *
    * @param schedule OnOffSchedule
+   * @returns all action
    */
   serialize(schedule) {
     const json = {
@@ -74,12 +80,17 @@ class OnOffScheduleSerializer {
   }
   /**
    * getType
+   *
+   * @returns action on/off
    */
   getType() {
     return "OnOffSchedule";
   }
   /**
+   * getTriggerSerializer
+   *
    * @param schedule OnOffSchedule
+   * @returns trigger or crash adapter
    */
   getTriggerSerializer(schedule) {
     if (schedule == null) {
@@ -88,6 +99,11 @@ class OnOffScheduleSerializer {
     this.useActionReferenceSerializer(schedule);
     return this.triggerSerializer;
   }
+  /**
+   * useActionReferenceSerializer
+   *
+   * @param schedule OnOffSchedule
+   */
   useActionReferenceSerializer(schedule) {
     this.actionSerializer.useSerializer(
       new import_ActionReferenceSerializer.ActionReferenceSerializer(

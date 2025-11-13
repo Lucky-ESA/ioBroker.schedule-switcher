@@ -19,7 +19,10 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
     }
 
     /**
+     * Deserialize
+     *
      * @param stringToDeserialize Action
+     * @returns action or crash adapter
      */
     deserialize(stringToDeserialize: string): Action {
         const json = JSON.parse(stringToDeserialize);
@@ -39,7 +42,10 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
     }
 
     /**
+     * Serialize
+     *
      * @param objectToSerialize Action
+     * @returns action or crash adapter
      */
     serialize(objectToSerialize: Action): string {
         if (objectToSerialize == null) {
@@ -60,11 +66,19 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
 
     /**
      * getType
+     *
+     * @returns action on/off
      */
     public getType(): string {
         return OnOffStateAction.prototype.constructor.name;
     }
 
+    /**
+     * hasCorrectValueType
+     *
+     * @param json action json
+     * @returns boolean
+     */
     private hasCorrectValueType(json: any): boolean {
         return ["string", "number", "boolean"].indexOf(json.valueType) != -1;
     }

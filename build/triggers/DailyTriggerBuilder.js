@@ -49,12 +49,21 @@ class DailyTriggerBuilder {
     this.weekdays = weekdays;
     return this;
   }
+  /**
+   * @returns this
+   */
   getAction() {
     return this.action;
   }
+  /**
+   * @returns this
+   */
   getWeekdays() {
     return this.weekdays;
   }
+  /**
+   * @returns this
+   */
   getId() {
     return this.id;
   }

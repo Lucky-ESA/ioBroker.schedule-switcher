@@ -67,6 +67,7 @@ class VisWidgetOverview {
    * createHeader
    *
    * @param dataId Data Id
+   * @returns html header
    */
   createHeader(dataId) {
     return `
@@ -207,6 +208,7 @@ class VisWidgetOverview {
    * @param vis vis-2 or vis
    * @param view view name
    * @param widget widget id
+   * @returns html rows
    */
   createRow(isodd, json, vis, view, widget) {
     let count = 0;
@@ -265,6 +267,7 @@ class VisWidgetOverview {
    *
    * @param isodd bg color
    * @param val error message
+   * @returns error row
    */
   createErrorRow(isodd, val) {
     return `

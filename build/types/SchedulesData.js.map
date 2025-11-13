@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/types/SchedulesData.ts"],
+  "sourcesContent": ["/**\n * schedulesData\n */\nexport interface schedulesData {\n    /**\n     * stateId\n     */\n    stateId: number | null;\n    /**\n     * active\n     */\n    active: string | null;\n    /**\n     * count\n     */\n    count: string | null;\n    /**\n     * objectid\n     */\n    objectid: string | null;\n    /**\n     * objectname\n     */\n    objectname: string | null;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

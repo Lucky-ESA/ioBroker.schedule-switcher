@@ -33,7 +33,10 @@ class OnOffStateActionSerializer {
     this.builder.setStateService(stateService);
   }
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize Action
+   * @returns action or crash adapter
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -46,7 +49,10 @@ class OnOffStateActionSerializer {
     return this.builder.setOffValue(json.offValue).setOnValue(json.onValue).setBooleanValue(json.booleanValue).setIdsOfStatesToSet(json.idsOfStatesToSet).setValueType(json.valueType).build();
   }
   /**
+   * Serialize
+   *
    * @param objectToSerialize Action
+   * @returns action or crash adapter
    */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
@@ -66,10 +72,18 @@ class OnOffStateActionSerializer {
   }
   /**
    * getType
+   *
+   * @returns action on/off
    */
   getType() {
     return import_OnOffStateAction.OnOffStateAction.prototype.constructor.name;
   }
+  /**
+   * hasCorrectValueType
+   *
+   * @param json action json
+   * @returns boolean
+   */
   hasCorrectValueType(json) {
     return ["string", "number", "boolean"].indexOf(json.valueType) != -1;
   }

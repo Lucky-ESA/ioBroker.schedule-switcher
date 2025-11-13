@@ -33,7 +33,10 @@ class OneTimeTriggerSerializer {
     this.deleteTrigger = deleteTrigger;
   }
   /**
+   * Deserialize
+   *
    * @param stringToDeserialize Deserialize
+   * @returns OneTimeTracker
    */
   deserialize(stringToDeserialize) {
     const json = JSON.parse(stringToDeserialize);
@@ -47,7 +50,10 @@ class OneTimeTriggerSerializer {
     }).build();
   }
   /**
+   * Serialize
+   *
    * @param objectToSerialize Serialize
+   * @returns trigger or adapter crash
    */
   serialize(objectToSerialize) {
     if (objectToSerialize == null) {
@@ -68,6 +74,8 @@ class OneTimeTriggerSerializer {
   }
   /**
    * getType
+   *
+   * @returns action on/off
    */
   getType() {
     return import_OneTimeTrigger.OneTimeTrigger.prototype.constructor.name;

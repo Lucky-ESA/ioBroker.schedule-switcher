@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/types/ValidationView.ts"],
+  "sourcesContent": ["/**\n * ValidationView\n */\nexport interface ValidationView {\n    /**\n     * view\n     */\n    validationView(utils: string): Promise<void>;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}
