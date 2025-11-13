@@ -189,7 +189,6 @@ class ScheduleSwitcher extends utils.Adapter {
       var _a;
       this.log.info("Start Update next time switch!");
       await ((_a = this.validation) == null ? void 0 : _a.setActionTime());
-      await this.visWidgetOverview.createOverview();
     });
   }
   refreshValiditionView() {
@@ -201,6 +200,7 @@ class ScheduleSwitcher extends utils.Adapter {
     this.widgetControl = (0, import_node_schedule.scheduleJob)(rule, async () => {
       this.log.info("Start Update View!");
       await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
+      await this.visWidgetOverview.createOverview();
     });
   }
   moreLogs() {
