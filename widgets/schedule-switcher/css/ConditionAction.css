@@ -1,5 +1,7 @@
 .button {
     filter: var(--ts-widget-img-btn-filter, invert(1));
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
     align-self: center;
     cursor: pointer;
 }

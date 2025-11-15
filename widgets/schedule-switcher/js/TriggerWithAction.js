@@ -23,6 +23,20 @@
             this.sr.querySelector("#checking").addEventListener("click", this.onCheckClick.bind(this));
             this.sr.querySelector(".button.cancel_bottom").addEventListener("click", this.toggleEdit.bind(this));
             this.sr.querySelector(".button.save_bottom").addEventListener("click", this.onSaveClick.bind(this));
+            let iconElement = this.sr.querySelector("#edit_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("edit", this.widgetId);
+            iconElement = this.sr.querySelector("#delete_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("delete", this.widgetId);
+            iconElement = this.sr.querySelector("#save_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("save", this.widgetId);
+            iconElement = this.sr.querySelector("#cancel_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("cancel", this.widgetId);
+            iconElement = this.sr.querySelector("#save_src_bottom");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("save", this.widgetId);
+            iconElement = this.sr.querySelector("#cancel_src_bottom");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("cancel", this.widgetId);
+            iconElement = this.sr.querySelector("#add_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("add", this.widgetId);
         }
 
         attributeChangedCallback(attr) {
@@ -33,6 +47,10 @@
             } else if (attr === "edit") {
                 this.onEditChange();
             }
+        }
+
+        get widgetId() {
+            return this.getAttribute("widgetid");
         }
 
         get trigger() {
@@ -198,19 +216,19 @@
 						</div>
 						<app-weekdays-schedule edit="false"></app-weekdays-schedule>
                         <div class="header">
-                            <img id="check_value" class="button check" width="28px" height="28px"/>
-                            <img class="button edit" src="widgets/schedule-switcher/img/edit-24px.svg" width="28px"
-                                height="28px" title="${vis.binds["schedule-switcher"].translate("editTrigger")}"/>
-                            <img class="button delete" src="widgets/schedule-switcher/img/delete-24px.svg" width="28px"
-                                height="28px" title="${vis.binds["schedule-switcher"].translate("removeTrigger")}"/>
+                            <img id="check_value" class="button check"/>
+                            <img id="edit_src" class="button edit"
+                                title="${vis.binds["schedule-switcher"].translate("editTrigger")}"/>
+                            <img id="delete_src" class="button delete"
+                                title="${vis.binds["schedule-switcher"].translate("removeTrigger")}"/>
                         </div>
 					</div>
 					<div class="container edit" style="display: none">
 						<div class="header">
-							<img class="button save" src="widgets/schedule-switcher/img/save-24px.svg" width="28px"
-								height="28px" title="${vis.binds["schedule-switcher"].translate("saveChanges")}"/>
-							<img class="button cancel" src="widgets/schedule-switcher/img/cancel-24px.svg" width="28px"
-								height="28px" title="${vis.binds["schedule-switcher"].translate("cancelEdit")}"/>
+							<img id="save_src" class="button save"
+								title="${vis.binds["schedule-switcher"].translate("saveChanges")}"/>
+							<img id="cancel_src" class="button cancel"
+								title="${vis.binds["schedule-switcher"].translate("cancelEdit")}"/>
 						</div>
 						<div class="validation-errors-container" style="display: none;">
 							<ul id="validation-errors"></ul>
@@ -219,8 +237,8 @@
 						<div class="action"></div>
 						<div class="condition">
 							<div>${vis.binds["schedule-switcher"].translate("condition")}</div>
-						 	<img class="button add" src="widgets/schedule-switcher/img/add-24px.svg" width="28px"
-								height="28px" title="${vis.binds["schedule-switcher"].translate("addCondition")}"/>
+						 	<img id="add_src" class="button add"
+								title="${vis.binds["schedule-switcher"].translate("addCondition")}"/>
 						</div>
                         <div class="manual-container single">
                             <div id="checking" class="md-switch-container">
@@ -233,10 +251,10 @@
 						<div class="trigger"></div>
 						<app-weekdays-schedule edit="true"></app-weekdays-schedule>
                         <div class="header_bottom">
-                            <img class="button save_bottom" src="widgets/schedule-switcher/img/save-24px.svg" width="28px"
-                                height="28px" title="${vis.binds["schedule-switcher"].translate("saveChanges")}"/>
-                            <img class="button cancel_bottom" src="widgets/schedule-switcher/img/cancel-24px.svg" width="28px"
-                                height="28px" title="${vis.binds["schedule-switcher"].translate("cancelEdit")}"/>
+                            <img id="save_src_bottom" class="button save_bottom"
+                                title="${vis.binds["schedule-switcher"].translate("saveChanges")}"/>
+                            <img id="cancel_src_bottom" class="button cancel_bottom"
+                                title="${vis.binds["schedule-switcher"].translate("cancelEdit")}"/>
                         </div>
 					</div>
 				`;
@@ -263,11 +281,11 @@
             const newTrigger = this.trigger;
             const iconElement = this.sr.querySelector("#check_value");
             if (this.trigger.valueCheck) {
-                iconElement.src = `widgets/schedule-switcher/img/valueCheck.svg`;
+                iconElement.src = vis.binds["schedule-switcher"].getIcon("valueCheck", this.widgetId);
                 iconElement.alt = vis.binds["schedule-switcher"].translate("valueCheckOn");
                 iconElement.title = vis.binds["schedule-switcher"].translate("valueCheckOn");
             } else {
-                iconElement.src = `widgets/schedule-switcher/img/valueNoCheck.svg`;
+                iconElement.src = vis.binds["schedule-switcher"].getIcon("valueNoCheck", this.widgetId);
                 iconElement.alt = vis.binds["schedule-switcher"].translate("valueCheckOff");
                 iconElement.title = vis.binds["schedule-switcher"].translate("valueCheckOff");
             }

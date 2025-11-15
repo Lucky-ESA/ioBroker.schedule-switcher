@@ -17,8 +17,8 @@
 .view .time.icon {
     display: var(--ts-widget-astro-icon-display, "none");
     filter: var(--ts-widget-img-btn-filter, invert(1));
-    width: 42px;
-    height: 42px;
+    width: var(--ts-widget-astro-icon-width, 42px);
+    height: var(--ts-widget-astro-icon-height, 42px);
     margin-left: auto;
 }
 

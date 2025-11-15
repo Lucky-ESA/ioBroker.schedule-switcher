@@ -83,25 +83,47 @@
 }
 
 .button.edit {
+    width: var(--ts-widget-trigger-view-icon-width, 28px);
+    height: var(--ts-widget-trigger-view-icon-height, 28px);
     margin-left: auto;
 }
 
+.button.save {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
+}
+
 .button.delete {
+    width: var(--ts-widget-trigger-view-icon-width, 28px);
+    height: var(--ts-widget-trigger-view-icon-height, 28px);
     margin-left: 10px;
 }
 
 .button.cancel {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
     margin-left: 10px;
 }
 
 .button.save_bottom {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
     margin-left: 70%;
 }
 
 .button.cancel_bottom {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
     margin-left: auto;
 }
 
 .button.check {
+    width: var(--ts-widget-trigger-view-icon-width, 28px);
+    height: var(--ts-widget-trigger-view-icon-height, 28px);
     margin-left: auto;
+}
+
+.button.add {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
 }

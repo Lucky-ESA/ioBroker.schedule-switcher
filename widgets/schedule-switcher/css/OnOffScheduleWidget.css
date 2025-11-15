@@ -13,11 +13,20 @@
 .button {
     cursor: pointer;
     filter: var(--ts-widget-img-btn-filter, invert(1));
+    width: var(--ts-widget-display-icon-width, 28px);
+    height: var(--ts-widget-display-icon-height, 28px);
     align-self: center;
 }
 
 .button.edit {
+    width: var(--ts-widget-display-icon-width, 28px);
+    height: var(--ts-widget-display-icon-height, 28px);
     display: var(--ts-widget-edit-name-button-display, block);
+}
+
+.button.save {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
 }
 
 .md-switch-container {

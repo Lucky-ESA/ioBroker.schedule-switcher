@@ -62,6 +62,12 @@
             });
             this.rename();
             this.connected = true;
+            let iconElement = this.sr.querySelector("#edit_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("edit", this.widgetId);
+            iconElement = this.sr.querySelector("#save_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("save", this.widgetId);
+            iconElement = this.sr.querySelector("#btn-add-trigger-dropdown");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("add", this.widgetId);
         }
 
         attributeChangedCallback(attr) {
@@ -439,13 +445,13 @@
 					<div class="heading">
 						<div class="view">
 							<h1></h1>
-							<img class="button edit" src="widgets/schedule-switcher/img/edit-24px.svg" width="28px" 
-								height="28px" title="${vis.binds["schedule-switcher"].translate("editName")}"/>
+							<img id="edit_src" class="button edit"
+								title="${vis.binds["schedule-switcher"].translate("editName")}"/>
 						</div>
 						<div class="edit" style="display: none;">
 							<input type="text">
-							<img class="button save" src="widgets/schedule-switcher/img/save-24px.svg" width="28px"
-								height="28px"title="${vis.binds["schedule-switcher"].translate("saveName")}"/>
+							<img id="save_src" class="button save"
+								title="${vis.binds["schedule-switcher"].translate("saveName")}"/>
 						</div>
 					</div>
 					<div id="switched-oid"></div>
@@ -469,8 +475,8 @@
 					</div>
 					<div id="add">
 						<div class="dropdown">
-						  <img class="button" id="btn-add-trigger-dropdown" src="widgets/schedule-switcher/img/add-24px.svg" width="28px"
-							height="28px" title="${vis.binds["schedule-switcher"].translate("addTrigger")}"/>
+						  <img class="button" id="btn-add-trigger-dropdown"
+							title="${vis.binds["schedule-switcher"].translate("addTrigger")}"/>
 						  <div id="add-trigger-dropdown" class="dropdown-content">
 							<div class="dropdown-btn" id="add-time-trigger">${vis.binds["schedule-switcher"].translate("addTimeTrigger")}</div>
 							<div class="dropdown-btn" id="add-astro-trigger">${vis.binds["schedule-switcher"].translate("addAstroTrigger")}</div>

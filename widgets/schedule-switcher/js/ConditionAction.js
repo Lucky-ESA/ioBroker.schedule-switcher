@@ -22,6 +22,8 @@
         connectedCallback() {
             this.createConditionStateSelectOptions("#selectConditionStateId1");
             this.createConditionStateSelectOptions("#selectConditionStateId2");
+            const iconElement = this.sr.querySelector("#delete_src");
+            iconElement.src = vis.binds["schedule-switcher"].getIcon("delete", this.widgetId);
         }
 
         static get observedAttributes() {
@@ -38,6 +40,10 @@
 
         get withConstant() {
             return this.sr.querySelector("#withConstant").classList.contains("checked");
+        }
+
+        get widgetId() {
+            return this.getAttribute("widgetid");
         }
 
         set withConstant(withConstant) {
@@ -256,8 +262,8 @@
 					<div class="action"></div>
 					<div class="condition-header">
 						<div>${vis.binds["schedule-switcher"].translate("condition")}</div>
-						 <img class="button delete" src="widgets/schedule-switcher/img/delete-24px.svg" width="28px"
-							height="28px" title="${vis.binds["schedule-switcher"].translate("removeCondition")}"/>
+						 <img id="delete_src" class="button delete"
+							title="${vis.binds["schedule-switcher"].translate("removeCondition")}"/>
 					</div>
 					<div class="condition-body">
 						<select id="selectConditionStateId1" required></select>

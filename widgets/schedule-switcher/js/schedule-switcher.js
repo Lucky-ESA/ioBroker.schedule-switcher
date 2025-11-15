@@ -34,6 +34,7 @@ vis.binds["schedule-switcher"] = {
     sendMessage: sendMessage,
     translate: translate,
     addConditionToAction: addConditionToAction,
+    getIcon: getIcon,
     wid: "",
 };
 vis.binds["schedule-switcher"].showVersion();
@@ -199,6 +200,30 @@ function createOnOffWidget(widgetId, view, data, style) {
             element.style.setProperty("--ts-widget-condition-font-size", data.fsCondition);
         }
     }
+    if (data.iconAstroWidth && data.iconAstroWidth != "42px") {
+        element.style.setProperty("--ts-widget-astro-icon-width", data.iconAstroWidth);
+    }
+    if (data.iconAstroHeight && data.iconAstroHeight != "42px") {
+        element.style.setProperty("--ts-widget-astro-icon-height", data.iconAstroHeight);
+    }
+    if (data.iconDisplayWidth && data.iconDisplayWidth != "28px") {
+        element.style.setProperty("--ts-widget-display-icon-width", data.iconDisplayWidth);
+    }
+    if (data.iconDisplayHeight && data.iconDisplayHeight != "28px") {
+        element.style.setProperty("--ts-widget-display-icon-height", data.iconDisplayHeight);
+    }
+    if (data.iconViewWidth && data.iconViewWidth != "28px") {
+        element.style.setProperty("--ts-widget-trigger-view-icon-width", data.iconViewWidth);
+    }
+    if (data.iconViewHeight && data.iconViewHeight != "28px") {
+        element.style.setProperty("--ts-widget-trigger-view-icon-height", data.iconViewHeight);
+    }
+    if (data.iconEditWidth && data.iconEditWidth != "28px") {
+        element.style.setProperty("--ts-widget-trigger-edit-icon-width", data.iconEditWidth);
+    }
+    if (data.iconEditHeight && data.iconEditHeight != "28px") {
+        element.style.setProperty("--ts-widget-trigger-edit-icon-height", data.iconEditHeight);
+    }
     widgetElement.appendChild(element);
 }
 
@@ -313,6 +338,57 @@ function getConditionStateIdsAndAlias(widgetId) {
         }
     }
     return ids;
+}
+
+function getIcon(icon, widgetId) {
+    console.log(`WidgetID: ${widgetId}`);
+    let data = {};
+    if (vis.widgets[widgetId]) {
+        data = vis.widgets[widgetId].data;
+    }
+    let change = data.path && data.path != "" ? true : false;
+    change = data.fileExtension && data.fileExtension != "" ? change : false;
+    switch (icon) {
+        case "sunrise":
+        case "solarNoon":
+        case "sunset":
+        case "sunriseEnd":
+        case "goldenHourEnd":
+        case "goldenHour":
+        case "sunsetStart":
+        case "dusk":
+        case "nauticalDusk":
+        case "night":
+        case "nadir":
+        case "nightEnd":
+        case "nauticalDawn":
+        case "dawn":
+            return change
+                ? `${data.path}/${icon}.${data.fileExtension}`
+                : `widgets/schedule-switcher/img/astro/${icon}.svg`;
+        case "add":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "cancel":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "edit":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "delete":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "onetime":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "remove_circle_outline":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "save":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "time":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "valueCheck":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        case "valueNoCheck":
+            return change ? `${data.path}/${icon}.${data.fileExtension}` : `widgets/schedule-switcher/img/${icon}.svg`;
+        default:
+            return `widgets/schedule-switcher/img/unknown.svg`;
+    }
 }
 
 function addConditionToAction(action, widgetId) {

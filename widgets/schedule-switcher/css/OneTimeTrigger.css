@@ -40,6 +40,8 @@
 .view .date.icon {
     display: var(--ts-widget-time-icon-display, "none");
     filter: var(--ts-widget-img-btn-filter, invert(1));
+    width: var(--ts-widget-trigger-view-icon-width, 28px);
+    height: var(--ts-widget-trigger-view-icon-height, 28px);
     width: 42px;
     height: 42px;
 }
@@ -112,24 +114,49 @@
     animation: ripple 0.2s linear forwards;
 }
 
+.button.check {
+    width: var(--ts-widget-trigger-view-icon-width, 28px);
+    height: var(--ts-widget-trigger-view-icon-height, 28px);
+}
+
 .button.edit {
+    width: var(--ts-widget-trigger-view-icon-width, 28px);
+    height: var(--ts-widget-trigger-view-icon-height, 28px);
     margin-left: auto;
 }
 
 .button.save_bottom {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
     margin-left: 70%;
 }
 
+.button.save {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
+}
+
 .button.cancel_bottom {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
     margin-left: auto;
 }
 
 .button.delete {
+    width: var(--ts-widget-trigger-view-icon-width, 28px);
+    height: var(--ts-widget-trigger-view-icon-height, 28px);
     margin-left: 10px;
 }
 
 .button.cancel {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
     margin-left: 10px;
+}
+
+.button.add {
+    width: var(--ts-widget-trigger-edit-icon-width, 28px);
+    height: var(--ts-widget-trigger-edit-icon-height, 28px);
 }
 
 input:invalid {

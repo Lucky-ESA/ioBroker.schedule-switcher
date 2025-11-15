@@ -161,5 +161,15 @@
     "nadir": "Midnight",
     "nightEnd": "Night end",
     "nauticalDawn": "Nautical dawn",
-    "dawn": "Dawn"
+    "dawn": "Dawn",
+    "path": "File path (without name)",
+    "fileExtension": "File extension",
+    "iconAstroWidth": "Astro icon width",
+    "iconAstroHeight": "Astro icon height",
+    "iconDisplayWidth": "Display icons width",
+    "iconDisplayHeight": "Display icons height",
+    "iconViewWidth": "View icons width",
+    "iconViewHeight": "View icons height",
+    "iconEditWidth": "Edit view icons width",
+    "iconEditHeight": "Edit view icons height"
 }

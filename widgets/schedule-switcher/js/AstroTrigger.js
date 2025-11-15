@@ -42,6 +42,10 @@
             this.setAttribute("edit", value ? "true" : "false");
         }
 
+        get widgetId() {
+            return this.getAttribute("widgetid");
+        }
+
         set errors(value) {
             const oldErrors = this.errors;
             if (value.length === 0) {
@@ -78,7 +82,7 @@
                 const translatedAstroTime = vis.binds["schedule-switcher"].translate(this.astroTime);
                 this.sr.querySelector(".view .time.text").textContent = translatedAstroTime;
                 const iconElement = this.sr.querySelector(".view .time.icon");
-                iconElement.src = `widgets/schedule-switcher/img/astro/${this.astroTime}.svg`;
+                iconElement.src = vis.binds["schedule-switcher"].getIcon(this.astroTime, this.widgetId);
                 iconElement.alt = translatedAstroTime;
                 iconElement.title = translatedAstroTime;
                 this.sr.querySelector(".edit #time").value = this.astroTime;
