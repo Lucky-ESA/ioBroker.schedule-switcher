@@ -503,35 +503,34 @@ class IoBrokerValidationState {
    * @param check true/false
    */
   async setNextAstroTime(check) {
-    const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.onoff.*`);
-    for (const id in states) {
-      if (id.toString().indexOf(".data") !== -1) {
-        const state = states[id];
-        if (state) {
-          if (typeof state.val === "string" && state.val.startsWith("{")) {
-            const triggers = JSON.parse(state.val);
-            if (triggers && triggers.triggers && triggers.triggers.length > 0) {
-              let isChange = false;
-              for (const trigger of triggers.triggers) {
-                if (trigger && trigger.type === "AstroTrigger") {
-                  trigger.todayTrigger = await this.nextAstroDate(/* @__PURE__ */ new Date(), trigger);
-                  trigger.todayTrigger.date = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
-                  const actual = new Date(trigger.todayTrigger.date);
-                  trigger.todayTrigger.hour = actual.getHours();
-                  trigger.todayTrigger.minute = actual.getMinutes();
-                  trigger.todayTrigger.weekday = actual.getDay();
-                  isChange = true;
-                  if (check) {
-                    this.adapter.sendTo(this.adapter.namespace, "update-trigger", {
-                      dataId: id,
-                      trigger
-                    });
-                  }
+    const states = await this.adapter.getChannelsAsync();
+    for (const ids of states) {
+      const id = `${ids}.data`;
+      const state = await this.adapter.getStateAsync(id);
+      if (state) {
+        if (typeof state.val === "string" && state.val.startsWith("{")) {
+          const triggers = JSON.parse(state.val);
+          if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+            let isChange = false;
+            for (const trigger of triggers.triggers) {
+              if (trigger && trigger.type === "AstroTrigger") {
+                trigger.todayTrigger = await this.nextAstroDate(/* @__PURE__ */ new Date(), trigger);
+                trigger.todayTrigger.date = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
+                const actual = new Date(trigger.todayTrigger.date);
+                trigger.todayTrigger.hour = actual.getHours();
+                trigger.todayTrigger.minute = actual.getMinutes();
+                trigger.todayTrigger.weekday = actual.getDay();
+                isChange = true;
+                if (check) {
+                  this.adapter.sendTo(this.adapter.namespace, "update-trigger", {
+                    dataId: id,
+                    trigger
+                  });
                 }
               }
-              if (isChange) {
-                await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
-              }
+            }
+            if (isChange) {
+              await this.adapter.setState(id, { val: JSON.stringify(triggers), ack: true });
             }
           }
         }
@@ -542,84 +541,83 @@ class IoBrokerValidationState {
    * Set action time
    */
   async setActionTime() {
-    const states = await this.adapter.getStatesAsync(`schedule-switcher.${this.adapter.instance}.onoff.*`);
     const allData = [];
-    for (const id in states) {
-      if (id.toString().indexOf(".data") !== -1) {
-        const state = states[id];
-        if (state) {
-          if (typeof state.val === "string" && state.val.startsWith("{")) {
-            const triggers = JSON.parse(state.val);
-            if (triggers && triggers.triggers && triggers.triggers.length > 0) {
-              const enabled = await this.adapter.getStateAsync(id.replace(".data", ".enabled"));
-              for (const trigger of triggers.triggers) {
-                const switching = {
-                  type: trigger.type,
-                  name: triggers.name,
-                  triggerid: parseInt(trigger.id),
-                  action: trigger.action.type,
-                  states: triggers.onAction.idsOfStatesToSet,
-                  active: enabled && enabled.val ? true : false,
-                  hour: 0,
-                  minute: 0,
-                  day: 0,
-                  dateISO: "",
-                  timestamp: 0,
-                  objectId: trigger.objectId
-                };
-                const now = /* @__PURE__ */ new Date();
-                if (trigger && trigger.type === "TimeTrigger") {
-                  let addDate = 0;
-                  if (trigger.hour === 0 && trigger.minute === 0) {
-                    addDate = 1;
-                  }
-                  const switchTime = /* @__PURE__ */ new Date(
-                    `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + addDate} ${trigger.hour}:${trigger.minute}`
-                  );
-                  if (switchTime >= now && trigger.weekdays.includes(now.getDay())) {
-                    switching.hour = trigger.hour;
-                    switching.minute = trigger.minute;
-                    switching.day = switchTime.getDate();
-                    switching.dateISO = new Date(switchTime).toISOString();
-                    switching.timestamp = switchTime.getTime();
-                  } else {
-                    const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
-                    switching.hour = trigger.hour;
-                    switching.minute = trigger.minute;
-                    switching.day = new Date(t).getDate();
-                    switching.dateISO = t;
-                    switching.timestamp = new Date(t).getTime();
-                  }
-                } else if (trigger && trigger.type === "AstroTrigger") {
-                  if (trigger.weekdays.includes(now.getDay())) {
-                    trigger.todayTrigger = await this.nextAstroDate(/* @__PURE__ */ new Date(), trigger);
-                    switching.hour = trigger.todayTrigger.hour;
-                    switching.minute = trigger.todayTrigger.minute;
-                    switching.day = now.getDate();
-                    switching.dateISO = trigger.date;
-                    switching.timestamp = new Date(trigger.date).getTime();
-                  } else {
-                    const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
-                    trigger.todayTrigger = await this.nextAstroDate(new Date(t), trigger);
-                    switching.hour = trigger.todayTrigger.hour;
-                    switching.minute = trigger.todayTrigger.minute;
-                    switching.day = new Date(trigger.todayTrigger.date).getDate();
-                    switching.dateISO = t;
-                    switching.timestamp = new Date(trigger.todayTrigger.date).getTime();
-                  }
-                } else if (trigger && trigger.type === "OneTimeTrigger") {
-                  if (new Date(trigger.date) >= now) {
-                    const d = new Date(trigger.date);
-                    switching.hour = d.getHours();
-                    switching.minute = d.getMinutes();
-                    switching.day = new Date(trigger.date).getDate();
-                    switching.dateISO = trigger.date;
-                    switching.timestamp = new Date(trigger.date).getTime();
-                  }
+    const states = await this.adapter.getChannelsAsync();
+    for (const ids of states) {
+      const id = `${ids}.data`;
+      const state = await this.adapter.getStateAsync(id);
+      if (state) {
+        if (typeof state.val === "string" && state.val.startsWith("{")) {
+          const triggers = JSON.parse(state.val);
+          if (triggers && triggers.triggers && triggers.triggers.length > 0) {
+            const enabled = await this.adapter.getStateAsync(id.replace(".data", ".enabled"));
+            for (const trigger of triggers.triggers) {
+              const switching = {
+                type: trigger.type,
+                name: triggers.name,
+                triggerid: parseInt(trigger.id),
+                action: trigger.action.type,
+                states: triggers.onAction.idsOfStatesToSet,
+                active: enabled && enabled.val ? true : false,
+                hour: 0,
+                minute: 0,
+                day: 0,
+                dateISO: "",
+                timestamp: 0,
+                objectId: trigger.objectId
+              };
+              const now = /* @__PURE__ */ new Date();
+              if (trigger && trigger.type === "TimeTrigger") {
+                let addDate = 0;
+                if (trigger.hour === 0 && trigger.minute === 0) {
+                  addDate = 1;
                 }
-                if (switching.timestamp > 0) {
-                  allData.push(switching);
+                const switchTime = /* @__PURE__ */ new Date(
+                  `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + addDate} ${trigger.hour}:${trigger.minute}`
+                );
+                if (switchTime >= now && trigger.weekdays.includes(now.getDay())) {
+                  switching.hour = trigger.hour;
+                  switching.minute = trigger.minute;
+                  switching.day = switchTime.getDate();
+                  switching.dateISO = new Date(switchTime).toISOString();
+                  switching.timestamp = switchTime.getTime();
+                } else {
+                  const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
+                  switching.hour = trigger.hour;
+                  switching.minute = trigger.minute;
+                  switching.day = new Date(t).getDate();
+                  switching.dateISO = t;
+                  switching.timestamp = new Date(t).getTime();
                 }
+              } else if (trigger && trigger.type === "AstroTrigger") {
+                if (trigger.weekdays.includes(now.getDay())) {
+                  trigger.todayTrigger = await this.nextAstroDate(/* @__PURE__ */ new Date(), trigger);
+                  switching.hour = trigger.todayTrigger.hour;
+                  switching.minute = trigger.todayTrigger.minute;
+                  switching.day = now.getDate();
+                  switching.dateISO = trigger.date;
+                  switching.timestamp = new Date(trigger.date).getTime();
+                } else {
+                  const t = await this.nextDateSwitch(/* @__PURE__ */ new Date(), trigger);
+                  trigger.todayTrigger = await this.nextAstroDate(new Date(t), trigger);
+                  switching.hour = trigger.todayTrigger.hour;
+                  switching.minute = trigger.todayTrigger.minute;
+                  switching.day = new Date(trigger.todayTrigger.date).getDate();
+                  switching.dateISO = t;
+                  switching.timestamp = new Date(trigger.todayTrigger.date).getTime();
+                }
+              } else if (trigger && trigger.type === "OneTimeTrigger") {
+                if (new Date(trigger.date) >= now) {
+                  const d = new Date(trigger.date);
+                  switching.hour = d.getHours();
+                  switching.minute = d.getMinutes();
+                  switching.day = new Date(trigger.date).getDate();
+                  switching.dateISO = trigger.date;
+                  switching.timestamp = new Date(trigger.date).getTime();
+                }
+              }
+              if (switching.timestamp > 0) {
+                allData.push(switching);
               }
             }
           }

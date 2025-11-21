@@ -1,3 +1,5 @@
+import type { scheduledJobs } from "node-schedule";
+import { EventEmitter } from "node:events";
 import type { GetTimesResult } from "suncalc";
 import type { OnOffStateAction } from "../actions/OnOffStateAction";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
@@ -8,7 +10,6 @@ import type { DailyTriggerBuilder } from "../triggers/DailyTriggerBuilder";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
 import { AstroTime } from "../types/AstroTime";
 import type { CoordinateTypes } from "../types/Coordinate";
-import type { htmltable } from "../types/htmlTable";
 import type { MessageServices } from "../types/MessageServices";
 import type { StateService } from "../types/StateService";
 import type { Trigger } from "../types/Trigger";
@@ -19,7 +20,7 @@ import { AllWeekdays } from "../types/Weekday";
  * @param currentMessage ioBroker.Message | null
  * @param triggerTimeout ioBroker.Timeout | undefined
  */
-export class MessageService implements MessageServices {
+export class MessageService extends EventEmitter implements MessageServices {
     private currentMessage: ioBroker.Message | null = null;
     private triggerTimeout: ioBroker.Timeout | undefined;
 
@@ -32,8 +33,8 @@ export class MessageService implements MessageServices {
      * @param adapter Nothing
      * @param coordinate Nothing
      * @param validation Nothing
-     * @param html Nothing
      * @param getTimes TimesData
+     * @param getScheduledJobs scheduledJobs
      */
     constructor(
         private stateService: StateService,
@@ -42,13 +43,13 @@ export class MessageService implements MessageServices {
         private adapter: ioBroker.Adapter,
         private readonly coordinate: CoordinateTypes,
         private readonly validation: ValidationState | undefined,
-        private readonly html: htmltable,
         private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
+        private readonly getScheduledJobs: typeof scheduledJobs,
     ) {
+        super();
         this.adapter = adapter;
         this.triggerTimeout = undefined;
         this.validation = validation;
-        this.html = html;
     }
 
     /**
@@ -82,17 +83,17 @@ export class MessageService implements MessageServices {
         switch (message.command) {
             case "add-trigger":
                 await this.addTrigger(schedule, data);
-                await this.validation?.setActionTime();
+                this.emit("data");
                 await this.setCountTrigger();
                 break;
             case "add-one-time-trigger":
                 await this.addOneTimeTrigger(schedule, data);
-                await this.validation?.setActionTime();
+                this.emit("data");
                 await this.setCountTrigger();
                 break;
             case "update-one-time-trigger":
                 await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
-                await this.validation?.setActionTime();
+                this.emit("data");
                 break;
             case "update-trigger":
                 if (data.trigger && data.trigger.type === "TimeTrigger") {
@@ -108,11 +109,11 @@ export class MessageService implements MessageServices {
                     data.trigger.todayTrigger = await this.nextDate(data.trigger);
                 }
                 await this.updateTrigger(schedule, data.trigger, data.dataId);
-                await this.validation?.setActionTime();
+                this.emit("data");
                 break;
             case "delete-trigger":
                 schedule.removeTrigger(data.triggerId);
-                await this.validation?.setActionTime();
+                this.emit("data");
                 await this.setCountTrigger();
                 break;
             case "change-name":
@@ -124,14 +125,14 @@ export class MessageService implements MessageServices {
                 await this.changeName(data);
                 break;
             case "enable-schedule":
-                this.html.changeEnabled(data.dataId, true);
+                this.emit("data", "changeEnabled", data.dataId, true);
                 schedule.setEnabled(true);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
                 await this.setCountTrigger();
                 break;
             case "disable-schedule":
                 schedule.setEnabled(false);
-                this.html.changeEnabled(data.dataId, false);
+                this.emit("data", "changeEnabled", data.dataId, true);
                 await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
                 await this.setCountTrigger();
                 break;
@@ -159,7 +160,7 @@ export class MessageService implements MessageServices {
                 saveTrigger = JSON.stringify(actual_trigger);
             }
             await this.stateService.setState(data.dataId, saveTrigger);
-            await this.html.changeTrigger(data.dataId, saveTrigger);
+            this.emit("data", "changeTrigger", data.dataId, saveTrigger);
         } else {
             this.adapter.log.error("Cannot update schedule state after message, no serializer found for schedule");
             return;
@@ -190,13 +191,10 @@ export class MessageService implements MessageServices {
      */
     public async setCountTrigger(): Promise<void> {
         let count = 0;
-        for (const id of this.scheduleIdToSchedule.keys()) {
-            try {
-                const len = this.scheduleIdToSchedule.get(id)?.getTriggers().length;
-                count += len != null ? len : 0;
-            } catch (e: any) {
-                this.adapter.log.debug(`scheduleIdToSchedule: ${e}`);
-            }
+        try {
+            count = Object.keys(this.getScheduledJobs).length;
+        } catch (e: any) {
+            this.adapter.log.debug(`getScheduledJobs: ${e}`);
         }
         await this.adapter.setState("counterTrigger", count, true);
     }

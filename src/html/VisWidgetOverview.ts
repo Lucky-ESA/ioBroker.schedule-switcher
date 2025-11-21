@@ -18,15 +18,15 @@ export class VisWidgetOverview implements WidgetOverview {
      */
     public async createOverview(): Promise<void> {
         this.adapter.log.debug(`Start update Widget overview!`);
-        const currentStates: any = await this.adapter.getStatesAsync(
-            `schedule-switcher.${this.adapter.instance}.onoff.*`,
-        );
+        const currentStates: any = await this.adapter.getChannelsAsync();
         let html_code = "";
         let counter = 0;
-        for (const stateId in currentStates) {
-            if (stateId.toString().indexOf(".view") !== -1 && currentStates[stateId].val.startsWith("{")) {
+        for (const json of currentStates) {
+            const stateId = `${json._id}.view`;
+            const data = await this.adapter.getStateAsync(stateId);
+            if (data && typeof data.val === "string" && data.val.startsWith("{")) {
                 html_code += this.createHeader(stateId);
-                const val = JSON.parse(currentStates[stateId].val);
+                const val = JSON.parse(data.val);
                 if (val && val.error) {
                     ++counter;
                     const isodd = counter % 2 != 0 ? "#1E1E1E" : "#18171C";

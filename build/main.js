@@ -67,6 +67,7 @@ class ScheduleSwitcher extends utils.Adapter {
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
+    this.loggingService.on("updateData", this.updateDataFromStateService.bind(this));
     this.setCountTriggerStart = null;
   }
   getEnabledIdFromScheduleId(scheduleId) {
@@ -100,10 +101,11 @@ class ScheduleSwitcher extends utils.Adapter {
     await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
     await ((_a = this.validation) == null ? void 0 : _a.setNextAstroTime(false));
     await ((_b = this.validation) == null ? void 0 : _b.setActionTime());
-    const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
-    for (const id in record) {
+    const record = await this.getChannelsAsync();
+    for (const Ids of record) {
+      const id = `${Ids._id}.data`;
       if (id.toString().indexOf(".data") !== -1) {
-        const state = record[id];
+        const state = await this.getStateAsync(id);
         await this.vishtmltable.changeTrigger(id, state, false);
         this.log.debug(`got state: ${state ? JSON.stringify(state) : "null"} with id: ${id}`);
         if (state) {
@@ -166,6 +168,11 @@ class ScheduleSwitcher extends utils.Adapter {
     await ((_d = this.widgetControl) == null ? void 0 : _d.cancel());
     await ((_e = this.messageService) == null ? void 0 : _e.destroy());
     await this.stateService.destroy();
+    (0, import_node_schedule.gracefulShutdown)().then(() => {
+      this.log.info(`ALL JOBS DELETED!`);
+    }).catch((e) => {
+      this.log.error(`Error - ${e}`);
+    });
     callback();
   }
   refreshAstroTime() {
@@ -194,13 +201,15 @@ class ScheduleSwitcher extends utils.Adapter {
   refreshValiditionView() {
     const rule = new import_node_schedule.RecurrenceRule();
     rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
-    rule.hour = 3;
-    rule.minute = 4;
-    rule.second = 22;
+    rule.hour = 1;
+    rule.minute = 12;
+    rule.second = 27;
     this.widgetControl = (0, import_node_schedule.scheduleJob)(rule, async () => {
+      var _a;
       this.log.info("Start Update View!");
       await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
       await this.visWidgetOverview.createOverview();
+      await ((_a = this.messageService) == null ? void 0 : _a.setCountTrigger());
     });
   }
   moreLogs() {
@@ -316,17 +325,18 @@ class ScheduleSwitcher extends utils.Adapter {
    * @param obj If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
    */
   async onMessage(obj) {
-    var _a, _b;
+    var _a, _b, _c;
     if (typeof obj === "object" && obj.message) {
       try {
         this.log.debug(`obj: ${JSON.stringify(obj)}`);
         switch (obj.command) {
           case "update-actionTime":
             void ((_a = this.validation) == null ? void 0 : _a.setActionTime());
+            void ((_b = this.messageService) == null ? void 0 : _b.setCountTrigger());
             this.log.debug(`Finished onMessage actionTime`);
             break;
           case "update-nextTime":
-            void ((_b = this.validation) == null ? void 0 : _b.setNextAstroTime(true));
+            void ((_c = this.validation) == null ? void 0 : _c.setNextAstroTime(true));
             this.log.debug(`Finished onMessage nextTime`);
             break;
           case "update-html":
@@ -635,10 +645,11 @@ class ScheduleSwitcher extends utils.Adapter {
   // Private helper methods
   //------------------------------------------------------------------------------------------------------------------
   async checkValueAttribute() {
-    const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
-    for (const id in record) {
+    const record = await this.getChannelsAsync();
+    for (const Ids of record) {
+      const id = `${Ids._id}.data`;
       if (id.toString().indexOf(".data") !== -1) {
-        const state = record[id];
+        const state = await this.getStateAsync(id);
         if (state) {
           if (typeof state.val === "string" && state.val.startsWith("{")) {
             const triggers = JSON.parse(state.val);
@@ -689,9 +700,22 @@ class ScheduleSwitcher extends utils.Adapter {
       this,
       await this.getCoordinate(),
       this.validation,
-      this.vishtmltable,
-      import_suncalc.getTimes
+      import_suncalc.getTimes,
+      import_node_schedule.scheduledJobs
     );
+    this.messageService.on("data", this.getHtmlData.bind(this));
+    this.messageService.on("validation", this.getValidationData.bind(this));
+  }
+  getHtmlData(func, id, event) {
+    if (func == "changeEnabled" && typeof event === "boolean") {
+      void this.vishtmltable.changeEnabled(id, event);
+    } else if (func == "changeTrigger" && typeof event === "string") {
+      void this.vishtmltable.changeTrigger(id, event);
+    }
+  }
+  getValidationData() {
+    var _a;
+    (_a = this.validation) == null ? void 0 : _a.setActionTime();
   }
   async fixStateStructure(statesInSettings) {
     if (!statesInSettings) {
@@ -700,20 +724,19 @@ class ScheduleSwitcher extends utils.Adapter {
     if (!statesInSettings.onOff) {
       statesInSettings.onOff = [];
     }
-    const currentStates = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
-    for (const fullId in currentStates) {
-      if (fullId.toString().indexOf(".data") !== -1) {
-        const split = fullId.split(".");
-        const type = split[2];
-        const id = Number.parseInt(split[3], 10);
-        if (type == "onoff") {
-          if (statesInSettings.onOff.includes(id)) {
-            statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
-            this.log.debug(`Found state ${fullId}`);
-          } else {
-            this.log.debug(`Deleting state ${fullId}`);
-            await this.deleteOnOffSchedule(id);
-          }
+    const currentStates = await this.getChannelsAsync();
+    for (const fullIds of currentStates) {
+      const fullId = `${fullIds._id}.data`;
+      const split = fullId.split(".");
+      const type = split[2];
+      const id = Number.parseInt(split[3], 10);
+      if (type == "onoff") {
+        if (statesInSettings.onOff.includes(id)) {
+          statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
+          this.log.debug(`Found state ${fullId}`);
+        } else {
+          this.log.debug(`Deleting state ${fullId}`);
+          await this.deleteOnOffSchedule(id);
         }
       }
     }

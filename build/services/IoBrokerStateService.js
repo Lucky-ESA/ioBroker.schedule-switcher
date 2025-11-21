@@ -21,7 +21,8 @@ __export(IoBrokerStateService_exports, {
   IoBrokerStateService: () => IoBrokerStateService
 });
 module.exports = __toCommonJS(IoBrokerStateService_exports);
-class IoBrokerStateService {
+var import_events = require("events");
+class IoBrokerStateService extends import_events.EventEmitter {
   adapter;
   delayTimeout;
   checkTime = 0;
@@ -30,6 +31,7 @@ class IoBrokerStateService {
    * @param adapter ioBroker
    */
   constructor(adapter) {
+    super();
     if (!adapter) {
       throw new Error("adapter may not be null.");
     }

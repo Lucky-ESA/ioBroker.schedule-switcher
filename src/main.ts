@@ -5,7 +5,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from "@iobroker/adapter-core";
-import { cancelJob, RecurrenceRule, scheduleJob } from "node-schedule";
+import { cancelJob, gracefulShutdown, RecurrenceRule, scheduledJobs, scheduleJob } from "node-schedule";
 import { getTimes } from "suncalc";
 import { Coordinate } from "./Coordinate";
 import { VisHtmlTable } from "./html/VisHtmlTable";
@@ -94,10 +94,11 @@ class ScheduleSwitcher extends utils.Adapter {
         await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
         await this.validation?.setNextAstroTime(false);
         await this.validation?.setActionTime();
-        const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
-        for (const id in record) {
+        const record = await this.getChannelsAsync();
+        for (const Ids of record) {
+            const id = `${Ids._id}.data`;
             if (id.toString().indexOf(".data") !== -1) {
-                const state = record[id];
+                const state = await this.getStateAsync(id);
                 await this.vishtmltable.changeTrigger(id, state, false);
                 this.log.debug(`got state: ${state ? JSON.stringify(state) : "null"} with id: ${id}`);
                 if (state) {
@@ -159,6 +160,13 @@ class ScheduleSwitcher extends utils.Adapter {
         await this.widgetControl?.cancel();
         await this.messageService?.destroy();
         await this.stateService.destroy();
+        gracefulShutdown()
+            .then(() => {
+                this.log.info(`ALL JOBS DELETED!`);
+            })
+            .catch(e => {
+                this.log.error(`Error - ${e}`);
+            });
         callback();
     }
 
@@ -188,13 +196,14 @@ class ScheduleSwitcher extends utils.Adapter {
     private refreshValiditionView(): void {
         const rule = new RecurrenceRule();
         rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6];
-        rule.hour = 3;
-        rule.minute = 4;
-        rule.second = 22;
+        rule.hour = 1;
+        rule.minute = 12;
+        rule.second = 27;
         this.widgetControl = scheduleJob(rule, async () => {
             this.log.info("Start Update View!");
             await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
             await this.visWidgetOverview.createOverview();
+            await this.messageService?.setCountTrigger();
         });
     }
 
@@ -330,6 +339,7 @@ class ScheduleSwitcher extends utils.Adapter {
                 switch (obj.command) {
                     case "update-actionTime":
                         void this.validation?.setActionTime();
+                        void this.messageService?.setCountTrigger();
                         this.log.debug(`Finished onMessage actionTime`);
                         break;
                     case "update-nextTime":
@@ -649,10 +659,11 @@ class ScheduleSwitcher extends utils.Adapter {
     //------------------------------------------------------------------------------------------------------------------
 
     private async checkValueAttribute(): Promise<void> {
-        const record = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
-        for (const id in record) {
+        const record = await this.getChannelsAsync();
+        for (const Ids of record) {
+            const id = `${Ids._id}.data`;
             if (id.toString().indexOf(".data") !== -1) {
-                const state = record[id];
+                const state = await this.getStateAsync(id);
                 if (state) {
                     if (typeof state.val === "string" && state.val.startsWith("{")) {
                         const triggers = JSON.parse(state.val);
@@ -705,9 +716,23 @@ class ScheduleSwitcher extends utils.Adapter {
             this,
             await this.getCoordinate(),
             this.validation,
-            this.vishtmltable,
             getTimes,
+            scheduledJobs,
         );
+        this.messageService.on("data", this.getHtmlData.bind(this));
+        this.messageService.on("validation", this.getValidationData.bind(this));
+    }
+
+    private getHtmlData(func: string, id: string, event: boolean | string): void {
+        if (func == "changeEnabled" && typeof event === "boolean") {
+            void this.vishtmltable.changeEnabled(id, event);
+        } else if (func == "changeTrigger" && typeof event === "string") {
+            void this.vishtmltable.changeTrigger(id, event);
+        }
+    }
+
+    private getValidationData(): void {
+        this.validation?.setActionTime();
     }
 
     private async fixStateStructure(statesInSettings: { onOff: number[] }): Promise<void> {
@@ -717,20 +742,19 @@ class ScheduleSwitcher extends utils.Adapter {
         if (!statesInSettings.onOff) {
             statesInSettings.onOff = [];
         }
-        const currentStates = await this.getStatesAsync(`schedule-switcher.${this.instance}.onoff.*`);
-        for (const fullId in currentStates) {
-            if (fullId.toString().indexOf(".data") !== -1) {
-                const split = fullId.split(".");
-                const type = split[2];
-                const id = Number.parseInt(split[3], 10);
-                if (type == "onoff") {
-                    if (statesInSettings.onOff.includes(id)) {
-                        statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
-                        this.log.debug(`Found state ${fullId}`);
-                    } else {
-                        this.log.debug(`Deleting state ${fullId}`);
-                        await this.deleteOnOffSchedule(id);
-                    }
+        const currentStates = await this.getChannelsAsync();
+        for (const fullIds of currentStates) {
+            const fullId = `${fullIds._id}.data`;
+            const split = fullId.split(".");
+            const type = split[2];
+            const id = Number.parseInt(split[3], 10);
+            if (type == "onoff") {
+                if (statesInSettings.onOff.includes(id)) {
+                    statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
+                    this.log.debug(`Found state ${fullId}`);
+                } else {
+                    this.log.debug(`Deleting state ${fullId}`);
+                    await this.deleteOnOffSchedule(id);
                 }
             }
         }

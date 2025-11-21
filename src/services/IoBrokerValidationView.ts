@@ -20,26 +20,27 @@ export class IoBrokerValidationView implements ValidationView {
         this.adapter.log.info("Start Widget control!");
         this.adapter.log.debug(`Path: ${utils}`);
         const visFolder = [];
-        const allVisViews: any = {};
+        let allVisViews: any = {};
         const newViews: any = {};
-        const allVIS = await this.adapter.getObjectViewAsync("system", "instance", {
+        let folders;
+        folders = await this.adapter.getObjectViewAsync("system", "instance", {
             startkey: "system.adapter.vis.",
             endkey: "system.adapter.vis.\u9999",
         });
-        const allVIS2 = await this.adapter.getObjectViewAsync("system", "instance", {
-            startkey: "system.adapter.vis-2.",
-            endkey: "system.adapter.vis-2.\u9999",
-        });
-        if (allVIS2 && allVIS2.rows) {
-            for (const id of allVIS2.rows) {
-                if (id.id.indexOf(".vis-2.") !== -1) {
+        if (folders && folders.rows) {
+            for (const id of folders.rows) {
+                if (id.id.indexOf(".vis.") !== -1) {
                     visFolder.push(id.id.replace("system.adapter.", ""));
                 }
             }
         }
-        if (allVIS && allVIS.rows) {
-            for (const id of allVIS.rows) {
-                if (id.id.indexOf(".vis.") !== -1) {
+        folders = await this.adapter.getObjectViewAsync("system", "instance", {
+            startkey: "system.adapter.vis-2.",
+            endkey: "system.adapter.vis-2.\u9999",
+        });
+        if (folders && folders.rows) {
+            for (const id of folders.rows) {
+                if (id.id.indexOf(".vis-2.") !== -1) {
                     visFolder.push(id.id.replace("system.adapter.", ""));
                 }
             }
@@ -48,7 +49,6 @@ export class IoBrokerValidationView implements ValidationView {
         if (visFolder.length > 0) {
             for (const vis of visFolder) {
                 allVisViews[vis] = {};
-                let folders;
                 try {
                     folders = await this.adapter.readDirAsync(vis, "");
                 } catch {
@@ -310,6 +310,7 @@ export class IoBrokerValidationView implements ValidationView {
                 }
             }
         }
+        allVisViews = [];
         this.adapter.log.debug(`newViews: ${JSON.stringify(newViews)}`);
         if (Object.keys(newViews).length > 0) {
             for (const stateId in newViews) {
@@ -333,15 +334,15 @@ export class IoBrokerValidationView implements ValidationView {
                 }
             }
         }
-        const currentStates: any = await this.adapter.getStatesAsync(
-            `schedule-switcher.${this.adapter.instance}.onoff.*`,
-        );
-        for (const stateId in currentStates) {
-            if (stateId.toString().indexOf(".data") !== -1) {
-                if (!newViews[stateId] && typeof currentStates[stateId].val === "string") {
+        folders = await this.adapter.getChannelsAsync();
+        for (const json of folders) {
+            const stateId = `${json._id}.data`;
+            if (!newViews[stateId]) {
+                const data = await this.adapter.getStateAsync(stateId);
+                if (data && typeof data.val === "string" && data.val.startsWith("{")) {
+                    const val = JSON.parse(data.val);
                     const id = stateId.replace("data", "enabled");
                     const eneabled = await this.adapter.getStateAsync(id);
-                    const val = JSON.parse(currentStates[stateId].val);
                     if (
                         val.onAction &&
                         val.onAction.idsOfStatesToSet &&

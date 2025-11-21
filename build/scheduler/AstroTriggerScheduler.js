@@ -150,6 +150,7 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
           this.logger.logDebug(`Executing astrotrigger ${trigger}`);
           const trigger_data = JSON.parse(JSON.stringify(trigger.getData()));
           trigger.getAction().execute(trigger_data);
+          this.timeTriggerScheduler.unregister(timeTrigger);
         }
       }).build();
       this.logger.logDebug(`Scheduled astro with ${timeTrigger}`);

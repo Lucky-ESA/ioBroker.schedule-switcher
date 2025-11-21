@@ -89,7 +89,6 @@ export class IoBrokerStateService implements StateService {
         }
         this.adapter.sendTo(this.adapter.namespace, "update-actionTime", {
             dataId: id,
-            trigger: trigger,
         });
     }
 

@@ -34,15 +34,15 @@ class VisWidgetOverview {
    */
   async createOverview() {
     this.adapter.log.debug(`Start update Widget overview!`);
-    const currentStates = await this.adapter.getStatesAsync(
-      `schedule-switcher.${this.adapter.instance}.onoff.*`
-    );
+    const currentStates = await this.adapter.getChannelsAsync();
     let html_code = "";
     let counter = 0;
-    for (const stateId in currentStates) {
-      if (stateId.toString().indexOf(".view") !== -1 && currentStates[stateId].val.startsWith("{")) {
+    for (const json of currentStates) {
+      const stateId = `${json._id}.view`;
+      const data = await this.adapter.getStateAsync(stateId);
+      if (data && typeof data.val === "string" && data.val.startsWith("{")) {
         html_code += this.createHeader(stateId);
-        const val = JSON.parse(currentStates[stateId].val);
+        const val = JSON.parse(data.val);
         if (val && val.error) {
           ++counter;
           const isodd = counter % 2 != 0 ? "#1E1E1E" : "#18171C";
@@ -52,10 +52,10 @@ class VisWidgetOverview {
         for (const vis in val) {
           for (const views in val[vis]) {
             for (const widget in val[vis][views]) {
-              const json = val[vis][views][widget];
+              const json2 = val[vis][views][widget];
               ++counter;
               const isodd = counter % 2 != 0 ? "#1E1E1E" : "#18171C";
-              html_code += this.createRow(isodd, json, vis, views, widget);
+              html_code += this.createRow(isodd, json2, vis, views, widget);
             }
           }
         }

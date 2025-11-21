@@ -13,7 +13,7 @@ export interface ValidationState {
      */
     setNextAstroTime(check: boolean): Promise<void>;
     /**
-     * Coodinates
+     * Next switch time
      */
     setActionTime(): Promise<void>;
     /**

@@ -21,12 +21,13 @@ __export(MessageService_exports, {
   MessageService: () => MessageService
 });
 module.exports = __toCommonJS(MessageService_exports);
+var import_events = require("events");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
 var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_AstroTime = require("../types/AstroTime");
 var import_Weekday = require("../types/Weekday");
-class MessageService {
+class MessageService extends import_events.EventEmitter {
   /**
    * Messages
    *
@@ -36,22 +37,22 @@ class MessageService {
    * @param adapter Nothing
    * @param coordinate Nothing
    * @param validation Nothing
-   * @param html Nothing
    * @param getTimes TimesData
+   * @param getScheduledJobs scheduledJobs
    */
-  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate, validation, html, getTimes) {
+  constructor(stateService, scheduleIdToSchedule, createOnOffScheduleSerializer, adapter, coordinate, validation, getTimes, getScheduledJobs) {
+    super();
     this.stateService = stateService;
     this.scheduleIdToSchedule = scheduleIdToSchedule;
     this.createOnOffScheduleSerializer = createOnOffScheduleSerializer;
     this.adapter = adapter;
     this.coordinate = coordinate;
     this.validation = validation;
-    this.html = html;
     this.getTimes = getTimes;
+    this.getScheduledJobs = getScheduledJobs;
     this.adapter = adapter;
     this.triggerTimeout = void 0;
     this.validation = validation;
-    this.html = html;
   }
   currentMessage = null;
   triggerTimeout;
@@ -59,7 +60,7 @@ class MessageService {
    * @param message ioBroker.Message
    */
   async handleMessage(message) {
-    var _a, _b, _c, _d, _e, _f;
+    var _a;
     if (this.currentMessage) {
       this.triggerTimeout = this.adapter.setTimeout(() => {
         void this.handleMessage(message);
@@ -87,21 +88,21 @@ class MessageService {
     switch (message.command) {
       case "add-trigger":
         await this.addTrigger(schedule, data);
-        await ((_a = this.validation) == null ? void 0 : _a.setActionTime());
+        this.emit("data");
         await this.setCountTrigger();
         break;
       case "add-one-time-trigger":
         await this.addOneTimeTrigger(schedule, data);
-        await ((_b = this.validation) == null ? void 0 : _b.setActionTime());
+        this.emit("data");
         await this.setCountTrigger();
         break;
       case "update-one-time-trigger":
         await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
-        await ((_c = this.validation) == null ? void 0 : _c.setActionTime());
+        this.emit("data");
         break;
       case "update-trigger":
         if (data.trigger && data.trigger.type === "TimeTrigger") {
-          const t = await ((_d = this.validation) == null ? void 0 : _d.nextDateSwitch(/* @__PURE__ */ new Date(), data.trigger));
+          const t = await ((_a = this.validation) == null ? void 0 : _a.nextDateSwitch(/* @__PURE__ */ new Date(), data.trigger));
           const nextDate = t != void 0 ? new Date(t).getDay() : 0;
           data.trigger.todayTrigger = {
             hour: data.trigger.hour,
@@ -113,11 +114,11 @@ class MessageService {
           data.trigger.todayTrigger = await this.nextDate(data.trigger);
         }
         await this.updateTrigger(schedule, data.trigger, data.dataId);
-        await ((_e = this.validation) == null ? void 0 : _e.setActionTime());
+        this.emit("data");
         break;
       case "delete-trigger":
         schedule.removeTrigger(data.triggerId);
-        await ((_f = this.validation) == null ? void 0 : _f.setActionTime());
+        this.emit("data");
         await this.setCountTrigger();
         break;
       case "change-name":
@@ -129,14 +130,14 @@ class MessageService {
         await this.changeName(data);
         break;
       case "enable-schedule":
-        this.html.changeEnabled(data.dataId, true);
+        this.emit("data", "changeEnabled", data.dataId, true);
         schedule.setEnabled(true);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), true);
         await this.setCountTrigger();
         break;
       case "disable-schedule":
         schedule.setEnabled(false);
-        this.html.changeEnabled(data.dataId, false);
+        this.emit("data", "changeEnabled", data.dataId, true);
         await this.stateService.setState(this.getEnabledIdFromScheduleId(data.dataId), false);
         await this.setCountTrigger();
         break;
@@ -164,7 +165,7 @@ class MessageService {
         saveTrigger = JSON.stringify(actual_trigger);
       }
       await this.stateService.setState(data.dataId, saveTrigger);
-      await this.html.changeTrigger(data.dataId, saveTrigger);
+      this.emit("data", "changeTrigger", data.dataId, saveTrigger);
     } else {
       this.adapter.log.error("Cannot update schedule state after message, no serializer found for schedule");
       return;
@@ -191,15 +192,11 @@ class MessageService {
    * Counter trigger
    */
   async setCountTrigger() {
-    var _a;
     let count = 0;
-    for (const id of this.scheduleIdToSchedule.keys()) {
-      try {
-        const len = (_a = this.scheduleIdToSchedule.get(id)) == null ? void 0 : _a.getTriggers().length;
-        count += len != null ? len : 0;
-      } catch (e) {
-        this.adapter.log.debug(`scheduleIdToSchedule: ${e}`);
-      }
+    try {
+      count = Object.keys(this.getScheduledJobs).length;
+    } catch (e) {
+      this.adapter.log.debug(`getScheduledJobs: ${e}`);
     }
     await this.adapter.setState("counterTrigger", count, true);
   }
