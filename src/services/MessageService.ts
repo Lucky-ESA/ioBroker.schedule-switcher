@@ -83,17 +83,17 @@ export class MessageService extends EventEmitter implements MessageServices {
         switch (message.command) {
             case "add-trigger":
                 await this.addTrigger(schedule, data);
-                this.emit("data");
+                this.emit("validation");
                 await this.setCountTrigger();
                 break;
             case "add-one-time-trigger":
                 await this.addOneTimeTrigger(schedule, data);
-                this.emit("data");
+                this.emit("validation");
                 await this.setCountTrigger();
                 break;
             case "update-one-time-trigger":
                 await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
-                this.emit("data");
+                this.emit("validation");
                 break;
             case "update-trigger":
                 if (data.trigger && data.trigger.type === "TimeTrigger") {
@@ -109,11 +109,11 @@ export class MessageService extends EventEmitter implements MessageServices {
                     data.trigger.todayTrigger = await this.nextDate(data.trigger);
                 }
                 await this.updateTrigger(schedule, data.trigger, data.dataId);
-                this.emit("data");
+                this.emit("validation");
                 break;
             case "delete-trigger":
                 schedule.removeTrigger(data.triggerId);
-                this.emit("data");
+                this.emit("validation");
                 await this.setCountTrigger();
                 break;
             case "change-name":

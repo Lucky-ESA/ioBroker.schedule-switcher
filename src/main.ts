@@ -48,6 +48,7 @@ class ScheduleSwitcher extends utils.Adapter {
     private validation: ValidationState | undefined;
     private stateService = new IoBrokerStateService(this);
     private validationView = new IoBrokerValidationView(this);
+    private updateView: boolean;
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
@@ -60,6 +61,7 @@ class ScheduleSwitcher extends utils.Adapter {
         this.on("message", this.onMessage.bind(this));
         this.on("unload", this.onUnload.bind(this));
         this.setCountTriggerStart = null;
+        this.updateView = false;
     }
 
     private getEnabledIdFromScheduleId(scheduleId: string): string {
@@ -201,8 +203,11 @@ class ScheduleSwitcher extends utils.Adapter {
         rule.second = 27;
         this.widgetControl = scheduleJob(rule, async () => {
             this.log.info("Start Update View!");
-            await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
-            await this.visWidgetOverview.createOverview();
+            if (this.updateView) {
+                await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
+                await this.visWidgetOverview.createOverview();
+                this.updateView = false;
+            }
             await this.messageService?.setCountTrigger();
         });
     }
@@ -305,6 +310,7 @@ class ScheduleSwitcher extends utils.Adapter {
                 const command = id.split(".").pop();
                 if (command === "data") {
                     void this.updateData(id, state);
+                    this.updateView = true;
                 } else if (command === "enabled") {
                     void this.updateEnabled(id, state);
                 } else if (command === "sendto" && typeof state.val === "string") {
@@ -731,8 +737,9 @@ class ScheduleSwitcher extends utils.Adapter {
         }
     }
 
-    private getValidationData(): void {
-        this.validation?.setActionTime();
+    private async getValidationData(): Promise<void> {
+        this.updateView = true;
+        await this.validation?.setActionTime();
     }
 
     private async fixStateStructure(statesInSettings: { onOff: number[] }): Promise<void> {

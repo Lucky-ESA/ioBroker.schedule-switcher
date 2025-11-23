@@ -21,8 +21,7 @@ __export(IoBrokerStateService_exports, {
   IoBrokerStateService: () => IoBrokerStateService
 });
 module.exports = __toCommonJS(IoBrokerStateService_exports);
-var import_events = require("events");
-class IoBrokerStateService extends import_events.EventEmitter {
+class IoBrokerStateService {
   adapter;
   delayTimeout;
   checkTime = 0;
@@ -31,7 +30,6 @@ class IoBrokerStateService extends import_events.EventEmitter {
    * @param adapter ioBroker
    */
   constructor(adapter) {
-    super();
     if (!adapter) {
       throw new Error("adapter may not be null.");
     }
@@ -104,8 +102,7 @@ class IoBrokerStateService extends import_events.EventEmitter {
       this.adapter.log.debug(`Set not state ${id} with value ${value == null ? void 0 : value.toString()} - ${old_val == null ? void 0 : old_val.toString()}`);
     }
     this.adapter.sendTo(this.adapter.namespace, "update-actionTime", {
-      dataId: id,
-      trigger
+      dataId: id
     });
   }
   /**

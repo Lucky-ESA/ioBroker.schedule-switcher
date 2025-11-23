@@ -21,13 +21,13 @@ __export(MessageService_exports, {
   MessageService: () => MessageService
 });
 module.exports = __toCommonJS(MessageService_exports);
-var import_events = require("events");
+var import_node_events = require("node:events");
 var import_OnOffSchedule = require("../schedules/OnOffSchedule");
 var import_AstroTriggerBuilder = require("../triggers/AstroTriggerBuilder");
 var import_TimeTriggerBuilder = require("../triggers/TimeTriggerBuilder");
 var import_AstroTime = require("../types/AstroTime");
 var import_Weekday = require("../types/Weekday");
-class MessageService extends import_events.EventEmitter {
+class MessageService extends import_node_events.EventEmitter {
   /**
    * Messages
    *
@@ -88,17 +88,17 @@ class MessageService extends import_events.EventEmitter {
     switch (message.command) {
       case "add-trigger":
         await this.addTrigger(schedule, data);
-        this.emit("data");
+        this.emit("validation");
         await this.setCountTrigger();
         break;
       case "add-one-time-trigger":
         await this.addOneTimeTrigger(schedule, data);
-        this.emit("data");
+        this.emit("validation");
         await this.setCountTrigger();
         break;
       case "update-one-time-trigger":
         await this.updateOneTimeTrigger(schedule, data.trigger, data.dataId);
-        this.emit("data");
+        this.emit("validation");
         break;
       case "update-trigger":
         if (data.trigger && data.trigger.type === "TimeTrigger") {
@@ -114,11 +114,11 @@ class MessageService extends import_events.EventEmitter {
           data.trigger.todayTrigger = await this.nextDate(data.trigger);
         }
         await this.updateTrigger(schedule, data.trigger, data.dataId);
-        this.emit("data");
+        this.emit("validation");
         break;
       case "delete-trigger":
         schedule.removeTrigger(data.triggerId);
-        this.emit("data");
+        this.emit("validation");
         await this.setCountTrigger();
         break;
       case "change-name":

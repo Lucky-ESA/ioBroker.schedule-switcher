@@ -58,6 +58,7 @@ class ScheduleSwitcher extends utils.Adapter {
   validation;
   stateService = new import_IoBrokerStateService.IoBrokerStateService(this);
   validationView = new import_IoBrokerValidationView.IoBrokerValidationView(this);
+  updateView;
   constructor(options = {}) {
     super({
       ...options,
@@ -67,8 +68,8 @@ class ScheduleSwitcher extends utils.Adapter {
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
-    this.loggingService.on("updateData", this.updateDataFromStateService.bind(this));
     this.setCountTriggerStart = null;
+    this.updateView = false;
   }
   getEnabledIdFromScheduleId(scheduleId) {
     return scheduleId.replace("data", "enabled");
@@ -207,8 +208,11 @@ class ScheduleSwitcher extends utils.Adapter {
     this.widgetControl = (0, import_node_schedule.scheduleJob)(rule, async () => {
       var _a;
       this.log.info("Start Update View!");
-      await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
-      await this.visWidgetOverview.createOverview();
+      if (this.updateView) {
+        await this.validationView.validationView(utils.getAbsoluteDefaultDataDir());
+        await this.visWidgetOverview.createOverview();
+        this.updateView = false;
+      }
       await ((_a = this.messageService) == null ? void 0 : _a.setCountTrigger());
     });
   }
@@ -303,6 +307,7 @@ class ScheduleSwitcher extends utils.Adapter {
         const command = id.split(".").pop();
         if (command === "data") {
           void this.updateData(id, state);
+          this.updateView = true;
         } else if (command === "enabled") {
           void this.updateEnabled(id, state);
         } else if (command === "sendto" && typeof state.val === "string") {
@@ -713,9 +718,10 @@ class ScheduleSwitcher extends utils.Adapter {
       void this.vishtmltable.changeTrigger(id, event);
     }
   }
-  getValidationData() {
+  async getValidationData() {
     var _a;
-    (_a = this.validation) == null ? void 0 : _a.setActionTime();
+    this.updateView = true;
+    await ((_a = this.validation) == null ? void 0 : _a.setActionTime());
   }
   async fixStateStructure(statesInSettings) {
     if (!statesInSettings) {
