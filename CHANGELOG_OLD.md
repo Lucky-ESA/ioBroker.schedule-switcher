@@ -31,6 +31,11 @@
 ### 0.0.1 (2024-10-19)
 
 - (Lucky_ESA) initial release
+## 0.0.8 (2024-12-07)
+
+- (Lucky-ESA) Migration to ESLint9
+- (Lucky-ESA) Bugfixes
+
 ## 0.0.7 (2024-11-26)
 
 - (Lucky_ESA) HTML overview added

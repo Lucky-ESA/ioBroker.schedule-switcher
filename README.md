@@ -40,8 +40,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.1.0 (2025-11-25)
 
 - (Lucky-ESA) Fixed warn log (Cannot read dir...)
 - (Lucky-ESA) Added state comparison enabled/disabled
@@ -71,11 +70,6 @@ It is possible to configure at which time and on which weekdays the trigger shou
 - (Lucky-ESA) Added: Automatic deactivation control
 - (Lucky-ESA) Fixed: Visibility
 - (Lucky-ESA) Fixed: Bug in type check
-
-### 0.0.8 (2024-12-07)
-
-- (Lucky-ESA) Migration to ESLint9
-- (Lucky-ESA) Bugfixes
 
 ## License
 
