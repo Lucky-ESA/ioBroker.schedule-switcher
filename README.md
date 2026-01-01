@@ -75,7 +75,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 MIT License
 
-Copyright (c) 2024-2025 Lucky_ESA <github@luckyskills.de>
+Copyright (c) 2024-2026 Lucky_ESA <github@luckyskills.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
