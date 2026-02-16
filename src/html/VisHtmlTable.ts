@@ -101,8 +101,7 @@ export class VisHtmlTable implements htmltable {
         if (typeof this.stateVal === "object" && Object.keys(this.stateVal).length === 0) {
             return;
         }
-        const id = this.htmlVal;
-        this.adapter.log.debug(`HTML: ${JSON.stringify(id)}`);
+        this.adapter.log.debug(`HTML: ${JSON.stringify(this.htmlVal)}`);
         let text = "";
         let count = 0;
         let countall = 0;
@@ -126,11 +125,11 @@ export class VisHtmlTable implements htmltable {
             let triggers = "";
             let iTag = "";
             let iTagEnd = "";
-            let font_text_color: string = id.font_color_text_enabled;
+            let font_text_color: string = this.htmlVal.font_color_text_enabled;
             if (!data.enabled) {
                 iTag = `<i>`;
                 iTagEnd = `</i>`;
-                font_text_color = id.font_color_text_disabled;
+                font_text_color = this.htmlVal.font_color_text_disabled;
             }
             let counter = 0;
             let nextDateTime = 0;
@@ -149,7 +148,7 @@ export class VisHtmlTable implements htmltable {
                     date: new Date(),
                     action: "",
                 };
-                const isodd = counter % 2 != 0 ? id.background_color_even : id.background_color_odd;
+                const isodd = counter % 2 != 0 ? this.htmlVal.background_color_even : this.htmlVal.background_color_odd;
                 let addDate = 0;
                 if (trigger.type === "TimeTrigger") {
                     if (trigger.hour === 0 && trigger.minute === 0) {
@@ -232,80 +231,90 @@ export class VisHtmlTable implements htmltable {
                         `<input for="datetime${countall}" type="button" value="save" onclick="sendToDateTime('${this.adapter.namespace}', 'datetime', '${trigger.id}', '${state}', '${countall}')" /> `;
                 }
                 if (trigger.action && trigger.action.type === "ConditionAction") {
-                    const iconCon = trigger.action.action.name === "On" ? id.icon_true : id.icon_false;
-                    action =
-                        `&ensp;${iTag}${trigger.action.condition.constant}` +
-                        `${trigger.action.condition.sign}${trigger.action.condition.constant}${iTagEnd}&ensp;` +
-                        `${iconCon}`;
+                    const iconCon =
+                        trigger.action.action.name === "On" ? this.htmlVal.icon_true : this.htmlVal.icon_false;
+                    if (trigger.action && trigger.action.condition.type === "StringStateAndConstantCondition") {
+                        const stateId = await this.adapter.getStateAsync(trigger.action.condition.stateId);
+                        action =
+                            `&ensp;${iTag}${trigger.action.condition.constant}` +
+                            `${trigger.action.condition.sign}${stateId?.val}${iTagEnd}&ensp;` +
+                            `${iconCon}`;
+                    } else {
+                        const stateId1 = await this.adapter.getStateAsync(trigger.action.condition.stateId1);
+                        const stateId2 = await this.adapter.getStateAsync(trigger.action.condition.stateId2);
+                        action =
+                            `&ensp;${iTag}${stateId1?.val}` +
+                            `${trigger.action.condition.sign}${stateId2?.val}${iTagEnd}&ensp;` +
+                            `${iconCon}`;
+                    }
                     if (nextDateTimeIcon != nextDateTime) {
                         nextaction = iconCon;
                     }
                     nextNameData.action = iconCon;
                 }
                 if (trigger.action && trigger.action.type === "OnOffStateAction") {
-                    const icon = trigger.action.name === "On" ? id.icon_true : id.icon_false;
+                    const icon = trigger.action.name === "On" ? this.htmlVal.icon_true : this.htmlVal.icon_false;
                     action = `&ensp;${icon}`;
                     if (nextDateTimeIcon != nextDateTime) {
                         nextaction = icon;
                     }
                     nextNameData.action = icon;
                 }
-                let valueCheck = `&ensp;${trigger.valueCheck ? id.icon_state_check_yes : id.icon_state_check_no}`;
+                let valueCheck = `&ensp;${trigger.valueCheck ? this.htmlVal.icon_state_check_yes : this.htmlVal.icon_state_check_no}`;
                 valueCheck = `<button 
                 title="${this.loadTitle(trigger.valueCheck ? "activated" : "disabled")}";
                 style="border:none; cursor: pointer; 
                 background-color:transparent;" 
                 onClick="changValueCheck('${this.adapter.namespace}', 'valueCheck', '${state}', '${trigger.id}', '${trigger.valueCheck}')">${valueCheck}
                 </button>`;
-
                 triggers +=
                     `
                 <tr style="background-color:${isodd}; 
                 color:${font_text_color};
                 font-weight:"bold";
-                font-size:${id.header_font_size}px;">
-                <td style="text-align:${id.column_align_row_01}">
+                font-size:${this.htmlVal.header_font_size}px;">
+                <td style="text-align:${this.htmlVal.column_align_row_01}">
                 <label for="delete${countall}">${iTag}${trigger.type}${iTagEnd}</label>&ensp;
                 <input type="checkbox" id="delete${countall}" name="delete${countall}" />
                 <input for="delete${countall}" type="button" value="delete" onclick="deleteTrigger('${this.adapter.namespace}', 'delete-trigger', '${trigger.id}', '${state}', '${countall}')" />
                 ${valueCheck}</td>
-                <td title="${times}" style="text-align:${id.column_align_row_02}">${change_times}</td>
-                <td title="${times}" style="text-align:${id.column_align_row_03}">${iTag}${times}${iTagEnd}${action}</td>
+                <td title="${times}" style="text-align:${this.htmlVal.column_align_row_02}">${change_times}</td>
+                <td title="${times}" style="text-align:${this.htmlVal.column_align_row_03}">${iTag}${times}${iTagEnd}${action}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 1, '${trigger.type}')" ` +
-                    `style="cursor: pointer; text-align:${id.column_align_row_04}; ${today_style[1]} ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(1) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
-                    `${iTag}${id.column_text_04}${iTagEnd}</td>
+                    `style="cursor: pointer; text-align:${this.htmlVal.column_align_row_04}; ${today_style[1]} ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(1) ? this.htmlVal.font_color_weekdays_enabled : this.htmlVal.font_color_weekdays_disabled};">` +
+                    `${iTag}${this.htmlVal.column_text_04}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 2, '${trigger.type}')" ` +
-                    `style="cursor: pointer; text-align:${id.column_align_row_05}; ${today_style[2]} ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(2) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
-                    `${iTag}${id.column_text_05}${iTagEnd}</td>
+                    `style="cursor: pointer; text-align:${this.htmlVal.column_align_row_05}; ${today_style[2]} ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(2) ? this.htmlVal.font_color_weekdays_enabled : this.htmlVal.font_color_weekdays_disabled};">` +
+                    `${iTag}${this.htmlVal.column_text_05}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 3, '${trigger.type}')" ` +
-                    `style="cursor: pointer; text-align:${id.column_align_row_06}; ${today_style[3]} ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(3) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
-                    `${iTag}${id.column_text_06}${iTagEnd}</td>
+                    `style="cursor: pointer; text-align:${this.htmlVal.column_align_row_06}; ${today_style[3]} ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(3) ? this.htmlVal.font_color_weekdays_enabled : this.htmlVal.font_color_weekdays_disabled};">` +
+                    `${iTag}${this.htmlVal.column_text_06}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 4, '${trigger.type}')" ` +
-                    `style="cursor: pointer; text-align:${id.column_align_row_07}; ${today_style[4]} ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(4) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
-                    `${iTag}${id.column_text_07}${iTagEnd}</td>
+                    `style="cursor: pointer; text-align:${this.htmlVal.column_align_row_07}; ${today_style[4]} ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(4) ? this.htmlVal.font_color_weekdays_enabled : this.htmlVal.font_color_weekdays_disabled};">` +
+                    `${iTag}${this.htmlVal.column_text_07}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 5, '${trigger.type}')" ` +
-                    `style="cursor: pointer; text-align:${id.column_align_row_08}; ${today_style[5]} ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(5) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
-                    `${iTag}${id.column_text_08}${iTagEnd}</td>
+                    `style="cursor: pointer; text-align:${this.htmlVal.column_align_row_08}; ${today_style[5]} ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(5) ? this.htmlVal.font_color_weekdays_enabled : this.htmlVal.font_color_weekdays_disabled};">` +
+                    `${iTag}${this.htmlVal.column_text_08}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 6, '${trigger.type}')" ` +
-                    `style="cursor: pointer; text-align:${id.column_align_row_09}; ${today_style[6]} ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(6) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
-                    `${iTag}${id.column_text_09}${iTagEnd}</td>
+                    `style="cursor: pointer; text-align:${this.htmlVal.column_align_row_09}; ${today_style[6]} ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(6) ? this.htmlVal.font_color_weekdays_enabled : this.htmlVal.font_color_weekdays_disabled};">` +
+                    `${iTag}${this.htmlVal.column_text_09}${iTagEnd}</td>
                 <td id="weekday" ` +
                     `onClick="changeweekdays('${this.adapter.namespace}', 'week', '${state}', '${trigger.id}', 0, '${trigger.type}')" ` +
-                    `style="cursor: pointer; text-align:${id.column_align_row_10}; ${today_style[0]} ` +
-                    `color:${trigger.weekdays && trigger.weekdays.includes(0) ? id.font_color_weekdays_enabled : id.font_color_weekdays_disabled};">` +
-                    `${iTag}${id.column_text_10}${iTagEnd}</td>
+                    `style="cursor: pointer; text-align:${this.htmlVal.column_align_row_10}; ${today_style[0]} ` +
+                    `color:${trigger.weekdays && trigger.weekdays.includes(0) ? this.htmlVal.font_color_weekdays_enabled : this.htmlVal.font_color_weekdays_disabled};">` +
+                    `${iTag}${this.htmlVal.column_text_10}${iTagEnd}</td>
                 </tr>`;
                 nextName.push(nextNameData);
             }
@@ -329,31 +338,31 @@ export class VisHtmlTable implements htmltable {
             const val_enabled = data.enabled ? false : true;
             status =
                 `${data.onAction.onValue}/${data.onAction.offValue}` +
-                `&ensp;${data.enabled ? id.icon_true : id.icon_false}`;
+                `&ensp;${data.enabled ? this.htmlVal.icon_true : this.htmlVal.icon_false}`;
             const status_icon = data.enabled ? "green" : "red";
             text += `
-            <tr style="background-color:${id.background_color_trigger}; 
+            <tr style="background-color:${this.htmlVal.background_color_trigger}; 
             color:${font_text_color};
             font-weight:"bold";
-            font-size:${id.header_font_size}px;">
-            <td style="text-align:${id.column_align_row_01}">
+            font-size:${this.htmlVal.header_font_size}px;">
+            <td style="text-align:${this.htmlVal.column_align_row_01}">
             <button 
                 style="border:none; cursor: pointer; 
                 background-color:transparent; 
                 color:${status_icon}; 
-                font-size:${id.column_width_01}px; 
+                font-size:${this.htmlVal.column_width_01}px; 
                 text-align:left" 
-                value="${val_enabled}" onclick="setState('${state.replace("data", "enabled")}', this.value)">${id.icon_switch_symbol}
+                value="${val_enabled}" onclick="setState('${state.replace("data", "enabled")}', this.value)">${this.htmlVal.icon_switch_symbol}
             </button>&ensp;&ensp;${iTag}${data.name}&ensp;(${count})${iTagEnd}</td>
-            <td title="${devices}" style="text-align:${id.column_align_row_02}">${iTag}${devices}${iTagEnd}</td>
-            <td title="${status}" style="text-align:${id.column_align_row_03}">${iTag}${status}${iTagEnd}</td>
-            <td style="text-align:${id.column_align_row_04};">${next_event[1]}</td>
-            <td style="text-align:${id.column_align_row_05};">${next_event[2]}</td>
-            <td style="text-align:${id.column_align_row_06};">${next_event[3]}</td>
-            <td style="text-align:${id.column_align_row_07};">${next_event[4]}</td>
-            <td style="text-align:${id.column_align_row_08};">${next_event[5]}</td>
-            <td style="text-align:${id.column_align_row_09};">${next_event[6]}</td>
-            <td style="text-align:${id.column_align_row_10};">${next_event[0]}</td>
+            <td title="${devices}" style="text-align:${this.htmlVal.column_align_row_02}">${iTag}${devices}${iTagEnd}</td>
+            <td title="${status}" style="text-align:${this.htmlVal.column_align_row_03}">${iTag}${status}${iTagEnd}</td>
+            <td style="text-align:${this.htmlVal.column_align_row_04};">${next_event[1]}</td>
+            <td style="text-align:${this.htmlVal.column_align_row_05};">${next_event[2]}</td>
+            <td style="text-align:${this.htmlVal.column_align_row_06};">${next_event[3]}</td>
+            <td style="text-align:${this.htmlVal.column_align_row_07};">${next_event[4]}</td>
+            <td style="text-align:${this.htmlVal.column_align_row_08};">${next_event[5]}</td>
+            <td style="text-align:${this.htmlVal.column_align_row_09};">${next_event[6]}</td>
+            <td style="text-align:${this.htmlVal.column_align_row_10};">${next_event[0]}</td>
             </tr>`;
             text += triggers;
             ++count;
@@ -459,7 +468,6 @@ export class VisHtmlTable implements htmltable {
      */
     private async mergeHTML(htmltext: string, countall: number, count: number): Promise<void> {
         this.adapter.log.debug(`Start merge HTML code.`);
-        const id = this.htmlVal;
         let div = '<div class="container">';
         let div_css = `
         div.container {
@@ -467,7 +475,7 @@ export class VisHtmlTable implements htmltable {
             justify-content: center;
         }`;
         let min = "";
-        if (id.jarvis) {
+        if (this.htmlVal.jarvis) {
             div = "<div>";
             div_css = "";
             min = "min-width:100%;";
@@ -481,28 +489,28 @@ export class VisHtmlTable implements htmltable {
             margin: 0;
         }
         body {
-            background-color: ${id.background_color_body}; margin: 0 auto;
+            background-color: ${this.htmlVal.background_color_body}; margin: 0 auto;
         }
         p {
-            padding-top: 10px; padding-bottom: 10px; text-align: ${id.p_tag_text_algin};
+            padding-top: 10px; padding-bottom: 10px; text-align: ${this.htmlVal.p_tag_text_algin};
         }
         #updatetime:hover {
             cursor: pointer;
         }
         #weekday:hover {
             cursor: pointer;
-            background-color: ${id.background_color_weekdays_hover};
+            background-color: ${this.htmlVal.background_color_weekdays_hover};
         }
         td {
-            padding:${id.td_tag_cell}px; border:0px solid ${id.td_tag_border_color}; 
-            border-right:${id.td_tag_border_right}px solid ${id.td_tag_border_color};
-            border-bottom:${id.td_tag_border_bottom}px solid ${id.td_tag_border_color};
+            padding:${this.htmlVal.td_tag_cell}px; border:0px solid ${this.htmlVal.td_tag_border_color}; 
+            border-right:${this.htmlVal.td_tag_border_right}px solid ${this.htmlVal.td_tag_border_color};
+            border-bottom:${this.htmlVal.td_tag_border_bottom}px solid ${this.htmlVal.td_tag_border_color};
         }
         table {
-            width: ${id.table_tag_width};
-            margin: ${id.table_tag_text_align};
-            border:1px solid ${id.table_tag_border_color};
-            border-spacing: ${id.table_tag_cell}px;
+            width: ${this.htmlVal.table_tag_width};
+            margin: ${this.htmlVal.table_tag_text_align};
+            border:1px solid ${this.htmlVal.table_tag_border_color};
+            border-spacing: ${this.htmlVal.table_tag_cell}px;
             border-collapse: collapse;
         }
         ${div_css}
@@ -581,60 +589,60 @@ export class VisHtmlTable implements htmltable {
         }
         </script>
         ${div}
-        <table style="${min} width:${id.header_width};
-        border:${id.header_border}px; border-color:${id.header_tag_border_color}; 
-        font-size:${id.header_font_size}px; font-family:${id.header_font_family}; 
-        background-image: linear-gradient(42deg,${id.header_linear_color_2},
-        ${id.header_linear_color_1});">
+        <table style="${min} width:${this.htmlVal.header_width};
+        border:${this.htmlVal.header_border}px; border-color:${this.htmlVal.header_tag_border_color}; 
+        font-size:${this.htmlVal.header_font_size}px; font-family:${this.htmlVal.header_font_family}; 
+        background-image: linear-gradient(42deg,${this.htmlVal.header_linear_color_2},
+        ${this.htmlVal.header_linear_color_1});">
         <thead>
         <tr>
         <th colspan="10" scope="colgroup">
         <p onClick="updateTrigger('${this.adapter.namespace}')"
-        id="updatetime" style="color:${id.top_text_color}; font-family:${id.top_font_family}; 
-        font-size:${id.top_font_size}px; font-weight:${id.top_font_weight}">
-        ${id.top_text}&ensp;&ensp;${await this.helper_translator("top_last_update")} 
+        id="updatetime" style="color:${this.htmlVal.top_text_color}; font-family:${this.htmlVal.top_font_family}; 
+        font-size:${this.htmlVal.top_font_size}px; font-weight:${this.htmlVal.top_font_weight}">
+        ${this.htmlVal.top_text}&ensp;&ensp;${await this.helper_translator("top_last_update")} 
         ${this.adapter.formatDate(new Date(), "TT.MM.JJJJ hh:mm:ss")}</p></th>
         </tr>
-        <tr style="color:${id.headline_color}; height:${id.headline_height}px;
-        font-size: ${id.headline_font_size}px; font-weight: ${id.headline_weight}; 
-        border-bottom: ${id.headline_underlined}px solid ${id.headline_underlined_color}">
-        <th style="text-align:${id.column_align_01}; width:${id.column_width_01}">
-        ${id.column_text_01}
+        <tr style="color:${this.htmlVal.headline_color}; height:${this.htmlVal.headline_height}px;
+        font-size: ${this.htmlVal.headline_font_size}px; font-weight: ${this.htmlVal.headline_weight}; 
+        border-bottom: ${this.htmlVal.headline_underlined}px solid ${this.htmlVal.headline_underlined_color}">
+        <th style="text-align:${this.htmlVal.column_align_01}; width:${this.htmlVal.column_width_01}">
+        ${this.htmlVal.column_text_01}
         </th>
-        <th style="text-align:${id.column_align_02}; width:${id.column_width_02}">
-        ${id.column_text_02}
+        <th style="text-align:${this.htmlVal.column_align_02}; width:${this.htmlVal.column_width_02}">
+        ${this.htmlVal.column_text_02}
         </th>
-        <th style="text-align:${id.column_align_03}; width:${id.column_width_03}">
-        ${id.column_text_03}
+        <th style="text-align:${this.htmlVal.column_align_03}; width:${this.htmlVal.column_width_03}">
+        ${this.htmlVal.column_text_03}
         </th>
-        <th style="text-align:${id.column_align_04}; width:${id.column_width_04}">
-        ${id.column_text_04}
+        <th style="text-align:${this.htmlVal.column_align_04}; width:${this.htmlVal.column_width_04}">
+        ${this.htmlVal.column_text_04}
         </th>
-        <th style="text-align:${id.column_align_05}; width:${id.column_width_05}">
-        ${id.column_text_05}
+        <th style="text-align:${this.htmlVal.column_align_05}; width:${this.htmlVal.column_width_05}">
+        ${this.htmlVal.column_text_05}
         </th>
-        <th style="text-align:${id.column_align_06}; width:${id.column_width_06}">
-        ${id.column_text_06}
+        <th style="text-align:${this.htmlVal.column_align_06}; width:${this.htmlVal.column_width_06}">
+        ${this.htmlVal.column_text_06}
         </th>
-        <th style="text-align:${id.column_align_07}; width:${id.column_width_07}">
-        ${id.column_text_07}
+        <th style="text-align:${this.htmlVal.column_align_07}; width:${this.htmlVal.column_width_07}">
+        ${this.htmlVal.column_text_07}
         </th>
-        <th style="text-align:${id.column_align_08}; width:${id.column_width_08}">
-        ${id.column_text_08}
+        <th style="text-align:${this.htmlVal.column_align_08}; width:${this.htmlVal.column_width_08}">
+        ${this.htmlVal.column_text_08}
         </th>
-        <th style="text-align:${id.column_align_09}; width:${id.column_width_09}">
-        ${id.column_text_09}
+        <th style="text-align:${this.htmlVal.column_align_09}; width:${this.htmlVal.column_width_09}">
+        ${this.htmlVal.column_text_09}
         </th>
-        <th style="text-align:${id.column_align_10}; width:${id.column_width_10}">
-        ${id.column_text_10}
+        <th style="text-align:${this.htmlVal.column_align_10}; width:${this.htmlVal.column_width_10}">
+        ${this.htmlVal.column_text_10}
         </th>
         </tr>
         </thead>
         <tfoot>
         <tr>
         <th colspan="10" scope="colgroup">
-        <p style="color:${id.top_text_color}; font-family:${id.top_font_family}; 
-        font-size:${id.top_font_size}px; font-weight:${id.top_font_weight}">
+        <p style="color:${this.htmlVal.top_text_color}; font-family:${this.htmlVal.top_font_family}; 
+        font-size:${this.htmlVal.top_font_size}px; font-weight:${this.htmlVal.top_font_weight}">
         ${await this.helper_translator("footerobject")}&ensp;&ensp;${count}</br>
         ${await this.helper_translator("footer")}&ensp;&ensp;${countall}</p></th>
         </tr>

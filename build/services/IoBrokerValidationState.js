@@ -32,7 +32,9 @@ class IoBrokerValidationState {
     this.adapter = adapter;
     this.coordinate = coordinate;
     this.adapter = adapter;
+    this.works = false;
   }
+  works;
   /**
    * validation
    *
@@ -503,6 +505,11 @@ class IoBrokerValidationState {
    * @param check true/false
    */
   async setNextAstroTime(check) {
+    if (this.works) {
+      this.adapter.log.debug(`Catch HTML update.`);
+      return;
+    }
+    this.works = true;
     const states = await this.adapter.getChannelsAsync();
     for (const ids of states) {
       const id = `${ids}.data`;
@@ -536,6 +543,7 @@ class IoBrokerValidationState {
         }
       }
     }
+    this.works = false;
   }
   /**
    * Set action time

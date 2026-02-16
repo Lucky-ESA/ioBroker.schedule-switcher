@@ -7,7 +7,7 @@
 ![Number of Installations](https://iobroker.live/badges/schedule-switcher-installed.svg)
 ![Current version in stable repository](https://iobroker.live/badges/schedule-switcher-stable.svg)
 
-[![NPM](https://nodei.co/npm/iobroker.schedule-switcher.png?downloads=true)](https://nodei.co/npm/iobroker.schedule-switcher/)
+[![NPM](https://nodei.co/npm/iobroker.schedule-switcher.png?downloads=true)](https://www.npmjs.com/package/iobroker.schedule-switcher/)
 
 **Tests:** [![Test and Release](https://github.com/Lucky-ESA/ioBroker.schedule-switcher/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/Lucky-ESA/ioBroker.schedule-switcher/actions/workflows/test-and-release.yml)
 
@@ -40,6 +40,11 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+**WORK IN PROGRESS**
+
+- (Lucky-ESA) Code optimized
+
 ### 0.1.0 (2025-11-25)
 
 - (Lucky-ESA) Fixed warn log (Cannot read dir...)

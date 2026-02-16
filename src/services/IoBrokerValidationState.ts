@@ -8,6 +8,8 @@ import type { ValidationState } from "../types/ValidationState";
  * IoBrokerValidationState
  */
 export class IoBrokerValidationState implements ValidationState {
+    private works: boolean;
+
     /**
      * @param adapter iobroker
      * @param coordinate Coodinate
@@ -17,6 +19,7 @@ export class IoBrokerValidationState implements ValidationState {
         private readonly coordinate: CoordinateTypes,
     ) {
         this.adapter = adapter;
+        this.works = false;
     }
 
     /**
@@ -541,6 +544,11 @@ export class IoBrokerValidationState implements ValidationState {
      * @param check true/false
      */
     public async setNextAstroTime(check: boolean): Promise<void> {
+        if (this.works) {
+            this.adapter.log.debug(`Catch HTML update.`);
+            return;
+        }
+        this.works = true;
         const states = await this.adapter.getChannelsAsync();
         for (const ids of states) {
             const id = `${ids}.data`;
@@ -574,6 +582,7 @@ export class IoBrokerValidationState implements ValidationState {
                 }
             }
         }
+        this.works = false;
     }
 
     /**
