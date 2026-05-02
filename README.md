@@ -41,6 +41,9 @@ It is possible to configure at which time and on which weekdays the trigger shou
     ### **WORK IN PROGRESS**
 -->
 
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires node.js >= 22 now
+
 **WORK IN PROGRESS**
 
 - (Lucky-ESA) Code optimized
