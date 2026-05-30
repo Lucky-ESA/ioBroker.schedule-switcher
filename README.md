@@ -80,6 +80,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
 - (Lucky-ESA) Fixed: Visibility
 - (Lucky-ESA) Fixed: Bug in type check
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 
 MIT License
