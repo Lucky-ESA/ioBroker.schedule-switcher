@@ -61,7 +61,7 @@ export class OneTimeTrigger implements Trigger, Destroyable {
                 this.action.execute(trigger);
                 this.destroy();
             },
-        } as Action;
+        };
     }
 
     /**

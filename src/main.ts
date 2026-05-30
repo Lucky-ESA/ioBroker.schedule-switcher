@@ -88,7 +88,7 @@ class ScheduleSwitcher extends utils.Adapter {
         if (this.config.usehtml) {
             await this.vishtmltable.createStates(lang);
         }
-        this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData as Array<schedulesData>);
+        this.config.schedules.onOff = await this.checkConfig(this.config.schedulesData);
         this.log.debug(`onoff: ${JSON.stringify(this.config.schedules.onOff)}`);
         await this.initValidation();
         await this.initMessageService();
