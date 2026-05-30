@@ -20,9 +20,9 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 ## Requirements
 
-- Node 20, 22 or 24
+- Node 22 or 24
 - JS-Controller >= 6.0.11
-- Admin >= 7.6.17
+- Admin >= 7.7.22
 - VIS or VIS-2
 
 ## Description
@@ -42,10 +42,8 @@ It is possible to configure at which time and on which weekdays the trigger shou
 -->
 
 ### **WORK IN PROGRESS**
+
 - (copilot) Adapter requires node.js >= 22 now
-
-**WORK IN PROGRESS**
-
 - (Lucky-ESA) Code optimized
 - (Lucky-ESA) Adapter requires admin >= 7.7.22 now
 
