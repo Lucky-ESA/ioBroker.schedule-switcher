@@ -31,6 +31,13 @@
 ### 0.0.1 (2024-10-19)
 
 - (Lucky_ESA) initial release
+## 0.0.9 (2024-12-20)
+
+- (Lucky-ESA) Fixed: Reading files from Redis database
+- (Lucky-ESA) Added: Automatic deactivation control
+- (Lucky-ESA) Fixed: Visibility
+- (Lucky-ESA) Fixed: Bug in type check
+
 ## 0.0.8 (2024-12-07)
 
 - (Lucky-ESA) Migration to ESLint9
