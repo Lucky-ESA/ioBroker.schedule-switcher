@@ -551,7 +551,7 @@ export class IoBrokerValidationState implements ValidationState {
         this.works = true;
         const states = await this.adapter.getChannelsAsync();
         for (const ids of states) {
-            const id = `${ids}.data`;
+            const id = `${ids._id}.data`;
             const state = await this.adapter.getStateAsync(id);
             if (state) {
                 if (typeof state.val === "string" && state.val.startsWith("{")) {
@@ -592,7 +592,7 @@ export class IoBrokerValidationState implements ValidationState {
         const allData: any = [];
         const states = await this.adapter.getChannelsAsync();
         for (const ids of states) {
-            const id = `${ids}.data`;
+            const id = `${ids._id}.data`;
             const state = await this.adapter.getStateAsync(id);
             if (state) {
                 if (typeof state.val === "string" && state.val.startsWith("{")) {
