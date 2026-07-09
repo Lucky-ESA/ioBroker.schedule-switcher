@@ -40,8 +40,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.2.1 (2026-07-09)
 
 - (Lucky-ESA) Fixed refresh astrotime
 
@@ -67,13 +66,6 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 - (Lucky-ESA) Admin 7.6.17 required
 - (Lucky-ESA) Node 20 required
-
-### 0.0.10 (2025-02-11)
-
-- (Lucky-ESA) Dependencies updated
-- (Lucky-ESA) Fixed: In the HTML overview, enabled / disabled does not work
-- (Lucky-ESA) Fixed: Astrotime incorrectly
-- (Lucky-ESA) Added: Current day in font weight bold
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

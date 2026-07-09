@@ -31,6 +31,13 @@
 ### 0.0.1 (2024-10-19)
 
 - (Lucky_ESA) initial release
+## 0.0.10 (2025-02-11)
+
+- (Lucky-ESA) Dependencies updated
+- (Lucky-ESA) Fixed: In the HTML overview, enabled / disabled does not work
+- (Lucky-ESA) Fixed: Astrotime incorrectly
+- (Lucky-ESA) Added: Current day in font weight bold
+
 ## 0.0.9 (2024-12-20)
 
 - (Lucky-ESA) Fixed: Reading files from Redis database

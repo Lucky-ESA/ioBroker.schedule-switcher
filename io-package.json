@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "schedule-switcher",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "news": {
+      "0.2.1": {
+        "en": "Fixed refresh astrotime",
+        "de": "Astrotime-Aktualisierung behoben",
+        "ru": "Исправлено обновление astrotime",
+        "pt": "Atualização corrigida do astrotime",
+        "nl": "Vaste vernieuwing van astrotijd",
+        "fr": "Heure astrologique de rafraîchissement fixe",
+        "it": "Aggiornamento fisso astrotime",
+        "es": "Se corrigió la actualización de astrotime",
+        "pl": "Naprawiono odświeżanie astrotime",
+        "uk": "Виправлено оновлення астрочасу",
+        "zh-cn": "修复了刷新天文时间的问题"
+      },
       "0.2.0": {
         "en": "Adapter requires node.js >= 22 now\nCode optimized\nAdapter requires admin >= 7.7.22 now",
         "de": "Adapter benötigt node.js >= 22 jetzt\nCode optimiert\nAdapter benötigt admin >= 7.7.22 jetzt",
@@ -80,19 +93,6 @@
         "pl": "Naprawiono: czytanie plików z bazy danych Redis\nDodano: Automatyczne sterowanie dezaktywacją\nStała: Widoczność\nNaprawiono: Błąd w sprawdzaniu typu",
         "uk": "Виправлено: Читання файлів з бази даних Redis\nДоданий: Автоматичний контроль деактивації\nВиправлено: Вимога\nВиправлено: Помилки в машині",
         "zh-cn": "固定: 从 Redis 数据库读取文件\n添加:自动停用控制\n固定:可见度\n固定: 类型检查中的错误"
-      },
-      "0.0.8": {
-        "en": "Migration to ESLint9\nBugfixes",
-        "de": "Migration auf ESLint9\nBugfixes",
-        "ru": "Миграция в ESLint9\nBugfixs",
-        "pt": "Migração para ESLint9\nBugfixs",
-        "nl": "Migratie naar ESLint9\nBugfixes",
-        "fr": "Migration vers ESLint9\nFixes de bogue",
-        "it": "Migrazione a ESLint9\nBugfix",
-        "es": "Migración a ESLint9\nBugfixes",
-        "pl": "Migracja do ESLint9\nKorekty błędów",
-        "uk": "Міграція в ESLint9\nПомилки",
-        "zh-cn": "迁移到ESLint9\n错误修正"
       }
     },
     "titleLang": {
