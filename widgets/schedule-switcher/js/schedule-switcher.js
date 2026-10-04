@@ -393,6 +393,10 @@ function getIcon(icon, widgetId) {
 
 function addConditionToAction(action, widgetId) {
     if (action.type === "OnOffStateAction") {
+        const stateId = getConditionStateIdsAndAlias(widgetId);
+        if (stateId == null || stateId[0] == null || stateId[0].id == null) {
+            return null;
+        }
         const conditionAction = {
             type: "ConditionAction",
             condition: {

@@ -417,7 +417,12 @@ sendTo("schedule-switcher.0", "change-active", { // Zeitplan ohne Widget aktiv l
 
 [Zusammenfassung](#zusammenfassung)
 
-- Eine Bedingung festellen.
+- Eine Bedingung erstellen
+- Mit Konstante muss nur eine Bedingung im VIS Editor angelegt werden. State von der hinterlegten Objekt ID wird gegen die Konstante geprüft.
+  Bei größer/kleiner wird die Objekt ID gegen die Konstante geprüft (State > Konstante || State < Konstante)
+- Ohne Konstante müssen mindestens 2 Bedingungen im VIS Editor angelegt werden. Die obere Objekt ID und untere Objekt ID darf nicht gleich sein. Bei größer/kleiner wird das obere gegen das unter grpüft (obere > untere || obere < untere)
+- Wurde keine Objekt ID in VIS Editor eingetragen, erscheint ein Text "Keine Bedingung" in rot.
+- Das Objekt für größer/kleiner muss type NUMBER sein!!!
 
 ![create_widget_select_condition.png](img/create_widget_select_condition.png)
 

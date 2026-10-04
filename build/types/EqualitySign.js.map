@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../src/types/EqualitySign.ts"],
-  "sourcesContent": ["export enum EqualitySign {\n    Equal = \"==\",\n    NotEqual = \"!=\",\n}\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,IAAK,eAAL,kBAAKA,kBAAL;AACH,EAAAA,cAAA,WAAQ;AACR,EAAAA,cAAA,cAAW;AAFH,SAAAA;AAAA,GAAA;",
+  "sourcesContent": ["export enum EqualitySign {\n    Equal = \"==\",\n    NotEqual = \"!=\",\n    IsGreater = \">\",\n    IsLess = \"<\",\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,IAAK,eAAL,kBAAKA,kBAAL;AACH,EAAAA,cAAA,WAAQ;AACR,EAAAA,cAAA,cAAW;AACX,EAAAA,cAAA,eAAY;AACZ,EAAAA,cAAA,YAAS;AAJD,SAAAA;AAAA,GAAA;",
   "names": ["EqualitySign"]
 }

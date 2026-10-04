@@ -82,6 +82,15 @@
     width: auto;
 }
 
+.noCondition {
+    flex-direction: row;
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    color: red;
+}
+
 .condition {
     flex-direction: row;
     display: flex;

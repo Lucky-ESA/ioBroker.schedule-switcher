@@ -104,11 +104,24 @@
 
         onEditChange() {
             if (this.edit) {
+                this.conditionCheck();
                 this.sr.querySelector(".container.edit").style.display = null;
                 this.sr.querySelector(".container.view").style.display = "none";
             } else {
                 this.sr.querySelector(".container.edit").style.display = "none";
                 this.sr.querySelector(".container.view").style.display = null;
+            }
+        }
+
+        conditionCheck() {
+            const condition = vis.binds["schedule-switcher"].getConditionStateIdsAndAlias(
+                this.getAttribute("widgetid"),
+            );
+            if (typeof condition !== "object" || condition.length == 0) {
+                this.sr.querySelector(".condition").style.display = "none";
+                this.sr.querySelector(".noCondition").style.display = null;
+            } else {
+                this.sr.querySelector(".noCondition").style.display = "none";
             }
         }
 
@@ -235,6 +248,9 @@
 						</div>
 						<div>${vis.binds["schedule-switcher"].translate("switchedValue")}</div>
 						<div class="action"></div>
+						<div class="noCondition" style="display: none">
+							<div>${vis.binds["schedule-switcher"].translate("noCondition")}</div>
+						</div>
 						<div class="condition">
 							<div>${vis.binds["schedule-switcher"].translate("condition")}</div>
 						 	<img id="add_src" class="button add"

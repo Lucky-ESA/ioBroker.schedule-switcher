@@ -47,8 +47,20 @@ export class StringStateAndStateCondition implements Condition {
         let result: boolean;
         if (this.sign == EqualitySign.NotEqual) {
             result = firstStateValue !== secondStateValue;
-        } else {
+        } else if (this.sign == EqualitySign.Equal) {
             result = firstStateValue === secondStateValue;
+        } else if (this.sign == EqualitySign.IsGreater) {
+            if (isNaN(Number(firstStateValue)) || isNaN(Number(secondStateValue))) {
+                result = false;
+            } else {
+                result = Number(firstStateValue) > Number(secondStateValue);
+            }
+        } else {
+            if (isNaN(Number(firstStateValue)) || isNaN(Number(secondStateValue))) {
+                result = false;
+            } else {
+                result = Number(firstStateValue) < Number(secondStateValue);
+            }
         }
         return Promise.resolve(result);
     }

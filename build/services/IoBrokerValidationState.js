@@ -242,13 +242,7 @@ class IoBrokerValidationState {
                 );
                 return val = {};
               }
-              if (trigger.action.condition.type !== "StringStateAndConstantCondition") {
-                if (trigger.action.condition.constant == "") {
-                  trigger.action.condition.constant = "true";
-                  this.adapter.log.warn(
-                    `Wrong condition constant ${JSON.stringify(trigger.action)} in ${id}! Set constant to TRUE!`
-                  );
-                }
+              if (trigger.action.condition.type === "StringStateAndStateCondition") {
                 if (!trigger.action.condition.stateId1 || !trigger.action.condition.stateId2) {
                   this.adapter.log.warn(
                     `Missing action condition states1 or states2 ${JSON.stringify(trigger.action)} in ${id}`
@@ -273,7 +267,25 @@ class IoBrokerValidationState {
                   );
                   return val = {};
                 }
-              } else if (trigger.action.condition.type !== "StringStateAndStateCondition") {
+                if (trigger.action.condition.stateId1 == trigger.action.condition.stateId2) {
+                  this.adapter.log.warn(
+                    `Wrong action condition - states2 and states1 must be different - ${JSON.stringify(trigger.action)} in ${id}`
+                  );
+                  return val = {};
+                }
+                if (trigger.action.condition.stateId1 == trigger.action.condition.stateId2) {
+                  this.adapter.log.warn(
+                    `Wrong action condition - states2 and states1 must be different - ${JSON.stringify(trigger.action)} in ${id}`
+                  );
+                  return val = {};
+                }
+              } else if (trigger.action.condition.type === "StringStateAndConstantCondition") {
+                if (trigger.action.condition.constant == "") {
+                  trigger.action.condition.constant = "true";
+                  this.adapter.log.warn(
+                    `Wrong condition constant ${JSON.stringify(trigger.action)} in ${id}! Set constant to TRUE!`
+                  );
+                }
                 if (!trigger.action.condition.stateId) {
                   this.adapter.log.warn(
                     `Missing action condition states ${JSON.stringify(trigger.action)} in ${id}`
@@ -295,7 +307,7 @@ class IoBrokerValidationState {
                 );
                 return val = {};
               }
-              if (trigger.action.condition.sign !== "==" && trigger.action.condition.sign !== "!=") {
+              if (trigger.action.condition.sign !== "==" && trigger.action.condition.sign !== "!=" && trigger.action.condition.sign !== ">" && trigger.action.condition.sign !== "<") {
                 trigger.action.condition.sign = "==";
                 this.adapter.log.warn(
                   `Wrong condition sign ${JSON.stringify(trigger.action)} in ${id}`
@@ -406,13 +418,7 @@ class IoBrokerValidationState {
               );
               return val = {};
             }
-            if (trigger.action.condition.type !== "StringStateAndConstantCondition") {
-              if (trigger.action.condition.constant == "") {
-                trigger.action.condition.constant = "true";
-                this.adapter.log.warn(
-                  `Wrong condition constant ${JSON.stringify(trigger.action)} in ${id}! Set constant to TRUE!`
-                );
-              }
+            if (trigger.action.condition.type === "StringStateAndStateCondition") {
               if (!trigger.action.condition.stateId1 || !trigger.action.condition.stateId2) {
                 this.adapter.log.warn(
                   `Missing action condition states1 or states2 ${JSON.stringify(trigger.action)} in ${id}`
@@ -437,7 +443,7 @@ class IoBrokerValidationState {
                 );
                 return val = {};
               }
-            } else if (trigger.action.condition.type !== "StringStateAndStateCondition") {
+            } else if (trigger.action.condition.type === "StringStateAndConstantCondition") {
               if (!trigger.action.condition.stateId) {
                 this.adapter.log.warn(
                   `Missing action condition states ${JSON.stringify(trigger.action)} in ${id}`
@@ -457,7 +463,7 @@ class IoBrokerValidationState {
               );
               return val = {};
             }
-            if (trigger.action.condition.sign !== "==" && trigger.action.condition.sign !== "!=") {
+            if (trigger.action.condition.sign !== "==" && trigger.action.condition.sign !== "!=" && trigger.action.condition.sign !== ">" && trigger.action.condition.sign !== "<") {
               trigger.action.condition.sign = "==";
               this.adapter.log.warn(`Wrong condition sign ${JSON.stringify(trigger.action)} in ${id}`);
             }

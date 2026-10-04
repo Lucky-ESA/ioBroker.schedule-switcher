@@ -20,7 +20,7 @@ It is possible to configure at which time and on which weekdays the trigger shou
 
 ## Requirements
 
-- Node 22 or 24
+- Node 22, 24 or 26
 - JS-Controller >= 6.0.11
 - Admin >= 7.7.22
 - VIS or VIS-2
@@ -40,6 +40,14 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+- (Lucky-ESA) Condition crash fixed
+- (Lucky-ESA) Selection condition (greater than/less than) added
+- (Lucky-ESA) Fixed: widgetOverview object is empty
+- (Lucky-ESA) Fixed some errors
+
 ### 0.2.1 (2026-07-09)
 
 - (Lucky-ESA) Fixed refresh astrotime

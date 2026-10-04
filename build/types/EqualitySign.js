@@ -24,6 +24,8 @@ module.exports = __toCommonJS(EqualitySign_exports);
 var EqualitySign = /* @__PURE__ */ ((EqualitySign2) => {
   EqualitySign2["Equal"] = "==";
   EqualitySign2["NotEqual"] = "!=";
+  EqualitySign2["IsGreater"] = ">";
+  EqualitySign2["IsLess"] = "<";
   return EqualitySign2;
 })(EqualitySign || {});
 // Annotate the CommonJS export names for ESM import in node:

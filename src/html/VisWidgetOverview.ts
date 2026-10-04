@@ -22,7 +22,7 @@ export class VisWidgetOverview implements WidgetOverview {
         let html_code = "";
         let counter = 0;
         for (const json of currentStates) {
-            const stateId = `${json._id}.view`;
+            const stateId = `${json._id}.views`;
             const data = await this.adapter.getStateAsync(stateId);
             if (data && typeof data.val === "string" && data.val.startsWith("{")) {
                 html_code += this.createHeader(stateId);

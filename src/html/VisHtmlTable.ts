@@ -234,14 +234,14 @@ export class VisHtmlTable implements htmltable {
                     const iconCon =
                         trigger.action.action.name === "On" ? this.htmlVal.icon_true : this.htmlVal.icon_false;
                     if (trigger.action && trigger.action.condition.type === "StringStateAndConstantCondition") {
-                        const stateId = await this.adapter.getStateAsync(trigger.action.condition.stateId);
+                        const stateId = await this.adapter.getForeignStateAsync(trigger.action.condition.stateId);
                         action =
                             `&ensp;${iTag}${trigger.action.condition.constant}` +
                             `${trigger.action.condition.sign}${stateId?.val}${iTagEnd}&ensp;` +
                             `${iconCon}`;
                     } else {
-                        const stateId1 = await this.adapter.getStateAsync(trigger.action.condition.stateId1);
-                        const stateId2 = await this.adapter.getStateAsync(trigger.action.condition.stateId2);
+                        const stateId1 = await this.adapter.getForeignStateAsync(trigger.action.condition.stateId1);
+                        const stateId2 = await this.adapter.getForeignStateAsync(trigger.action.condition.stateId2);
                         action =
                             `&ensp;${iTag}${stateId1?.val}` +
                             `${trigger.action.condition.sign}${stateId2?.val}${iTagEnd}&ensp;` +
@@ -930,7 +930,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.headline_underlined_color = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "Heading underlined",
                 de: "Unterstrichen",
@@ -983,7 +983,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.headline_weight = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "Headline font size",
                 de: "Headline Schriftgröße",
@@ -1008,7 +1008,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.headline_font_size = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "Headline height",
                 de: "Kopfhöhe",
@@ -1109,7 +1109,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.top_font_weight = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "TOP font size",
                 de: "TOP Schriftgröße",
@@ -1254,7 +1254,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.header_font_family = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "TAG <table> header font size.",
                 de: "TAG <table> Header Schriftgröße.",
@@ -1279,7 +1279,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.header_font_size = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "TAG <table> header border.",
                 de: "TAG <table> Kopfgrenze.",
@@ -1352,7 +1352,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.header_width = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "TAG <table> padding",
                 de: "TAG <table> Padding",
@@ -1419,7 +1419,7 @@ export class VisHtmlTable implements htmltable {
             read: true,
             write: true,
             def: "center",
-            states: ["center", "left", "right", "auto"],
+            states: { center: "center", left: "left", right: "right", auto: "auto" },
         };
         await this.createDataPoint("html.table_tag_text_align", common, "state");
         val = await this.adapter.getStateAsync("html.table_tag_text_align");
@@ -1498,7 +1498,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.td_tag_border_color = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "TAG <td> border bottom",
                 de: "TAG <td> Randboden",
@@ -1523,7 +1523,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.td_tag_border_bottom = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "TAG <td> border right",
                 de: "TAG <td> Grenze rechts",
@@ -1548,7 +1548,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.td_tag_border_right = val?.val;
         common = {
             type: "number",
-            role: "value",
+            role: "level",
             name: {
                 en: "TAG <td> padding",
                 de: "TAG <td> Padding",
@@ -1591,7 +1591,7 @@ export class VisHtmlTable implements htmltable {
             read: true,
             write: true,
             def: "center",
-            states: ["center", "left", "right", "auto"],
+            states: { center: "center", left: "left", right: "right", auto: "auto" },
         };
         await this.createDataPoint("html.p_tag_text_algin", common, "state");
         val = await this.adapter.getStateAsync("html.p_tag_text_algin");
@@ -1616,6 +1616,23 @@ export class VisHtmlTable implements htmltable {
             read: true,
             write: true,
             def: "yellow",
+            states: {
+                silver: "Silver",
+                gray: "Gray",
+                black: "Black",
+                red: "Red",
+                maroon: "Maroon",
+                yellow: "Yellow",
+                olive: "Olive",
+                lime: "Lime",
+                green: "Green",
+                aqua: "Aqua",
+                teal: "Teal",
+                blue: "Blue",
+                navy: "Navy",
+                fuchsia: "Fuchsia",
+                purple: "Purple",
+            },
         };
         await this.createDataPoint("html.font_color_text_enabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_text_enabled");
@@ -1662,6 +1679,23 @@ export class VisHtmlTable implements htmltable {
             read: true,
             write: true,
             def: "red",
+            states: {
+                silver: "Silver",
+                gray: "Gray",
+                black: "Black",
+                red: "Red",
+                maroon: "Maroon",
+                yellow: "Yellow",
+                olive: "Olive",
+                lime: "Lime",
+                green: "Green",
+                aqua: "Aqua",
+                teal: "Teal",
+                blue: "Blue",
+                navy: "Navy",
+                fuchsia: "Fuchsia",
+                purple: "Purple",
+            },
         };
         await this.createDataPoint("html.font_color_text_disabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_text_disabled");
@@ -1686,6 +1720,23 @@ export class VisHtmlTable implements htmltable {
             read: true,
             write: true,
             def: "yellow",
+            states: {
+                silver: "Silver",
+                gray: "Gray",
+                black: "Black",
+                red: "Red",
+                maroon: "Maroon",
+                yellow: "Yellow",
+                olive: "Olive",
+                lime: "Lime",
+                green: "Green",
+                aqua: "Aqua",
+                teal: "Teal",
+                blue: "Blue",
+                navy: "Navy",
+                fuchsia: "Fuchsia",
+                purple: "Purple",
+            },
         };
         await this.createDataPoint("html.font_color_weekdays_enabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_weekdays_enabled");
@@ -1710,32 +1761,48 @@ export class VisHtmlTable implements htmltable {
             read: true,
             write: true,
             def: "red",
+            states: {
+                silver: "Silver",
+                gray: "Gray",
+                black: "Black",
+                red: "Red",
+                maroon: "Maroon",
+                yellow: "Yellow",
+                olive: "Olive",
+                lime: "Lime",
+                green: "Green",
+                aqua: "Aqua",
+                teal: "Teal",
+                blue: "Blue",
+                navy: "Navy",
+                fuchsia: "Fuchsia",
+                purple: "Purple",
+            },
         };
         await this.createDataPoint("html.font_color_weekdays_disabled", common, "state");
         val = await this.adapter.getStateAsync("html.font_color_weekdays_disabled");
         this.htmlVal.font_color_weekdays_disabled = val?.val;
-        const states = [
-            "🟡",
-            "⚪",
-            "🟤",
-            "⚫",
-            "🔴",
-            "🔵",
-            "🟢",
-            "🟠",
-            "🔵",
-            "🟣",
-            "✅",
-            "❌",
-            "⭕",
-            "⏱",
-            "💀",
-            "👍",
-            "👎",
-            "📑",
-            "💲",
-            "👀",
-        ];
+        const states = {
+            "🟡": "🟡",
+            "⚪": "⚪",
+            "🟤": "🟤",
+            "⚫": "⚫",
+            "🔴": "🔴",
+            "🔵": "🔵",
+            "🟢": "🟢",
+            "🟠": "🟠",
+            "🟣": "🟣",
+            "✅": "✅",
+            "❌": "❌",
+            "⭕": "⭕",
+            "⏱": "⏱",
+            "💀": "💀",
+            "👍": "👍",
+            "👎": "👎",
+            "📑": "📑",
+            "💲": "💲",
+            "👀": "👀",
+        };
         common = {
             type: "string",
             role: "state",
@@ -1883,7 +1950,7 @@ export class VisHtmlTable implements htmltable {
                 read: true,
                 write: true,
                 def: "center",
-                states: ["center", "left", "right", "auto"],
+                states: { center: "center", left: "left", right: "right", auto: "auto" },
             };
             await this.createDataPoint(`html.column_align_${i.toString().padStart(2, "0")}`, common, "state");
             val = await this.adapter.getStateAsync(`html.column_align_${i.toString().padStart(2, "0")}`);
@@ -1956,7 +2023,7 @@ export class VisHtmlTable implements htmltable {
                 read: true,
                 write: true,
                 def: "left",
-                states: ["center", "left", "right", "auto"],
+                states: { center: "center", left: "left", right: "right", auto: "auto" },
             };
             await this.createDataPoint(`html.column_align_row_${i.toString().padStart(2, "0")}`, common, "state");
             val = await this.adapter.getStateAsync(`html.column_align_row_${i.toString().padStart(2, "0")}`);
@@ -1964,7 +2031,7 @@ export class VisHtmlTable implements htmltable {
         }
         common = {
             type: "string",
-            role: "state",
+            role: "level.color.rgb",
             name: {
                 en: "Background color (even)",
                 de: "Hintergrundfarbe (gerade)",
@@ -1988,7 +2055,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.background_color_even = val?.val;
         common = {
             type: "string",
-            role: "state",
+            role: "level.color.rgb",
             name: {
                 en: "Background color (odd)",
                 de: "Hintergrundfarbe (ungerade)",
@@ -2012,7 +2079,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.background_color_odd = val?.val;
         common = {
             type: "string",
-            role: "state",
+            role: "level.color.rgb",
             name: {
                 en: "Background color trigger",
                 de: "Hintergrundfarbe Trigger",
@@ -2036,7 +2103,7 @@ export class VisHtmlTable implements htmltable {
         this.htmlVal.background_color_trigger = val?.val;
         common = {
             type: "string",
-            role: "state",
+            role: "level.color.rgb",
             name: {
                 en: "Background color body",
                 de: "Hintergrundfarbe Body",
@@ -2102,6 +2169,23 @@ export class VisHtmlTable implements htmltable {
             read: true,
             write: true,
             def: "blue",
+            states: {
+                silver: "Silver",
+                gray: "Gray",
+                black: "Black",
+                red: "Red",
+                maroon: "Maroon",
+                yellow: "Yellow",
+                olive: "Olive",
+                lime: "Lime",
+                green: "Green",
+                aqua: "Aqua",
+                teal: "Teal",
+                blue: "Blue",
+                navy: "Navy",
+                fuchsia: "Fuchsia",
+                purple: "Purple",
+            },
         };
         await this.createDataPoint("html.background_color_weekdays_hover", common, "state");
         val = await this.adapter.getStateAsync("html.background_color_weekdays_hover");

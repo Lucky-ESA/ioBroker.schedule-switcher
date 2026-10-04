@@ -2050,5 +2050,44 @@ const systemDictionary = {
         "pl": "Edytuj wysokość ikon widoku",
         "uk": "Змінити висоту значків перегляду",
         "zh-cn": "编辑视图图标高度"
+    },
+    "isGreater": {
+        "en": "greater than",
+        "de": "größer als",
+        "ru": "больше, чем",
+        "pt": "maior que",
+        "nl": "groter dan",
+        "fr": "supérieur à",
+        "it": "maggiore di",
+        "es": "mayor que",
+        "pl": "większe niż",
+        "uk": "більше, ніж",
+        "zh-cn": "大于"
+    },
+    "isSmaller": {
+        "en": "less than",
+        "de": "kleiner als",
+        "ru": "меньше",
+        "pt": "menos de",
+        "nl": "minder dan",
+        "fr": "moins de",
+        "it": "meno di",
+        "es": "menos de",
+        "pl": "mniej niż",
+        "uk": "менше, ніж",
+        "zh-cn": "小于"
+    },
+    "noCondition": {
+        "en": "No condition",
+        "de": "Keine Bedingung",
+        "ru": "Без условий",
+        "pt": "Sem estado",
+        "nl": "Geen voorwaarde",
+        "fr": "Pas d'état",
+        "it": "Nessun caso",
+        "es": "Sin estado",
+        "pl": "Bez warunku",
+        "uk": "Без умови",
+        "zh-cn": "无条件"
     }
 };

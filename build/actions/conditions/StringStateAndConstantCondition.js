@@ -61,8 +61,20 @@ class StringStateAndConstantCondition {
     let result;
     if (this.sign == import_EqualitySign.EqualitySign.NotEqual) {
       result = stateValue !== this.constant;
-    } else {
+    } else if (this.sign == import_EqualitySign.EqualitySign.Equal) {
       result = stateValue === this.constant;
+    } else if (this.sign == import_EqualitySign.EqualitySign.IsGreater) {
+      if (isNaN(Number(stateValue)) || isNaN(Number(this.constant))) {
+        result = false;
+      } else {
+        result = Number(stateValue) > Number(this.constant);
+      }
+    } else {
+      if (isNaN(Number(stateValue)) || isNaN(Number(this.constant))) {
+        result = false;
+      } else {
+        result = Number(stateValue) < Number(this.constant);
+      }
     }
     return Promise.resolve(result);
   }

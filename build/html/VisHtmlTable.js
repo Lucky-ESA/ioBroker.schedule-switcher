@@ -228,11 +228,11 @@ class VisHtmlTable {
         if (trigger.action && trigger.action.type === "ConditionAction") {
           const iconCon = trigger.action.action.name === "On" ? this.htmlVal.icon_true : this.htmlVal.icon_false;
           if (trigger.action && trigger.action.condition.type === "StringStateAndConstantCondition") {
-            const stateId = await this.adapter.getStateAsync(trigger.action.condition.stateId);
+            const stateId = await this.adapter.getForeignStateAsync(trigger.action.condition.stateId);
             action = `&ensp;${iTag}${trigger.action.condition.constant}${trigger.action.condition.sign}${stateId == null ? void 0 : stateId.val}${iTagEnd}&ensp;${iconCon}`;
           } else {
-            const stateId1 = await this.adapter.getStateAsync(trigger.action.condition.stateId1);
-            const stateId2 = await this.adapter.getStateAsync(trigger.action.condition.stateId2);
+            const stateId1 = await this.adapter.getForeignStateAsync(trigger.action.condition.stateId1);
+            const stateId2 = await this.adapter.getForeignStateAsync(trigger.action.condition.stateId2);
             action = `&ensp;${iTag}${stateId1 == null ? void 0 : stateId1.val}${trigger.action.condition.sign}${stateId2 == null ? void 0 : stateId2.val}${iTagEnd}&ensp;${iconCon}`;
           }
           if (nextDateTimeIcon != nextDateTime) {
@@ -876,7 +876,7 @@ class VisHtmlTable {
     this.htmlVal.headline_underlined_color = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "Heading underlined",
         de: "Unterstrichen",
@@ -929,7 +929,7 @@ class VisHtmlTable {
     this.htmlVal.headline_weight = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "Headline font size",
         de: "Headline Schriftgr\xF6\xDFe",
@@ -954,7 +954,7 @@ class VisHtmlTable {
     this.htmlVal.headline_font_size = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "Headline height",
         de: "Kopfh\xF6he",
@@ -1055,7 +1055,7 @@ class VisHtmlTable {
     this.htmlVal.top_font_weight = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "TOP font size",
         de: "TOP Schriftgr\xF6\xDFe",
@@ -1200,7 +1200,7 @@ class VisHtmlTable {
     this.htmlVal.header_font_family = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "TAG <table> header font size.",
         de: "TAG <table> Header Schriftgr\xF6\xDFe.",
@@ -1225,7 +1225,7 @@ class VisHtmlTable {
     this.htmlVal.header_font_size = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "TAG <table> header border.",
         de: "TAG <table> Kopfgrenze.",
@@ -1298,7 +1298,7 @@ class VisHtmlTable {
     this.htmlVal.header_width = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "TAG <table> padding",
         de: "TAG <table> Padding",
@@ -1365,7 +1365,7 @@ class VisHtmlTable {
       read: true,
       write: true,
       def: "center",
-      states: ["center", "left", "right", "auto"]
+      states: { center: "center", left: "left", right: "right", auto: "auto" }
     };
     await this.createDataPoint("html.table_tag_text_align", common, "state");
     val = await this.adapter.getStateAsync("html.table_tag_text_align");
@@ -1444,7 +1444,7 @@ class VisHtmlTable {
     this.htmlVal.td_tag_border_color = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "TAG <td> border bottom",
         de: "TAG <td> Randboden",
@@ -1469,7 +1469,7 @@ class VisHtmlTable {
     this.htmlVal.td_tag_border_bottom = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "TAG <td> border right",
         de: "TAG <td> Grenze rechts",
@@ -1494,7 +1494,7 @@ class VisHtmlTable {
     this.htmlVal.td_tag_border_right = val == null ? void 0 : val.val;
     common = {
       type: "number",
-      role: "value",
+      role: "level",
       name: {
         en: "TAG <td> padding",
         de: "TAG <td> Padding",
@@ -1537,7 +1537,7 @@ class VisHtmlTable {
       read: true,
       write: true,
       def: "center",
-      states: ["center", "left", "right", "auto"]
+      states: { center: "center", left: "left", right: "right", auto: "auto" }
     };
     await this.createDataPoint("html.p_tag_text_algin", common, "state");
     val = await this.adapter.getStateAsync("html.p_tag_text_algin");
@@ -1561,7 +1561,24 @@ class VisHtmlTable {
       desc: "Font color enabled",
       read: true,
       write: true,
-      def: "yellow"
+      def: "yellow",
+      states: {
+        silver: "Silver",
+        gray: "Gray",
+        black: "Black",
+        red: "Red",
+        maroon: "Maroon",
+        yellow: "Yellow",
+        olive: "Olive",
+        lime: "Lime",
+        green: "Green",
+        aqua: "Aqua",
+        teal: "Teal",
+        blue: "Blue",
+        navy: "Navy",
+        fuchsia: "Fuchsia",
+        purple: "Purple"
+      }
     };
     await this.createDataPoint("html.font_color_text_enabled", common, "state");
     val = await this.adapter.getStateAsync("html.font_color_text_enabled");
@@ -1607,7 +1624,24 @@ class VisHtmlTable {
       desc: "Font color disabled",
       read: true,
       write: true,
-      def: "red"
+      def: "red",
+      states: {
+        silver: "Silver",
+        gray: "Gray",
+        black: "Black",
+        red: "Red",
+        maroon: "Maroon",
+        yellow: "Yellow",
+        olive: "Olive",
+        lime: "Lime",
+        green: "Green",
+        aqua: "Aqua",
+        teal: "Teal",
+        blue: "Blue",
+        navy: "Navy",
+        fuchsia: "Fuchsia",
+        purple: "Purple"
+      }
     };
     await this.createDataPoint("html.font_color_text_disabled", common, "state");
     val = await this.adapter.getStateAsync("html.font_color_text_disabled");
@@ -1631,7 +1665,24 @@ class VisHtmlTable {
       desc: "Font color weekdays enabled",
       read: true,
       write: true,
-      def: "yellow"
+      def: "yellow",
+      states: {
+        silver: "Silver",
+        gray: "Gray",
+        black: "Black",
+        red: "Red",
+        maroon: "Maroon",
+        yellow: "Yellow",
+        olive: "Olive",
+        lime: "Lime",
+        green: "Green",
+        aqua: "Aqua",
+        teal: "Teal",
+        blue: "Blue",
+        navy: "Navy",
+        fuchsia: "Fuchsia",
+        purple: "Purple"
+      }
     };
     await this.createDataPoint("html.font_color_weekdays_enabled", common, "state");
     val = await this.adapter.getStateAsync("html.font_color_weekdays_enabled");
@@ -1655,33 +1706,49 @@ class VisHtmlTable {
       desc: "Font color weekdays disabled",
       read: true,
       write: true,
-      def: "red"
+      def: "red",
+      states: {
+        silver: "Silver",
+        gray: "Gray",
+        black: "Black",
+        red: "Red",
+        maroon: "Maroon",
+        yellow: "Yellow",
+        olive: "Olive",
+        lime: "Lime",
+        green: "Green",
+        aqua: "Aqua",
+        teal: "Teal",
+        blue: "Blue",
+        navy: "Navy",
+        fuchsia: "Fuchsia",
+        purple: "Purple"
+      }
     };
     await this.createDataPoint("html.font_color_weekdays_disabled", common, "state");
     val = await this.adapter.getStateAsync("html.font_color_weekdays_disabled");
     this.htmlVal.font_color_weekdays_disabled = val == null ? void 0 : val.val;
-    const states = [
-      "\u{1F7E1}",
-      "\u26AA",
-      "\u{1F7E4}",
-      "\u26AB",
-      "\u{1F534}",
-      "\u{1F535}",
-      "\u{1F7E2}",
-      "\u{1F7E0}",
-      "\u{1F535}",
-      "\u{1F7E3}",
-      "\u2705",
-      "\u274C",
-      "\u2B55",
-      "\u23F1",
-      "\u{1F480}",
-      "\u{1F44D}",
-      "\u{1F44E}",
-      "\u{1F4D1}",
-      "\u{1F4B2}",
-      "\u{1F440}"
-    ];
+    const states = {
+      "\u{1F7E1}": "\u{1F7E1}",
+      "\u26AA": "\u26AA",
+      "\u{1F7E4}": "\u{1F7E4}",
+      "\u26AB": "\u26AB",
+      "\u{1F534}": "\u{1F534}",
+      "\u{1F535}": "\u{1F535}",
+      "\u{1F7E2}": "\u{1F7E2}",
+      "\u{1F7E0}": "\u{1F7E0}",
+      "\u{1F7E3}": "\u{1F7E3}",
+      "\u2705": "\u2705",
+      "\u274C": "\u274C",
+      "\u2B55": "\u2B55",
+      "\u23F1": "\u23F1",
+      "\u{1F480}": "\u{1F480}",
+      "\u{1F44D}": "\u{1F44D}",
+      "\u{1F44E}": "\u{1F44E}",
+      "\u{1F4D1}": "\u{1F4D1}",
+      "\u{1F4B2}": "\u{1F4B2}",
+      "\u{1F440}": "\u{1F440}"
+    };
     common = {
       type: "string",
       role: "state",
@@ -1829,7 +1896,7 @@ class VisHtmlTable {
         read: true,
         write: true,
         def: "center",
-        states: ["center", "left", "right", "auto"]
+        states: { center: "center", left: "left", right: "right", auto: "auto" }
       };
       await this.createDataPoint(`html.column_align_${i.toString().padStart(2, "0")}`, common, "state");
       val = await this.adapter.getStateAsync(`html.column_align_${i.toString().padStart(2, "0")}`);
@@ -1902,7 +1969,7 @@ class VisHtmlTable {
         read: true,
         write: true,
         def: "left",
-        states: ["center", "left", "right", "auto"]
+        states: { center: "center", left: "left", right: "right", auto: "auto" }
       };
       await this.createDataPoint(`html.column_align_row_${i.toString().padStart(2, "0")}`, common, "state");
       val = await this.adapter.getStateAsync(`html.column_align_row_${i.toString().padStart(2, "0")}`);
@@ -1910,7 +1977,7 @@ class VisHtmlTable {
     }
     common = {
       type: "string",
-      role: "state",
+      role: "level.color.rgb",
       name: {
         en: "Background color (even)",
         de: "Hintergrundfarbe (gerade)",
@@ -1934,7 +2001,7 @@ class VisHtmlTable {
     this.htmlVal.background_color_even = val == null ? void 0 : val.val;
     common = {
       type: "string",
-      role: "state",
+      role: "level.color.rgb",
       name: {
         en: "Background color (odd)",
         de: "Hintergrundfarbe (ungerade)",
@@ -1958,7 +2025,7 @@ class VisHtmlTable {
     this.htmlVal.background_color_odd = val == null ? void 0 : val.val;
     common = {
       type: "string",
-      role: "state",
+      role: "level.color.rgb",
       name: {
         en: "Background color trigger",
         de: "Hintergrundfarbe Trigger",
@@ -1982,7 +2049,7 @@ class VisHtmlTable {
     this.htmlVal.background_color_trigger = val == null ? void 0 : val.val;
     common = {
       type: "string",
-      role: "state",
+      role: "level.color.rgb",
       name: {
         en: "Background color body",
         de: "Hintergrundfarbe Body",
@@ -2047,7 +2114,24 @@ class VisHtmlTable {
       desc: "Weekdays mouseover color",
       read: true,
       write: true,
-      def: "blue"
+      def: "blue",
+      states: {
+        silver: "Silver",
+        gray: "Gray",
+        black: "Black",
+        red: "Red",
+        maroon: "Maroon",
+        yellow: "Yellow",
+        olive: "Olive",
+        lime: "Lime",
+        green: "Green",
+        aqua: "Aqua",
+        teal: "Teal",
+        blue: "Blue",
+        navy: "Navy",
+        fuchsia: "Fuchsia",
+        purple: "Purple"
+      }
     };
     await this.createDataPoint("html.background_color_weekdays_hover", common, "state");
     val = await this.adapter.getStateAsync("html.background_color_weekdays_hover");

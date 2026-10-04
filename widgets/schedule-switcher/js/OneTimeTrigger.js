@@ -59,6 +59,7 @@
             iconElement.src = vis.binds["schedule-switcher"].getIcon("cancel", this.widgetId);
             iconElement = this.sr.querySelector("#add_src");
             iconElement.src = vis.binds["schedule-switcher"].getIcon("add", this.widgetId);
+            this.conditionCheck();
         }
 
         updateTimeUntilTrigger() {
@@ -81,6 +82,7 @@
         }
 
         onEditClick() {
+            this.conditionCheck();
             const trigger = this.trigger;
             console.log(JSON.stringify(trigger));
             this.timedate = trigger.timedate;
@@ -99,6 +101,19 @@
             } else {
                 this.sr.querySelector(`#radio-date`).checked = true;
                 this.setDateTime();
+            }
+        }
+
+        conditionCheck() {
+            const condition = vis.binds["schedule-switcher"].getConditionStateIdsAndAlias(
+                this.getAttribute("widgetid"),
+            );
+            console.debug(`conditionCheck: ${JSON.stringify(condition)}`);
+            if (typeof condition !== "object" || condition.length == 0) {
+                this.sr.querySelector(".condition").style.display = "none";
+                this.sr.querySelector(".noCondition").style.display = null;
+            } else {
+                this.sr.querySelector(".noCondition").style.display = "none";
             }
         }
 
@@ -419,6 +434,9 @@
 					</div>
 					<div>${vis.binds["schedule-switcher"].translate("switchedValue")}</div>
 					<div class="action"></div>
+                    <div class="noCondition" style="display: none">
+                        <div>${vis.binds["schedule-switcher"].translate("noCondition")}</div>
+                    </div>
 					<div class="condition">
 						<div>${vis.binds["schedule-switcher"].translate("condition")}</div>
 						<img id="add_src" class="button add"

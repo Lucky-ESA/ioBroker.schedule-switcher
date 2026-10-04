@@ -270,6 +270,8 @@
 						<select id="selectSign" required>
 							<option value="==">${vis.binds["schedule-switcher"].translate("equals")}</option>
 							<option value="!=">${vis.binds["schedule-switcher"].translate("equalsNot")}</option>
+                            <option value=">">${vis.binds["schedule-switcher"].translate("isGreater")}</option>
+                            <option value="<">${vis.binds["schedule-switcher"].translate("isSmaller")}</option>
 						</select>
 						<div id="withConstant" class="md-switch-container">
 							<div class="md-switch-track"></div>
