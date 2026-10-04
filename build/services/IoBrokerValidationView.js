@@ -109,12 +109,16 @@ class IoBrokerValidationView {
                             10
                           );
                           const idsCondition = [];
+                          const aliasCondition = [];
                           for (let i = 1; i <= countCondition; i++) {
                             const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
                             if (id !== void 0 && id !== "") {
                               const json = {};
+                              const jsonAlias = {};
                               json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                              jsonAlias[`conditionStateAlias${i}`] = templates[template].widgets[widget].data[`conditionStateAlias${i}`];
                               idsCondition.push(json);
+                              aliasCondition.push(jsonAlias);
                             }
                           }
                           const countState = Number.parseInt(
@@ -142,6 +146,7 @@ class IoBrokerValidationView {
                             state: idsState,
                             conditionCount: countCondition,
                             condition: idsCondition,
+                            conditionAlias: aliasCondition,
                             valueType: templates[template].widgets[widget].data.valueType,
                             offValue: templates[template].widgets[widget].data.offValue,
                             onValue: templates[template].widgets[widget].data.onValue,
@@ -160,12 +165,16 @@ class IoBrokerValidationView {
                             10
                           );
                           const idsCondition = [];
+                          const aliasCondition = [];
                           for (let i = 1; i <= countCondition; i++) {
                             const id = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
                             if (id !== void 0 && id !== "") {
                               const json = {};
+                              const jsonAlias = {};
                               json[`oid-conditionStateId${i}`] = templates[template].widgets[widget].data[`oid-conditionStateId${i}`];
+                              jsonAlias[`conditionStateAlias${i}`] = templates[template].widgets[widget].data[`conditionStateAlias${i}`];
                               idsCondition.push(json);
+                              aliasCondition.push(jsonAlias);
                             }
                           }
                           const countState = Number.parseInt(
@@ -193,6 +202,7 @@ class IoBrokerValidationView {
                             state: idsState,
                             conditionCount: countCondition,
                             condition: idsCondition,
+                            conditionAlias: aliasCondition,
                             valueType: templates[template].widgets[widget].data.valueType,
                             offValue: templates[template].widgets[widget].data.offValue,
                             onValue: templates[template].widgets[widget].data.onValue,

@@ -195,8 +195,11 @@ class AstroTriggerScheduler extends import_TriggerScheduler.TriggerScheduler {
    */
   nextDate(trigger) {
     const next = this.getTimes(/* @__PURE__ */ new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude())[trigger.getAstroTime()];
-    next.setMinutes(next.getMinutes() + trigger.getShiftInMinutes());
-    return next;
+    if (next) {
+      next.setMinutes(next.getMinutes() + trigger.getShiftInMinutes());
+      return next;
+    }
+    return /* @__PURE__ */ new Date("1970-01-01");
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

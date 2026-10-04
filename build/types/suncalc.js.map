@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/types/suncalc.ts"],
+  "sourcesContent": ["/**\n * GetTimesResult\n */\nexport interface GetTimesResult {\n    /**\n     * @param {Date|null} dawn\n     */\n    dawn: Date | null;\n    /**\n     * @param {Date|null} dusk\n     */\n    dusk: Date | null;\n    /**\n     * @param {Date|null} goldenHour\n     */\n    goldenHour: Date | null;\n    /**\n     * @param {Date|null} goldenHourEnd\n     */\n    goldenHourEnd: Date | null;\n    /**\n     * @param {Date|null} nadir\n     */\n    nadir: Date | null;\n    /**\n     * @param {Date|null} nauticalDawn\n     */\n    nauticalDawn: Date | null;\n    /**\n     * @param {Date|null} nauticalDusk\n     */\n    nauticalDusk: Date | null;\n    /**\n     * @param {Date|null} night\n     */\n    night: Date | null;\n    /**\n     * @param {Date|null} nightEnd\n     */\n    nightEnd: Date | null;\n    /**\n     * @param {Date|null} solarNoon\n     */\n    solarNoon: Date | null;\n    /**\n     * @param {Date|null} sunrise\n     */\n    sunrise: Date | null;\n    /**\n     * @param {Date|null} sunriseEnd\n     */\n    sunriseEnd: Date | null;\n    /**\n     * @param {Date|null} sunset\n     */\n    sunset: Date | null;\n    /**\n     * @param {Date|null} sunsetStart\n     */\n    sunsetStart: Date | null;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

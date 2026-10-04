@@ -683,49 +683,49 @@ class IoBrokerValidationState {
     let astro;
     switch (data.astroTime) {
       case "sunrise":
-        astro = next[import_AstroTime.AstroTime.Sunrise];
+        astro = next[import_AstroTime.AstroTime.Sunrise] ? next[import_AstroTime.AstroTime.Sunrise] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "solarNoon":
-        astro = next[import_AstroTime.AstroTime.SolarNoon];
+        astro = next[import_AstroTime.AstroTime.SolarNoon] ? next[import_AstroTime.AstroTime.SolarNoon] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "sunset":
-        astro = next[import_AstroTime.AstroTime.Sunset];
+        astro = next[import_AstroTime.AstroTime.Sunset] ? next[import_AstroTime.AstroTime.Sunset] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "sunriseEnd":
-        astro = next[import_AstroTime.AstroTime.SunriseEnd];
+        astro = next[import_AstroTime.AstroTime.SunriseEnd] ? next[import_AstroTime.AstroTime.SunriseEnd] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "goldenHourEnd":
-        astro = next[import_AstroTime.AstroTime.GoldenHourEnd];
+        astro = next[import_AstroTime.AstroTime.GoldenHourEnd] ? next[import_AstroTime.AstroTime.GoldenHourEnd] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "goldenHour":
-        astro = next[import_AstroTime.AstroTime.GoldenHour];
+        astro = next[import_AstroTime.AstroTime.GoldenHour] ? next[import_AstroTime.AstroTime.GoldenHour] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "sunsetStart":
-        astro = next[import_AstroTime.AstroTime.SunsetStart];
+        astro = next[import_AstroTime.AstroTime.SunsetStart] ? next[import_AstroTime.AstroTime.SunsetStart] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "dusk":
-        astro = next[import_AstroTime.AstroTime.Dusk];
+        astro = next[import_AstroTime.AstroTime.Dusk] ? next[import_AstroTime.AstroTime.Dusk] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "nauticalDusk":
-        astro = next[import_AstroTime.AstroTime.NauticalDusk];
+        astro = next[import_AstroTime.AstroTime.NauticalDusk] ? next[import_AstroTime.AstroTime.NauticalDusk] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "night":
-        astro = next[import_AstroTime.AstroTime.Night];
+        astro = next[import_AstroTime.AstroTime.Night] ? next[import_AstroTime.AstroTime.Night] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "nadir":
-        astro = next[import_AstroTime.AstroTime.Nadir];
+        astro = next[import_AstroTime.AstroTime.Nadir] ? next[import_AstroTime.AstroTime.Nadir] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "nightEnd":
-        astro = next[import_AstroTime.AstroTime.NightEnd];
+        astro = next[import_AstroTime.AstroTime.NightEnd] ? next[import_AstroTime.AstroTime.NightEnd] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "nauticalDawn":
-        astro = next[import_AstroTime.AstroTime.NauticalDawn];
+        astro = next[import_AstroTime.AstroTime.NauticalDawn] ? next[import_AstroTime.AstroTime.NauticalDawn] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       case "dawn":
-        astro = next[import_AstroTime.AstroTime.Dawn];
+        astro = next[import_AstroTime.AstroTime.Dawn] ? next[import_AstroTime.AstroTime.Dawn] : /* @__PURE__ */ new Date("1970-01-01");
         break;
       default:
-        astro = next[import_AstroTime.AstroTime.Sunset];
+        astro = next[import_AstroTime.AstroTime.Sunset] ? next[import_AstroTime.AstroTime.Sunset] : /* @__PURE__ */ new Date("1970-01-01");
     }
     new Date(astro.getTime()).setMinutes(
       new Date(astro.getTime()).getMinutes() + (data.shiftInMinutes != null ? data.shiftInMinutes : 0)

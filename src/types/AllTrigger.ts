@@ -74,3 +74,16 @@ export interface TodayTrigger {
      */
     date?: Date;
 }
+/**
+ * SingleAstro
+ */
+export interface SingleAstro {
+    /**
+     * @param {string} astroTime
+     */
+    astroTime: "sunrise";
+    /**
+     * @param {number} shiftInMinutes
+     */
+    shiftInMinutes: 0;
+}

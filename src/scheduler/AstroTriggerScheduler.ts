@@ -1,9 +1,9 @@
-import type { GetTimesResult } from "suncalc";
 import { AstroTrigger } from "../triggers/AstroTrigger";
 import type { TimeTrigger } from "../triggers/TimeTrigger";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
 import type { CoordinateTypes } from "../types/Coordinate";
 import type { LoggingService } from "../types/LoggingService";
+import type { GetTimesResult } from "../types/suncalc";
 import type { TimeTriggerScheduler } from "./TimeTriggerScheduler";
 import { TriggerScheduler } from "./TriggerScheduler";
 
@@ -205,7 +205,10 @@ export class AstroTriggerScheduler extends TriggerScheduler {
         const next = this.getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude())[
             trigger.getAstroTime()
         ];
-        next.setMinutes(next.getMinutes() + trigger.getShiftInMinutes());
-        return next;
+        if (next) {
+            next.setMinutes(next.getMinutes() + trigger.getShiftInMinutes());
+            return next;
+        }
+        return new Date("1970-01-01");
     }
 }

@@ -1,6 +1,5 @@
 import type { scheduledJobs } from "node-schedule";
 import { EventEmitter } from "node:events";
-import type { GetTimesResult } from "suncalc";
 import type { OnOffStateAction } from "../actions/OnOffStateAction";
 import { OnOffSchedule } from "../schedules/OnOffSchedule";
 import type { Schedule } from "../schedules/Schedule";
@@ -8,10 +7,12 @@ import type { OnOffScheduleSerializer } from "../serialization/OnOffScheduleSeri
 import { AstroTriggerBuilder } from "../triggers/AstroTriggerBuilder";
 import type { DailyTriggerBuilder } from "../triggers/DailyTriggerBuilder";
 import { TimeTriggerBuilder } from "../triggers/TimeTriggerBuilder";
+import type { AllTriggers, SingleAstro } from "../types/AllTrigger";
 import { AstroTime } from "../types/AstroTime";
 import type { CoordinateTypes } from "../types/Coordinate";
 import type { MessageServices } from "../types/MessageServices";
 import type { StateService } from "../types/StateService";
+import type { GetTimesResult } from "../types/suncalc";
 import type { Trigger } from "../types/Trigger";
 import type { ValidationState } from "../types/ValidationState";
 import { AllWeekdays } from "../types/Weekday";
@@ -43,7 +44,7 @@ export class MessageService extends EventEmitter implements MessageServices {
         private adapter: ioBroker.Adapter,
         private readonly coordinate: CoordinateTypes,
         private readonly validation: ValidationState | undefined,
-        private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
+        private readonly getTimes: (date: Date, lat: number, lng: number) => GetTimesResult,
         private readonly getScheduledJobs: typeof scheduledJobs,
     ) {
         super();
@@ -203,56 +204,58 @@ export class MessageService extends EventEmitter implements MessageServices {
      * @param data json schedule
      * @returns times json
      */
-    private nextDate(data: any): any {
+    private nextDate(data: AllTriggers | SingleAstro): any {
         const next = this.getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude());
         let astro: Date;
         switch (data.astroTime) {
             case "sunrise":
-                astro = next[AstroTime.Sunrise];
+                astro = next[AstroTime.Sunrise] ? next[AstroTime.Sunrise] : new Date("1970-01-01");
                 break;
             case "solarNoon":
-                astro = next[AstroTime.SolarNoon];
+                astro = next[AstroTime.SolarNoon] ? next[AstroTime.SolarNoon] : new Date("1970-01-01");
                 break;
             case "sunset":
-                astro = next[AstroTime.Sunset];
+                astro = next[AstroTime.Sunset] ? next[AstroTime.Sunset] : new Date("1970-01-01");
                 break;
             case "sunriseEnd":
-                astro = next[AstroTime.SunriseEnd];
+                astro = next[AstroTime.SunriseEnd] ? next[AstroTime.SunriseEnd] : new Date("1970-01-01");
                 break;
             case "goldenHourEnd":
-                astro = next[AstroTime.GoldenHourEnd];
+                astro = next[AstroTime.GoldenHourEnd] ? next[AstroTime.GoldenHourEnd] : new Date("1970-01-01");
                 break;
             case "goldenHour":
-                astro = next[AstroTime.GoldenHour];
+                astro = next[AstroTime.GoldenHour] ? next[AstroTime.GoldenHour] : new Date("1970-01-01");
                 break;
             case "sunsetStart":
-                astro = next[AstroTime.SunsetStart];
+                astro = next[AstroTime.SunsetStart] ? next[AstroTime.SunsetStart] : new Date("1970-01-01");
                 break;
             case "dusk":
-                astro = next[AstroTime.Dusk];
+                astro = next[AstroTime.Dusk] ? next[AstroTime.Dusk] : new Date("1970-01-01");
                 break;
             case "nauticalDusk":
-                astro = next[AstroTime.NauticalDusk];
+                astro = next[AstroTime.NauticalDusk] ? next[AstroTime.NauticalDusk] : new Date("1970-01-01");
                 break;
             case "night":
-                astro = next[AstroTime.Night];
+                astro = next[AstroTime.Night] ? next[AstroTime.Night] : new Date("1970-01-01");
                 break;
             case "nadir":
-                astro = next[AstroTime.Nadir];
+                astro = next[AstroTime.Nadir] ? next[AstroTime.Nadir] : new Date("1970-01-01");
                 break;
             case "nightEnd":
-                astro = next[AstroTime.NightEnd];
+                astro = next[AstroTime.NightEnd] ? next[AstroTime.NightEnd] : new Date("1970-01-01");
                 break;
             case "nauticalDawn":
-                astro = next[AstroTime.NauticalDawn];
+                astro = next[AstroTime.NauticalDawn] ? next[AstroTime.NauticalDawn] : new Date("1970-01-01");
                 break;
             case "dawn":
-                astro = next[AstroTime.Dawn];
+                astro = next[AstroTime.Dawn] ? next[AstroTime.Dawn] : new Date("1970-01-01");
                 break;
             default:
-                astro = next[AstroTime.Sunset];
+                astro = next[AstroTime.Sunset] ? next[AstroTime.Sunset] : new Date("1970-01-01");
         }
-        new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+        if (data.shiftInMinutes != null) {
+            new Date(astro.getTime()).setMinutes(new Date(astro.getTime()).getMinutes() + data.shiftInMinutes);
+        }
         return { hour: astro.getHours(), minute: astro.getMinutes(), weekday: astro.getDay(), date: astro };
     }
 
@@ -279,7 +282,7 @@ export class MessageService extends EventEmitter implements MessageServices {
                 .setShift(0)
                 .setValueCheck(false)
                 .setObjectId(parseInt(state[3]))
-                .setTodayTrigger(await this.nextDate({ astroTime: "sunrise", shiftInMinutes: 0 }));
+                .setTodayTrigger(await this.nextDate({ astroTime: AstroTime.Sunrise, shiftInMinutes: 0 }));
         } else {
             this.adapter.log.error(`Cannot add trigger of type ${data.triggerType}`);
             return;
