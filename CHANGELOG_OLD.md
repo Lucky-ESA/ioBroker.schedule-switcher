@@ -31,6 +31,11 @@
 ### 0.0.1 (2024-10-19)
 
 - (Lucky_ESA) initial release
+## 0.0.11 (2025-08-16)
+
+- (Lucky-ESA) Admin 7.6.17 required
+- (Lucky-ESA) Node 20 required
+
 ## 0.0.10 (2025-02-11)
 
 - (Lucky-ESA) Dependencies updated
