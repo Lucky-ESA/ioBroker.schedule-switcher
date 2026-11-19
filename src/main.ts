@@ -10,6 +10,7 @@ import { getTimes } from "suncalc";
 import { Coordinate } from "./Coordinate";
 import { VisHtmlTable } from "./html/VisHtmlTable";
 import { VisWidgetOverview } from "./html/VisWidgetOverview";
+import { COMMANDS, HELP } from "./lib/help";
 import { AstroTriggerScheduler } from "./scheduler/AstroTriggerScheduler";
 import { OneTimeTriggerScheduler } from "./scheduler/OneTimeTriggerScheduler";
 import { TimeTriggerScheduler } from "./scheduler/TimeTriggerScheduler";
@@ -339,6 +340,12 @@ class ScheduleSwitcher extends utils.Adapter {
      * @param obj If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
+        if (obj?.command === "help") {
+            if (obj.callback) {
+                this.sendTo(obj.from, obj.command, { help: HELP, commands: COMMANDS }, obj.callback);
+            }
+            return;
+        }
         if (typeof obj === "object" && obj.message) {
             try {
                 this.log.debug(`obj: ${JSON.stringify(obj)}`);
