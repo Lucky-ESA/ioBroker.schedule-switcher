@@ -65,11 +65,35 @@ export class MessageService extends EventEmitter implements MessageServices {
             return;
         }
         this.currentMessage = message;
+        try {
+            await this.processMessage(message);
+        } catch (e: any) {
+            this.adapter.log.error(`Could not handle message ${message.command}: ${e?.stack || e}`);
+            this.answerError(message, `${e?.message || e}`);
+        } finally {
+            // release the queue, also after an error
+            this.currentMessage = null;
+        }
+    }
+
+    /**
+     * @param message ioBroker.Message
+     * @param error error text
+     */
+    private answerError(message: ioBroker.Message, error: string): void {
+        if (message.callback) {
+            this.adapter.sendTo(message.from, message.command, { error }, message.callback);
+        }
+    }
+
+    /**
+     * @param message ioBroker.Message
+     */
+    private async processMessage(message: ioBroker.Message): Promise<void> {
         const data: any = message.message;
         if (message.command === "change-view-dataId") {
             await this.updateViews(data);
             this.adapter.log.debug(`Finished message ${message.command}`);
-            this.currentMessage = null;
             return;
         }
         this.adapter.log.debug(`Received ${message.command}`);
@@ -78,7 +102,7 @@ export class MessageService extends EventEmitter implements MessageServices {
         let active = false;
         if (!schedule) {
             this.adapter.log.error(`No schedule found for state ${data.dataId}`);
-            this.currentMessage = null;
+            this.answerError(message, `No schedule found for state ${data.dataId}`);
             return;
         }
         switch (message.command) {
@@ -120,6 +144,7 @@ export class MessageService extends EventEmitter implements MessageServices {
             case "change-name":
                 if (data.name == null) {
                     this.adapter.log.error(`The name cannot be null`);
+                    this.answerError(message, `The name cannot be null`);
                     return;
                 }
                 schedule.setName(data.name);
@@ -149,17 +174,22 @@ export class MessageService extends EventEmitter implements MessageServices {
                 break;
             default:
                 this.adapter.log.error("Unknown command received");
-                this.currentMessage = null;
                 return;
         }
         if (schedule instanceof OnOffSchedule) {
             let saveTrigger;
             saveTrigger = (await this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule);
+            const actual_trigger = JSON.parse(saveTrigger);
             if (active) {
-                const actual_trigger = JSON.parse(saveTrigger);
                 actual_trigger.active = data.active;
-                saveTrigger = JSON.stringify(actual_trigger);
+            } else {
+                // the serializer does not know "active": keep the one of the saved schedule
+                const saved = await this.stateService.getState(data.dataId);
+                if (typeof saved === "string" && saved.startsWith("{")) {
+                    actual_trigger.active = JSON.parse(saved).active;
+                }
             }
+            saveTrigger = JSON.stringify(actual_trigger);
             await this.stateService.setState(data.dataId, saveTrigger);
             this.emit("data", "changeTrigger", data.dataId, saveTrigger);
         } else {
@@ -167,7 +197,6 @@ export class MessageService extends EventEmitter implements MessageServices {
             return;
         }
         this.adapter.log.debug(`Finished message ${message.command}`);
-        this.currentMessage = null;
     }
 
     /**

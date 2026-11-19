@@ -661,6 +661,7 @@ class ScheduleSwitcher extends utils.Adapter {
         const data_json = data && typeof data.val === "string" ? JSON.parse(data.val) : null;
         if (data_json && this.messageService) {
             this.sendTo(obj.from, obj.command, data_json.triggers.length, obj.callback);
+            delete obj.callback; // answered already
             await this.messageService.handleMessage(obj);
         } else {
             this.sendTo(obj.from, obj.command, null, obj.callback);

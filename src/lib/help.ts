@@ -55,15 +55,15 @@ only if the condition holds; sign "==", "!=" (compare as text), ">" or "<" (comp
 Times are the local time of the ioBroker host.
 
 Commands (sendTo schedule-switcher.0); dataId = "schedule-switcher.0.onoff.<n>.data". The parameters may also be
-wrapped as {parameter: {...}}. Only add-trigger with {parameter} answers; the other commands send no answer at all:
-do not wait for one, read data again to see the result. A malformed command (a missing field, a wrong type) can
-block all later commands until the instance restarts: send exactly the fields named here.
+wrapped as {parameter: {...}}. Only add-trigger with {parameter} answers on success. If a command fails (unknown
+dataId, a missing name, a malformed trigger), it answers {error} (text); otherwise the commands send no answer: do
+not wait for one, read data again to see the result. Send exactly the fields named here.
 - add-trigger {dataId, triggerType: "TimeTrigger" or "AstroTrigger", actionType: "OnOffStateAction"}: adds a
   trigger "On" for all days at 0:00 (Time) or at sunrise (Astro) with the lowest free id. It is active at once:
   set it with update-trigger right after. Answer (only with {parameter}): the number of triggers before (= the id
   of the new trigger if the ids have no gaps).
 - update-trigger {dataId, trigger}: replaces the Time or Astro trigger with the same id. Send the complete trigger
-  as read from data, changed where needed (id and objectId are required).
+  as read from data, changed where needed (id is required; objectId is taken from dataId if missing).
 - add-one-time-trigger {dataId, trigger}: trigger = JSON text (a string, not an object) of {type: "OneTimeTrigger",
   date, timedate, valueCheck, action}; the adapter sets id and objectId.
 - update-one-time-trigger {dataId, trigger}: replaces the one-time trigger with the same id (trigger as object).
@@ -75,8 +75,8 @@ block all later commands until the instance restarts: send exactly the fields na
   values; boolean writes true / false, number needs numbers (missing = 0), string needs both texts.
   A vis widget of the schedule sends its own states and values again when it is shown.
 - change-active {dataId, active: boolean}: true = the schedule stays enabled without a vis widget; false = a check
-  (at the start of the instance, at night after changes) disables an enabled schedule that no widget shows. Every
-  other command saves data without active (= false): send change-active last.
+  (at the start of the instance, at night after changes) disables an enabled schedule that no widget shows. The
+  other commands keep active as it is.
 - getActiv, getCountSchedule, getNameSchedule, getIdNameSchedule {schedule: <n>}: for the settings, not for agents.
 - week, astro, datetime, time, valueCheck (HTML table in vis), change-view-dataId (vis widgets), update-actionTime,
   update-nextTime, update-html, update-view (internal refreshes): not for agents.
