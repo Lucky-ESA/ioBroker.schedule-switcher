@@ -147,6 +147,10 @@
     "compact": true,
     "connectionType": "local",
     "messagebox": true,
+    "supportedMessages": {
+      "custom": true,
+      "help": true
+    },
     "dataSource": "push",
     "docs": {
       "en": [

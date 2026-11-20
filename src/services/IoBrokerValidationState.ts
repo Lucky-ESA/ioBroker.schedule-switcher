@@ -233,7 +233,7 @@ export class IoBrokerValidationState implements ValidationState {
                         return (val = {});
                     }
                     const objId = id.split(".");
-                    if (trigger.objectId.toString() != objId[3]) {
+                    if (trigger.objectId?.toString() != objId[3]) {
                         this.adapter.log.warn(`Wrong ObjectId ${trigger.objectId} in ${id}`);
                         trigger.objectId = parseInt(objId[3]);
                     }
@@ -441,7 +441,7 @@ export class IoBrokerValidationState implements ValidationState {
                     return (val = {});
                 }
                 const objId = id.split(".");
-                if (trigger.objectId.toString() != objId[3]) {
+                if (trigger.objectId?.toString() != objId[3]) {
                     this.adapter.log.warn(`Wrong ObjectId ${trigger.objectId} in ${id}`);
                     trigger.objectId = parseInt(objId[3]);
                 }
