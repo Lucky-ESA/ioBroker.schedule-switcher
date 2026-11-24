@@ -30,6 +30,10 @@ It is possible to configure at which time and on which weekdays the trigger shou
 🇬🇧 [Description](/docs/en/README.md)</br>
 🇩🇪 [Beschreibung](/docs/de/README.md)
 
+## Messages for scripts and AI agents
+
+The message `help` (`sendTo("schedule-switcher.0", "help", {}, result => ...)`) returns a description of the schedules, their triggers and all messages, written for AI agents (e.g. pi-agent) and script authors. The answer `{ help, commands }` also lists all commands, each with `write: true` if it changes something.
+
 ## Questions
 
 🇩🇪 [Fragen](https://forum.iobroker.net/topic/77552/test-adapter-schedule-switcher)
@@ -40,6 +44,13 @@ It is possible to configure at which time and on which weekdays the trigger shou
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- (@GermanBluefox) Added the message "help": a description of the schedules and of all messages for AI agents (e.g. pi-agent), and `common.supportedMessages.help`
+- (@GermanBluefox) Fixed: a failed message (e.g. `change-name` without name) no longer blocks all later messages until a restart; it answers `{ error }`
+- (@GermanBluefox) Fixed: `update-trigger` without `objectId` (as in the documentation) works, the objectId is taken from `dataId`
+- (@GermanBluefox) Fixed: the messages no longer reset the flag `active` of a schedule (set by `change-active`)
+
 ### 0.2.2 (2026-10-08)
 
 - (Lucky-ESA) Condition crash fixed

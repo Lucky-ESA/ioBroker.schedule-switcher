@@ -27,6 +27,7 @@ var import_suncalc = require("suncalc");
 var import_Coordinate = require("./Coordinate");
 var import_VisHtmlTable = require("./html/VisHtmlTable");
 var import_VisWidgetOverview = require("./html/VisWidgetOverview");
+var import_help = require("./lib/help");
 var import_AstroTriggerScheduler = require("./scheduler/AstroTriggerScheduler");
 var import_OneTimeTriggerScheduler = require("./scheduler/OneTimeTriggerScheduler");
 var import_TimeTriggerScheduler = require("./scheduler/TimeTriggerScheduler");
@@ -331,6 +332,12 @@ class ScheduleSwitcher extends utils.Adapter {
    */
   async onMessage(obj) {
     var _a, _b, _c;
+    if ((obj == null ? void 0 : obj.command) === "help") {
+      if (obj.callback) {
+        this.sendTo(obj.from, obj.command, { help: import_help.HELP, commands: import_help.COMMANDS }, obj.callback);
+      }
+      return;
+    }
     if (typeof obj === "object" && obj.message) {
       try {
         this.log.debug(`obj: ${JSON.stringify(obj)}`);
@@ -641,6 +648,7 @@ class ScheduleSwitcher extends utils.Adapter {
     const data_json = data && typeof data.val === "string" ? JSON.parse(data.val) : null;
     if (data_json && this.messageService) {
       this.sendTo(obj.from, obj.command, data_json.triggers.length, obj.callback);
+      delete obj.callback;
       await this.messageService.handleMessage(obj);
     } else {
       this.sendTo(obj.from, obj.command, null, obj.callback);

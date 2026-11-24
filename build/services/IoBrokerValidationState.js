@@ -43,6 +43,7 @@ class IoBrokerValidationState {
    * @param check boolean
    */
   async validation(id, val, check) {
+    var _a, _b;
     const removeDuplicate = (arr) => {
       return arr.filter((item, index) => arr.indexOf(item) === index);
     };
@@ -222,7 +223,7 @@ class IoBrokerValidationState {
             return val = {};
           }
           const objId = id.split(".");
-          if (trigger.objectId.toString() != objId[3]) {
+          if (((_a = trigger.objectId) == null ? void 0 : _a.toString()) != objId[3]) {
             this.adapter.log.warn(`Wrong ObjectId ${trigger.objectId} in ${id}`);
             trigger.objectId = parseInt(objId[3]);
           }
@@ -398,7 +399,7 @@ class IoBrokerValidationState {
           return val = {};
         }
         const objId = id.split(".");
-        if (trigger.objectId.toString() != objId[3]) {
+        if (((_b = trigger.objectId) == null ? void 0 : _b.toString()) != objId[3]) {
           this.adapter.log.warn(`Wrong ObjectId ${trigger.objectId} in ${id}`);
           trigger.objectId = parseInt(objId[3]);
         }
