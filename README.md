@@ -44,8 +44,7 @@ The message `help` (`sendTo("schedule-switcher.0", "help", {}, result => ...)`) 
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.2.3 (2026-11-24)
 
 - (Lucky-ESA) Fixed: No longer possible to make changes using widgets
 - (@GermanBluefox) Added the message "help": a description of the schedules and of all messages for AI agents (e.g. pi-agent), and `common.supportedMessages.help`
@@ -77,10 +76,6 @@ The message `help` (`sendTo("schedule-switcher.0", "help", {}, result => ...)`) 
 - (Lucky-ESA) Fixed small some bugs
 - (Lucky-ESA) History JSON changed
 - (Lucky-ESA) Using your own icons
-
-### 0.0.12 (2025-08-27)
-
-- (Lucky-ESA) Astro time in widget fixed
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

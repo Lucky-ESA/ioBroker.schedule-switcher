@@ -31,6 +31,10 @@
 ### 0.0.1 (2024-10-19)
 
 - (Lucky_ESA) initial release
+## 0.0.12 (2025-08-27)
+
+- (Lucky-ESA) Astro time in widget fixed
+
 ## 0.0.11 (2025-08-16)
 
 - (Lucky-ESA) Admin 7.6.17 required
