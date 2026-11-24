@@ -51,10 +51,10 @@ function sendMessage(cmd, data) {
         message: data,
     };
     console.debug(`cmdsend: ${JSON.stringify(sendto)}`);
-    try {
-        servConn._socket.emit("sendTo", "schedule-switcher", cmd, data);
-    } catch {
+    if (vis.conn.namespace == "vis-2.0") {
         vis.conn.setState("schedule-switcher.0.sendto", { val: JSON.stringify(sendto), ack: false });
+    } else {
+        servConn._socket.emit("sendTo", "schedule-switcher", cmd, data);
     }
 }
 

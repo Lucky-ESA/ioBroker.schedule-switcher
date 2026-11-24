@@ -112,6 +112,10 @@ class ScheduleSwitcher extends utils.Adapter {
                             stateVal.active = false;
                             await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
                         }
+                        if (stateVal && stateVal.instance == null) {
+                            stateVal.instance = this.namespace;
+                            await this.setState(id, { val: JSON.stringify(stateVal), ack: true });
+                        }
                         await this.validation?.validation(id, stateVal, false);
                         this.log.debug(`Start: ${id} - ${JSON.stringify(stateVal)}`);
                         if (typeof stateVal === "object" && Object.keys(stateVal).length > 0) {
@@ -811,6 +815,7 @@ class ScheduleSwitcher extends utils.Adapter {
                 def: `{
                     "type": "OnOffSchedule",
                     "name": "New Schedule",
+                    "instance": "${this.namespace}",
                     "active": false,
                     "objectID": ${id},
                     "onAction": {

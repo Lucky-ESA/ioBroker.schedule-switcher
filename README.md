@@ -44,8 +44,10 @@ The message `help` (`sendTo("schedule-switcher.0", "help", {}, result => ...)`) 
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
 ### **WORK IN PROGRESS**
 
+- (Lucky-ESA) Fixed: No longer possible to make changes using widgets
 - (@GermanBluefox) Added the message "help": a description of the schedules and of all messages for AI agents (e.g. pi-agent), and `common.supportedMessages.help`
 - (@GermanBluefox) Fixed: a failed message (e.g. `change-name` without name) no longer blocks all later messages until a restart; it answers `{ error }`
 - (@GermanBluefox) Fixed: `update-trigger` without `objectId` (as in the documentation) works, the objectId is taken from `dataId`
